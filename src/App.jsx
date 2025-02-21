@@ -1,15 +1,16 @@
-import { useState } from 'react'
-import './App.css'
-import Button from './component/Button'
+import React from "react";
+import Dashboard from "./component/Dashboard/Dashboard";
+import Sidebar from "./component/Dashboard/Sidebar";
+import Header from "./component/Dashboard/Header";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App = () => {
   return (
-    <>
-    <Button />
-    </>
-  )
-}
+    <div>
+      {/* <Dashboard /> */}
+      <Sidebar />
+      {/* <Header /> */}
+    </div>
+  );
+};
 
-export default App
+export default App;
