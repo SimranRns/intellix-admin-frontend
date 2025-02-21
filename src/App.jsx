@@ -1,9 +1,9 @@
 import React from "react";
 import Dashboard from "./component/Dashboard/Dashboard";
-
+import Login from "./component/Login/Login"
 import Header from "./component/Dashboard/Header";
 import Sidebar from "./component/Dashboard/Sidebar";
-import { BrowserRouter, Routes , Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 // import { Route } from "lucide-react";
 
 const App = () => {
@@ -11,9 +11,10 @@ const App = () => {
     <div>
       <BrowserRouter>
         <Routes>
-          <Route path="/side" element={<Sidebar/>}>
-            
+          <Route path="/side" element={<Sidebar />}>
+
           </Route>
+          <Route path="/" element={<Login />}> </Route>
         </Routes>
       </BrowserRouter>
       {/* <Dashboard /> */}

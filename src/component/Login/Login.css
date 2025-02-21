@@ -1,0 +1,17 @@
+.circle{
+    background-color:#236df7;
+    height: 43.4rem;
+    width: 110%;
+    border-bottom-right-radius: 95%;
+  
+}
+.form_feild{
+    margin-left: 8rem;
+}
+.input_feild{
+    width: 28rem;
+}
+.submit{
+    padding-left: 160px;
+    /* background-color:#236df7 ; */
+}

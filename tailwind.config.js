@@ -9,6 +9,19 @@ export default {
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
+  		keyframes: {
+  			wordReveal: {
+  				'0%': {
+  					'clip-path': 'inset(0 100% 0 0)'
+  				},
+  				'100%': {
+  					'clip-path': 'inset(0 0 0 0)'
+  				}
+  			}
+  		},
+  		animation: {
+  			wordReveal: 'wordReveal 3s ease-out infinite'
+  		},
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
