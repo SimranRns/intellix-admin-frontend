@@ -5,7 +5,7 @@ import {
 } from "../../component/src/components/ui/sidebar";
 import { Calendar, Home, Inbox, User, Settings } from "lucide-react";
 import {
-  Sidebar,
+  Sidebar as UISidebar, // Renamed to avoid conflicts
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
@@ -16,7 +16,7 @@ import {
 } from "../../component/src/components/ui/sidebar";
 
 // Sidebar Layout Component
-const SidebarLayout = ({ children }) => {
+const Sidebar = ({ children }) => {
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -40,18 +40,20 @@ export function AppSidebar() {
   ];
 
   return (
-    <Sidebar >
+    <UISidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xl">Intelix icon </SidebarGroupLabel>
-          <SidebarGroupContent >
-            <SidebarMenu >
-              {items.map((item) => (
-                <SidebarMenuItem className="h-10" key={item.title}>
+          <SidebarGroupLabel className="text-xl">
+            Intelix Icon
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {items.map(({ title, url, icon: Icon }) => (
+                <SidebarMenuItem className="h-10" key={title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url} className="flex items-center gap-3">
-                      <item.icon size={20} />
-                      <span className="text-lg base/8 ">{item.title}</span>
+                    <a href={url} className="flex items-center gap-3">
+                      <Icon size={20} />
+                      <span className="text-lg">{title}</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -60,8 +62,8 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-    </Sidebar>
+    </UISidebar>
   );
 }
 
-export default SidebarLayout;
+export default Sidebar;
