@@ -1,7 +1,7 @@
 .circle{
     background-color:#236df7;
     height: 43.4rem;
-    width: 110%;
+    width: 100%;
     border-bottom-right-radius: 95%;
   
 }
@@ -14,4 +14,10 @@
 .submit{
     padding-left: 160px;
     /* background-color:#236df7 ; */
+}
+.margin{
+    margin-top: -30px;
+}
+.checkbox{
+    font-size: 12px;
 }
