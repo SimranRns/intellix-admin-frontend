@@ -4,8 +4,8 @@ import Login from "./component/Login/Login";
 import Header from "./component/Dashboard/Header";
 import Sidebar from "./component/Dashboard/Sidebar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AdminLogin from "./component/Login/AdminLogin";
 // import { Route } from "lucide-react";
-
 const App = () => {
   return (
     <div>
@@ -18,6 +18,8 @@ const App = () => {
           <Route path="/header" element={<Header />}>
             {" "}
           </Route>
+          <Route path="/" element={<Login />}></Route>
+          <Route path="/Adminlogin" element={<AdminLogin />}></Route>
         </Routes>
       </BrowserRouter>
       {/* <Dashboard /> */}
