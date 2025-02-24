@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import Header from './Header';
 
 const navigationItems = [
   { name: 'View Profile', href: '#', id: 'view-profile' },
   { name: 'Change Password', href: '#', id: 'change-password' },
-  { name: 'Task', href: '#', id: 'task' },
 ];
 
 function classNames(...classes) {
@@ -19,12 +19,14 @@ const Settings = () => {
   return (
     <div className="flex h-screen bg-gray-100">
     
-      <div className="w-64 bg-white shadow-lg hidden md:block overflow-y-auto scrollbar-hide">
+      <div className="hidden md:block overflow-y-auto scrollbar-hide">
         <Sidebar />
       </div>
 
       <div className="flex flex-col flex-1">
-    
+        <div>
+          <Header/>
+        </div>
         <Disclosure as="nav" className="bg-white shadow">
           {({ open }) => (
             <>

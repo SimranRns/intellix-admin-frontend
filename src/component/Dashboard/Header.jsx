@@ -23,7 +23,7 @@ const Header = () => {
   return (
     <Disclosure
       as="nav"
-      className="bg-white border border-b-blue-700 shadow-md"
+      className="bg-white border shadow-md mb-3"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
