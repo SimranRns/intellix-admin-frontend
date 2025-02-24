@@ -30,7 +30,11 @@ const Dashboard = () => {
 
 <div class="grid grid-flow-col grid-rows-3  mt-5 m-5">
   <div class="row-span-3"><Sidebar/></div>
-  <div class="col-span-3"> <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
+  <div class="col-span-3"> 
+    <div>
+      <Header/>
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
         <Card>
           <CardHeader>
             <CardTitle>Total Missed Fees:</CardTitle>
