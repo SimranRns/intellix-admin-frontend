@@ -9,9 +9,10 @@ import AdminLogin from "./component/Login/AdminLogin";
 const App = () => {
   return (
     <div>
+     
       <BrowserRouter>
         <Routes>
-          <Route path="/side" element={<Sidebar />}></Route>
+          {/* <Route path="/side" element={<Sidebar />}></Route> */}
           <Route path="/" element={<Login />}>
             {" "}
           </Route>
@@ -20,6 +21,8 @@ const App = () => {
           </Route>
           <Route path="/" element={<Login />}></Route>
           <Route path="/Adminlogin" element={<AdminLogin />}></Route>
+          <Route path="/Dashboard" element={<Dashboard />}></Route>
+ 
         </Routes>
       </BrowserRouter>
       {/* <Dashboard /> */}
