@@ -1,5 +1,19 @@
-/* .button_class:hover{
-    background-color: rgb(212, 244, 255) !important;
-    border-radius: 10rem;
-    padding: 5px;
-} */
+.sidebar-content::-webkit-scrollbar {
+    display: none;
+}
+.sidebar-content {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+}
+.sidebar-content {
+    overflow-y: auto;
+    max-height: 100vh;
+}
+
+@media (max-width: 1024px) {
+    .fixed {
+        width: 100%;
+        height: auto;
+    }
+}   
