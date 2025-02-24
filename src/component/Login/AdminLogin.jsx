@@ -37,7 +37,6 @@ const AdminLogin = () => {
     const onSubmit = (data, event) => {
         event.preventDefault(); // Prevent page refresh
         console.log('Form data:', data);
-        alert('Form submitted successfully!');
     };
 
     return (
@@ -60,10 +59,10 @@ const AdminLogin = () => {
                                 name="email"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="block margin text-gray-700 font-semibold text-lg sm:text-xl">Email Address</FormLabel>
+                                        <FormLabel className="block margin text-gray-700 font-semibold text-lg sm:text-xl">Email </FormLabel>
                                         <FormControl>
                                             <div className="relative flex items-center">
-                                                <Input className="w-full border-gray-300 rounded-xl pl-12 p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Enter Your Email Address" type="email" {...field} />
+                                                <Input className="w-full border-gray-300 rounded-xl pl-12 p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg " placeholder="Enter Your Email" type="email" {...field} />
                                                 <span className="absolute right-4 text-gray-500">
                                                     <Mail size={21} />
                                                 </span>
