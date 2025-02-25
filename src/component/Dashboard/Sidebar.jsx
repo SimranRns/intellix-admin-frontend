@@ -1,7 +1,7 @@
 import React from "react";
 import "./sidebar.css";
-import '../../App.css'
-
+import "../../App.css";
+import intellix_icon from "../Admin/Image/intellix.png";
 import {
   SidebarProvider,
   SidebarTrigger,
@@ -56,11 +56,15 @@ export function AppSidebar() {
   ];
 
   return (
-    <UISidebar className="fixed left-0 top-0 w-64 h-full bg-white shadow-lg border border-3 border-r-blue-500 ">
+    <UISidebar className="fixed left-0 top-0 w-64 h-full bg-[#4b3fff] shadow-lg text-white ">
       <SidebarContent className="p-5 sidebar-content">
         <SidebarGroup>
           <SidebarGroupLabel className="text-2xl font-bold text-blue-600 mb-8">
-            Intelix Icon 
+            <div className="flex items-center">
+              {" "}
+              <img className="logo" src={intellix_icon} />{" "}
+              <h5 className="font-mono ">Intellix</h5>
+            </div>
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="">

@@ -22,6 +22,9 @@ const Settings = () => {
       <div className="hidden md:block overflow-y-auto scrollbar-hide">
         <Sidebar />
       </div>
+      <div>
+        
+      </div>
 
       <div className="flex flex-col flex-1">
         <div>
