@@ -1,7 +1,7 @@
 import React from "react";
 import "./sidebar.css";
 import "../../App.css";
-import intellix_icon from "../Admin/Image/intellix.png";
+import intellix_icon from "../../assets/Image/intellix.png";
 import {
   SidebarProvider,
   SidebarTrigger,
@@ -57,7 +57,7 @@ export function AppSidebar() {
 
   return (
     <UISidebar className="fixed left-0 top-0 w-64 h-full bg-[#4b3fff] shadow-lg text-white ">
-      <SidebarContent className="p-5 sidebar-content">
+      <SidebarContent className="p-5 sidebar-content  ">
         <SidebarGroup>
           <SidebarGroupLabel className="text-2xl font-bold text-blue-600 mb-8">
             <div className="flex items-center">
@@ -76,10 +76,10 @@ export function AppSidebar() {
                       className="flex items-center gap-4 p-3 rounded-lg transition-colors  hover:bg-blue-500 hover:text-white text-gray-700"
                     >
                       <Icon
-                        size={24}
+                        size={20}
                         className="text-black-500 hover:text-white"
                       />
-                      <span className="text-lg font-medium"> {title}</span>
+                      <span className="text-lg  font-medium"> {title}</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

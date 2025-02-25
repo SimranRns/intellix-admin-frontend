@@ -6,6 +6,7 @@ import Sidebar from "./component/Dashboard/Sidebar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AdminLogin from "./component/Login/AdminLogin";
 import Settings from "./component/Dashboard/Settings";
+import '../src/App.css'
 // import { Route } from "lucide-react";
 const App = () => {
   return (
