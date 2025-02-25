@@ -6,6 +6,7 @@ import Sidebar from "./component/Dashboard/Sidebar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AdminLogin from "./component/Login/AdminLogin";
 import Settings from "./component/Dashboard/Settings";
+
 // import { Route } from "lucide-react";
 const App = () => {
   return (
@@ -23,7 +24,6 @@ const App = () => {
           <Route path="/" element={<Login />}></Route>
           <Route path="/Adminlogin" element={<AdminLogin />}></Route>
           <Route path="/Dashboard" element={<Dashboard />}></Route>
- 
           <Route path="/Settings" element={<Settings/>}></Route>
         </Routes>
       </BrowserRouter>

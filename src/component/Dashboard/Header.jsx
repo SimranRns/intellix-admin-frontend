@@ -24,7 +24,7 @@ const Header = () => {
       as="nav"
       className="bg-white shadow-md border-b border-gray-200"
     >
-      <div className="fixed top-0 left-64 right-0 h-16 bg-white px-6 shadow flex items-center justify-between z-50">
+      <div className=" top-0 left-64 right-0 h-16 bg-white px-6 shadow flex items-center justify-between z-50">
         {/* Sidebar Toggle Button */}
         <div className="flex items-center sm:hidden">
           <DisclosureButton
