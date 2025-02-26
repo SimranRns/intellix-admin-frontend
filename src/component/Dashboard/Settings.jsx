@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
-import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
+  import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import Header from './Header';
 
 const Settings = () => {
@@ -11,9 +11,12 @@ const Settings = () => {
       <div className="hidden md:block overflow-y-auto scrollbar-hide">
         <Sidebar />
       </div>
+      <div></div>
 
       <div className="flex flex-col flex-1">
-        <Header />
+        <div>
+          <Header />
+        </div>
         <Disclosure as="nav" className="bg-white shadow">
           {({ open }) => (
             <>
