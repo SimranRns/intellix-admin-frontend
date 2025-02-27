@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import Sidebar from './Sidebar';
-import '../Dashboard/Settings.css';
+import Sidebar from '../Dashboard/Sidebar'
 import { Disclosure } from '@headlessui/react';
-import Header from './Header';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../src/components/ui/card';
-import { Input } from '../src/components/ui/input';
-import { Button } from '../src/components/ui/button';
+import Header from '../Dashboard/Header';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../../src/components/ui/card';
+import { Input } from '../../src/components/ui/input';
+import { Button } from '../../src/components/ui/button';
 import { Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import {
@@ -15,7 +14,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../src/components/ui/form";
+} from "../../src/components/ui/form";
 
 const Settings = () => {
   const [tab, setTab] = useState(1);

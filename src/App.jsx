@@ -1,11 +1,11 @@
 import React from "react";
-import Dashboard from "./component/Dashboard/Dashboard";
+import Dashboard from "./component/Admin/Dashboard/Dashboard";
 import Login from "./component/Login/Login";
-import Header from "./component/Dashboard/Header";
-import Sidebar from "./component/Dashboard/Sidebar";
+import Header from "./component/Admin/Dashboard/Header";
+// import Sidebar from "./component/Admin/Dashboard/Sidebar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AdminLogin from "./component/Login/AdminLogin";
-import Settings from "./component/Dashboard/Settings";
+import Settings from "./component/Admin/Setting/Settings";
 
 import '../src/App.css'
 // import { Route } from "lucide-react";
@@ -26,6 +26,7 @@ const App = () => {
           <Route path="/Adminlogin" element={<AdminLogin />}></Route>
           <Route path="/Dashboard" element={<Dashboard />}></Route>
           <Route path="/Settings" element={<Settings/>}></Route>
+          
         </Routes>
       </BrowserRouter>
     </div>

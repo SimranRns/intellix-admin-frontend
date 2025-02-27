@@ -4,20 +4,21 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "../../component/src/components/ui/avatar";
+} from "../../src/components/ui/avatar";
 import {
   NavigationMenu,
   NavigationMenuList,
-} from "../../component/src/components/ui/navigation-menu";
-import { Input } from "../src/components/ui/input";
+} from "../../src/components/ui/navigation-menu";
+import { Input } from "../../src/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../../component/src/components/ui/dropdown-menu";
+} from "../../src/components/ui/dropdown-menu";
 
-const Navbar = () => {
+const Header = () => {
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -98,4 +99,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default Header;

@@ -1,13 +1,13 @@
 import React from "react";
-import Sidebar from "./Sidebar";
-import Header from "./Header";
+import Sidebar from "../Dashboard/Sidebar";
+import Header from "../Dashboard/Header";
 
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "../src/components/ui/card";
+} from "../../src/components/ui/card";
 import {
   Table,
   TableHeader,
@@ -15,8 +15,8 @@ import {
   TableHead,
   TableRow,
   TableCell,
-} from "../src/components/ui/table";
-import { Input } from "../src/components/ui/input";
+} from "../../src/components/ui/table";
+import { Input } from "../../src/components/ui/input";
 
 const Dashboard = () => {
   const influencers = [
