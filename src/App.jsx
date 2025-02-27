@@ -5,7 +5,7 @@ import Header from "./component/Admin/Dashboard/Header";
 // import Sidebar from "./component/Admin/Dashboard/Sidebar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AdminLogin from "./component/Login/AdminLogin";
-import Settings from "./component/Admin/Setting/Settings";
+import Settings from "./component/Admin/Setting/Change_pass";
 
 import '../src/App.css'
 // import { Route } from "lucide-react";
