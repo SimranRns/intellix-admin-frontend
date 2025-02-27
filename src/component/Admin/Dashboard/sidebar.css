@@ -1,0 +1,22 @@
+.sidebar-content::-webkit-scrollbar {
+    display: none;
+}
+.sidebar-content {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+}
+.sidebar-content {
+    overflow-y: auto;
+    max-height: 100vh;
+}
+
+@media (max-width: 1024px) {
+    .fixed {
+        width: 100%;
+        height: auto;
+    }
+}   
+.logo{
+    width: 5rem !important;
+}
