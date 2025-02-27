@@ -1,6 +1,6 @@
 import React from "react";
-import Sidebar from "./Sidebar";
-import Header from "./Header";
+import Sidebar from "./Dashboard/Sidebar";
+import Header from "../Admin/Dashboard/Header";
 
 import {
   Card,

@@ -1,11 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import "./sidebar.css";
-import "../../App.css";
-import intellix_icon from "../../assets/Image/intellix.png";
-import {
-  SidebarProvider,
-  SidebarTrigger,
-} from "../../component/src/components/ui/sidebar";
+import intellix_icon from "../../../assets/Image/intellix.png";
+import { X, Grid } from "lucide-react";
+import { SidebarProvider } from "../../src/components/ui/sidebar";
 import {
   ChartColumnIncreasing,
   Home,
@@ -17,7 +14,7 @@ import {
   Users,
 } from "lucide-react";
 import {
-  Sidebar as UISidebar, // Renamed to avoid conflicts
+  Sidebar as UISidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
@@ -25,24 +22,34 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "../../component/src/components/ui/sidebar";
-import Header from "./Header";
+} from "../../src/components/ui/sidebar";
 
-// Sidebar Layout Component
 const Sidebar = ({ children }) => {
+  const [isOpen, setIsOpen] = useState(true);
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <main>
-        <SidebarTrigger />
-        {children}
-      </main>
+      <div className="relative flex">
+        <AppSidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
+        <main className="flex-1">
+          <button
+            onClick={toggleSidebar}
+            className="m-4 cursor-pointer fixed top-4 left-4 z-50"
+          >
+            {isOpen ? <X size={24} /> : <Grid size={24} />}
+          </button>
+          {children}
+        </main>
+      </div>
     </SidebarProvider>
   );
 };
 
-// Sidebar Component
-export function AppSidebar() {
+export function AppSidebar({ isOpen, toggleSidebar }) {
   const items = [
     { title: "Dashboard", url: "Dashboard", icon: Home },
     { title: "Inbox", url: "Inbox", icon: Inbox },
@@ -56,30 +63,39 @@ export function AppSidebar() {
   ];
 
   return (
-    <UISidebar className="fixed left-0 top-0 w-64 h-full bg-[#4b3fff] shadow-lg text-white ">
-      <SidebarContent className="p-5 sidebar-content  ">
+    <UISidebar
+      className={`fixed left-0 top-0 w-64 h-full bg-[#4b3fff] shadow-lg text-white z-50 transform transition-transform ${
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      }`}
+    >
+      <SidebarContent className="p-5 sidebar-content relative">
+        <button
+          className="absolute top-4 right-4 text-white"
+          onClick={toggleSidebar}
+        >
+          {isOpen ? <X size={24} /> : <Grid size={24} />}
+        </button>
         <SidebarGroup>
           <SidebarGroupLabel className="text-2xl font-bold text-blue-600 mb-8">
             <div className="flex items-center">
-              {" "}
-              <img className="logo" src={intellix_icon} />{" "}
-              <h5 className="font-mono ">Intellix</h5>
+              <img className="logo" src={intellix_icon} alt="Intellix Logo" />
+              <h5 className="font-mono ml-2">Intellix</h5>
             </div>
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="">
+            <SidebarMenu>
               {items.map(({ title, url, icon: Icon }) => (
                 <SidebarMenuItem className="mb-2" key={title}>
                   <SidebarMenuButton className="button_class" asChild>
                     <a
                       href={url}
-                      className="flex items-center gap-4 p-3 rounded-lg transition-colors  hover:bg-blue-500 hover:text-white text-gray-700"
+                      className="flex items-center gap-4 p-3 rounded-lg transition-colors hover:bg-blue-500 hover:text-white text-gray-700"
                     >
                       <Icon
                         size={20}
                         className="text-black-500 hover:text-white"
                       />
-                      <span className="text-lg  font-medium"> {title}</span>
+                      <span className="text-lg font-medium">{title}</span> 
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
