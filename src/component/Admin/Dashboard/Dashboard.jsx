@@ -17,6 +17,17 @@ import {
   TableCell,
 } from "../../src/components/ui/table";
 import { Input } from "../../src/components/ui/input";
+import {
+  Bar,
+  Line,
+  ResponsiveContainer,
+  ComposedChart,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  CartesianGrid,
+} from "recharts";
 
 const Dashboard = () => {
   const influencers = [
@@ -34,62 +45,50 @@ const Dashboard = () => {
       <div className="flex-1 p-4">
         <Header />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-4">
-          <Card className="bg-red-600">
-            <CardHeader>
-              <CardTitle>Total Missed Fees:</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card className="bg-green-500">
-            <CardHeader>
-              <CardTitle>Total Collected Fees:</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card className="bg-yellow-400">
-            <CardHeader>
-              <CardTitle>Total Pending Fees:</CardTitle>
-            </CardHeader>
-          </Card>
-        </div>
-
-        {/* Input Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
-          <div>
-            <h2 className="text-lg font-semibold">Total Debit Amount</h2>
-            <Input className="w-full" />
+        <Card className="bg-white shadow-md rounded-lg p-6 mt-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              {
+                label: "Students",
+                count: "93K",
+                icon: "🎓",
+                color: "bg-purple-500",
+              },
+              {
+                label: "Teachers",
+                count: "74K",
+                icon: "👨‍🏫",
+                color: "bg-red-500",
+              },
+              {
+                label: "Events",
+                count: "40K",
+                icon: "📅",
+                color: "bg-yellow-500",
+              },
+              { label: "Foods", count: "32K", icon: "🍽", color: "bg-blue-900" },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-4 p-4 rounded-lg"
+              >
+                <span
+                  className={`text-3xl ${item.color} text-white p-3 rounded-full`}
+                >
+                  {item.icon}
+                </span>
+                <div>
+                  <h3 className="text-lg font-semibold">{item.label}</h3>
+                  <p className="text-2xl font-bold">{item.count}</p>
+                </div>
+              </div>
+            ))}
           </div>
-          <div>
-            <h2 className="text-lg font-semibold">Total Credit Amount</h2>
-            <Input className="w-full" />
-          </div>
-        </div>
-
-        {/* Table Section */}
-        <Card className="mt-4">
-          <CardHeader>
-            <CardTitle>Influencer</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Projects</TableHead>
-                  <TableHead>Followers</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {influencers.map((influencer, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{influencer.name}</TableCell>
-                    <TableCell>{influencer.projects}</TableCell>
-                    <TableCell>{influencer.followers}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
         </Card>
+
+      
+     
+    
       </div>
     </div>
   );
