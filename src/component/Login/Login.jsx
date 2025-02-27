@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from '../../src/components/ui/Button'
+import { Button } from '../../component/src/components/ui/button'
 import '/src/component/Login/Login.css'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -13,10 +13,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../../src/components/ui/form';
-import { Input } from '../../src/components/ui/input';
-import { Label } from '../../src/components/ui/label';
-import { Checkbox } from '../../src/components/ui/checkbox';
+} from '../../component/src/components/ui/form';
+import { Input } from '../../component/src/components/ui/input';
+import { Label } from '../../component/src/components/ui/label';
+import { Checkbox } from '../../component/src/components/ui/checkbox';
 const FormSchema = z.object({
   Code: z.string().min(1, 'Code is required'),
 });
@@ -64,7 +64,8 @@ const Login = () => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="w-2/3 space-y-6 "
               >
-                <div className='m-8'><FormField
+                <div className='m-8'>
+                  <FormField
                   control={form.control}
                   name="Code"
                   render={({ field }) => (
