@@ -8,27 +8,30 @@ import AdminLogin from "./component/Login/AdminLogin";
 import Settings from "./component/Admin/Setting/Settings";
 
 import '../src/App.css'
+
+import StudentHeader from "./component/Admin/Student/StudentPage";
 // import { Route } from "lucide-react";
 const App = () => {
   return (
     <div>
      
-      <BrowserRouter>
-        <Routes>
+      {/* <BrowserRouter>
+        <Routes> */}
           {/* <Route path="/side" element={<Sidebar />}></Route> */}
-          <Route path="/" element={<Login />}>
+          {/* <Route path="/" element={<Login />}>
             {" "}
           </Route>
           <Route path="/header" element={<Header />}>
             {" "}
-          </Route>
-          <Route path="/" element={<Login />}></Route>
+          </Route> */}
+          {/* <Route path="/" element={<Login />}></Route>
           <Route path="/Adminlogin" element={<AdminLogin />}></Route>
           <Route path="/Dashboard" element={<Dashboard />}></Route>
-          <Route path="/Settings" element={<Settings/>}></Route>
+          <Route path="/Settings" element={<Settings/>}></Route> */}
           
-        </Routes>
-      </BrowserRouter>
+        {/* </Routes>
+      </BrowserRouter> */}
+     <StudentHeader/>
     </div>
   );
 };
