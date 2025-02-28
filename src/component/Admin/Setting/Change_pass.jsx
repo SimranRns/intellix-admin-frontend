@@ -75,8 +75,8 @@ const Settings = () => {
                 </button>
               </div>
             </div>
-          </div>
-        </Disclosure>
+            </div>
+          </Disclosure>
 
         {tab === 1 && (
           <div className="p-6">
@@ -169,8 +169,8 @@ const Settings = () => {
           <Update />
         )}
       </div>
-    </div>
-  );
-};
+      </div>
+    );
+  }
 
-export default Settings;
+  export default Settings;
