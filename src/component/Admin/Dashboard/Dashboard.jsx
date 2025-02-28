@@ -1,7 +1,7 @@
 import React from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import Header from "../Dashboard/Header";
-
+import { Card } from "@/component/src/components/ui/card";
 // import {
 //   Card,
 //   CardContent,
