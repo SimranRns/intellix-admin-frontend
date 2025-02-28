@@ -2,32 +2,32 @@ import React from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import Header from "../Dashboard/Header";
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../src/components/ui/card";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableCell,
-} from "../../src/components/ui/table";
-import { Input } from "../../src/components/ui/input";
-import {
-  Bar,
-  Line,
-  ResponsiveContainer,
-  ComposedChart,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  CartesianGrid,
-} from "recharts";
+// import {
+//   Card,
+//   CardContent,
+//   CardHeader,
+//   CardTitle,
+// } from "../../src/components/ui/card";
+// import {
+//   Table,
+//   TableHeader,
+//   TableBody,
+//   TableHead,
+//   TableRow,
+//   TableCell,
+// } from "../../src/components/ui/table";
+// import { Input } from "../../src/components/ui/input";
+// import {
+//   Bar,
+//   Line,
+//   ResponsiveContainer,
+//   ComposedChart,
+//   XAxis,
+//   YAxis,
+//   Tooltip,
+//   Legend,
+//   CartesianGrid,
+// } from "recharts";
 
 const Dashboard = () => {
   const influencers = [

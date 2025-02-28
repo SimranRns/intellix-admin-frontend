@@ -1,5 +1,4 @@
 import React from "react";
-import Dashboard from "./component/Admin/Dashboard/Dashboard";
 import Login from "./component/Login/Login";
 import Header from "./component/Admin/Dashboard/Header";
 // import Sidebar from "./component/Admin/Dashboard/Sidebar";
@@ -8,12 +7,15 @@ import AdminLogin from "./component/Login/AdminLogin";
 import Settings from "./component/Admin/Setting/Change_pass";
 
 import "../src/App.css";
+import Dashboard from "./component/Admin/Dashboard/Dashboard";
 // import { Route } from "lucide-react";
 const App = () => {
   return (
     <div>
       <BrowserRouter>
         <Routes>
+        <Route path="/" element={<Login />} />
+
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/inbox" element={<div>Inbox </div>} />
           <Route path="/teacher" element={<div>Teacher </div>} />
