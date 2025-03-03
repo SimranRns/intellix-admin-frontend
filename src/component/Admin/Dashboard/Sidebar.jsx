@@ -60,7 +60,7 @@ export function AppSidebar({ isOpen, toggleSidebar }) {
   ];
 
   return (
-    <UISidebar className={`fixed left-0 top-0 h-full bg-indigo-600 shadow-xl transition-all duration-300 ${isOpen ? "w-64" : "w-20"}`}>
+    <UISidebar className={`fixed left-0 top-0  h-full bg-indigo-600 shadow-xl transition-all duration-300 ${isOpen ? "w-64" : "w-20"}`}>
       <SidebarContent className="mt-5 ps-3 relative flex flex-col h-full">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-3">

@@ -23,11 +23,11 @@ const ViewProfile = () => {
         }
     };
     return (
-        <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-6 pt-4 ">
+        <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-6 pt-4 w-full px-4 md:px-8">
             <div>
                 <Card className="w-full max-w-sm md:max-w-md lg:max-w-lg shadow-lg rounded-2xl p-5 bg-white">
                     <CardHeader className="flex flex-col items-center text-center">
-                        <div className="relative avatar w-25 h-25">
+                        <div className="relative w-32 h-32">
                             <Avatar className="w-full h-full border-4 border-blue-700 shadow-md">
                                 <AvatarImage src={profileImg} alt="Profile Image" />
                                 <AvatarFallback>CN</AvatarFallback>
@@ -60,9 +60,7 @@ const ViewProfile = () => {
                                 <a href="Plan">Plan</a>
                                 <span className="profile_list_number text-green-600 font-bold">Active</span>
                             </li>
-
                         </ul>
-
                     </CardContent>
 
                     <CardFooter className="flex justify-center gap-4">
@@ -70,8 +68,8 @@ const ViewProfile = () => {
                     </CardFooter>
                 </Card>
             </div>
-            <div className="ms-6 w-full h-full">
-                <Card className="w-full max-w-sm md:max-w-md lg:max-w-lg shadow-lg rounded-2xl bg-white p-6">
+            <div className="w-full max-w-sm md:max-w-md lg:max-w-lg">
+                <Card className="w-full shadow-lg rounded-2xl bg-white p-6">
                     <CardHeader>
                         <div className="text-md font-semibold text-gray-600">
                             <h1>Admin Details</h1>
@@ -81,46 +79,27 @@ const ViewProfile = () => {
 
                     <CardContent className="p-5">
                         <ul className="space-y-3">
-                            <li className="flex justify-between text-gray-600 font-medium">
-                                <p>Name</p>
-                                <span className=" font-bold">Nella</span>
-                            </li>
-                            <hr></hr>
-                            <li className="flex justify-between text-gray-600 font-medium">
-                                <p>Surname</p>
-                                <span className=" font-bold">Vita</span>
-                            </li>
-                            <hr></hr>
-                            <li className="flex justify-between text-gray-600 font-medium">
-                                <p>Email</p>
-                                <span className=" font-bold">Jhon@gamil.com</span>
-                            </li>
-                            <hr></hr>
-                            <li className="flex justify-between text-gray-600 font-medium">
-                                <p>Phone Number</p>
-                                <span className=" font-bold">0987654321</span>
-                            </li>
-                            <hr></hr>
-                            <li className="flex justify-between text-gray-600 font-medium">
-                                <p>City</p>
-                                <span className=" font-bold">Jaipur</span>
-                            </li>
-                            <hr></hr>
-                            <li className="flex justify-between text-gray-600 font-medium">
-                                <p>State</p>
-                                <span className=" font-bold">Rajasthan</span>
-                            </li>
-                            <hr></hr>
-                            <li className="flex justify-between text-gray-600 font-medium">
-                                <p>Pincode</p>
-                                <span className=" font-bold">000000</span>
-                            </li>
-                            <hr></hr>
+                            {[
+                                { label: "Name", value: "Nella" },
+                                { label: "Surname", value: "Vita" },
+                                { label: "Email", value: "Jhon@gamil.com" },
+                                { label: "Phone Number", value: "0987654321" },
+                                { label: "City", value: "Jaipur" },
+                                { label: "State", value: "Rajasthan" },
+                                { label: "Pincode", value: "000000" },
+                            ].map((item, index) => (
+                                <React.Fragment key={index}>
+                                    <li className="flex justify-between text-gray-600 font-medium">
+                                        <p>{item.label}</p>
+                                        <span className="font-bold">{item.value}</span>
+                                    </li>
+                                    {index !== 6 && <hr />}
+                                </React.Fragment>
+                            ))}
                         </ul>
                     </CardContent>
                 </Card>
             </div>
-
         </div>
     );
 };

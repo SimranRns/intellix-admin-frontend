@@ -49,10 +49,10 @@ const Settings = () => {
         <Sidebar />
       </div>
 
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col w-full flex-1">
         <Header />
         <Disclosure as="nav" className="bg-white shadow">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className=" px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16 items-center w-full">
               <div className="md:flex md:space-x-4">
                 <button
