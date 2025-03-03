@@ -33,7 +33,7 @@ const Sidebar = ({ children }) => {
         <AppSidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
         <main
           className="flex-1 transition-all duration-300"
-          style={{ marginLeft: isOpen ? "16rem" : "5rem" }}
+          style={{ marginLeft: isOpen ? "" : "" }}
         >
           <header className="bg-gray-100 p-6 flex items-center gap-4">
             <button onClick={toggleSidebar} className="cursor-pointer">

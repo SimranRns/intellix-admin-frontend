@@ -13,6 +13,7 @@ import {
     FormMessage,
 } from "../../src/components/ui/form";
 
+
 const Update = () => {
     const form = useForm(); 
 
@@ -37,7 +38,7 @@ const Update = () => {
                                         <FormLabel className="block text-gray-700 font-semibold text-lg">Name</FormLabel>
                                         <FormControl>
                                             <div className="relative flex items-center">
-                                                <Input className="w-full border-blue-300 rounded-xl pl-12 p-3 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Enter Your Name" type="text" {...field} />
+                                                <Input className="w-full border-blue-300 rounded-xl pl-12 p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Enter Your Name" type="text" {...field} />
                                                 <span className="absolute right-4 text-gray-500">
                                                     <User size={21} />
                                                 </span>
@@ -52,7 +53,7 @@ const Update = () => {
                                         <FormLabel className="block text-gray-700 font-semibold text-lg">Email</FormLabel>
                                         <FormControl>
                                             <div className="relative flex items-center">
-                                                <Input className="w-full border-blue-300 rounded-xl pl-12 p-3 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Enter Your Email" type="email" {...field} />
+                                                <Input className="w-full border-blue-300 rounded-xl pl-12 p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Enter Your Email" type="email" {...field} />
                                                 <span className="absolute right-4 text-gray-500">
                                                     <Mail size={21} />
                                                 </span>
@@ -70,7 +71,7 @@ const Update = () => {
                                         <FormLabel className="block text-gray-700 font-semibold text-lg">Phone Number</FormLabel>
                                         <FormControl>
                                             <div className="relative flex items-center">
-                                                <Input className="w-full border-blue-300 rounded-xl pl-12 p-3 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Enter Your Phone Number" type="tel" {...field} />
+                                                <Input className="w-full border-blue-300 rounded-xl pl-12 p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Enter Your Phone Number" type="tel" {...field} />
                                                 <span className="absolute right-4 text-gray-500">
                                                     <Phone size={21} />
                                                 </span>
@@ -85,7 +86,7 @@ const Update = () => {
                                         <FormLabel className="block text-gray-700 font-semibold text-lg">City</FormLabel>
                                         <FormControl>
                                             <div className="relative flex items-center">
-                                                <Input className="w-full border-blue-300 rounded-xl pl-12 p-3 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Enter Your City" type="text" {...field} />
+                                                <Input className="w-full border-blue-300 rounded-xl pl-12 p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Enter Your City" type="text" {...field} />
                                                 <span className="absolute right-4 text-gray-500">
                                                     <MapPin size={21} />
                                                 </span>
@@ -103,7 +104,7 @@ const Update = () => {
                                         <FormLabel className="block text-gray-700 font-semibold text-lg">State</FormLabel>
                                         <FormControl>
                                             <div className="relative flex items-center">
-                                                <Input className="w-full border-blue-300 rounded-xl pl-12 p-3 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Enter Your State" type="text" {...field} />
+                                                <Input className="w-full border-blue-300 rounded-xl pl-12 p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Enter Your State" type="text" {...field} />
                                                 <span className="absolute right-4 text-gray-500">
                                                     <MapPin size={21} />
                                                 </span>
@@ -118,7 +119,7 @@ const Update = () => {
                                         <FormLabel className="block text-gray-700 font-semibold text-lg">Pincode</FormLabel>
                                         <FormControl>
                                             <div className="relative flex items-center">
-                                                <Input className="w-full border-blue-300 rounded-xl pl-12 p-3 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Enter Your Pincode" type="text" {...field} />
+                                                <Input className="w-full border-blue-300 rounded-xl pl-12 p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Enter Your Pincode" type="text" {...field} />
                                                 <span className="absolute right-4 text-gray-500">
                                                     <MapPin size={21} />
                                                 </span>

@@ -79,7 +79,7 @@ const Settings = () => {
           </Disclosure>
 
         {tab === 1 && (
-          <div className="p-6">
+          <div className="pt-6">
            <View_profile/>
           </div>
         )}
