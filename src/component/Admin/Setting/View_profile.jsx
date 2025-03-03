@@ -88,7 +88,7 @@ const ViewProfile = () => {
                             <hr></hr>
                             <li className="flex justify-between text-gray-600 font-medium">
                                 <p>Surname</p>
-                                <span className=" font-bold">Brahim</span>
+                                <span className=" font-bold">Vita</span>
                             </li>
                             <hr></hr>
                             <li className="flex justify-between text-gray-600 font-medium">
