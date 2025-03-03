@@ -104,7 +104,7 @@ const Settings = () => {
                           <FormControl>
                             <div className="relative flex items-center">
                               <Input
-                                className="w-full border border-blue-500 rounded-xl p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                className="w-full border border-blue-300 rounded-xl p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Enter New Password"
                                 {...field}
