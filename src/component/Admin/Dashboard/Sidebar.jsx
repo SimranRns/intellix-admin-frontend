@@ -35,9 +35,13 @@ const Sidebar = ({ children }) => {
           className="flex-1 transition-all duration-300"
           style={{ marginLeft: isOpen ? "" : "" }}
         >
-          <header className="bg-gray-100 p-6 flex items-center gap-4">
+          <header className=" p-6 flex items-center gap-4">
             <button onClick={toggleSidebar} className="cursor-pointer">
-              {isOpen ? <Grip size={24} className="text-blue-800" /> : <X size={24} className="text-blue-800" />}
+              {isOpen ? (
+                <Grip size={24} className="text-blue-800" />
+              ) : (
+                <X size={24} className="text-blue-800" />
+              )}
             </button>
           </header>
         </main>
@@ -60,14 +64,24 @@ export function AppSidebar({ isOpen, toggleSidebar }) {
   ];
 
   return (
-    <UISidebar className={`fixed left-0 top-0 h-full bg-indigo-600 shadow-xl transition-all duration-300 ${isOpen ? "w-64" : "w-20"}`}>
+    <UISidebar
+      className={`fixed left-0 top-0 h-full shadow-xl transition-all duration-300 ${
+        isOpen ? "w-64" : "w-20"
+      }`}
+    >
       <SidebarContent className="mt-5 ps-3 relative flex flex-col h-full">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-3">
-            <img className="w-15 h-10 ps-3" src={intellix_icon} alt="Intellix Logo" />
+            <img
+              className="w-15 h-10 ps-3"
+              src={intellix_icon}
+              alt="Intellix Logo"
+            />
             {isOpen && <h5 className="text-xl font-semibold">Intellix</h5>}
           </div>
-          <button className="text-white" onClick={toggleSidebar}><X size={24} /></button>
+          <button className="text-white" onClick={toggleSidebar}>
+            <X size={24} />
+          </button>
         </div>
         <SidebarGroup>
           <SidebarGroupContent>
@@ -75,9 +89,14 @@ export function AppSidebar({ isOpen, toggleSidebar }) {
               {items.map(({ title, url, icon: Icon }) => (
                 <SidebarMenuItem key={title}>
                   <SidebarMenuButton asChild>
-                    <a href={url} className="flex items-center gap-4 p-3 rounded-lg transition-all hover:bg-blue-600 hover:text-white">
+                    <a
+                      href={url}
+                      className="flex items-center gap-4 p-3 rounded-lg transition-all hover:bg-blue-600 hover:text-white"
+                    >
                       <Icon className="hover:text-white" size={20} />
-                      {isOpen && <span className="text-lg font-medium">{title}</span>}
+                      {isOpen && (
+                        <span className="text-lg font-medium">{title}</span>
+                      )}
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

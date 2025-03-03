@@ -5,6 +5,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AdminLogin from "./component/Login/AdminLogin";
 import Settings from "./component/Admin/Setting/Change_pass";
 import Dashboard from "./component/Admin/Dashboard/Dashboard";
+import StudentHeader from "./component/Admin/Student/StudentPage";
+import Teacher_add from "./component/Admin/Teacher/Teacher_add";
 
 // import { Route } from "lucide-react";
 const App = () => {
@@ -12,12 +14,12 @@ const App = () => {
     <div>
       <BrowserRouter>
         <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/Adminlogin" element={<AdminLogin />} />          
-        <Route path="/Dashboard" element={<Dashboard />} />          
+          <Route path="/" element={<Login />} />
+          <Route path="/Adminlogin" element={<AdminLogin />} />
+          <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/inbox" element={<div>Inbox </div>} />
-          <Route path="/teacher" element={<div>Teacher </div>} />
-          <Route path="/students" element={<div>Students </div>} />
+          <Route path="/add_teacher" element={<Teacher_add/>} />
+          <Route path="/students" element={<StudentHeader />} />
           <Route path="/accounts" element={<div>Accounts </div>} />
           <Route path="/attendance" element={<div>Attendance </div>} />
           <Route path="/team" element={<div>Team </div>} />
