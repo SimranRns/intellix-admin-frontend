@@ -1,35 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "../Dashboard/Sidebar";
 import Header from "../Dashboard/Header";
-import { Card } from "@/component/src/components/ui/card";
-// import {
-//   Card,
-//   CardContent,
-//   CardHeader,
-//   CardTitle,
-// } from "../../src/components/ui/card";
-// import {
-//   Table,
-//   TableHeader,
-//   TableBody,
-//   TableHead,
-//   TableRow,
-//   TableCell,
-// } from "../../src/components/ui/table";
-// import { Input } from "../../src/components/ui/input";
-// import {
-//   Bar,
-//   Line,
-//   ResponsiveContainer,
-//   ComposedChart,
-//   XAxis,
-//   YAxis,
-//   Tooltip,
-//   Legend,
-//   CartesianGrid,
-// } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../src/components/ui/card";
+import { AreaChart, Area, CartesianGrid, XAxis, BarChart, Bar } from "recharts";
+
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartLegend,
+} from "../../src/components/ui/chart"; 
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow  } from "../../src/components/ui/table";
+import { Badge } from "../../src/components/ui/badge";
+import { Button } from "../../src/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
 
 const Dashboard = () => {
+  const [page, setPage] = useState(1);
+
   const influencers = [
     { name: "Malik Wiwoho", projects: 23, followers: "1,620,201" },
     { name: "Nancy Auta", projects: 34, followers: "1,224,620" },
@@ -37,18 +30,78 @@ const Dashboard = () => {
     { name: "Wilona Hamda", projects: 8, followers: "927,621" },
     { name: "Riva Nanda", projects: 10, followers: "827,810" },
   ];
+
+  const schoolPerformanceData = [
+    { week: "Week 01", thisWeek: 400, lastWeek: 500 },
+    { week: "Week 02", thisWeek: 300, lastWeek: 450 },
+    { week: "Week 03", thisWeek: 450, lastWeek: 350 },
+    { week: "Week 04", thisWeek: 500, lastWeek: 400 },
+    { week: "Week 05", thisWeek: 350, lastWeek: 450 },
+    { week: "Week 06", thisWeek: 300, lastWeek: 500 },
+    { week: "Week 06", thisWeek: 300, lastWeek: 309 },
+  ];
+
+  const chartData = [
+    { month: "January", desktop: 124, mobile: 80 },
+    { month: "February", desktop: 305, mobile: 200 },
+    { month: "March", desktop: 237, mobile: 120 },
+    { month: "April", desktop: 73, mobile: 190 },
+    { month: "May", desktop: 209, mobile: 130 },
+    { month: "June", desktop: 214, mobile: 120 },
+    { month: "June", desktop: 220, mobile: 10 },
+    { month: "June", desktop: 227, mobile: 100 },
+    { month: "June", desktop: 242, mobile: 30 },
+    { month: "June", desktop: 241, mobile: 10 },
+    { month: "June", desktop: 248, mobile: 170 },
+  ];
+  const teachers = [
+    { name: "Yatin Xarma", subject: "Programming", qualification: "B.Tech", fee: "$117.00", performance: "Good" },
+    { name: "Hanu Chang", subject: "Basic Algorithm", qualification: "B.E", fee: "$215.50", performance: "Good" },
+    { name: "Jordan Nico", subject: "English", qualification: "B.A", fee: "$210.70", performance: "Good" },
+    { name: "Nadila Adja", subject: "History", qualification: "B.A", fee: "$204.50", performance: "Bad" },
+    { name: "James Brown", subject: "Commerce", qualification: "B.Com", fee: "$217.70", performance: "Good" },
+    { name: "Jack John", subject: "Software Engg", qualification: "B.Tech", fee: "$200.10", performance: "Bad" },
+    { name: "Tony Soap", subject: "IT Engg", qualification: "B.Tech", fee: "$217.70", performance: "Good" },
+    { name: "Yatin Xarma", subject: "Programming", qualification: "B.Tech", fee: "$117.00", performance: "Good" },
+    { name: "Alan Turing", subject: "AI & ML", qualification: "PhD", fee: "$300.00", performance: "Good" },
+    { name: "Ada Lovelace", subject: "Mathematics", qualification: "B.Sc", fee: "$250.00", performance: "Good" }
+  ];
+const PAGE_SIZE = 8;
+
+
+  const totalPages = Math.ceil(teachers.length / PAGE_SIZE); 
+
+  const handleNext = () => {
+    if (page < totalPages) setPage(page + 1);
+  };
+
+  const handlePrev = () => {
+    if (page > 1) setPage(page - 1);
+  };
+  
+
+  const paginatedTeachers = teachers.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  
+
+
+
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen">
+      {/* Sidebar */}
       <div className="w-full md:w-1/4 lg:w-1/5 bg-gray-100 min-h-screen p-4">
         <Sidebar />
       </div>
+
+      {/* Main Content */}
       <div className="flex-1 p-4">
      <div>
      <Header />
      </div>
 
+        {/* Stats Cards */}
         <Card className="bg-white shadow-md rounded-lg p-6 mt-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {[
               {
                 label: "Students",
@@ -88,12 +141,143 @@ const Dashboard = () => {
           </div>
         </Card>
 
-      
-     
-    
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold mb-4">
+                School Performance
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              
+              <ul className="list-disc pl-5">
+                {/* {schoolPerformanceData?.map((data, index) => (
+                   <li key={index} className="mb-2">
+                     <strong>{data?.week}:</strong> This Week - {data.thisWeek}, Last Week - {data.lastWeek}
+                   </li>
+                 ))} */}
+              </ul>
+
+            
+              <ChartContainer
+                config={{
+                  mobile: { color: "red" },
+                  desktop: { color: "#82ca9d" },
+                }}
+              >
+                <AreaChart width={500} height={250} data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <ChartTooltip />
+                  <ChartLegend />
+                  <Area
+                    type="monotone"
+                    dataKey="mobile"
+                    stroke="#8884d8"
+                    fill="#8884d8"
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="desktop"
+                    stroke="#82ca9d"
+                    fill="#82ca9d"
+                  />
+                </AreaChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold mb-4 ">
+                School Overview
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+                
+              <ul className="list-disc pl-5">
+                {/* {schoolPerformanceData?.map((data, index) => (
+                   <li key={index} className="mb-2">
+                     <strong>{data?.week}:</strong> This Week - {data.thisWeek}, Last Week - {data.lastWeek}
+                   </li>
+                 ))} */}
+              </ul>
+
+              {/* Wrapped in ChartContainer to provide context */}
+              <ChartContainer
+                config={{
+                  mobile: { color: "#8884d8" },
+                  desktop: { color: "#82ca9d" },
+                }}
+              >
+                <BarChart accessibilityLayer data={chartData}>
+                  <CartesianGrid vertical={false} />
+                  <XAxis
+                    dataKey="month"
+                    tickLine={false}
+                    tickMargin={10}
+                    axisLine={false}
+                    tickFormatter={(value) => value.slice(0, 3)}
+                  />
+                  <ChartTooltip />
+                  <Bar
+                    dataKey="desktop"
+                    fill="var(--color-desktop)"
+                    radius={4}
+                  />
+                  <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+                </BarChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+
+          <div className="p-6 bg-white shadow-lg rounded-lg">
+      <h2 className="text-xl font-semibold mb-4">Teacher Details</h2>
+      <Table>
+        <TableHeader>
+          <TableRow className="bg-gray-100">
+            <TableHead>Name</TableHead>
+            <TableHead>Subject</TableHead>
+            <TableHead>Qualification</TableHead>
+            <TableHead>Fee</TableHead>
+            <TableHead>Performance</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {paginatedTeachers.map((teacher, index) => (
+            <TableRow key={index}>
+              <TableCell>{teacher.name}</TableCell>
+              <TableCell>{teacher.subject}</TableCell>
+              <TableCell>{teacher.qualification}</TableCell>
+              <TableCell>{teacher.fee}</TableCell>
+              <TableCell>
+                <Badge className={teacher.performance === "Good" ? "bg-green-200 text-green-800" : "bg-red-200 text-red-800"}>
+                  {teacher.performance}
+                </Badge>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <div className="flex justify-between items-center mt-4">
+        <Button onClick={handlePrev} disabled={page === 1} variant="ghost">
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+        <span>
+          Page {page} of {totalPages}
+        </span>
+        <Button onClick={handleNext} disabled={page === totalPages} variant="ghost">
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+        </div>
       </div>
     </div>
   );
 };
 
 export default Dashboard;
+
+
+
