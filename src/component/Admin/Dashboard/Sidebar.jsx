@@ -79,9 +79,9 @@ export function AppSidebar({ isOpen, toggleSidebar }) {
             />
             {isOpen && <h5 className="text-xl font-semibold">Intellix</h5>}
           </div>
-          <button className="text-white" onClick={toggleSidebar}>
-            <X size={24} />
-          </button>
+            <button className="text-white" onClick={toggleSidebar}>
+              <X size={24} />
+            </button>
         </div>
         <SidebarGroup>
           <SidebarGroupContent>
