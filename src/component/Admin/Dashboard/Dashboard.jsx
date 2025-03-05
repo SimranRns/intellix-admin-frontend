@@ -31,8 +31,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 // import { ChevronLeft, ChevronRight, Printer, MoreVertical } from "lucide-react";
 import { Printer, MoreVertical } from "lucide-react";
 
-const Dashboard = () => {
+const Dashboard = ({ children }) => {
   const [page, setPage] = useState(1);
+  const [isOpen, setIsOpen] = useState(true);
+
 
   const influencers = [
     { name: "Malik Wiwoho", projects: 23, followers: "1,620,201" },
@@ -137,6 +139,79 @@ const Dashboard = () => {
       performance: "Good",
     },
   ];
+
+  const students = [
+    {
+      name: "Yatin Xarma",
+      subject: "Programming",
+      qualification: "B.Tech",
+      fee: "$117.00",
+      performance: "Good",
+    },
+    {
+      name: "Hanu Chang",
+      subject: "Basic Algorithm",
+      qualification: "B.E",
+      fee: "$215.50",
+      performance: "Good",
+    },
+    {
+      name: "Jordan Nico",
+      subject: "English",
+      qualification: "B.A",
+      fee: "$210.70",
+      performance: "Good",
+    },
+    {
+      name: "Nadila Adja",
+      subject: "History",
+      qualification: "B.A",
+      fee: "$204.50",
+      performance: "Bad",
+    },
+    {
+      name: "James Brown",
+      subject: "Commerce",
+      qualification: "B.Com",
+      fee: "$217.70",
+      performance: "Good",
+    },
+    {
+      name: "Jack John",
+      subject: "Software Engg",
+      qualification: "B.Tech",
+      fee: "$200.10",
+      performance: "Bad",
+    },
+    {
+      name: "Tony Soap",
+      subject: "IT Engg",
+      qualification: "B.Tech",
+      fee: "$217.70",
+      performance: "Good",
+    },
+    {
+      name: "Yatin Xarma",
+      subject: "Programming",
+      qualification: "B.Tech",
+      fee: "$117.00",
+      performance: "Good",
+    },
+    {
+      name: "Alan Turing",
+      subject: "AI & ML",
+      qualification: "PhD",
+      fee: "$300.00",
+      performance: "Good",
+    },
+    {
+      name: "Ada Lovelace",
+      subject: "Mathematics",
+      qualification: "B.Sc",
+      fee: "$250.00",
+      performance: "Good",
+    },
+  ];
   const PAGE_SIZE = 8;
 
   const totalPages = Math.ceil(teachers.length / PAGE_SIZE);
@@ -148,64 +223,18 @@ const Dashboard = () => {
   const handlePrev = () => {
     if (page > 1) setPage(page - 1);
   };
-
-  const paginatedTeachers = teachers.slice(
-    (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE
-  );
-
-  const students = [
-    {
-      name: "Jordan Nico",
-      id: "1234567911",
-      class: "XII A",
-      fees: "$52.03",
-      rank: "First",
-      image: "/avatars/1.png",
-    },
-    {
-      name: "Karen Hope",
-      id: "1234567101",
-      class: "XI B",
-      fees: "$45.50",
-      rank: "Second",
-      image: "/avatars/2.png",
-    },
-    {
-      name: "Nadila Adja",
-      id: "1234567001",
-      class: "VII C",
-      fees: "$25.10",
-      rank: "Third",
-      image: "/avatars/3.png",
-    },
-    {
-      name: "James Brown",
-      id: "1234567231",
-      class: "VI A",
-      fees: "$10.00",
-      rank: "First",
-      image: "/avatars/4.png",
-    },
-    {
-      name: "Dack Xarma",
-      id: "1234567456",
-      class: "XII B",
-      fees: "$23.50",
-      rank: "Second",
-      image: "/avatars/5.png",
-    },
-  ];
+  const paginatedTeachers = teachers.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen">
       {/* Sidebar */}
       <div className="w-full md:w-1/4 lg:w-1/5 bg-gray-100 min-h-screen p-4">
-        <Sidebar />
+        <Sidebar isOpen={isOpen} toggleSidebar={() => setIsOpen(!isOpen)} />
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-4">
+      <div className="flex-1 p-4" >
+        <p>{children}</p>
         <div>
           <Header />
         </div>
@@ -339,7 +368,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <div className="p-6 border border-slate-1000 shadow-lg rounded-lg">
+          <div className="p-6 bg-white shadow-lg rounded-lg">
             <h2 className="text-xl font-semibold mb-4">Teacher Details</h2>
             <Table>
               <TableHeader>
@@ -359,13 +388,7 @@ const Dashboard = () => {
                     <TableCell>{teacher.qualification}</TableCell>
                     <TableCell>{teacher.fee}</TableCell>
                     <TableCell>
-                      <Badge
-                        className={
-                          teacher.performance === "Good"
-                            ? "bg-green-200 text-green-800"
-                            : "bg-red-200 text-red-800"
-                        }
-                      >
+                      <Badge className={teacher.performance === "Good" ? "bg-green-200 text-green-800" : "bg-red-200 text-red-800"}>
                         {teacher.performance}
                       </Badge>
                     </TableCell>
@@ -374,21 +397,13 @@ const Dashboard = () => {
               </TableBody>
             </Table>
             <div className="flex justify-between items-center mt-4">
-              <Button
-                onClick={handlePrev}
-                disabled={page === 1}
-                variant="ghost"
-              >
+              <Button onClick={handlePrev} disabled={page === 1} variant="ghost">
                 <ChevronLeft className="h-4 w-4" />
               </Button>
               <span>
                 Page {page} of {totalPages}
               </span>
-              <Button
-                onClick={handleNext}
-                disabled={page === totalPages}
-                variant="ghost"
-              >
+              <Button onClick={handleNext} disabled={page === totalPages} variant="ghost">
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
