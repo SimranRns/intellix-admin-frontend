@@ -13,15 +13,17 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartLegend,
-} from "../../src/components/ui/chart"; 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow  } from "../../src/components/ui/table";
+} from "../../src/components/ui/chart";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../src/components/ui/table";
 import { Badge } from "../../src/components/ui/badge";
 import { Button } from "../../src/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 
-const Dashboard = () => {
+const Dashboard = ({ children }) => {
   const [page, setPage] = useState(1);
+  const [isOpen, setIsOpen] = useState(true);
+
 
   const influencers = [
     { name: "Malik Wiwoho", projects: 23, followers: "1,620,201" },
@@ -66,10 +68,10 @@ const Dashboard = () => {
     { name: "Alan Turing", subject: "AI & ML", qualification: "PhD", fee: "$300.00", performance: "Good" },
     { name: "Ada Lovelace", subject: "Mathematics", qualification: "B.Sc", fee: "$250.00", performance: "Good" }
   ];
-const PAGE_SIZE = 8;
+  const PAGE_SIZE = 8;
 
 
-  const totalPages = Math.ceil(teachers.length / PAGE_SIZE); 
+  const totalPages = Math.ceil(teachers.length / PAGE_SIZE);
 
   const handleNext = () => {
     if (page < totalPages) setPage(page + 1);
@@ -78,26 +80,21 @@ const PAGE_SIZE = 8;
   const handlePrev = () => {
     if (page > 1) setPage(page - 1);
   };
-  
-
   const paginatedTeachers = teachers.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-  
-
-
-
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen">
       {/* Sidebar */}
       <div className="w-full md:w-1/4 lg:w-1/5 bg-gray-100 min-h-screen p-4">
-        <Sidebar />
+        <Sidebar isOpen={isOpen} toggleSidebar={() => setIsOpen(!isOpen)} />
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-4">
-     <div>
-     <Header />
-     </div>
+      <div className="flex-1 p-4" >
+        <p>{children}</p>
+        <div>
+          <Header />
+        </div>
 
         {/* Stats Cards */}
         <Card className="bg-white shadow-md rounded-lg p-6 mt-6">
@@ -149,7 +146,7 @@ const PAGE_SIZE = 8;
               </CardTitle>
             </CardHeader>
             <CardContent>
-              
+
               <ul className="list-disc pl-5">
                 {/* {schoolPerformanceData?.map((data, index) => (
                    <li key={index} className="mb-2">
@@ -158,7 +155,7 @@ const PAGE_SIZE = 8;
                  ))} */}
               </ul>
 
-            
+
               <ChartContainer
                 config={{
                   mobile: { color: "red" },
@@ -194,7 +191,7 @@ const PAGE_SIZE = 8;
               </CardTitle>
             </CardHeader>
             <CardContent>
-                
+
               <ul className="list-disc pl-5">
                 {/* {schoolPerformanceData?.map((data, index) => (
                    <li key={index} className="mb-2">
@@ -232,45 +229,45 @@ const PAGE_SIZE = 8;
           </Card>
 
           <div className="p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-xl font-semibold mb-4">Teacher Details</h2>
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-gray-100">
-            <TableHead>Name</TableHead>
-            <TableHead>Subject</TableHead>
-            <TableHead>Qualification</TableHead>
-            <TableHead>Fee</TableHead>
-            <TableHead>Performance</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {paginatedTeachers.map((teacher, index) => (
-            <TableRow key={index}>
-              <TableCell>{teacher.name}</TableCell>
-              <TableCell>{teacher.subject}</TableCell>
-              <TableCell>{teacher.qualification}</TableCell>
-              <TableCell>{teacher.fee}</TableCell>
-              <TableCell>
-                <Badge className={teacher.performance === "Good" ? "bg-green-200 text-green-800" : "bg-red-200 text-red-800"}>
-                  {teacher.performance}
-                </Badge>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <div className="flex justify-between items-center mt-4">
-        <Button onClick={handlePrev} disabled={page === 1} variant="ghost">
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <span>
-          Page {page} of {totalPages}
-        </span>
-        <Button onClick={handleNext} disabled={page === totalPages} variant="ghost">
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      </div>
-    </div>
+            <h2 className="text-xl font-semibold mb-4">Teacher Details</h2>
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-gray-100">
+                  <TableHead>Name</TableHead>
+                  <TableHead>Subject</TableHead>
+                  <TableHead>Qualification</TableHead>
+                  <TableHead>Fee</TableHead>
+                  <TableHead>Performance</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {paginatedTeachers.map((teacher, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{teacher.name}</TableCell>
+                    <TableCell>{teacher.subject}</TableCell>
+                    <TableCell>{teacher.qualification}</TableCell>
+                    <TableCell>{teacher.fee}</TableCell>
+                    <TableCell>
+                      <Badge className={teacher.performance === "Good" ? "bg-green-200 text-green-800" : "bg-red-200 text-red-800"}>
+                        {teacher.performance}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <div className="flex justify-between items-center mt-4">
+              <Button onClick={handlePrev} disabled={page === 1} variant="ghost">
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <span>
+                Page {page} of {totalPages}
+              </span>
+              <Button onClick={handleNext} disabled={page === totalPages} variant="ghost">
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

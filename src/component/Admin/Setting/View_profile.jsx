@@ -29,7 +29,7 @@ const ViewProfile = () => {
     return (
         <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-6 pt-4 w-full px-4 md:px-8">
             <div>
-                <Card className="w-full max-w-sm md:max-w-md lg:max-w-lg shadow-lg rounded-2xl p-5 bg-white">
+                <Card className="w-full max-w-sm md:max-w-md lg:max-w-lg shadow-lg rounded-2xl p-5">
                     <CardHeader className="flex flex-col items-center text-center">
                         <div className="relative w-32 h-32">
                             <Avatar className="w-full h-full border-4 border-blue-700 shadow-md">
@@ -73,7 +73,7 @@ const ViewProfile = () => {
                 </Card>
             </div>
             <div className="w-full max-w-sm md:max-w-md lg:max-w-lg">
-                <Card className="w-full shadow-lg rounded-2xl bg-white p-6">
+                <Card className="w-full shadow-lg rounded-2xl p-6">
                     <CardHeader>
                         <div className="text-md font-semibold text-gray-600">
                             <h1>Admin Details</h1>
@@ -81,7 +81,7 @@ const ViewProfile = () => {
                         <hr className="mt-2" />
                     </CardHeader>
 
-                    <CardContent className="p-5">
+                    <CardContent className="p-5 mb-5">
                         <ul className="space-y-3">
                             {[
                                 { label: "Name", value: "Nella" },
