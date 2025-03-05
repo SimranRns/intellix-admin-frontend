@@ -11,12 +11,3 @@
     max-height: 100vh;
 }
 
-@media (max-width: 1024px) {
-    .fixed {
-        width: 100%;
-        height: auto;
-    }
-}   
-.logo{
-    width: 5rem !important;
-}

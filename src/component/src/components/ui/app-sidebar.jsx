@@ -1,0 +1,70 @@
+import React, { useState } from "react";
+import intellix_icon from "../../../../assets/Image/intellix.png";
+import { X, Grip, Home, Inbox, User, Users, Wallet, ChartColumnIncreasing, CircleHelp, Settings } from "lucide-react";
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarGroup,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarFooter
+} from "../ui/sidebar";
+
+const AppSidebar = (props) => {
+    const [isOpen, setIsOpen] = useState(true);
+    const toggleSidebar = () => setIsOpen(!isOpen);
+
+    const items = [
+        { title: "Dashboard", url: "/dashboard", icon: Home },
+        { title: "Inbox", url: "/inbox", icon: Inbox },
+        { title: "Teacher", url: "/teacher", icon: User },
+        { title: "Students", url: "/students", icon: Users },
+        { title: "Accounts", url: "/accounts", icon: Wallet },
+        { title: "Attendance", url: "/attendance", icon: ChartColumnIncreasing },
+        { title: "Team", url: "/team", icon: Users },
+        { title: "Support", url: "/support", icon: CircleHelp },
+        { title: "Settings", url: "/settings", icon: Settings },
+    ];
+
+    return (
+        <Sidebar collapsible="icon" variant="" {...props}>
+            <div className="relative h-screen">
+              
+                
+                    <SidebarHeader>
+                        <div className="flex items-center gap-3 px-3 py-4">
+                            <img sizes={25} className="w-15 h-10" src={intellix_icon} alt="Intellix Logo" />
+                            {isOpen && <h5 className="text-xl font-semibold">Intellix</h5>}
+                        </div>
+                    </SidebarHeader>
+                    <SidebarContent>
+                        <SidebarGroup>
+                            <SidebarMenu>
+                                {items.map(({ title, url, icon: Icon }) => (
+                                    <SidebarMenuItem key={title}>
+                                        <SidebarMenuButton asChild>
+                                            <a
+                                                href={url}
+                                                className="flex items-center gap-4 px-4 py-3 p-3 rounded-lg transition-all hover:bg-blue-600 hover:text-white"
+                                            >
+                                                <Icon size={25} className="hover:text-white" />
+                                                {isOpen && <span className="text-lg font-medium">{title}</span>}
+                                            </a>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                ))}
+                            </SidebarMenu>
+                        </SidebarGroup>
+                    </SidebarContent>
+                    <SidebarFooter>
+                        <div className="p-4 text-center text-sm text-gray-400">© 2024 Intellix</div>
+                    </SidebarFooter>
+           
+            </div>
+        </Sidebar>
+    );
+};
+
+export default AppSidebar;
