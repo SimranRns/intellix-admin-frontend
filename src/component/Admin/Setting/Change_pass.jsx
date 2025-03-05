@@ -49,7 +49,7 @@ const Settings = () => {
 
   return (
 
-    <SidebarProvider style={{ "--sidebar-width": "19rem" }}>
+    <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       <AppSidebar />
       <SidebarInset>
         {/* Header Section */}
@@ -70,7 +70,7 @@ const Settings = () => {
         </header>
 
         {/* Main Content Section */}
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+        <div className="flex flex-1 flex-col gap-4   pt-0">
           <div className="grid ">
             <Disclosure as="nav" className=" shadow">
               <div className=" px-4 sm:px-6 lg:px-8">
@@ -108,87 +108,87 @@ const Settings = () => {
             )}
 
             {tab === 2 && (
-             <div className="pt-6 flex justify-center">
-             <Card className="w-full sm:max-w-md md:max-w-lg border shadow-xl p-4 sm:p-6">
-               <CardHeader className="text-center">
-                 <CardTitle className="text-2xl font-bold text-gray-600">Change Your Password</CardTitle>
-                 <CardDescription className="text-sm sm:text-base">
-                   Enter a new password below to update your <br /> credentials.
-                 </CardDescription>
-               </CardHeader>
-               <CardContent>
-                 <Form {...form}>
-                   <form onSubmit={form.handleSubmit(onSubmit)}>
-                     {/* New Password Field */}
-                     <FormField
-                       control={form.control}
-                       name="password"
-                       render={({ field }) => (
-                         <FormItem>
-                           <FormLabel className="text-gray-700 font-semibold text-lg">New Password</FormLabel>
-                           <FormControl>
-                             <div className="relative flex items-center">
-                               <Input
-                                 className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                 type={showPassword ? "text" : "password"}
-                                 placeholder="Enter New Password"
-                                 {...field}
-                                 required
-                               />
-                               <span
-                                 className="absolute right-3 text-gray-500 cursor-pointer"
-                                 onClick={() => setShowPassword(!showPassword)}
-                               >
-                                 {showPassword ? <Eye size={21} /> : <EyeOff size={21} />}
-                               </span>
-                             </div>
-                           </FormControl>
-                           <FormMessage />
-                         </FormItem>
-                       )}
-                     />
-           
-                     {/* Confirm Password Field */}
-                     <FormField
-                       control={form.control}
-                       name="confirmPassword"
-                       render={({ field }) => (
-                         <FormItem className="mt-4">
-                           <FormLabel className="text-gray-700 font-semibold text-lg">Confirm Password</FormLabel>
-                           <FormControl>
-                             <div className="relative flex items-center">
-                               <Input
-                                 className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                 type={showPassword1 ? "text" : "password"}
-                                 placeholder="Confirm Password"
-                                 {...field}
-                                 required
-                               />
-                               <span
-                                 className="absolute right-3 text-gray-500 cursor-pointer"
-                                 onClick={() => setShowPassword1(!showPassword1)}
-                               >
-                                 {showPassword1 ? <Eye size={21} /> : <EyeOff size={21} />}
-                               </span>
-                             </div>
-                           </FormControl>
-                           <FormMessage />
-                         </FormItem>
-                       )}
-                     />
-           
-                     {/* Submit Button */}
-                     <CardFooter className="flex justify-center mt-5">
-                       <Button type="submit" className="w-full sm:w-[300px] bg-blue-500 shadow-lg hover:bg-blue-700">
-                         CHANGE PASSWORD
-                       </Button>
-                     </CardFooter>
-                   </form>
-                 </Form>
-               </CardContent>
-             </Card>
-           </div>
-           
+              <div className="pt-6 flex justify-center">
+                <Card className="w-full sm:max-w-md md:max-w-lg border shadow-xl p-4 sm:p-6">
+                  <CardHeader className="text-center">
+                    <CardTitle className="text-2xl font-bold text-gray-600">Change Your Password</CardTitle>
+                    <CardDescription className="text-sm sm:text-base">
+                      Enter a new password below to update your <br /> credentials.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Form {...form}>
+                      <form onSubmit={form.handleSubmit(onSubmit)}>
+                        {/* New Password Field */}
+                        <FormField
+                          control={form.control}
+                          name="password"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-gray-700 font-semibold text-lg">New Password</FormLabel>
+                              <FormControl>
+                                <div className="relative flex items-center">
+                                  <Input
+                                    className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Enter New Password"
+                                    {...field}
+                                    required
+                                  />
+                                  <span
+                                    className="absolute right-3 text-gray-500 cursor-pointer"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                  >
+                                    {showPassword ? <Eye size={21} /> : <EyeOff size={21} />}
+                                  </span>
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        {/* Confirm Password Field */}
+                        <FormField
+                          control={form.control}
+                          name="confirmPassword"
+                          render={({ field }) => (
+                            <FormItem className="mt-4">
+                              <FormLabel className="text-gray-700 font-semibold text-lg">Confirm Password</FormLabel>
+                              <FormControl>
+                                <div className="relative flex items-center">
+                                  <Input
+                                    className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                    type={showPassword1 ? "text" : "password"}
+                                    placeholder="Confirm Password"
+                                    {...field}
+                                    required
+                                  />
+                                  <span
+                                    className="absolute right-3 text-gray-500 cursor-pointer"
+                                    onClick={() => setShowPassword1(!showPassword1)}
+                                  >
+                                    {showPassword1 ? <Eye size={21} /> : <EyeOff size={21} />}
+                                  </span>
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        {/* Submit Button */}
+                        <CardFooter className="flex justify-center mt-5">
+                          <Button type="submit" className="w-full sm:w-[300px] bg-blue-500 shadow-lg hover:bg-blue-700">
+                            CHANGE PASSWORD
+                          </Button>
+                        </CardFooter>
+                      </form>
+                    </Form>
+                  </CardContent>
+                </Card>
+              </div>
+
             )}
             {tab === 3 && (
 
