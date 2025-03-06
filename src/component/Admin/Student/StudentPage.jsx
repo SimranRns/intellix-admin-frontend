@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import React, { useState } from "react";
 // import { Search, ChevronDown, Phone, Mail, MoreVertical } from "lucide-react";
 // import {
@@ -110,6 +111,8 @@
 
 // export default StudentHeader;
 
+=======
+>>>>>>> ee77f28843847847f179dc6802ef97baef8b3cac
 import React, { useState } from "react";
 import {
   Search,
@@ -127,12 +130,21 @@ import {
   TableRow,
 } from "../../src/components/ui/table";
 import { Button } from "../../src/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../src/components/ui/dropdown-menu";
+// import { Button } from "@/components/ui/button"
+
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../../src/components/ui/dropdown-menu";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../../src/components/ui/dialog"
+
+import { Input } from "../../src/components/ui/input"
+import { Label } from "../../src/components/ui/label"
+
 
 const studentGroups = [
   {
@@ -218,17 +230,17 @@ const studentGroups = [
   },
 ];
 
-const PAGE_SIZE = 5; // 🔹 Ek page par kitne students dikhane hain (3 students per page)
-const MAX_PAGES = 5; // 🔹 Maximum sirf 2 pages hi dikhne chahiye
+const PAGE_SIZE = 5; 
+const MAX_PAGES = 5; 
 
 const StudentHeader = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
-  // 🔹 Total pages ka calculation (but max sirf 2 pages dikhne chahiye)
+  
   let totalPages = Math.ceil(studentGroups.length / PAGE_SIZE);
   if (totalPages > MAX_PAGES) totalPages = MAX_PAGES;
 
-  // 🔹 Current page ke students dikhana
+
   const displayedStudents = studentGroups.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
@@ -247,30 +259,127 @@ const StudentHeader = () => {
         </div>
 
         <div className="flex items-center space-x-3">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="flex items-center space-x-2 border border-gray-300"
-              >
-                <span>Newest</span>
-                <ChevronDown size={16} />
-              </Button>
-            </DropdownMenuTrigger>
+        <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" className="flex items-center space-x-2 border border-gray-300">
+          <span>Newest</span>
+          <ChevronDown size={16} />
+        </Button>
+      </DropdownMenuTrigger>
+      
+      <DropdownMenuContent align="end" className="w-36">
+        <DropdownMenuItem>Newest</DropdownMenuItem>
+        <DropdownMenuItem>Oldest</DropdownMenuItem>
+        <DropdownMenuItem>Recent</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+      {/* <Dialog>
+  <DialogTrigger  className="bg-[#3d3690] text-white font-semibold px-5 py-2 rounded-lg"> 
+            + Add Student 
+           
+          </DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Are you absolutely sure?</DialogTitle>
+      <DialogDescription>
+        This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+      </DialogDescription>
+    </DialogHeader>
+  </DialogContent>
+</Dialog> */}
 
-            <DropdownMenuContent align="end" className="w-36">
-              <DropdownMenuItem>Newest</DropdownMenuItem>
-              <DropdownMenuItem>Oldest</DropdownMenuItem>
-              <DropdownMenuItem>Recent</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <button className="bg-[#3d3690] text-white font-semibold px-5 py-2 rounded-lg">
-            + Add Student
-          </button>
+
+<Dialog>
+  <DialogTrigger asChild>
+    <button className="bg-[#3d3690] text-white font-semibold px-5 py-2 rounded-lg">
+      + Add Student
+    </button>
+  </DialogTrigger>
+  <DialogContent className="sm:max-w-[900px]">
+    <DialogHeader>
+      <DialogTitle>Add Student Details</DialogTitle>
+      <DialogDescription>
+        Fill in the details below and click save when you're done.
+      </DialogDescription>
+    </DialogHeader>
+
+    {/* Grid Layout - 2 Columns */}
+    <div className="grid grid-cols-2 gap-4 py-4">
+      
+      {/* Name Field */}
+      <div className="flex flex-col">
+        <Label htmlFor="name">Enter Name*</Label>
+        <Input id="name" placeholder="Your name" />
+      </div>
+
+      {/* Email Field */}
+      <div className="flex flex-col">
+        <Label htmlFor="email">Enter Email</Label>
+        <Input id="email" placeholder="example@gmail.com" />
+      </div>
+
+      {/* Contact Number */}
+      <div className="flex flex-col">
+        <Label htmlFor="contact">Enter Contact No.</Label>
+        <Input id="contact" placeholder="Phone number" />
+      </div>
+
+      {/* Serial Number */}
+      <div className="flex flex-col">
+        <Label htmlFor="serial">Enter Serial No.*</Label>
+        <Input id="serial" placeholder="Serial number" />
+      </div>
+
+      {/* Date of Birth */}
+      <div className="flex flex-col">
+        <Label htmlFor="dob">Enter DOB*</Label>
+        <Input id="dob" type="date" />
+      </div>
+
+      {/* Previous School */}
+      <div className="flex flex-col">
+        <Label htmlFor="prev-school">Previous School*</Label>
+        <Input id="prev-school" placeholder="Previous School Name" />
+      </div>
+
+      {/* Gender Selection */}
+      <div className="flex flex-col">
+        <Label htmlFor="gender">Select Gender*</Label>
+        <select id="gender" className="border rounded p-2">
+          <option value="none">None</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      {/* Category Selection */}
+      <div className="flex flex-col">
+        <Label htmlFor="category">Select Category*</Label>
+        <select id="category" className="border rounded p-2">
+          <option value="none">None</option>
+          <option value="general">General</option>
+          <option value="obc">OBC</option>
+          <option value="sc">SC</option>
+          <option value="st">ST</option>
+        </select>
+      </div>
+
+      
+
+    </div>
+
+    
+  </DialogContent>
+</Dialog>
+
+
+  
         </div>
       </div>
 
-      {/* 🔹 Table */}
+  
       <Table className="w-full border rounded-lg shadow-md mt-5">
         <TableHeader>
           <TableRow className="bg-gray-100">
@@ -315,16 +424,15 @@ const StudentHeader = () => {
         </TableBody>
       </Table>
 
-      {/* 🔹 Pagination (Only 1 & 2 Pages) */}
-      {/* 🔹 Pagination (Only 1 & 2 Pages) */}
-      <div className="flex items-center justify-end space-x-3 mt-5 w-full pr-8">
-        <Button
-          variant="ghost"
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </Button>
+
+<div className="flex items-center justify-end space-x-3 mt-5 w-full pr-8">
+  <Button
+    variant="ghost"
+    disabled={currentPage === 1}
+    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+  >
+    <ChevronLeft className="w-5 h-5" />
+  </Button>
 
         {[1, 2].map((page) => (
           <Button
@@ -354,3 +462,5 @@ const StudentHeader = () => {
 };
 
 export default StudentHeader;
+
+
