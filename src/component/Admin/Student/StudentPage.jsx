@@ -25,6 +25,11 @@ import { Input } from "../../src/components/ui/input"
 import { Label } from "../../src/components/ui/label"
 
 
+
+
+
+const tags = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`);
+
 const studentGroups = [
   {
     id: "123456789",
@@ -66,8 +71,8 @@ const studentGroups = [
     image:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnEnd4A1YCCdwNwZf_O6cyreyiAruR0UMWPw&s",
   },
- 
-    {
+
+  {
     id: "678912345",
     name: "Emily Clarke",
     fatherName: "John Clarke",
@@ -109,14 +114,14 @@ const studentGroups = [
   },
 ];
 
-const PAGE_SIZE = 5; 
-const MAX_PAGES = 5; 
+const PAGE_SIZE = 5;
+const MAX_PAGES = 5;
 
 const StudentHeader = () => {
-  
+
   const [currentPage, setCurrentPage] = useState(1);
 
-  
+
   let totalPages = Math.ceil(studentGroups.length / PAGE_SIZE);
   if (totalPages > MAX_PAGES) totalPages = MAX_PAGES;
 
@@ -127,7 +132,9 @@ const StudentHeader = () => {
   );
 
   return (
-    <div className="bg-[#e6ebee] min-h-screen flex flex-col items-center">
+  <div>
+    
+      <div className="bg-[#e6ebee] min-h-screen flex flex-col items-center">
       <div className="w-full bg-white shadow-md rounded-lg flex items-center justify-between px-8 py-4 mt-10">
         <div className="flex items-center border border-gray-300 rounded-lg px-3 py-2 w-full max-w-md">
           <Search className="text-[#3d3690]" size={18} />
@@ -139,127 +146,117 @@ const StudentHeader = () => {
         </div>
 
         <div className="flex items-center space-x-3">
-        <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="flex items-center space-x-2 border border-gray-300">
-          <span>Newest</span>
-          <ChevronDown size={16} />
-        </Button>
-      </DropdownMenuTrigger>
-      
-      <DropdownMenuContent align="end" className="w-36">
-        <DropdownMenuItem>Newest</DropdownMenuItem>
-        <DropdownMenuItem>Oldest</DropdownMenuItem>
-        <DropdownMenuItem>Recent</DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-      {/* <Dialog>
-  <DialogTrigger  className="bg-[#3d3690] text-white font-semibold px-5 py-2 rounded-lg"> 
-            + Add Student 
-           
-          </DialogTrigger>
-  <DialogContent>
-    <DialogHeader>
-      <DialogTitle>Are you absolutely sure?</DialogTitle>
-      <DialogDescription>
-        This action cannot be undone. This will permanently delete your account
-        and remove your data from our servers.
-      </DialogDescription>
-    </DialogHeader>
-  </DialogContent>
-</Dialog> */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="flex items-center space-x-2 border border-gray-300">
+                <span>Newest</span>
+                <ChevronDown size={16} />
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end" className="w-36">
+              <DropdownMenuItem>Newest</DropdownMenuItem>
+              <DropdownMenuItem>Oldest</DropdownMenuItem>
+              <DropdownMenuItem>Recent</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="bg-[#3d3690] text-white font-semibold px-5 py-2 rounded-lg">
+                  + Add Student
+                </button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[1200px] ">
+                <DialogHeader>
+                  <DialogTitle className="block margin text-gray-700 font-semibold text-lg sm:text-2xl mb-2 pt-5" >Add Student Details</DialogTitle>
+                  <DialogDescription className="block margin text-gray-700 font-semibold text-lg  mb-2" >
+                    Fill in the details below and click save when you're done.
+                  </DialogDescription>
+                </DialogHeader>
 
 
-<Dialog>
-  <DialogTrigger asChild>
-    <button className="bg-[#3d3690] text-white font-semibold px-5 py-2 rounded-lg">
-      + Add Student
-    </button>
-  </DialogTrigger>
-  <DialogContent className="sm:max-w-[900px]">
-    <DialogHeader>
-      <DialogTitle>Add Student Details</DialogTitle>
-      <DialogDescription>
-        Fill in the details below and click save when you're done.
-      </DialogDescription>
-    </DialogHeader>
+                <div className="grid grid-cols-2 gap-4 py-4">
 
-    {/* Grid Layout - 2 Columns */}
-    <div className="grid grid-cols-2 gap-4 py-4">
-      
-      {/* Name Field */}
-      <div className="flex flex-col">
-        <Label htmlFor="name">Enter Name*</Label>
-        <Input id="name" placeholder="Your name" />
-      </div>
 
-      {/* Email Field */}
-      <div className="flex flex-col">
-        <Label htmlFor="email">Enter Email</Label>
-        <Input id="email" placeholder="example@gmail.com" />
-      </div>
+                  <div className="flex flex-col mb-6">
+                    <Label className="block margin text-gray-700 font-semibold text-lg sm:text-xl mb-2" htmlFor="name">Enter Name</Label>
+                    <Input className="w-full border-gray-300 rounded-xl pl-12 p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" id="name" placeholder="Your name" />
+                  </div>
 
-      {/* Contact Number */}
-      <div className="flex flex-col">
-        <Label htmlFor="contact">Enter Contact No.</Label>
-        <Input id="contact" placeholder="Phone number" />
-      </div>
 
-      {/* Serial Number */}
-      <div className="flex flex-col">
-        <Label htmlFor="serial">Enter Serial No.*</Label>
-        <Input id="serial" placeholder="Serial number" />
-      </div>
 
-      {/* Date of Birth */}
-      <div className="flex flex-col">
-        <Label htmlFor="dob">Enter DOB*</Label>
-        <Input id="dob" type="date" />
-      </div>
 
-      {/* Previous School */}
-      <div className="flex flex-col">
-        <Label htmlFor="prev-school">Previous School*</Label>
-        <Input id="prev-school" placeholder="Previous School Name" />
-      </div>
+                  <div className="flex flex-col mb-6">
+                    <Label className="block margin text-gray-700 font-semibold text-lg sm:text-xl mb-2" htmlFor="email">
+                      Enter Email
+                    </Label>
+                    <Input className="w-full border-gray-300 rounded-xl pl-12 p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="example@gmail.com" />
+                  </div>
 
-      {/* Gender Selection */}
-      <div className="flex flex-col">
-        <Label htmlFor="gender">Select Gender*</Label>
-        <select id="gender" className="border rounded p-2">
-          <option value="none">None</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="other">Other</option>
-        </select>
-      </div>
 
-      {/* Category Selection */}
-      <div className="flex flex-col">
-        <Label htmlFor="category">Select Category*</Label>
-        <select id="category" className="border rounded p-2">
-          <option value="none">None</option>
-          <option value="general">General</option>
-          <option value="obc">OBC</option>
-          <option value="sc">SC</option>
-          <option value="st">ST</option>
-        </select>
-      </div>
 
-      
+                  <div className="flex flex-col mb-6">
+                    <Label className="block margin text-gray-700 font-semibold text-lg sm:text-xl mb-2 " htmlFor="contact">Enter Contact No.</Label>
+                    <Input className="w-full border-gray-300 rounded-xl pl-12 p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" id="contact" placeholder="Phone number" />
+                  </div>
 
+
+                  <div className="flex flex-col mb-6">
+                    <Label className="block margin text-gray-700 font-semibold text-lg sm:text-xl mb-2" htmlFor="serial">Enter Serial No.*</Label>
+                    <Input className="w-full border-gray-300 rounded-xl pl-12 p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" id="serial" placeholder="Serial number" />
+                  </div>
+
+
+                  <div className="flex flex-col mb-6">
+                    <Label className="block margin text-gray-700 font-semibold text-lg sm:text-xl mb-2" htmlFor="dob">Enter DOB</Label>
+                    <Input className="w-full border-gray-300 rounded-xl pl-12 p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" id="dob" type="date" />
+                  </div>
+
+                  {/* Previous School */}
+                  <div className="flex flex-col mb-6">
+                    <Label className="block margin text-gray-700 font-semibold text-lg sm:text-xl mb-2" htmlFor="prev-school">Previous School</Label>
+                    <Input className="w-full border-gray-300 rounded-xl pl-12 p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" id="prev-school" placeholder="Previous School Name" />
+                  </div>
+
+                  {/* Gender Selection */}
+                  <div className="flex flex-col mb-6">
+                    <Label className="block margin text-gray-700 font-semibold text-lg sm:text-xl mb-2" htmlFor="gender">Select Gender*</Label>
+                    <select id="gender" className="border  p-1 w-full border-gray-300 rounded-xl pl-12  sm:p-3 ">
+                      <option value="none">None</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+
+                  {/* Category Selection */}
+                  <div className="flex flex-col mb-6">
+                    <Label className="block margin text-gray-700 font-semibold text-lg sm:text-xl mb-2" htmlFor="category">Select Category</Label>
+                    <select id="category" className="border  p-1 w-full border-gray-300 rounded-xl pl-12  sm:p-3 ">
+                      <option value="none">None</option>
+                      <option value="general">General</option>
+                      <option value="obc">OBC</option>
+                      <option value="sc">SC</option>
+                      <option value="st">ST</option>
+                    </select>
+                  </div>
+               </div>
+               <div className="flex justify-center mt-4">
+      <Button className="bg-blue-500 text-white w-[95%] h-[100%] py-3 hover:bg-blue-500">
+        Proceed
+      </Button>
     </div>
 
-    
-  </DialogContent>
-</Dialog>
+              </DialogContent>
+            </Dialog>
 
 
-  
+
         </div>
       </div>
 
-  
+
       <Table className="w-full border rounded-lg shadow-md mt-5">
         <TableHeader>
           <TableRow className="bg-gray-100">
@@ -302,40 +299,42 @@ const StudentHeader = () => {
       </Table>
 
 
-<div className="flex items-center justify-end space-x-3 mt-5 w-full pr-8">
-  <Button
-    variant="ghost"
-    disabled={currentPage === 1}
-    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-  >
-    <ChevronLeft className="w-5 h-5" />
-  </Button>
+      <div className="flex items-center justify-end space-x-3 mt-5 w-full pr-8">
+        <Button
+          variant="ghost"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </Button>
 
-  {[1, 2].map((page) => (
-    <Button
-      key={page}
-      variant={currentPage === page ? "default" : "ghost"}
-      onClick={() => setCurrentPage(page)}
-      className={`px-4 py-2 ${
-        currentPage === page
-          ? "bg-[#3d3690] text-white"
-          : "bg-gray-100 text-gray-700"
-      } rounded-lg`}
-    >
-      {page}
-    </Button>
-  ))}
+        {[1, 2].map((page) => (
+          <Button
+            key={page}
+            variant={currentPage === page ? "default" : "ghost"}
+            onClick={() => setCurrentPage(page)}
+            className={`px-4 py-2 ${currentPage === page
+                ? "bg-[#3d3690] text-white"
+                : "bg-gray-100 text-gray-700"
+              } rounded-lg`}
+          >
+            {page}
+          </Button>
+        ))}
 
-  <Button
-    variant="ghost"
-    disabled={currentPage === 2}
-    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, 2))}
-  >
-    <ChevronRight className="w-5 h-5" />
-  </Button>
-</div>
+        <Button
+          variant="ghost"
+          disabled={currentPage === 2}
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, 2))}
+        >
+          <ChevronRight className="w-5 h-5" />
+        </Button>
+      </div>
+
+
 
     </div>
+  </div>
   );
 };
 

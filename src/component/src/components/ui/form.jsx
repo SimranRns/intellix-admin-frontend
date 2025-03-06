@@ -3,7 +3,7 @@ import { Slot } from "@radix-ui/react-slot"
 import { Controller, FormProvider, useFormContext } from "react-hook-form";
 
 import { cn } from "../../lib/utils"
-import { Label } from "../ui/label"
+import { Label } from "../../components/ui/label"
 
 const Form = FormProvider
 
@@ -103,7 +103,7 @@ FormDescription.displayName = "FormDescription"
 
 const FormMessage = React.forwardRef(({ className, children, ...props }, ref) => {
   const { error, formMessageId } = useFormField()
-  const body = error ? String(error?.message) : children
+  const body = error ? String(error?.message ?? "") : children
 
   if (!body) {
     return null
