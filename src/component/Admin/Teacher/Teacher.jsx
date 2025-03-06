@@ -21,10 +21,50 @@ import {
   Separator,
 } from "@radix-ui/react-dropdown-menu";
 import Header from "../Dashboard/Header";
+import { ChevronDown, Mail, Search, User, Ellipsis } from "lucide-react";
 import { Button } from "@headlessui/react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../src/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../../src/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { ChevronDown, Search } from "lucide-react";
+
+const Teachers = [
+  {
+    name: "Munaroh Steffani",
+    subject: ["Mathematics", "Science", "Art"],
+    image: "https://github.com/shadcn.png",
+  },
+  {
+    name: "Munaroh Steffani",
+    subject: ["Mathematics", "Science", "Art"],
+    image: "https://github.com/shadcn.png",
+  },
+  {
+    name: "Munaroh Steffani",
+    subject: ["Mathematics", "Science", "Art"],
+    image: "https://github.com/shadcn.png",
+  },
+  {
+    name: "Munaroh Steffani",
+    subject: ["Mathematics", "Science", "Art"],
+    image: "https://github.com/shadcn.png",
+  },
+  {
+    name: "Munaroh Steffani",
+    subject: ["Mathematics", "Science", "Art"],
+    image: "https://github.com/shadcn.png",
+  },
+  {
+    name: "Munaroh Steffani",
+    subject: ["Mathematics", "Science", "Art"],
+    image: "https://github.com/shadcn.png",
+  },
+];
 
 const Teacher = () => {
   const [selectedOption, setSelectedOption] = useState("Newest");
@@ -50,24 +90,23 @@ const Teacher = () => {
             </Breadcrumb>
           </header>
           <div className="w-full shadow-md rounded-lg flex flex-col sm:flex-row items-center justify-between px-4 sm:px-8 py-4 mt-6 space-y-4 sm:space-y-0">
-            {/* Search Input */}
+          
             <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full sm:max-w-md">
               <Search size={18} className="text-gray-500" />
               <input
                 type="text"
                 placeholder="Search here..."
-                className="ml-2 w-full outline-none bg-transparent"
+                className="ml-2  outline-none bg-transparent"
               />
             </div>
 
-            {/* Dropdown & Add Button */}
-            <div className="flex items-center space-x-3">
-              {/* Dropdown Menu */}
+            <div className=" flex items-center space-x-3 z-10">
+            
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    // variant="outline"
-                    className="rounded-md border border-blue-300 px-6 sm:px-8 hover:bg-blue-500 hover:text-white py-2 text-sm font-medium flex items-center"
+                
+                    className="rounded-md border border-blue-300 px-6 sm:px-8  hover:bg-blue-500 hover:text-white py-2 text-sm font-medium flex items-center"
                   >
                     <span>{selectedOption}</span>
                     <ChevronDown size={16} className="ml-2" />
@@ -76,7 +115,7 @@ const Teacher = () => {
 
                 <DropdownMenuContent
                   align="end"
-                  className="w-40 shadow-md rounded-md"
+                  className="bg-gray-200 w-40 shadow-md rounded-md mt-2"
                 >
                   <DropdownMenuItem
                     onClick={() => setSelectedOption("Newest")}
@@ -104,56 +143,78 @@ const Teacher = () => {
                 + Add Teacher
               </Button>
             </div>
-
-
           </div>
-          <div className="grid">
-            <div className="">
-            <Card className="w-full max-w-sm md:max-w-md lg:max-w-lg shadow-lg rounded-2xl p-5">
-                    <CardHeader className="flex flex-col items-center text-center">
-                        <div className="relative w-32 h-32">
-                            <Avatar className="w-full h-full border-4 border-blue-700 shadow-md">
-                                <AvatarImage src="https://github.com/shadcn.png" alt="Profile Image" />
-                              
-                                <AvatarFallback>CN</AvatarFallback>
-                            </Avatar>
-                            {/* <input
-                                type="file"
-                                ref={fileInputRef}
-                                accept="image/*"
-                                className="hidden"
-                                onChange={handleImageChange}
-                            /> */}
-                            {/* <button
-                                className="absolute bottom-0 right-0 bg-blue-600 p-2 rounded-full shadow-md hover:bg-blue-700 transition"
-                                onClick={() => fileInputRef.current.click()}
-                            >
-                                <Camera className="w-5 h-5 text-white" />
-                            </button> */}
-                        </div>
-                        <CardTitle className="mt-4 text-xl text-gray-600 font-semibold">Nella Vita</CardTitle>
-                        <CardDescription className="text-gray-500">Developer</CardDescription>
-                    </CardHeader>
 
-                    <CardContent className="text-center">
-                        <ul className="space-y-3">
-                            <li className="profile_list font-medium">
-                                <a href="Models">Models</a>
-                                <span className="profile_list_number text-blue-600 font-bold">36</span>
-                            </li>
-                            <li className="profile_list font-medium">
-                                <a href="Plan">Plan</a>
-                                <span className="profile_list_number text-green-600 font-bold">Active</span>
-                            </li>
-                        </ul>
-                    </CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 md:grid-cols-1 gap-6 p-6 bg-gray-100 min-h-screen place-items-center">
+            {Teachers.map((teacher, index) => (
+              <Card
+                key={index}
+                className="w-[21rem] shadow-xl rounded-xl bg-white p-6 relative"
+              >
+                {/* 3-dot menu button */}
 
-                    <CardFooter className="flex justify-center gap-4">
-                        <span className="profile_portfolio">Portfolio</span>
-                    </CardFooter>
-                </Card>
-            </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="absolute top-4 right-4 bg-blue-100 p-2 rounded-lg shadow-sm hover:bg-gray-200 ">
+                      <Ellipsis className="text-gray-500" size={24} />
+                    </button>
+                  </DropdownMenuTrigger>
 
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-30 bg-gray-100 mt-1 shadow-md rounded-md"
+                  >
+                    <DropdownMenuItem className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center">
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer text-red-500 hover:bg-gray-200 px-4 py-2 text-center">
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <CardHeader className="flex flex-col items-center text-center">
+                  <div className="relative w-24 h-24">
+                    <Avatar className="shadow-md">
+                      <AvatarImage
+                        className="rounded-full"
+                        src={teacher.image}
+                        alt={teacher.name}
+                      />
+                      <AvatarFallback>{teacher.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <CardTitle className="mt-4 text-xl text-gray-900 font-bold">
+                    {teacher.name}
+                  </CardTitle>
+                  <CardDescription className="text-gray-500">
+                    Teacher
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="text-center">
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {teacher.subject.map((subj, i) => (
+                      <span
+                        key={i}
+                        className="bg-blue-100 px-3 py-1 rounded-lg text-sm text-blue-500 font-semibold"
+                      >
+                        {subj}
+                      </span>
+                    ))}
+                  </div>
+                </CardContent>
+
+                <CardFooter className="flex justify-center gap-3 mt-5">
+                  <Button className="bg-indigo-600 text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-indigo-700 transition-all">
+                    <User size={18} /> Profile
+                  </Button>
+                  <Button className="bg-orange-500 text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-orange-600 transition-all">
+                    <Mail size={18} /> Chat
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
           </div>
         </SidebarInset>
       </SidebarProvider>
