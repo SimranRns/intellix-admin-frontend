@@ -21,8 +21,8 @@ import {
   Separator,
 } from "@radix-ui/react-dropdown-menu";
 import Header from "../Dashboard/Header";
-import { ChevronDown, Search } from "lucide-react";
 import { Button } from "@headlessui/react";
+import { ChevronDown, Search } from "lucide-react";
 
 const Teacher = () => {
   const [selectedOption, setSelectedOption] = useState("Newest");
