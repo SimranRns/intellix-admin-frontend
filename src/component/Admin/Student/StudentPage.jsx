@@ -110,10 +110,14 @@
 
 // export default StudentHeader;
 
-
-
 import React, { useState } from "react";
-import { Search, ChevronDown, MoreVertical, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Search,
+  ChevronDown,
+  MoreVertical,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import {
   Table,
   TableBody,
@@ -123,9 +127,12 @@ import {
   TableRow,
 } from "../../src/components/ui/table";
 import { Button } from "../../src/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../src/components/ui/dropdown-menu";
-
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../../src/components/ui/dropdown-menu";
 
 const studentGroups = [
   {
@@ -168,8 +175,8 @@ const studentGroups = [
     image:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnEnd4A1YCCdwNwZf_O6cyreyiAruR0UMWPw&s",
   },
- 
-    {
+
+  {
     id: "678912345",
     name: "Emily Clarke",
     fatherName: "John Clarke",
@@ -215,7 +222,6 @@ const PAGE_SIZE = 5; // 🔹 Ek page par kitne students dikhane hain (3 students
 const MAX_PAGES = 5; // 🔹 Maximum sirf 2 pages hi dikhne chahiye
 
 const StudentHeader = () => {
-  
   const [currentPage, setCurrentPage] = useState(1);
 
   // 🔹 Total pages ka calculation (but max sirf 2 pages dikhne chahiye)
@@ -241,23 +247,25 @@ const StudentHeader = () => {
         </div>
 
         <div className="flex items-center space-x-3">
-        <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="flex items-center space-x-2 border border-gray-300">
-          <span>Newest</span>
-          <ChevronDown size={16} />
-        </Button>
-      </DropdownMenuTrigger>
-      
-      <DropdownMenuContent align="end" className="w-36">
-        <DropdownMenuItem>Newest</DropdownMenuItem>
-        <DropdownMenuItem>Oldest</DropdownMenuItem>
-        <DropdownMenuItem>Recent</DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="flex items-center space-x-2 border border-gray-300"
+              >
+                <span>Newest</span>
+                <ChevronDown size={16} />
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end" className="w-36">
+              <DropdownMenuItem>Newest</DropdownMenuItem>
+              <DropdownMenuItem>Oldest</DropdownMenuItem>
+              <DropdownMenuItem>Recent</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <button className="bg-[#3d3690] text-white font-semibold px-5 py-2 rounded-lg">
-            + Add Student 
-           
+            + Add Student
           </button>
         </div>
       </div>
@@ -297,7 +305,10 @@ const StudentHeader = () => {
                 </button>
               </TableCell>
               <TableCell>
-                <MoreVertical className="text-gray-600 cursor-pointer" size={20} />
+                <MoreVertical
+                  className="text-gray-600 cursor-pointer"
+                  size={20}
+                />
               </TableCell>
             </TableRow>
           ))}
@@ -305,40 +316,39 @@ const StudentHeader = () => {
       </Table>
 
       {/* 🔹 Pagination (Only 1 & 2 Pages) */}
-    {/* 🔹 Pagination (Only 1 & 2 Pages) */}
-<div className="flex items-center justify-end space-x-3 mt-5 w-full pr-8">
-  <Button
-    variant="ghost"
-    disabled={currentPage === 1}
-    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-  >
-    <ChevronLeft className="w-5 h-5" />
-  </Button>
+      {/* 🔹 Pagination (Only 1 & 2 Pages) */}
+      <div className="flex items-center justify-end space-x-3 mt-5 w-full pr-8">
+        <Button
+          variant="ghost"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </Button>
 
-  {[1, 2].map((page) => (
-    <Button
-      key={page}
-      variant={currentPage === page ? "default" : "ghost"}
-      onClick={() => setCurrentPage(page)}
-      className={`px-4 py-2 ${
-        currentPage === page
-          ? "bg-[#3d3690] text-white"
-          : "bg-gray-100 text-gray-700"
-      } rounded-lg`}
-    >
-      {page}
-    </Button>
-  ))}
+        {[1, 2].map((page) => (
+          <Button
+            key={page}
+            variant={currentPage === page ? "default" : "ghost"}
+            onClick={() => setCurrentPage(page)}
+            className={`px-4 py-2 ${
+              currentPage === page
+                ? "bg-[#3d3690] text-white"
+                : "bg-gray-100 text-gray-700"
+            } rounded-lg`}
+          >
+            {page}
+          </Button>
+        ))}
 
-  <Button
-    variant="ghost"
-    disabled={currentPage === 2}
-    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, 2))}
-  >
-    <ChevronRight className="w-5 h-5" />
-  </Button>
-</div>
-
+        <Button
+          variant="ghost"
+          disabled={currentPage === 2}
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, 2))}
+        >
+          <ChevronRight className="w-5 h-5" />
+        </Button>
+      </div>
     </div>
   );
 };
