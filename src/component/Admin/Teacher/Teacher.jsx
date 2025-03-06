@@ -23,6 +23,8 @@ import {
 import Header from "../Dashboard/Header";
 import { ChevronDown, Search } from "lucide-react";
 import { Button } from "@headlessui/react";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../src/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 
 const Teacher = () => {
   const [selectedOption, setSelectedOption] = useState("Newest");
@@ -102,6 +104,56 @@ const Teacher = () => {
                 + Add Teacher
               </Button>
             </div>
+
+
+          </div>
+          <div className="grid">
+            <div className="">
+            <Card className="w-full max-w-sm md:max-w-md lg:max-w-lg shadow-lg rounded-2xl p-5">
+                    <CardHeader className="flex flex-col items-center text-center">
+                        <div className="relative w-32 h-32">
+                            <Avatar className="w-full h-full border-4 border-blue-700 shadow-md">
+                                <AvatarImage src="https://github.com/shadcn.png" alt="Profile Image" />
+                              
+                                <AvatarFallback>CN</AvatarFallback>
+                            </Avatar>
+                            {/* <input
+                                type="file"
+                                ref={fileInputRef}
+                                accept="image/*"
+                                className="hidden"
+                                onChange={handleImageChange}
+                            /> */}
+                            {/* <button
+                                className="absolute bottom-0 right-0 bg-blue-600 p-2 rounded-full shadow-md hover:bg-blue-700 transition"
+                                onClick={() => fileInputRef.current.click()}
+                            >
+                                <Camera className="w-5 h-5 text-white" />
+                            </button> */}
+                        </div>
+                        <CardTitle className="mt-4 text-xl text-gray-600 font-semibold">Nella Vita</CardTitle>
+                        <CardDescription className="text-gray-500">Developer</CardDescription>
+                    </CardHeader>
+
+                    <CardContent className="text-center">
+                        <ul className="space-y-3">
+                            <li className="profile_list font-medium">
+                                <a href="Models">Models</a>
+                                <span className="profile_list_number text-blue-600 font-bold">36</span>
+                            </li>
+                            <li className="profile_list font-medium">
+                                <a href="Plan">Plan</a>
+                                <span className="profile_list_number text-green-600 font-bold">Active</span>
+                            </li>
+                        </ul>
+                    </CardContent>
+
+                    <CardFooter className="flex justify-center gap-4">
+                        <span className="profile_portfolio">Portfolio</span>
+                    </CardFooter>
+                </Card>
+            </div>
+
           </div>
         </SidebarInset>
       </SidebarProvider>
