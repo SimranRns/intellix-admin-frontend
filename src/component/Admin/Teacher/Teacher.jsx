@@ -21,10 +21,10 @@ import {
   Separator,
 } from "@radix-ui/react-dropdown-menu";
 import Header from "../Dashboard/Header";
-import { ChevronDown, Search } from "lucide-react";
 import { Button } from "@headlessui/react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../src/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { ChevronDown, Search } from "lucide-react";
 
 const Teacher = () => {
   const [selectedOption, setSelectedOption] = useState("Newest");

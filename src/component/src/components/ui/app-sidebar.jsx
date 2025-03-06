@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import intellix_icon from "../../../../assets/Image/intellix.png";
-import { X, Grip, Home, Inbox, User, Users, Wallet, ChartColumnIncreasing, CircleHelp, Settings } from "lucide-react";
+import { X, Grip, Home, Inbox, User, Users, Wallet, ChartColumnIncreasing, CircleHelp, Settings, Clipboard } from "lucide-react";
 import {
     Sidebar,
     SidebarContent,
@@ -24,6 +24,7 @@ const AppSidebar = (props) => {
         { title: "Accounts", url: "/accounts", icon: Wallet },
         { title: "Attendance", url: "/attendance", icon: ChartColumnIncreasing },
         { title: "Team", url: "/team", icon: Users },
+        { title: "Advertisment", url: "/Advertisment", icon: Clipboard },
         { title: "Support", url: "/support", icon: CircleHelp },
         { title: "Settings", url: "/settings", icon: Settings },
     ];
@@ -31,19 +32,18 @@ const AppSidebar = (props) => {
     return (
         <Sidebar collapsible="icon" variant="" {...props}>
             <div className="relative h-screen">
-                <SidebarHeader>
-                    <div className="flex items-center gap-3 px-4 py-4">
-                        <img sizes={25} className="w-12 h-10" src={intellix_icon} alt="Intellix Logo" />
-                        <div
-                            className={`transition-all duration-300 overflow-hidden ${isOpen ? "opacity-100 w-auto" : "opacity-0 w-0"
-                                }`}
-                        >
-                            <h5 className="text-xl font-semibold whitespace-nowrap">Intellix</h5>
-                        </div>
+                <SidebarHeader>           <div className="flex items-center gap-3 px-4 py-4">
+                    <img sizes={25} className="w-12 h-10" src={intellix_icon} alt="Intellix Logo" />
+                    <div
+                        className={`transition-all duration-300 overflow-hidden ${isOpen ? "opacity-100 w-auto" : "opacity-0 w-0"
+                            }`}
+                    >
+                        <h5 className="text-xl font-semibold whitespace-nowrap">Intellix</h5>
                     </div>
+                </div>
                 </SidebarHeader>
 
-                <SidebarContent>    
+                <SidebarContent>
                     <SidebarGroup>
                         <SidebarMenu>
                             {items.map(({ title, url, icon: Icon }) => (
