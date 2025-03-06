@@ -31,37 +31,37 @@ const AppSidebar = (props) => {
     return (
         <Sidebar collapsible="icon" variant="" {...props}>
             <div className="relative h-screen">
-              
-                
-                    <SidebarHeader>
-                        <div className="flex items-center gap-3 px-3 py-4">
-                            <img sizes={25} className="w-15 h-10" src={intellix_icon} alt="Intellix Logo" />
-                            {isOpen && <h5 className="text-xl font-semibold">Intellix</h5>}
+                <SidebarHeader>
+                    <div className="flex items-center gap-3 px-4 py-4">
+                        <img sizes={25} className="w-12 h-10" src={intellix_icon} alt="Intellix Logo" />
+                        <div
+                            className={`transition-all duration-300 overflow-hidden ${isOpen ? "opacity-100 w-auto" : "opacity-0 w-0"
+                                }`}
+                        >
+                            <h5 className="text-xl font-semibold whitespace-nowrap">Intellix</h5>
                         </div>
-                    </SidebarHeader>
-                    <SidebarContent>
-                        <SidebarGroup>
-                            <SidebarMenu>
-                                {items.map(({ title, url, icon: Icon }) => (
-                                    <SidebarMenuItem key={title}>
-                                        <SidebarMenuButton asChild>
-                                            <a
-                                                href={url}
-                                                className="flex items-center gap-4 px-4 py-3 p-3 rounded-lg transition-all hover:bg-blue-600 hover:text-white"
-                                            >
-                                                <Icon size={25} className="hover:text-white" />
-                                                {isOpen && <span className="text-lg font-medium">{title}</span>}
-                                            </a>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                ))}
-                            </SidebarMenu>
-                        </SidebarGroup>
-                    </SidebarContent>
-                    <SidebarFooter>
-                        <div className="p-4 text-center text-sm text-gray-400">© 2024 Intellix</div>
-                    </SidebarFooter>
-           
+                    </div>
+                </SidebarHeader>
+
+                <SidebarContent>    
+                    <SidebarGroup>
+                        <SidebarMenu>
+                            {items.map(({ title, url, icon: Icon }) => (
+                                <SidebarMenuItem key={title}>
+                                    <SidebarMenuButton asChild>
+                                        <a
+                                            href={url}
+                                            className="flex items-center gap-4 px-4 py-3 rounded-lg transition-all hover:bg-blue-600 hover:text-white"
+                                        >
+                                            <Icon size={25} className="hover:text-white" />
+                                            {isOpen && <span className="text-lg font-medium">{title}</span>}
+                                        </a>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            ))}
+                        </SidebarMenu>
+                    </SidebarGroup>
+                </SidebarContent>
             </div>
         </Sidebar>
     );
