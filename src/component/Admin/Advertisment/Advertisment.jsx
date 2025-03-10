@@ -47,7 +47,7 @@ const Advertisment = () => {
                                     {/* Tabs Section */}
                                     <Tabs defaultValue="tab1" className="m-5">
                                         <div className="overflow-x-auto md:overflow-hidden">
-                                            <TabsList className="flex bg-white-500 text-black md:grid md:grid-cols-5 gap-3 whitespace-nowrap">
+                                            <TabsList className="flex bg-white-500  md:grid md:grid-cols-5 gap-3 whitespace-nowrap">
                                                 <TabsTrigger value="tab1" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
                                                     School Info 1
                                                 </TabsTrigger>
@@ -63,7 +63,7 @@ const Advertisment = () => {
                                                 <TabsTrigger value="tab5" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
                                                     School Info 5
                                                 </TabsTrigger>
-
+sq
                                             </TabsList>
                                         </div>
                                         <TabsContent value="tab1" className="p-4 text-left">
