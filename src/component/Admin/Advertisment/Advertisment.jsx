@@ -64,7 +64,7 @@ const Advertisment = () => {
                                                 <TabsTrigger value="tab5" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
                                                     School Info 5
                                                 </TabsTrigger>
-sq
+        
                                             </TabsList>
                                         </div>
                                         <TabsContent value="tab1" className="p-4 text-left">

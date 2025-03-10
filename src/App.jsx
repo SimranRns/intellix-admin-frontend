@@ -8,6 +8,7 @@ import Dashboard from "./component/Admin/Dashboard/Dashboard";
 import Teacher from "./component/Admin/Teacher/Teacher";
 import StudentHeader from "./component/Admin/Student/StudentPage";
 import Advertisment from "./component/Admin/Advertisment/Advertisment";
+import Attendance from "./component/Admin/Attendance/Attendance";
 // import { Route } from "lucide-react";
 const App = () => {
   return (
@@ -22,7 +23,7 @@ const App = () => {
           <Route path="/teacher" element={<Teacher/>} />
           <Route path="/students" element={<StudentHeader />} />
           <Route path="/accounts" element={<div>Accounts </div>} />
-          <Route path="/attendance" element={<div>Attendance </div>} />
+          <Route path="/attendance" element={<Attendance/>}/>
           <Route path="/Advertisment" element={<Advertisment/>} />
           <Route path="/team" element={<div>Team </div>} />
           <Route path="/support" element={<div>Support </div>} />
