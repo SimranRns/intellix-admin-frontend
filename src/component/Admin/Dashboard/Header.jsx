@@ -34,7 +34,7 @@ const Header = () => {
   }, [darkMode]);
 
   return (
-    <nav className=" bg-white fixed top-0  dark:bg-gray-900  p-4 w-[75%] nav_1 z-50 border-b border-gray-200 dark:border-gray-700 ">
+    <nav className=" bg-white fixed top-0  dark:bg-gray-900  p-3 w-[75%] nav_1 z-50 border-b border-gray-200 dark:border-gray-700 ">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <h1 className="text-2xl font-semibold text-blue-700 dark:text-white">
