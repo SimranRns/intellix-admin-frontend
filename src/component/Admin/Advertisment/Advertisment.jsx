@@ -15,6 +15,7 @@ import {
     SidebarTrigger,
 } from "../../src/components/ui/sidebar";
 import Header from "../Dashboard/Header";
+import { Separator } from '@radix-ui/react-separator';
 // import { Button } from "@headlessui/react";
 
 const Advertisment = () => {
