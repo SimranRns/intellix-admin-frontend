@@ -5,7 +5,6 @@ import Header from '../Dashboard/Header';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../../src/components/ui/card';
 import { Input } from '../../src/components/ui/input';
-import { Button } from '../../src/components/ui/button';
 import { Eye, EyeOff, Mail, User, Phone, MapPin } from "lucide-react";
 import { useForm } from "react-hook-form";
 import z from 'zod'
@@ -23,6 +22,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from '../../src/compone
 import AppSidebar from '../../src/components/ui/app-sidebar';
 import { Separator } from '@radix-ui/react-dropdown-menu';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '../../src/components/ui/breadcrumb';
+import { Button } from '../../src/components/ui/Button';
 
 const FormSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters long'),
@@ -124,7 +124,7 @@ const Settings = () => {
                           control={form.control}
                           name="password"
                           render={({ field }) => (
-                            <FormItem>
+                          <FormItem>
                               <FormLabel className="text-gray-700 font-semibold text-lg">New Password</FormLabel>
                               <FormControl>
                                 <div className="relative flex items-center">
