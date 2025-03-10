@@ -15,8 +15,7 @@ import {
     SidebarTrigger,
 } from "../../src/components/ui/sidebar";
 import Header from "../Dashboard/Header";
-import { Button } from "@headlessui/react";
-import { Separator } from '@radix-ui/react-dropdown-menu';
+// import { Button } from "@headlessui/react";
 
 const Advertisment = () => {
     const [activeTab, setActiveTab] = useState("tab1");
