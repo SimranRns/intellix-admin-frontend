@@ -10,26 +10,29 @@ import StudentHeader from "./component/Admin/Student/StudentPage";
 import Advertisment from "./component/Admin/Advertisment/Advertisment";
 import Attendance from "./component/Admin/Attendance/Attendance";
 import Support from "./component/Admin/Support/Support";
+import AddStudentModal from "./component/Admin/Student/AddStudentModal";
 // import { Route } from "lucide-react";
 const App = () => {
   return (
     <div>
       <BrowserRouter>
-      
+
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/Adminlogin" element={<AdminLogin />} />
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/inbox" element={<div>Inbox </div>} />
-          <Route path="/teacher" element={<Teacher/>} />
+          <Route path="/teacher" element={<Teacher />} />
           <Route path="/students" element={<StudentHeader />} />
           <Route path="/accounts" element={<div>Accounts </div>} />
-          <Route path="/attendance" element={<Attendance/>}/>
-          <Route path="/Advertisment" element={<Advertisment/>} />
+          <Route path="/attendance" element={<Attendance />} />
+          <Route path="/Advertisment" element={<Advertisment />} />
           <Route path="/team" element={<div>Team </div>} />
           {/* <Route path="/support" element={<div>Support </div>} /> */}
           <Route path="/settings" element={<Settings />} />
           <Route path="/support" element={<Support />} />
+          <Route path="/add_student_model" element={<AddStudentModal />} />
+
         </Routes>
       </BrowserRouter>
     </div>
