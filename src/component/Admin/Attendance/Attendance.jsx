@@ -1,45 +1,11 @@
-import React from "react";
-import {
-    SidebarProvider,
-    SidebarInset,
-    SidebarTrigger,
-} from "../../src/components/ui/sidebar";
+import React, { useState, useEffect } from "react";
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "../../src/components/ui/sidebar";
 import AppSidebar from "../../src/components/ui/app-sidebar";
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "../../src/components/ui/breadcrumb";
 import Header from "../Dashboard/Header";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../src/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../src/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../src/components/ui/table";
 import { z } from "zod";
 import { Button } from "../../src/components/ui/Button";
-   
-// Attendance Data (Example)
-const attendanceData = [
-    {
-        id: 1,
-        name: "Fahimur Rahman",
-        attendance: ["P", "P", "A", "A", "P", "-", "P", "P", "A", "P"],
-    },
-    {
-        id: 2,
-        name: "Richi Akon",
-        attendance: ["P", "A", "P", "P", "A", "-", "P", "P", "P", "P"],
-    },
-    {
-        id: 3,
-        name: "John Doe",
-        attendance: ["P", "A", "P", "P", "A", "-", "P", "P", "P", "P"],
-    },
-];
 
 const formSchema = z.object({
     class: z.string().min(1, { message: "Class is required." }),
@@ -48,7 +14,33 @@ const formSchema = z.object({
     year: z.string().min(1, { message: "Year is required." }),
 });
 
-const totalDays = 30;
+const getDaysInMonth = (month, year) => {
+    const monthIndex = new Date(`${month} 1, ${year}`).getMonth();
+    return new Date(year, monthIndex + 1, 0).getDate();
+};
+
+const holidayData = {
+    "April-2025": [5, 15, 21],
+    "May-2025": [1, 12, 25],
+};
+
+const fetchAttendanceData = async (className, section, month, year, totalDays, holidays) => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve([
+                { id: 1, name: "Fahimur Rahman", attendance: ["P", "P", "A", "A", "P", "P", "-", "P", "A", "P"] },
+                { id: 2, name: "Richi Akon", attendance: ["A", "P", "P", "P", "A", "P", "-", "P", "P", "A"] },
+            ]);
+        }, 1000);
+    }).then((result) => {
+        return result.map(student => ({
+            ...student,
+            attendance: Array.from({ length: totalDays }, (_, index) =>
+                holidays.includes(index + 1) ? "H" : student.attendance[index] || "A"
+            )
+        }));
+    });
+};
 
 const Attendance = () => {
     const form = useForm({
@@ -62,150 +54,92 @@ const Attendance = () => {
         },
     });
 
+    const [attendanceData, setAttendanceData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [daysInMonth, setDaysInMonth] = useState(30);
+    const [holidays, setHolidays] = useState([]);
+
+    useEffect(() => {
+        const { month, year } = form.getValues();
+        setDaysInMonth(getDaysInMonth(month, year));
+        setHolidays(holidayData[`${month}-${year}`] || []);
+    }, [form.watch("month"), form.watch("year")]);
+
+    const handleSearch = async (data) => {
+        setLoading(true);
+        const totalDays = getDaysInMonth(data.month, data.year);
+        const holidayList = holidayData[`${data.month}-${data.year}`] || [];
+        const result = await fetchAttendanceData(data.class, data.section, data.month, data.year, totalDays, holidayList);
+
+        setAttendanceData(result);
+        setLoading(false);
+    };
+
+    const getStatusSymbol = (status) => {
+        if (status === "P") return <span className="text-green-500 font-bold">✔</span>;
+        if (status === "A") return <span className="text-red-500 font-bold">✘</span>;
+        if (status === "H") return <span className="text-yellow-500 font-bold">-</span>;
+        return status;
+    };
+
     return (
         <SidebarProvider style={{ "--sidebar-width": "19rem" }}>
             <AppSidebar />
             <SidebarInset>
-                {/* Header */}
-                <header className="flex h-16 items-center gap-2 px-4 border-b">
-                    <SidebarTrigger className="-ml-1" />
-                    <Breadcrumb>
-                        <BreadcrumbList>
-                            <BreadcrumbItem>
-                                <BreadcrumbLink href="#">{<Header />}</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbPage>Student Attendance</BreadcrumbPage>
-                            </BreadcrumbItem>
-                        </BreadcrumbList>
-                    </Breadcrumb>
+                <header className="flex h-16 items-center gap-4 px-6 border-b  shadow-sm">
+                    <SidebarTrigger className="text-lg" />
+                    <Header />
+                    <h1 className="text-xl font-semibold text-gray-700">Attendance Sheet</h1>
                 </header>
 
-                {/* Attendance Form */}
-                <div className="m-5 p-6  rounded-lg shadow-md">
-                    <h4 className="text-xl font-semibold mb-4">Check Student Attendance</h4>
+                <div className="m-6 p-6 rounded-lg shadow-sm  shadow-blue-500/50">
+                    <h4 className="text-2xl font-semibold mb-6">Check Student Attendance</h4>
                     <FormProvider {...form}>
-                        <form
-                            onSubmit={form.handleSubmit((data) => console.log("Form submitted:", data))}
-                            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4"
-                        >
-                            {/* Class Selection */}
-                            <FormField control={form.control} name="class" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Class</FormLabel>
-                                    <FormControl>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select Class" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="One">One</SelectItem>
-                                                <SelectItem value="Two">Two</SelectItem>
-                                                <SelectItem value="Three">Three</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-
-                            {/* Section Selection */}
-                            <FormField control={form.control} name="section" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Section</FormLabel>
-                                    <FormControl>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select Section" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="A">A</SelectItem>
-                                                <SelectItem value="B">B</SelectItem>
-                                                <SelectItem value="C">C</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-
-                            {/* Month Selection */}
-                            <FormField control={form.control} name="month" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Month</FormLabel>
-                                    <FormControl>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select Month" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="April">April</SelectItem>
-                                                <SelectItem value="May">May</SelectItem>
-                                                <SelectItem value="June">June</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-
-                            {/* Year Selection */}
-                            <FormField control={form.control} name="year" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Year</FormLabel>
-                                    <FormControl>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select Year" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="2024">2024</SelectItem>
-                                                <SelectItem value="2025">2025</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-
-                            {/* Search Button */}
-                            <div className="col-span-full flex justify-start">
-                                <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all">
-                                    Search
-                                </Button>
-                            </div>
+                        <form onSubmit={form.handleSubmit(handleSearch)} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {['class', 'section', 'month', 'year'].map((field) => (
+                                <select
+                                    key={field}
+                                    {...form.register(field)}
+                                    className="border border-blue-500 p-3 rounded-lg text-gray-700 focus:ring focus:ring-blue-200 shadow-md "
+                                >
+                                    {field === 'class' && ['One', 'Two', 'Three'].map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                                    {field === 'section' && ['A', 'B', 'C'].map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                                    {field === 'month' && ['April', 'May', 'June' ,'Feb'].map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                                    {field === 'year' && ['2024', '2025'].map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                                </select>
+                            ))}
+                            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg border border-blue-500 shadow-md shadow-blue-500/50">
+                                {loading ? "Loading..." : "Search"}
+                            </Button>
                         </form>
                     </FormProvider>
                 </div>
 
-                {/* Attendance Table */}
-                <div className="m-5 p-6  rounded-lg shadow-md overflow-x-auto">
-                    <h4 className="text-xl font-semibold mb-4">Attendance Sheet</h4>
-                    <Table className="border border-gray-300 w-full">
-                        <TableHeader>
-                            <TableRow >
-                                <TableHead className="text-left">Student Name</TableHead>
-                                {Array.from({ length: totalDays }, (_, index) => (
-                                    <TableHead key={index} className="text-center">{index + 1}</TableHead>
-                                ))}
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {attendanceData.map((student) => (
-                                <TableRow key={student.id}>
-                                    <TableCell className="font-semibold">{student.name}</TableCell>
-                                    {student.attendance.map((status, index) => (
-                                        <TableCell key={index} className="text-center">
-                                            <span className={`px-2 py-1 rounded ${status === "P" ? "bg-green-500 text-white" : status === "A" ? "bg-red-500 text-white" : "bg-yellow-400 text-white"}`}>
-                                                {status}
-                                            </span>
-                                        </TableCell>
+
+                <div className="m-6 p-6  rounded-lg shadow-sm overflow-x-auto   shadow-blue-500/50">
+                    <h4 className="text-xl font-semibold mb-4 ">Attendance Sheet of {form.getValues("class")} : Section {form.getValues('section')}, {form.getValues("month")} {form.getValues("year")}</h4>
+                    {attendanceData.length > 0 ? (
+                        <table className="border-collapse border w-full text-sm ">
+                            <thead>
+                                <tr className="">
+                                    <th className="border px-4 py-2">Students</th>
+                                    {Array.from({ length: daysInMonth }, (_, index) => (
+                                        <th key={index} className="border px-2 py-2 text-center">{index + 1}</th>
                                     ))}
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {attendanceData.map(student => (
+                                    <tr key={student.id} >
+                                        <td className="border px-4 py-2 font-semibold">{student.name}</td>
+                                        {student.attendance.map((status, index) => (
+                                            <td key={index} className="border px-2 py-2 text-center">{getStatusSymbol(status)}</td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (<p className="text-center ">No Data Found</p>)}
                 </div>
             </SidebarInset>
         </SidebarProvider>

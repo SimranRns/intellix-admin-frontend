@@ -502,7 +502,7 @@
 
 
 import React, { useState } from "react";
-import Header from "../Dashboard/Header";
+import Header from "./Header";
 import {
   Card,
   CardContent,

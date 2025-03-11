@@ -252,7 +252,7 @@ const Teacher = () => {
                 </Avatar>
                 <CardTitle className="mt-4 text-xl font-bold">
                   {teacher.name}
-                </CardTitle>
+                </CardTitle> 
                 <CardDescription>Teacher</CardDescription>
               </CardHeader>
 
