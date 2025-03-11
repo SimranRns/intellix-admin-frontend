@@ -9,6 +9,7 @@ import Teacher from "./component/Admin/Teacher/Teacher";
 import StudentHeader from "./component/Admin/Student/StudentPage";
 import Advertisment from "./component/Admin/Advertisment/Advertisment";
 import Attendance from "./component/Admin/Attendance/Attendance";
+import AddStudentModal from "./component/Admin/Student/AddStudentModal";
 // import { Route } from "lucide-react";
 const App = () => {
   return (
@@ -28,7 +29,8 @@ const App = () => {
           <Route path="/team" element={<div>Team </div>} />
           <Route path="/support" element={<div>Support </div>} />
           <Route path="/settings" element={<Settings />} />
-        </Routes>
+          <Route path="/add_student_model" element={<AddStudentModal/>}/>
+             </Routes>
       </BrowserRouter>
     </div>
   );
