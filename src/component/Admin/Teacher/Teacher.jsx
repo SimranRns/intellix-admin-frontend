@@ -1,8 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import Header from "../Dashboard/Header";
-import { ChevronDown, Mail, Search, User, Ellipsis } from "lucide-react";
+import {
+  ChevronDown,
+  Mail,
+  Search,
+  User,
+  Ellipsis,
+  Camera,
+} from "lucide-react";
 import { Button } from "@headlessui/react";
+import { z } from "zod";
 import {
   SidebarInset,
   SidebarProvider,
@@ -53,13 +63,12 @@ import {
 } from "../../src/components/ui/dialog";
 import { Input } from "../../src/components/ui/input";
 import { Label } from "../../src/components/ui/label";
-import { z } from "zod"
- 
+
 const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-})
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  post: z.string().min(2, "Post must be at least 2 characters"),
+  subject: z.string().min(2, "Subject must be at least 2 characters"),
+});
 // Mock teacher data
 const Teachers = Array.from({ length: 20 }, (_, i) => ({
   id: i + 1,
@@ -69,13 +78,29 @@ const Teachers = Array.from({ length: 20 }, (_, i) => ({
   image: "https://github.com/shadcn.png",
 }));
 
-const Teacher = () => {
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../../src/components/ui/form";
+
+const Teacher = ({ teacherData }) => {
   const [selectedOption, setSelectedOption] = useState("Newest");
   const [currentPage, setCurrentPage] = useState(1);
-  const [open, setOpen] = useState(false);
-
   const [teachersPerPage, setTeachersPerPage] = useState(10);
-
+  const [profileImg, setProfileImg] = useState("https://github.com/shadcn.png");
+  const fileInputRef = useRef(null);
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setProfileImg(imageUrl);
+    }
+  };
   const updateTeachersPerPage = () => {
     const width = window.innerWidth;
     if (width < 640) {
@@ -100,6 +125,23 @@ const Teacher = () => {
     startIndex,
     startIndex + teachersPerPage
   );
+  const [open, setOpen] = useState(false);
+  const [Addteacher, setteacher] = useState(false);
+
+  // Initialize useForm
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      post: teacherData?.post,
+      name: teacherData?.name,
+      subject: teacherData?.subject,
+    },
+  });
+
+  // Handle Form Submission
+  const onSubmit = (data) => {
+    console.log("Form Submitted:", data);
+  };
 
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
@@ -164,9 +206,124 @@ const Teacher = () => {
             </DropdownMenu>
 
             {/* Add Teacher Button */}
-            <Button className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm">
-              + Add Teacher
+            <Button
+              onClick={() => setteacher(true)}
+              className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm"
+            >
+              + Add Employee
             </Button>
+            <Dialog open={Addteacher}  onOpenChange={setteacher}>
+              <DialogContent className="sm:max-w-[425px] shadow-lg p-6 rounded-lg">
+                <DialogHeader>
+                  <DialogTitle className="text-center">Add Teacher</DialogTitle>
+                </DialogHeader>
+                <hr />
+
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6"
+                  >
+                    {/* Centered Profile Image */}
+                    <div className="flex justify-center">
+                      <div className="relative w-32 h-32">
+                        <Avatar className="w-full h-full shadow-md rounded-full">
+                          <AvatarImage
+                            src={profileImg || "/default-avatar.png"}
+                            alt="Profile Image"
+                            className="rounded-full"
+                          />
+                          <AvatarFallback className="rounded-full">
+                            CN
+                          </AvatarFallback>
+                        </Avatar>
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleImageChange}
+                        />
+                        <button
+                          type="button"
+                          className="absolute bottom-0 right-0 bg-blue-600 p-2 rounded-full shadow-md hover:bg-blue-700 transition"
+                          onClick={() => fileInputRef.current.click()}
+                        >
+                          <Camera className="w-5 h-5 text-white" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Name Field */}
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Name</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Munaroh Steffani"
+                              {...field}
+                              className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Post Field */}
+                    <FormField
+                      control={form.control}
+                      name="post"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Post</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Teacher"
+                              {...field}
+                              className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Subject Field */}
+                    <FormField
+                      control={form.control}
+                      name="subject"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Subject</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Mathematics"
+                              {...field}
+                              className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Buttons */}
+                    <div className="flex justify-end">
+                      <Button
+                        type="submit"
+                        className="bg-indigo-600 text-white px-9 py-2 rounded-lg hover:bg-indigo-700"
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 
@@ -175,7 +332,7 @@ const Teacher = () => {
           {selectedTeachers.map((teacher) => (
             <Card
               key={teacher.id}
-              className="w-full max-w-sm shadow-xl rounded-xl border border-blue-500 p-6 relative"
+              className="w-full max-w-sm shadow-sm shadow-blue-500/50 rounded-xl  p-6 relative"
             >
               {/* Options Menu */}
               <DropdownMenu>
@@ -202,41 +359,85 @@ const Teacher = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
               {/* dialog box edit */}
-              <Dialog  className="" open={open} onOpenChange={setOpen}>
-                <DialogContent className="sm:max-w-[425px]  bg-white/80 shadow-lg p-6 rounded-lg">
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogContent className="sm:max-w-[425px]  shadow-lg p-6 rounded-lg">
                   <DialogHeader>
-                    <DialogTitle>Edit Task</DialogTitle>
-
+                    <DialogTitle className="text-">Edit Task</DialogTitle>
                   </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="name" className="text-right">
-                        Name
-                      </Label>
-                      <Input
-                        id="name"
-                        type="text"
-                        placeholder="Enter name"
-                        defaultValue=""
-                        className="w-full px-3 py-2 border rounded-md mb-3"
+                  <hr></hr>
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="space-y-6"
+                    >
+                      {/* Post Field */}
+                      <FormField
+                        control={form.control}
+                        name="post"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Post</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Teacher"
+                                {...field}
+                                className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="username" className="text-right">
-                        Username
-                      </Label>
-                      <Input
-                        id="username"
-                        type="text"
-                        placeholder="Enter username"
-                        defaultValue=""
-                        className="w-full px-3 py-2 border rounded-md mb-3"
+
+                      {/* Name Field */}
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Name</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Munaroh Steffani"
+                                {...field}
+                                className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button type="submit">Save changes</Button>
-                  </DialogFooter>
+
+                      {/* Subject Field */}
+                      <FormField
+                        control={form.control}
+                        name="subject"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Subject</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Mathematics"
+                                {...field}
+                                className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Buttons */}
+                      <div className="flex justify-between">
+                        <Button
+                          type="submit"
+                          className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700"
+                        >
+                          Save
+                        </Button>
+                      </div>
+                    </form>
+                  </Form>
                 </DialogContent>
               </Dialog>
 
