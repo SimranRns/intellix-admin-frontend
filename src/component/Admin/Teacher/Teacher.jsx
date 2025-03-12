@@ -70,9 +70,9 @@ const formSchema = z.object({
   subject: z.string().min(2, "Subject must be at least 2 characters"),
 });
 // Mock teacher data
-const Teachers = Array.from({ length: 20 }, (_, i) => ({
+const Teachers = Array.from({ length: 1 }, (_, i) => ({
   id: i + 1,
-  name: `Munaroh Steffani ${i + 1}`,
+  name: 'Munaroh Steffani',
   username: `munaroh_${i + 1}`,
   subject: ["Mathematics", "Science", "English"],
   image: "https://github.com/shadcn.png",
@@ -127,6 +127,7 @@ const Teacher = ({ teacherData }) => {
   );
   const [open, setOpen] = useState(false);
   const [Addteacher, setteacher] = useState(false);
+  const [Deleteteacher, setDelete] = useState(false);
 
   // Initialize useForm
   const form = useForm({
@@ -212,7 +213,7 @@ const Teacher = ({ teacherData }) => {
             >
               + Add Employee
             </Button>
-            <Dialog open={Addteacher}  onOpenChange={setteacher}>
+            <Dialog open={Addteacher} onOpenChange={setteacher}>
               <DialogContent className="sm:max-w-[425px] shadow-lg p-6 rounded-lg">
                 <DialogHeader>
                   <DialogTitle className="text-center">Add Teacher</DialogTitle>
@@ -353,11 +354,40 @@ const Teacher = ({ teacherData }) => {
                     Edit
                   </DropdownMenuItem>
 
-                  <DropdownMenuItem className="cursor-pointer text-red-500 hover:bg-gray-200 px-4 py-2 text-center">
+                  <DropdownMenuItem className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center">
+                    Assigns
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setDelete(true)}
+                    className="cursor-pointer text-red-500 hover:bg-gray-200 px-4 py-2 text-center"
+                  >
                     Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+              {/* dialog box Delete */}
+              <Dialog open={Deleteteacher} onOpenChange={setDelete}>
+                <DialogContent className="sm:max-w-[425px]  shadow-lg p-6 rounded-lg">
+                  <DialogHeader>
+                    <DialogTitle className="text-center text-[29px]">
+                      Deactivate Employee
+                    </DialogTitle>
+                    <DialogDescription className="text-center text-md">
+                      Are you sure you want to deactivate this employee ?
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <hr className="mt-5"></hr>
+                  <div className="flex justify-center">
+                    <Button
+                      type="submit"
+                      className="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700"
+                    >
+                      Deactivate Employee
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
               {/* dialog box edit */}
               <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="sm:max-w-[425px]  shadow-lg p-6 rounded-lg">
@@ -453,7 +483,7 @@ const Teacher = ({ teacherData }) => {
                 </Avatar>
                 <CardTitle className="mt-4 text-xl font-bold">
                   {teacher.name}
-                </CardTitle> 
+                </CardTitle>
                 <CardDescription>Teacher</CardDescription>
               </CardHeader>
 
