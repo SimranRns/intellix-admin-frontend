@@ -19,7 +19,6 @@ const AppSidebar = (props) => {
     const items = [
         { title: "Dashboard", url: "/dashboard", icon: Home },
         { title: "Inbox", url: "/inbox", icon: Inbox },
-        { title: "Teacher", url: "/teacher", icon: User },
         { title: "Students", url: "/students", icon: Users },
         { title: "Accounts", url: "/accounts", icon: Wallet },
         { title: "Attendance", url: "/attendance", icon: ChartColumnIncreasing },
