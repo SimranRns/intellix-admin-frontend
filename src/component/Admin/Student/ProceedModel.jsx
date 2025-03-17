@@ -2,8 +2,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../src/comp
 import { Button } from "../../src/components/ui/button";
 import { Label } from "../../src/components/ui/label";
 import { Input } from "../../src/components/ui/input";
+import { useNavigate } from "react-router-dom";
 
 const ProceedModal = ({ o, c }) => {
+    const navigate = useNavigate();
     return (
         <Dialog open={o} onOpenChange={c}>
             <DialogContent className="sm:max-w-[700px] p-6 rounded-lg">
@@ -49,7 +51,7 @@ const ProceedModal = ({ o, c }) => {
 
                  
                     <div className="flex justify-center mt-4">
-                        <Button className="bg-blue-700 hover:bg-blue-600 text-white px-10 py-3 rounded-lg w-full sm:w-[500px] text-lg">
+                        <Button onClick={()=>navigate("/add_student_model2")} className="bg-blue-700 hover:bg-blue-600 text-white px-10 py-3 rounded-lg w-full sm:w-[500px] text-lg">
                             Submit
                         </Button>
                     </div>
@@ -60,3 +62,7 @@ const ProceedModal = ({ o, c }) => {
 };
 
 export default ProceedModal;
+
+
+
+    

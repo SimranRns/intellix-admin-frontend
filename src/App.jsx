@@ -11,6 +11,10 @@ import Attendance from "./component/Admin/Attendance/Attendance";
 import Support from "./component/Admin/Support/Support";
 import AddStudentModal from "./component/Admin/Student/AddStudentModal";
 import Team from "./component/Admin/Team/Team";
+// import 'react-notifications/lib/notifications.css';
+import StudentSelectionPage from "./component/Admin/Student/StudentSelectionPage";
+import ParentDetails from "./component/Admin/Student/ParentDetails";
+import SuccessMessage from "./component/Admin/Student/SuccessMessage";
 // import { Route } from "lucide-react";
 const App = () => {
   return (
@@ -31,6 +35,12 @@ const App = () => {
           <Route path="/settings" element={<Settings />} />
           <Route path="/support" element={<Support />} />
           <Route path="/add_student_model" element={<AddStudentModal />} />
+          <Route path="/add_student_model2" element={<StudentSelectionPage />} />
+          <Route path="/add_student_model3" element={<ParentDetails />} />
+          <Route path="/addStudent" element={<SuccessMessage />} />
+
+        
+        
 
         </Routes>
       </BrowserRouter>

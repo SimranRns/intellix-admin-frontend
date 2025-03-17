@@ -6,8 +6,9 @@ import { Label } from "../../src/components/ui/label";
 import { Input } from "../../src/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../src/components/ui/select";
 import ProceedModal from "./ProceedModel";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
-
+import { ToastContainer, toast } from 'react-toastify';
 const AddStudentModal = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenPro, setIsModalOpenPro] = useState(false);
@@ -46,17 +47,24 @@ const AddStudentModal = () => {
       setIsModalOpen(false);
       setTimeout(() => setIsModalOpenPro(true), 200);
     } else {
-      alert("Please fill all required fields!");
+      toast.warning("Please fill all required fields!");
     }
   };
 
   return (
-    <div>
-
+    <div> 
+  <FaArrowLeftLong
+    onClick={()=>handleClose()}
+   style={{cursor:"pointer"}}
+    className=" fixed top-5 left-5 text-3xl z-[9999] bg-white p-2 rounded-full shadow-lg"
+  />
 
       <Dialog open={isModalOpen} onOpenChange={handleClose}>
-        <DialogContent className="sm:max-w-[1300px]">
-          <DialogHeader>
+
+        <DialogContent className="sm:max-w-[1300px]  z-[1000]">
+          <DialogHeader >
+
+          
             <DialogTitle className='text-3xl'>Add Student Details</DialogTitle>
           </DialogHeader>
 
@@ -64,6 +72,9 @@ const AddStudentModal = () => {
             <div>
               <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter Name *</Label>
               <Input name="name" value={formData.name} onChange={handleChange} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Your name" />
+
+
+
             </div>
             <div>
               <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Previous-School *</Label>
@@ -75,11 +86,11 @@ const AddStudentModal = () => {
             </div>
             <div>
               <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Select Gender *</Label>
-              <Select onValueChange={(value) => setFormData({ ...formData, gender: value })}>
+              <Select className="z-50 relative overflow-visible"  onValueChange={(value) => setFormData({ ...formData, gender: value })}>
                 <SelectTrigger className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-0 focus:outline-none shadow-lg">
                   <SelectValue placeholder="none" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent  className="absolute z-[9999] bg-white shadow-lg">
                   <SelectItem value="male">Male</SelectItem>
                   <SelectItem value="female">Female</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
@@ -92,11 +103,11 @@ const AddStudentModal = () => {
             </div>
             <div>
               <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Select Category *</Label>
-              <Select onValueChange={(value) => setFormData({ ...formData, category: value })}>
+              <Select className="z-50 relative overflow-visible"  onValueChange={(value) => setFormData({ ...formData, category: value })}>
                 <SelectTrigger className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-0 focus:outline-none shadow-lg">
                   <SelectValue placeholder="none" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="absolute z-[9999] bg-white shadow-lg">
                   <SelectItem value="general">General</SelectItem>
                   <SelectItem value="obc">OBC</SelectItem>
                   <SelectItem value="sc">SC</SelectItem>
@@ -116,7 +127,7 @@ const AddStudentModal = () => {
 
           <div className="flex justify-center mt-4">
             <Button
-              onClick={handleProceed} 
+              onClick={handleProceed}
               className="bg-blue-700 hover:bg-blue-600 text-white px-10 py-3 rounded-lg min-w-[250px] w-full sm:w-[500px] h-[40px] text-lg"
             >
               Proceed
@@ -125,8 +136,10 @@ const AddStudentModal = () => {
         </DialogContent>
       </Dialog>
       <ProceedModal o={isModalOpenPro} c={setIsModalOpenPro} />
+      <ToastContainer />
     </div>
   );
 };
 
 export default AddStudentModal;
+
