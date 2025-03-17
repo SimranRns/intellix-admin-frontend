@@ -3,6 +3,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import Header from "../Dashboard/Header";
+import "./Team.css";
+import TimePicker from "../../src/components/ui/time-picker";
+
 import {
   ChevronDown,
   Mail,
@@ -10,6 +13,9 @@ import {
   User,
   Ellipsis,
   Camera,
+  HandCoins,
+  Clock,
+  Logs,
 } from "lucide-react";
 import { Button } from "@headlessui/react";
 import { z } from "zod";
@@ -70,13 +76,34 @@ const formSchema = z.object({
   subject: z.string().min(2, "Subject must be at least 2 characters"),
 });
 // Mock teacher data
-const Teachers = Array.from({ length: 1 }, (_, i) => ({
-  id: i + 1,
-  name: 'Munaroh Steffani',
-  username: `munaroh_${i + 1}`,
-  subject: ["Mathematics", "Science", "English"],
-  image: "https://github.com/shadcn.png",
-}));
+// const Teachers = Array.from({ length: 1 }, (_, i) => ({
+//   id: i + 1,
+//   name: "Munaroh Steffani",
+//   username: `munaroh_${i + 1}`,
+//   // subject: ["Joined 01-01-2024", "Assigned 13", "Completed 3"],
+//   subject: "Joined 01-01-2024",
+//   icon: Clock,
+//   subject: "Assigned 13",
+//   icon: Logs,
+//   subject: "Assigned 13",
+//   icon: Logs,
+
+//   image: "https://github.com/shadcn.png",
+//   // icon: [Clock, Logs, Logs],
+// }));
+const Teachers = [
+  {
+    id: 1,
+    name: "Munaroh Steffani",
+    post: "Math Teacher",
+    subjects: [
+      { subject: "Joined 01-01-2024", icon: Clock },
+      { subject: "Assigned 13", icon: Logs },
+      { subject: "Completed 3", icon: Logs },
+    ],
+    image: "https://github.com/shadcn.png",
+  },
+];
 
 import {
   Form,
@@ -87,8 +114,9 @@ import {
   FormLabel,
   FormMessage,
 } from "../../src/components/ui/form";
+import { Icon } from "@radix-ui/react-select";
 
-const Teacher = ({ teacherData }) => {
+const Team = ({ teacherData }) => {
   const [selectedOption, setSelectedOption] = useState("Newest");
   const [currentPage, setCurrentPage] = useState(1);
   const [teachersPerPage, setTeachersPerPage] = useState(10);
@@ -111,6 +139,11 @@ const Teacher = ({ teacherData }) => {
       setTeachersPerPage(6); // Desktop
     }
   };
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevents page refresh
+    console.log("Submitted Date:", date);
+    // You can send the date to an API or handle it as needed
+  };
 
   // Update on window resize
   useEffect(() => {
@@ -118,7 +151,6 @@ const Teacher = ({ teacherData }) => {
     window.addEventListener("resize", updateTeachersPerPage);
     return () => window.removeEventListener("resize", updateTeachersPerPage);
   }, []);
-
   const totalPages = Math.ceil(Teachers.length / teachersPerPage);
   const startIndex = (currentPage - 1) * teachersPerPage;
   const selectedTeachers = Teachers.slice(
@@ -128,7 +160,9 @@ const Teacher = ({ teacherData }) => {
   const [open, setOpen] = useState(false);
   const [Addteacher, setteacher] = useState(false);
   const [Deleteteacher, setDelete] = useState(false);
-
+  const [ChangeTime, setChangeTime] = useState(false);
+  const [inTime, setInTime] = useState("");
+  const [outTime, setOutTime] = useState("");
   // Initialize useForm
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -143,7 +177,7 @@ const Teacher = ({ teacherData }) => {
   const onSubmit = (data) => {
     console.log("Form Submitted:", data);
   };
-
+  const [date, setDate] = useState("");
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       <AppSidebar />
@@ -175,7 +209,7 @@ const Teacher = ({ teacherData }) => {
           <div className="flex items-center space-x-3 z-10">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button className="rounded-md border border-blue-300 px-6 sm:px-8  hover:bg-blue-500 hover:text-white py-2 text-sm font-medium flex items-center">
+                <Button className="rounded-md border border-blue-300 px-6 sm:px-8 md:ms-5  hover:bg-blue-500 hover:text-white py-2 text-sm font-medium flex items-center">
                   <span>{selectedOption}</span>
                   <ChevronDown size={16} className="ml-2" />
                 </Button>
@@ -329,11 +363,11 @@ const Teacher = ({ teacherData }) => {
         </div>
 
         {/* Teacher Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
           {selectedTeachers.map((teacher) => (
             <Card
               key={teacher.id}
-              className="w-full max-w-sm shadow-sm shadow-blue-500/50 rounded-xl  p-6 relative"
+              className="w-full max-w-[350px] shadow-sm shadow-blue-500/50 rounded-xl p-6 relative mx-auto"
             >
               {/* Options Menu */}
               <DropdownMenu>
@@ -357,6 +391,15 @@ const Teacher = ({ teacherData }) => {
                   <DropdownMenuItem className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center">
                     Assigns
                   </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center">
+                    +Assign Task
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center"
+                    onClick={() => setChangeTime(true)}
+                  >
+                    Change Timing
+                  </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => setDelete(true)}
                     className="cursor-pointer text-red-500 hover:bg-gray-200 px-4 py-2 text-center"
@@ -365,6 +408,46 @@ const Teacher = ({ teacherData }) => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+              {/* dialog box change Time */}
+              <Dialog open={ChangeTime} onOpenChange={setChangeTime}>
+                <DialogContent className="sm:max-w-[425px]  shadow-lg p-6 rounded-lg">
+                  <DialogHeader>
+                    <DialogTitle className="text-center text-[29px]">
+                      Change Time
+                    </DialogTitle>
+                    <DialogDescription className="text-center text-md">
+                      Are you sure you want to change this employee's timing?
+                    </DialogDescription>
+                  </DialogHeader>
+                  <hr className="mt-5"></hr>
+                  <div className="flex justify-center">
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      <div className="flex justify-between items-center w-full text-center">
+                    <div className="w-1/2">
+                      <TimePicker
+                        label="In Time"
+                        selectedTime={inTime}
+                        setSelectedTime={setInTime}
+                      />
+                    </div>
+                    <div className="w-1/2">
+                      <TimePicker
+                        label="Out Time"
+                        selectedTime={outTime}
+                        setSelectedTime={setOutTime}
+                      />
+                    </div>
+                  </div>
+                      <Button
+                        type="submit"
+                        className="bg-indigo-500 text-white px-5 w-full py-2 rounded-lg hover:bg-indigo-600"
+                      >
+                        Proceed
+                      </Button>
+                    </form>
+                  </div>
+                </DialogContent>
+              </Dialog>
               {/* dialog box Delete */}
               <Dialog open={Deleteteacher} onOpenChange={setDelete}>
                 <DialogContent className="sm:max-w-[425px]  shadow-lg p-6 rounded-lg">
@@ -481,7 +564,7 @@ const Teacher = ({ teacherData }) => {
                   />
                   <AvatarFallback>{teacher.name.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <CardTitle className="mt-4 text-xl font-bold">
+                <CardTitle className="mt-4 text-xl font-bold Teacher_name">
                   {teacher.name}
                 </CardTitle>
                 <CardDescription>Teacher</CardDescription>
@@ -489,23 +572,24 @@ const Teacher = ({ teacherData }) => {
 
               <CardContent className="text-center">
                 <div className="flex flex-wrap justify-center gap-2">
-                  {teacher.subject.map((subj, i) => (
+                  {teacher.subjects.map((item, i) => (
                     <span
                       key={i}
-                      className="bg-blue-100 px-3 py-1 rounded-lg text-sm text-blue-500 font-semibold"
+                      className="bg-blue-100 px-3 py-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1"
                     >
-                      {subj}
+                      <item.icon size={16} />
+                      {item.subject}
                     </span>
                   ))}
                 </div>
               </CardContent>
 
               <CardFooter className="flex justify-center gap-3 mt-5">
-                <Button className="bg-indigo-600 text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-indigo-700 transition-all">
+                <Button className="bg-indigo-600 text-xs text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-indigo-700 transition-all">
                   <User size={18} /> Profile
                 </Button>
-                <Button className="bg-orange-500 text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-orange-600 transition-all">
-                  <Mail size={18} /> Chat
+                <Button className="bg-orange-500 text-xs text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-orange-600 transition-all">
+                  <HandCoins size={18} /> Manage Salary
                 </Button>
               </CardFooter>
             </Card>
@@ -553,4 +637,4 @@ const Teacher = ({ teacherData }) => {
   );
 };
 
-export default Teacher;
+export default Team;
