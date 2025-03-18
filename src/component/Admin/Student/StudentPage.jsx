@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import './Student.css';
 import {
   Search,
   ChevronDown,
@@ -34,6 +35,54 @@ const studentGroups = [
     name: "Samantha William",
     fatherName: "Mana William",
     batch: "Batch A",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnEnd4A1YCCdwNwZf_O6cyreyiAruR0UMWPw&s",
+  },
+  {
+    id: "678912345",
+    name: "Emily Clarke",
+    fatherName: "John Clarke",
+    batch: "Batch E",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnEnd4A1YCCdwNwZf_O6cyreyiAruR0UMWPw&s",
+  },
+  {
+    id: "678912345",
+    name: "Emily Clarke",
+    fatherName: "John Clarke",
+    batch: "Batch E",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnEnd4A1YCCdwNwZf_O6cyreyiAruR0UMWPw&s",
+  },
+  {
+    id: "678912345",
+    name: "Emily Clarke",
+    fatherName: "John Clarke",
+    batch: "Batch E",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnEnd4A1YCCdwNwZf_O6cyreyiAruR0UMWPw&s",
+  },
+  {
+    id: "678912345",
+    name: "Emily Clarke",
+    fatherName: "John Clarke",
+    batch: "Batch E",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnEnd4A1YCCdwNwZf_O6cyreyiAruR0UMWPw&s",
+  },
+  {
+    id: "678912345",
+    name: "Emily Clarke",
+    fatherName: "John Clarke",
+    batch: "Batch E",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnEnd4A1YCCdwNwZf_O6cyreyiAruR0UMWPw&s",
+  },
+  {
+    id: "678912345",
+    name: "Emily Clarke",
+    fatherName: "John Clarke",
+    batch: "Batch E",
     image:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnEnd4A1YCCdwNwZf_O6cyreyiAruR0UMWPw&s",
   },
@@ -86,10 +135,10 @@ const StudentHeader = () => {
 
           <div className="w-full  shadow-md rounded-lg flex flex-col md:flex-row items-center justify-between px-4 md:px-8 py-4 mt-5">
             <div className="flex items-center border border-gray-300 rounded-lg px-3 py-2 w-full max-w-md">
-              <Search  size={18} />
+              <Search size={18} />
               <input
                 type="text"
-                style={{backgroundColor: "transparent "}}
+                style={{ backgroundColor: "transparent " }}
                 placeholder="Search here..."
                 className="ml-2"
               />
@@ -112,14 +161,12 @@ const StudentHeader = () => {
               </DropdownMenu>
 
 
-              <div className="flex items-center space-x-3 mt-3 md:mt-0">
-                <Button
-                  className="bg-[#3d3690] text-white font-semibold px-5 py-2 rounded-lg"
-                  onClick={() => navigate("/add_student_model")}
-                >
-                  + Add Student
-                </Button>
-              </div>
+             
+              <Button onClick={() => navigate("/add_student_model")}
+                className="bg-[#3d3690] text-white font-semibold px-5 py-2
+               rounded-lg hover:bg-[#3d3690] hover:opacity-90">
+                + Add Student</Button>
+
             </div>
           </div>
 
@@ -127,7 +174,7 @@ const StudentHeader = () => {
           <div className="w-full overflow-x-auto">
             <Table className="w-full border rounded-lg shadow-md mt-5">
               <TableHeader>
-                <TableRow>
+                <TableRow className="hover:bg-transparent">
                   <TableHead>ID</TableHead>
                   <TableHead>Student Name</TableHead>
                   <TableHead>Father Name</TableHead>
@@ -137,68 +184,74 @@ const StudentHeader = () => {
                 </TableRow>
               </TableHeader>
 
-              <TableBody>
-                {displayedStudents.map((student, index) => (
-                  <TableRow key={index} className="hover:bg-gray-50">
-                    <TableCell className="text-blue-600 font-medium">
-                      {student.id}
-                    </TableCell>
-                    <TableCell className="flex items-center space-x-3">
-                      <img
-                        src={student.image}
-                        alt={student.name}
-                        className="w-10 h-10 object-cover rounded-full border-2 border-gray-300 shadow-sm"
-                      />
-                      <span className="font-medium">{student.name}</span>
-                    </TableCell>
-                    <TableCell>{student.fatherName}</TableCell>
-                    <TableCell>{student.batch}</TableCell>
-                    <TableCell>
-                      <button className="bg-green-500 text-white px-3 py-1 rounded-lg">
-                        + Add Payment
-                      </button>
-                    </TableCell>
-                    <TableCell>
-                      <MoreVertical
-                        className="text-gray-600 cursor-pointer"
-                        size={20}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
+             
+
+<TableBody>
+  {displayedStudents.map((student, index) => (
+    <TableRow key={index} className="hover:bg-transparent">
+      <TableCell className="text-blue-600 font-medium">
+        {student.id}
+      </TableCell>
+      <TableCell className="flex items-center space-x-3">
+        <img
+          src={student.image}
+          alt={student.name}
+          className="w-10 h-10 object-cover rounded-full border-2 border-gray-300 shadow-sm"
+        />
+        <span className="font-medium">{student.name}</span>
+      </TableCell>
+      <TableCell>{student.fatherName}</TableCell>
+      <TableCell>{student.batch}</TableCell>
+      <TableCell>
+        <button className="bg-green-500 text-white px-3 py-1 rounded-lg">
+          + Add Payment
+        </button>
+      </TableCell>
+      <TableCell>
+        <MoreVertical className="text-gray-600 cursor-pointer" size={20} />
+      </TableCell>
+    </TableRow>
+  ))}
+</TableBody>
+
+
             </Table>
           </div>
 
 
-          <div className="flex items-center justify-center md:justify-end space-x-3 mt-5 w-full pr-8">
-            <Button
-              variant="ghost"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </Button>
+          
 
-            {[1, 2].map((page) => (
-              <Button
-                key={page}
-                variant={currentPage === page ? "default" : "ghost"}
-                onClick={() => setCurrentPage(page)}
-                className={`px-4 py-2 ${currentPage === page ? "bg-[#3d3690] text-white" : "bg-gray-100 text-gray-700"} rounded-lg`}
-              >
-                {page}
-              </Button>
-            ))}
+<div className="flex items-center justify-center md:justify-end space-x-3 mt-5 w-full pr-8">
+  <Button
+    variant="ghost"
+    disabled={currentPage === 1}
+    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+    className="hover:bg-transparent hover:text-inherit"
+  >
+    <ChevronLeft className="w-5 h-5" />
+  </Button>
 
-            <Button
-              variant="ghost"
-              disabled={currentPage === 2}
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, 2))}
-            >
-              <ChevronRight className="w-5 h-5" />
-            </Button>
-          </div>
+  {[1, 2].map((page) => (
+    <Button
+      key={page}
+      variant={currentPage === page ? "default" : "ghost"}
+      onClick={() => setCurrentPage(page)}
+      className={`px-4 py-2 ${currentPage === page ? "bg-[#3d3690] text-white" : "bg-gray-100 text-gray-700"} rounded-lg hover:bg-transparent hover:text-inherit`}
+    >
+      {page}
+    </Button>
+  ))}
+
+  <Button
+    variant="ghost"
+    disabled={currentPage === 2}
+    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, 2))}
+    className="hover:bg-transparent hover:text-inherit"
+  >
+    <ChevronRight className="w-5 h-5" />
+  </Button>
+</div>
+
         </div>
       </SidebarInset>
     </SidebarProvider>

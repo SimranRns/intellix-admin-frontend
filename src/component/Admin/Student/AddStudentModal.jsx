@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import ProceedModal from "./ProceedModel";
 import { FaArrowLeftLong } from "react-icons/fa6";
 
-import { ToastContainer, toast } from 'react-toastify';
+// import { ToastContainer, toast } from 'react-toastify';
 const AddStudentModal = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenPro, setIsModalOpenPro] = useState(false);
@@ -38,6 +38,37 @@ const AddStudentModal = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleChangeName = (e) => {
+    const { name, value } = e.target;
+      const regex = /^[A-Za-z\s]+$/;
+      if (value === "" || regex.test(value)) {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
+
+
+const handleChangeSchool = (e) => {
+  const { name, value } = e.target;
+  const regex = /^[A-Za-z\s]+$/;
+  
+  if (value === "" || regex.test(value)) {
+    setFormData({ ...formData, [name]: value });
+  }
+};
+
+
+const handleChangeEmail = (e) => {
+  const { name, value } = e.target;
+
+  const regex = /^[a-zA-Z0-9._@]+$/;
+
+  if (value === "" || regex.test(value)) {
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  }
+};
+ 
+  
+
   const isFormValid = () => {
     return Object.values(formData).every((field) => field.trim() !== "");
   };
@@ -46,9 +77,10 @@ const AddStudentModal = () => {
     if (isFormValid()) {
       setIsModalOpen(false);
       setTimeout(() => setIsModalOpenPro(true), 200);
-    } else {
-      toast.warning("Please fill all required fields!");
-    }
+    } 
+    // else {
+    //   toast.warning("Please fill all required fields!");
+    // }
   };
 
   return (
@@ -59,31 +91,54 @@ const AddStudentModal = () => {
     className=" fixed top-5 left-5 text-3xl z-[9999] bg-white p-2 rounded-full shadow-lg"
   />
 
-      <Dialog open={isModalOpen} onOpenChange={handleClose}>
+      <Dialog      open={isModalOpen} onOpenChange={handleClose} >
+ 
 
-        <DialogContent className="sm:max-w-[1300px]  z-[1000]">
+        <DialogContent className="sm:max-w-[1000px]  z-[1000]">
           <DialogHeader >
 
           
-            <DialogTitle className='text-3xl'>Add Student Details</DialogTitle>
+            <DialogTitle className='text-3xl text-center'>Add Student Details</DialogTitle>
           </DialogHeader>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter Name *</Label>
-              <Input name="name" value={formData.name} onChange={handleChange} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Your name" />
+                <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter Name *</Label>
+                <Input type="text" name="name"  value={formData.name} onChange={handleChangeName} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Your name" />
+          </div>
+
+          
+            
+
+<div>
+  <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">
+    Previous-School *
+  </Label>
+  <Input
+    type="text"
+    name="school"
+    value={formData.school}
+    onChange={handleChangeSchool}
+    className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+    placeholder="Previous School Name"
+  />
+</div>
 
 
+<div>
+  <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">
+    Enter Email
+  </Label>
+  <Input
+    name="email"
+    type="email"
+    value={formData.email}
+    onChange={handleChangeEmail} 
+    className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+    placeholder="example@gmail.com"
+  />
+</div>
 
-            </div>
-            <div>
-              <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Previous-School *</Label>
-              <Input name="school" value={formData.school} onChange={handleChange} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Previous School Name" />
-            </div>
-            <div>
-              <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter Email</Label>
-              <Input name="email" type="email" value={formData.email} onChange={handleChange} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="example@gmail.com" />
-            </div>
             <div>
               <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Select Gender *</Label>
               <Select className="z-50 relative overflow-visible"  onValueChange={(value) => setFormData({ ...formData, gender: value })}>
@@ -99,7 +154,7 @@ const AddStudentModal = () => {
             </div>
             <div>
               <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter Contact No.</Label>
-              <Input name="contact" type="tel" value={formData.contact} onChange={handleChange} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Phone number" />
+              <Input name="contact" type="number" value={formData.contact} onChange={handleChange} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Phone number" />
             </div>
             <div>
               <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Select Category *</Label>
@@ -117,7 +172,7 @@ const AddStudentModal = () => {
             </div>
             <div>
               <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter Serial No. *</Label>
-              <Input name="serialNo" value={formData.serialNo} onChange={handleChange} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-0 focus:outline-none shadow-lg" placeholder="serial number" />
+              <Input name="serialNo" type='number' value={formData.serialNo} onChange={handleChange} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-0 focus:outline-none shadow-lg" placeholder="serial number" />
             </div>
             <div>
               <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter DOB *</Label>
@@ -136,10 +191,13 @@ const AddStudentModal = () => {
         </DialogContent>
       </Dialog>
       <ProceedModal o={isModalOpenPro} c={setIsModalOpenPro} />
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </div>
   );
 };
 
 export default AddStudentModal;
+
+
+
 

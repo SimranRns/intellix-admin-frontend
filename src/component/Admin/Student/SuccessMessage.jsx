@@ -1,7 +1,6 @@
 import React from "react";
 import emoji from '../Student/img/emoji.png'
 import { useNavigate } from "react-router-dom";
-
 const SuccessMessage = () => {
 
   const navigate = useNavigate();
