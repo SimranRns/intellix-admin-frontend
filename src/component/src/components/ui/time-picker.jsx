@@ -75,7 +75,7 @@ const TimePicker = ({ label, selectedTime, setSelectedTime }) => {
           </div>
 
           {/* Confirm Button */}
-          <Button onClick={handleTimeSelect} className="w-full mt-3">
+          <Button onClick={handleTimeSelect} className="bg-blue-500 hover:bg-blue-600 w-full mt-3">
             Confirm Time
           </Button>
         </PopoverContent>

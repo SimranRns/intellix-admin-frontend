@@ -5,7 +5,9 @@ import AppSidebar from "../../src/components/ui/app-sidebar";
 import Header from "../Dashboard/Header";
 import "./Team.css";
 import TimePicker from "../../src/components/ui/time-picker";
-
+import { format } from "date-fns";
+import { Calendar } from "../../src/components/ui/calendar";
+import { cn } from "../../src/lib/utils";
 import {
   ChevronDown,
   Mail,
@@ -16,6 +18,10 @@ import {
   HandCoins,
   Clock,
   Logs,
+  User2,
+  GraduationCap,
+  Phone,
+  CalendarIcon,
 } from "lucide-react";
 import { Button } from "@headlessui/react";
 import { z } from "zod";
@@ -74,6 +80,20 @@ const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   post: z.string().min(2, "Post must be at least 2 characters"),
   subject: z.string().min(2, "Subject must be at least 2 characters"),
+  email: z.string().email("Invalid email format"),
+  highestQualification: z.string().min(1, "Qualification is required"),
+  institution: z.string().min(1, "Institution is required"),
+  contactNumber: z
+    .string()
+    .length(10, "Enter a valid 10-digit contact number")
+    .regex(/^[6-9]\d+$/, "Only numeric values allowed"),
+  emergencyContact: z
+    .string()
+    .length(10, "Enter a valid 10-digit emergency contact number")
+    .regex(/^[6-9]\d+$/, "Only numeric values allowed"),
+  dob: z.date({
+    required_error: "joining date is required",
+  }),
 });
 // Mock teacher data
 // const Teachers = Array.from({ length: 1 }, (_, i) => ({
@@ -115,6 +135,11 @@ import {
   FormMessage,
 } from "../../src/components/ui/form";
 import { Icon } from "@radix-ui/react-select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../src/components/ui/popover";
 
 const Team = ({ teacherData }) => {
   const [selectedOption, setSelectedOption] = useState("Newest");
@@ -167,9 +192,15 @@ const Team = ({ teacherData }) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      post: teacherData?.post,
-      name: teacherData?.name,
-      subject: teacherData?.subject,
+      post: teacherData?.post || "",
+      name: teacherData?.name || "",
+      subject: teacherData?.subject || "",
+      email: "",
+      highestQualification: "",
+      institution: "",
+      contactNumber: "",
+      emergencyContact: "",
+      dob: undefined,
     },
   });
 
@@ -178,6 +209,7 @@ const Team = ({ teacherData }) => {
     console.log("Form Submitted:", data);
   };
   const [date, setDate] = useState("");
+
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       <AppSidebar />
@@ -197,7 +229,7 @@ const Team = ({ teacherData }) => {
         </header>
 
         <div className="w-full shadow-md rounded-lg flex flex-col sm:flex-row items-center justify-between px-4 sm:px-8 py-4 mt-6 space-y-4 sm:space-y-0">
-          <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 sm:max-w-md w-full">
+          <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full sm:max-w-md">
             <Search size={18} className="text-gray-500" />
             <input
               type="text"
@@ -206,7 +238,7 @@ const Team = ({ teacherData }) => {
             />
           </div>
 
-          <div className="flex items-center space-x-3 z-10">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:flex gap-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button className="rounded-md border border-blue-300 px-6 sm:px-8 md:ms-5  hover:bg-blue-500 hover:text-white py-2 text-sm font-medium flex items-center">
@@ -217,7 +249,9 @@ const Team = ({ teacherData }) => {
 
               <DropdownMenuContent
                 align="end"
-                className="bg-white text-black w-40 shadow-md rounded-md mt-2"
+                side="left"
+                align="start"
+                className="bg-white text-black w-40 shadow-md rounded-md mt-2  border border-blue-300 "
               >
                 <DropdownMenuItem
                   onClick={() => setSelectedOption("Newest")}
@@ -240,6 +274,14 @@ const Team = ({ teacherData }) => {
               </DropdownMenuContent>
             </DropdownMenu>
 
+            {/* Department Button */}
+            <Button className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm">
+              Departments
+            </Button>
+            {/* Department Button */}
+            <Button className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm">
+              Ex-Employee
+            </Button>
             {/* Add Teacher Button */}
             <Button
               onClick={() => setteacher(true)}
@@ -247,10 +289,13 @@ const Team = ({ teacherData }) => {
             >
               + Add Employee
             </Button>
+
             <Dialog open={Addteacher} onOpenChange={setteacher}>
-              <DialogContent className="sm:max-w-[425px] shadow-lg p-6 rounded-lg">
+              <DialogContent className="sm:max-w-[800px] shadow-lg p-6 rounded-lg">
                 <DialogHeader>
-                  <DialogTitle className="text-center">Add Teacher</DialogTitle>
+                  <DialogTitle className="text-center">
+                    Add Employee
+                  </DialogTitle>
                 </DialogHeader>
                 <hr />
 
@@ -277,76 +322,213 @@ const Team = ({ teacherData }) => {
                           ref={fileInputRef}
                           accept="image/*"
                           className="hidden"
-                          onChange={handleImageChange}
                         />
                         <button
                           type="button"
                           className="absolute bottom-0 right-0 bg-blue-600 p-2 rounded-full shadow-md hover:bg-blue-700 transition"
-                          onClick={() => fileInputRef.current.click()}
+                          onClick={() => fileInputRef.current?.click()}
                         >
                           <Camera className="w-5 h-5 text-white" />
                         </button>
                       </div>
                     </div>
 
-                    {/* Name Field */}
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Name</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Munaroh Steffani"
-                              {...field}
-                              className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    {/* Two-Column Grid Layout */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      {/* Name Field */}
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Name</FormLabel>
+                            <FormControl>
+                              <div className="relative flex items-center">
+                                <Input
+                                  placeholder="John Doe"
+                                  {...field}
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                />
+                                <span className="absolute right-4 text-gray-500">
+                                  <User size={21} />
+                                </span>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    {/* Post Field */}
-                    <FormField
-                      control={form.control}
-                      name="post"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Post</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Teacher"
-                              {...field}
-                              className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                      {/* Highest Qualification */}
+                      <FormField
+                        control={form.control}
+                        name="highestQualification"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Highest Qualification</FormLabel>
+                            <FormControl>
+                              <div className="relative flex items-center">
+                                <Input
+                                  placeholder="Bachelor's / Master's"
+                                  {...field}
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                />
+                                <span className="absolute right-4 text-gray-500">
+                                  <GraduationCap size={21} />
+                                </span>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    {/* Subject Field */}
-                    <FormField
-                      control={form.control}
-                      name="subject"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Subject</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Mathematics"
-                              {...field}
-                              className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                      {/* Institution */}
+                      <FormField
+                        control={form.control}
+                        name="institution"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Institution Name</FormLabel>
+                            <FormControl>
+                            <div className="relative flex items-center">
+                              <Input
+                                placeholder="Enter Institution Name"
+                                className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                {...field}
+                              />
+                                <span className="absolute right-4 text-gray-500">
+                                  <GraduationCap size={21} />
+                                </span>
+                                </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    {/* Buttons */}
+                      {/* Contact Number */}
+                      <FormField
+                        control={form.control}
+                        name="contactNumber"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Contact Number</FormLabel>
+                            <FormControl>
+                            <div className="relative flex items-center">
+                              <Input
+                                type="number"
+                                className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                placeholder="Enter Contact Number"
+                                {...field}
+                              />
+                                <span className="absolute right-4 text-gray-500">
+                                  <Phone size={21} />
+                                </span>
+                                </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Emergency Contact */}
+                      <FormField
+                        control={form.control}
+                        name="emergencyContact"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Emergency Contact</FormLabel>
+                            <FormControl>
+                            <div className="relative flex items-center">
+                              <Input
+                                type="number"
+                                className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                placeholder="Enter Emergency Number"
+                                {...field}
+                              />
+                                <span className="absolute right-4 text-gray-500">
+                                  <Phone size={21} />
+                                </span>
+                                </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Email */}
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                            <div className="relative flex items-center">
+                              <Input
+                                type="email"
+                                className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                placeholder="Enter Email"
+                                {...field}
+                              />
+                                <span className="absolute right-4 text-gray-500">
+                                  <Mail size={21} />
+                                </span>
+                                </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Date (Date Picker) */}
+                      <FormField
+                        control={form.control}
+                        name="dob"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                            <FormLabel>Joining Date</FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant="outline"
+                                    className={cn(
+                                      "w-[260px] flex items-center justify-between border border-blue-400 rounded-lg px-4 py-2 shadow-lg",
+                                      !field.value && "text-muted-foreground"
+                                    )}
+                                  >
+                                    {field.value ? (
+                                      format(field.value, "PPP")
+                                    ) : (
+                                      <span className="text-gray-500">
+                                        Select Joining Date
+                                      </span>
+                                    )}
+                                    <CalendarIcon className="h-5 w-5 " />
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    disabled={(date) =>
+                      date > new Date() || date < new Date("1900-01-01")
+                    }
+                    initialFocus
+                  />
+                </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Submit Button */}
                     <div className="flex justify-end">
                       <Button
                         type="submit"
@@ -423,21 +605,21 @@ const Team = ({ teacherData }) => {
                   <div className="flex justify-center">
                     <form onSubmit={handleSubmit} className="space-y-4">
                       <div className="flex justify-between items-center w-full text-center">
-                    <div className="w-1/2">
-                      <TimePicker
-                        label="In Time"
-                        selectedTime={inTime}
-                        setSelectedTime={setInTime}
-                      />
-                    </div>
-                    <div className="w-1/2">
-                      <TimePicker
-                        label="Out Time"
-                        selectedTime={outTime}
-                        setSelectedTime={setOutTime}
-                      />
-                    </div>
-                  </div>
+                        <div className="w-1/2">
+                          <TimePicker
+                            label="In Time"
+                            selectedTime={inTime}
+                            setSelectedTime={setInTime}
+                          />
+                        </div>
+                        <div className="w-1/2">
+                          <TimePicker
+                            label="Out Time"
+                            selectedTime={outTime}
+                            setSelectedTime={setOutTime}
+                          />
+                        </div>
+                      </div>
                       <Button
                         type="submit"
                         className="bg-indigo-500 text-white px-5 w-full py-2 rounded-lg hover:bg-indigo-600"
