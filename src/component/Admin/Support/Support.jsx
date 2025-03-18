@@ -3,7 +3,7 @@ import { Button } from "../../src/components/ui/button";
 import { Card } from "../../src/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "../../src/components/ui/tabs";
 import { Input } from "../../src/components/ui/input";
-import myimg from '../Support/images/ki.jpeg'
+import myimg from '../Support/images/ki.jpeg';
 import {
   SidebarInset,
   SidebarProvider,
@@ -20,16 +20,19 @@ import {
   BreadcrumbSeparator,
 } from "../../src/components/ui/breadcrumb";
 import Header from "../Dashboard/Header";
+import { Badge, CalendarIcon, SearchIcon } from "lucide-react";
+import { format } from 'date-fns';
 
 const Support = () => {
-  const tickets = [
+  const initialTickets = [
     {
       id: 1,
       title: "Nshans",
       description: "marksheet 2",
       user: "Hsuana",
-      status: "unsolved",
+      status: "solved", // Changed status to "solved"
       image: myimg,
+      solvedAt: new Date("2025-03-18T15:27:07"), // Added a solvedAt date
     },
     {
       id: 2,
@@ -37,7 +40,8 @@ const Support = () => {
       description: "Here is doubt",
       user: "mohan",
       status: "unsolved",
-      image:myimg ,
+      image: myimg,
+      solvedAt: null,
     },
     {
       id: 3,
@@ -45,7 +49,8 @@ const Support = () => {
       description: "something",
       user: "mohan",
       status: "unsolved",
-      image:myimg,
+      image: myimg,
+      solvedAt: null,
     },
     {
       id: 4,
@@ -53,7 +58,8 @@ const Support = () => {
       description: "something",
       user: "mohan",
       status: "unsolved",
-      image:myimg,
+      image: myimg,
+      solvedAt: null,
     },
     {
       id: 5,
@@ -62,6 +68,7 @@ const Support = () => {
       user: "mohan",
       status: "unsolved",
       image: myimg,
+      solvedAt: null,
     },
     {
       id: 6,
@@ -70,6 +77,7 @@ const Support = () => {
       user: "mohan",
       status: "unsolved",
       image: myimg,
+      solvedAt: null,
     },
     {
       id: 7,
@@ -78,6 +86,7 @@ const Support = () => {
       user: "mohan",
       status: "unsolved",
       image: myimg,
+      solvedAt: null,
     },
     {
       id: 8,
@@ -85,7 +94,8 @@ const Support = () => {
       description: "something",
       user: "mohan",
       status: "unsolved",
-      image:myimg,
+      image: myimg,
+      solvedAt: null,
     },
     {
       id: 9,
@@ -94,20 +104,13 @@ const Support = () => {
       user: "mohan",
       status: "unsolved",
       image: myimg,
+      solvedAt: null,
     },
   ];
 
-  const [activeTab, setActiveTab] = useState("unsolved");
+  const [activeTab, setActiveTab] = useState("solved"); 
   const [search, setSearch] = useState("");
-  const [ticketData, setTicketData] = useState(tickets);
-
-  const handleSolve = (id) => {
-    setTicketData((prev) =>
-      prev.map((ticket) =>
-        ticket.id === id ? { ...ticket, status: "solved" } : ticket
-      )
-    );
-  };
+  const [ticketData, setTicketData] = useState(initialTickets);
 
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
@@ -130,11 +133,11 @@ const Support = () => {
           </Breadcrumb>
         </header>
 
-        <div className="p-4 md:p-8 max-w-6xl  mt-11">
+        <div className="p-4 md:p-8 max-w-6xl  ">
           <div className="flex justify-between">
             <div>
               <Tabs
-                defaultValue="unsolved"
+                defaultValue="solved" // Set default tab to "solved"
                 onValueChange={setActiveTab}
                 className="flex justify-self-start mb-4 md:mb-6"
               >
@@ -143,7 +146,7 @@ const Support = () => {
                     value="unsolved"
                     className={`px-4 md:px-6 py-2 rounded-md font-medium transition-all ${
                       activeTab === "unsolved"
-                        ? "bg-indigo-600 "
+                        ? "bg-indigo-600 text-white"
                         : " hover:bg-gray-200"
                     }`}
                   >
@@ -153,7 +156,7 @@ const Support = () => {
                     value="solved"
                     className={`px-4 md:px-6 py-2 rounded-md font-medium transition-all ${
                       activeTab === "solved"
-                        ? "bg-green-600 "
+                        ? "bg-green-600 text-white"
                         : " hover:bg-gray-200"
                     }`}
                   >
@@ -171,7 +174,7 @@ const Support = () => {
                 className="w-full md:w-1/2 lg:w-2/3 border-gray-300 rounded-lg px-4 py-2 shadow-sm"
               />
 
-              <Button className="bg-indigo-600 hover:bg-indigo-700  px-4 md:px-6 py-2 rounded-lg shadow-lg transition-all">
+              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 md:px-6 py-2 rounded-lg shadow-lg transition-all">
                 Search
               </Button>
             </div>
@@ -204,11 +207,25 @@ const Support = () => {
                     </p>
                     {ticket.status === "unsolved" && (
                       <Button
-                        className="mt-3 md:mt-4 bg-green-500 hover:bg-green-600  px-4 py-2 rounded-lg shadow-lg transition-all"
-                        onClick={() => handleSolve(ticket.id)}
+                        className="mt-3 md:mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg transition-all"
+                        // Removed onClick
                       >
                         Mark as Solved
                       </Button>
+                    )}
+                    {ticket.status === "solved" && (
+                      <div className="mt-3 md:mt-4">
+                        <p className="text-xs text-gray-500 flex items-center">
+                          <CalendarIcon className="mr-1 h-3 w-3" />
+                          : {ticket.solvedAt ? format(ticket.solvedAt, 'yyyy-MM-dd HH:mm:ss') : 'N/A'}
+                        </p>
+                        <Button
+                          className="mt-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg transition-all"
+                          // Removed onClick
+                        >
+                          Delete
+                        </Button>
+                      </div>
                     )}
                   </div>
                 </Card>
