@@ -391,16 +391,16 @@ const Team = ({ teacherData }) => {
                           <FormItem>
                             <FormLabel>Institution Name</FormLabel>
                             <FormControl>
-                            <div className="relative flex items-center">
-                              <Input
-                                placeholder="Enter Institution Name"
-                                className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                {...field}
-                              />
+                              <div className="relative flex items-center">
+                                <Input
+                                  placeholder="Enter Institution Name"
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                  {...field}
+                                />
                                 <span className="absolute right-4 text-gray-500">
                                   <GraduationCap size={21} />
                                 </span>
-                                </div>
+                              </div>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -415,17 +415,17 @@ const Team = ({ teacherData }) => {
                           <FormItem>
                             <FormLabel>Contact Number</FormLabel>
                             <FormControl>
-                            <div className="relative flex items-center">
-                              <Input
-                                type="number"
-                                className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                placeholder="Enter Contact Number"
-                                {...field}
-                              />
+                              <div className="relative flex items-center">
+                                <Input
+                                  type="number"
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                  placeholder="Enter Contact Number"
+                                  {...field}
+                                />
                                 <span className="absolute right-4 text-gray-500">
                                   <Phone size={21} />
                                 </span>
-                                </div>
+                              </div>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -440,17 +440,17 @@ const Team = ({ teacherData }) => {
                           <FormItem>
                             <FormLabel>Emergency Contact</FormLabel>
                             <FormControl>
-                            <div className="relative flex items-center">
-                              <Input
-                                type="number"
-                                className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                placeholder="Enter Emergency Number"
-                                {...field}
-                              />
+                              <div className="relative flex items-center">
+                                <Input
+                                  type="number"
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                  placeholder="Enter Emergency Number"
+                                  {...field}
+                                />
                                 <span className="absolute right-4 text-gray-500">
                                   <Phone size={21} />
                                 </span>
-                                </div>
+                              </div>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -465,17 +465,17 @@ const Team = ({ teacherData }) => {
                           <FormItem>
                             <FormLabel>Email</FormLabel>
                             <FormControl>
-                            <div className="relative flex items-center">
-                              <Input
-                                type="email"
-                                className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                placeholder="Enter Email"
-                                {...field}
-                              />
+                              <div className="relative flex items-center">
+                                <Input
+                                  type="email"
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                  placeholder="Enter Email"
+                                  {...field}
+                                />
                                 <span className="absolute right-4 text-gray-500">
                                   <Mail size={21} />
                                 </span>
-                                </div>
+                              </div>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -511,16 +511,16 @@ const Team = ({ teacherData }) => {
                                 </FormControl>
                               </PopoverTrigger>
                               <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
-                    }
-                    initialFocus
-                  />
-                </PopoverContent>
+                                <Calendar
+                                  mode="single"
+                                  selected={field.value}
+                                  onSelect={field.onChange}
+                                  disabled={(date) =>
+                                    date > new Date() || date < new Date("1900-01-01")
+                                  }
+                                  initialFocus
+                                />
+                              </PopoverContent>
                             </Popover>
                             <FormMessage />
                           </FormItem>
@@ -793,11 +793,10 @@ const Team = ({ teacherData }) => {
                 <PaginationLink
                   href="#"
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`px-4 py-2 rounded-md ${
-                    currentPage === i + 1
-                      ? "bg-blue-600 text-white"
-                      : "hover:bg-blue-500  hover:text-white"
-                  }`}
+                  className={`px-4 py-2 rounded-md ${currentPage === i + 1
+                    ? "bg-blue-600 text-white"
+                    : "hover:bg-blue-500  hover:text-white"
+                    }`}
                 >
                   {i + 1}
                 </PaginationLink>
