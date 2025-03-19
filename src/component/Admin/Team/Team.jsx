@@ -248,7 +248,7 @@ const Team = ({ teacherData }) => {
               </DropdownMenuTrigger>
 
               <DropdownMenuContent
-                align="end"
+              
                 side="left"
                 align="start"
                 className="bg-white text-black w-40 shadow-md rounded-md mt-2  border border-blue-300 "
