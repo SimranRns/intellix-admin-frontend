@@ -18,13 +18,14 @@ import {
   HandCoins,
   Clock,
   Logs,
-  User2,
   GraduationCap,
   Phone,
   CalendarIcon,
+  MapPinHouse,
 } from "lucide-react";
 import { Button } from "@headlessui/react";
 import { z } from "zod";
+import { Icon } from "@radix-ui/react-select";
 import {
   SidebarInset,
   SidebarProvider,
@@ -76,25 +77,31 @@ import {
 import { Input } from "../../src/components/ui/input";
 import { Label } from "../../src/components/ui/label";
 
-const formSchema = z.object({
+// Schema for the first form (Basic Details)
+const basicDetailsSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   post: z.string().min(2, "Post must be at least 2 characters"),
   subject: z.string().min(2, "Subject must be at least 2 characters"),
+});
+
+// Schema for the second form (Additional Details)
+const additionalDetailsSchema = z.object({
+  Teachername: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email format"),
   highestQualification: z.string().min(1, "Qualification is required"),
   institution: z.string().min(1, "Institution is required"),
   contactNumber: z
     .string()
-    .length(10, "Enter a valid 10-digit contact number")
-    .regex(/^[6-9]\d+$/, "Only numeric values allowed"),
+    .regex(/^\d{10}$/, "Enter a valid 10-digit contact number"),
   emergencyContact: z
     .string()
-    .length(10, "Enter a valid 10-digit emergency contact number")
-    .regex(/^[6-9]\d+$/, "Only numeric values allowed"),
-  dob: z.date({
-    required_error: "joining date is required",
+    .regex(/^\d{10}$/, "Enter a valid 10-digit emergency number"),
+  Salary: z.string().min(4, "Enter a valid amount"),
+  JoiningDate: z.coerce.date().refine((date) => !isNaN(date.getTime()), {
+    message: "Invalid date format",
   }),
 });
+
 // Mock teacher data
 // const Teachers = Array.from({ length: 1 }, (_, i) => ({
 //   id: i + 1,
@@ -134,7 +141,6 @@ import {
   FormLabel,
   FormMessage,
 } from "../../src/components/ui/form";
-import { Icon } from "@radix-ui/react-select";
 import {
   Popover,
   PopoverContent,
@@ -184,23 +190,31 @@ const Team = ({ teacherData }) => {
   );
   const [open, setOpen] = useState(false);
   const [Addteacher, setteacher] = useState(false);
+  const [AddDetails, setAddDetails] = useState(false);
   const [Deleteteacher, setDelete] = useState(false);
   const [ChangeTime, setChangeTime] = useState(false);
   const [inTime, setInTime] = useState("");
   const [outTime, setOutTime] = useState("");
   // Initialize useForm
-  const form = useForm({
-    resolver: zodResolver(formSchema),
+  // Form instances
+  const basicForm = useForm({
+    resolver: zodResolver(basicDetailsSchema),
     defaultValues: {
       post: teacherData?.post || "",
       name: teacherData?.name || "",
       subject: teacherData?.subject || "",
+    },
+  });
+
+  const additionalForm = useForm({
+    resolver: zodResolver(additionalDetailsSchema),
+    defaultValues: {
+      Teachername: "",
       email: "",
       highestQualification: "",
       institution: "",
       contactNumber: "",
       emergencyContact: "",
-      dob: undefined,
     },
   });
 
@@ -209,7 +223,14 @@ const Team = ({ teacherData }) => {
     console.log("Form Submitted:", data);
   };
   const [date, setDate] = useState("");
+  // Handlers for form submissions
+  const handleBasicFormSubmit = (data) => {
+    console.log("Basic Form Data:", data);
+  };
 
+  const handleAdditionalFormSubmit = (data) => {
+    console.log("Additional Form Data:", data);
+  };
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       <AppSidebar />
@@ -291,7 +312,7 @@ const Team = ({ teacherData }) => {
             </Button>
 
             <Dialog open={Addteacher} onOpenChange={setteacher}>
-              <DialogContent className="sm:max-w-[800px] shadow-lg p-6 rounded-lg">
+              <DialogContent className="sm:max-w-[800px] shadow-lg p-6 rounded-lg h-[90%] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
                 <DialogHeader>
                   <DialogTitle className="text-center">
                     Add Employee
@@ -299,9 +320,11 @@ const Team = ({ teacherData }) => {
                 </DialogHeader>
                 <hr />
 
-                <Form {...form}>
+                <Form {...additionalForm}>
                   <form
-                    onSubmit={form.handleSubmit(onSubmit)}
+                    onSubmit={additionalForm.handleSubmit(
+                      handleAdditionalFormSubmit
+                    )}
                     className="space-y-6"
                   >
                     {/* Centered Profile Image */}
@@ -311,7 +334,7 @@ const Team = ({ teacherData }) => {
                           <AvatarImage
                             src={profileImg || "/default-avatar.png"}
                             alt="Profile Image"
-                            className="rounded-full"
+                            className="rounded-full  border-4 border-blue-600"
                           />
                           <AvatarFallback className="rounded-full">
                             CN
@@ -337,8 +360,8 @@ const Team = ({ teacherData }) => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       {/* Name Field */}
                       <FormField
-                        control={form.control}
-                        name="name"
+                        control={additionalForm.control}
+                        name="Teachername"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Name</FormLabel>
@@ -361,7 +384,7 @@ const Team = ({ teacherData }) => {
 
                       {/* Highest Qualification */}
                       <FormField
-                        control={form.control}
+                        control={additionalForm.control}
                         name="highestQualification"
                         render={({ field }) => (
                           <FormItem>
@@ -385,7 +408,7 @@ const Team = ({ teacherData }) => {
 
                       {/* Institution */}
                       <FormField
-                        control={form.control}
+                        control={additionalForm.control}
                         name="institution"
                         render={({ field }) => (
                           <FormItem>
@@ -409,7 +432,7 @@ const Team = ({ teacherData }) => {
 
                       {/* Contact Number */}
                       <FormField
-                        control={form.control}
+                        control={additionalForm.control}
                         name="contactNumber"
                         render={({ field }) => (
                           <FormItem>
@@ -434,7 +457,7 @@ const Team = ({ teacherData }) => {
 
                       {/* Emergency Contact */}
                       <FormField
-                        control={form.control}
+                        control={additionalForm.control}
                         name="emergencyContact"
                         render={({ field }) => (
                           <FormItem>
@@ -459,7 +482,7 @@ const Team = ({ teacherData }) => {
 
                       {/* Email */}
                       <FormField
-                        control={form.control}
+                        control={additionalForm.control}
                         name="email"
                         render={({ field }) => (
                           <FormItem>
@@ -482,12 +505,39 @@ const Team = ({ teacherData }) => {
                         )}
                       />
 
+                      {/* Salary  */}
+                      <FormField
+                        control={additionalForm.control}
+                        name="Salary"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Enter in Hand Salary* (Per month)
+                            </FormLabel>
+                            <FormControl>
+                              <div className="relative flex items-center">
+                                <Input
+                                  type="number"
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                  placeholder="In Hand Salary"
+                                  {...field}
+                                />
+                                <span className="absolute right-4 text-gray-500">
+                                  <HandCoins size={21} />
+                                </span>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
                       {/* Date (Date Picker) */}
                       <FormField
-                        control={form.control}
-                        name="dob"
+                        control={additionalForm.control}
+                        name="JoiningDate"
                         render={({ field }) => (
-                          <FormItem className="flex flex-col">
+                          <FormItem className="flex flex-col mt-2">
                             <FormLabel>Joining Date</FormLabel>
                             <Popover>
                               <PopoverTrigger asChild>
@@ -495,33 +545,47 @@ const Team = ({ teacherData }) => {
                                   <Button
                                     variant="outline"
                                     className={cn(
-                                      "w-[260px] flex items-center justify-between border border-blue-400 rounded-lg px-4 py-2 shadow-lg",
+                                      "w-[260px] flex items-center justify-between border border-blue-400 rounded-xl  px-4 py-2 shadow-lg",
                                       !field.value && "text-muted-foreground"
                                     )}
                                   >
                                     {field.value ? (
-                                      format(field.value, "PPP")
+                                      format(
+                                        new Date(field.value),
+                                        "yyyy-MM-dd"
+                                      ) // Ensuring correct format
                                     ) : (
                                       <span className="text-gray-500">
                                         Select Joining Date
                                       </span>
                                     )}
-                                    <CalendarIcon className="h-5 w-5 " />
+                                    <CalendarIcon className="h-5 w-5" />
                                   </Button>
                                 </FormControl>
                               </PopoverTrigger>
-                              <PopoverContent className="w-auto p-0" align="start">
+                              <PopoverContent
+                                className="w-auto p-0"
+                                align="start"
+                              >
                                 <Calendar
                                   mode="single"
-                                  selected={field.value}
-                                  onSelect={field.onChange}
+                                  selected={
+                                    field.value
+                                      ? new Date(field.value)
+                                      : undefined
+                                  }
+                                  onSelect={(date) =>
+                                    field.onChange(date?.toISOString())
+                                  } // Storing correct format
                                   disabled={(date) =>
-                                    date > new Date() || date < new Date("1900-01-01")
+                                    date > new Date() ||
+                                    date < new Date("1900-01-01")
                                   }
                                   initialFocus
                                 />
                               </PopoverContent>
                             </Popover>
+
                             <FormMessage />
                           </FormItem>
                         )}
@@ -531,11 +595,94 @@ const Team = ({ teacherData }) => {
                     {/* Submit Button */}
                     <div className="flex justify-end">
                       <Button
+                        onClick={() => setAddDetails(true)}
                         type="submit"
                         className="bg-indigo-600 text-white px-9 py-2 rounded-lg hover:bg-indigo-700"
                       >
                         Save
                       </Button>
+                      <Dialog open={AddDetails} onOpenChange={setAddDetails}>
+                        <DialogContent className="sm:max-w-[800px] shadow-lg p-6 rounded-lg h-[90%] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
+                          <DialogHeader>
+                            <DialogTitle className="text-center">
+                            Address Details
+                            </DialogTitle>
+                          </DialogHeader>
+                          <hr />
+
+                          <Form {...additionalForm}>
+                            <form
+                              onSubmit={additionalForm.handleSubmit(
+                                handleAdditionalFormSubmit
+                              )}
+                              className="space-y-6"
+                            >
+                            
+                              {/* Two-Column Grid Layout */}
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                {/* Name Field */}
+                                <FormField
+                                  control={additionalForm.control}
+                                  name="Teachername"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Residential Address</FormLabel>
+                                      <FormControl>
+                                        <div className="relative flex items-center">
+                                          <Input
+                                            placeholder="Address Line 1"
+                                            {...field}
+                                            className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                          />
+                                          <span className="absolute right-4 text-gray-500">
+                                            <MapPinHouse size={21} />
+                                          </span>
+                                        </div>
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                              
+                                />
+                                     {/* Name Field */}
+                                     <FormField
+                                  control={additionalForm.control}
+                                  name="Teachername"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>District</FormLabel>
+                                      <FormControl>
+                                        <div className="relative flex items-center">
+                                          <Input
+                                            placeholder="Address Line 1"
+                                            {...field}
+                                            className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                          />
+                                          <span className="absolute right-4 text-gray-500">
+                                            <MapPinHouse size={21} />
+                                          </span>
+                                        </div>
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                              
+                                />
+                              </div>
+
+                              {/* Submit Button */}
+                              <div className="flex justify-end">
+                                <Button
+                                  type="submit"
+                                  className="bg-indigo-600 text-white px-9 py-2 rounded-lg hover:bg-indigo-700"
+                                >
+                                  Save
+                                </Button>
+                              </div>
+                            </form>
+                          </Form>
+                        </DialogContent>
+                      </Dialog>
                     </div>
                   </form>
                 </Form>
@@ -660,14 +807,14 @@ const Team = ({ teacherData }) => {
                     <DialogTitle className="text-">Edit Task</DialogTitle>
                   </DialogHeader>
                   <hr></hr>
-                  <Form {...form}>
+                  <Form {...basicForm}>
                     <form
-                      onSubmit={form.handleSubmit(onSubmit)}
+                      onSubmit={basicForm.handleSubmit(handleBasicFormSubmit)}
                       className="space-y-6"
                     >
                       {/* Post Field */}
                       <FormField
-                        control={form.control}
+                        control={basicForm.control}
                         name="post"
                         render={({ field }) => (
                           <FormItem>
@@ -686,7 +833,7 @@ const Team = ({ teacherData }) => {
 
                       {/* Name Field */}
                       <FormField
-                        control={form.control}
+                        control={basicForm.control}
                         name="name"
                         render={({ field }) => (
                           <FormItem>
@@ -705,7 +852,7 @@ const Team = ({ teacherData }) => {
 
                       {/* Subject Field */}
                       <FormField
-                        control={form.control}
+                        control={basicForm.control}
                         name="subject"
                         render={({ field }) => (
                           <FormItem>
@@ -740,7 +887,7 @@ const Team = ({ teacherData }) => {
               <CardHeader className="flex flex-col items-center text-center">
                 <Avatar className="shadow-md w-24 h-24 rounded-full">
                   <AvatarImage
-                    className="rounded-full"
+                    className="rounded-full  border-4 border-blue-600"
                     src={teacher.image}
                     alt={teacher.name}
                   />

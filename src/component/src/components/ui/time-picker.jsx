@@ -37,12 +37,12 @@ const TimePicker = ({ label, selectedTime, setSelectedTime }) => {
             {/* Hour & Minute Scrollable Dropdowns */}
             <div className="w-full flex justify-between">
               {/* Hour List (Scrollable) */}
-              <div className="w-24 h-48 overflow-y-scroll border rounded-md custom-scrollbar">
+              <div className="w-24 h-48 overflow-y-auto border rounded-md custom-scrollbar">
                 {hours.map((hour) => (
                   <div
                     key={hour}
                     onClick={() => setSelectedHour(hour)}
-                    className={`cursor-pointer px-3 py-2 text-center ${
+                    className={`cursor-pointer  px-3 py-2 text-center ${
                       selectedHour === hour
                         ? "bg-blue-500 text-white"
                         : "hover:bg-gray-200"
@@ -56,7 +56,7 @@ const TimePicker = ({ label, selectedTime, setSelectedTime }) => {
               <span className="mx-2 font-bold">:</span>
 
               {/* Minute List (Scrollable) */}
-              <div className="w-24 h-48 overflow-y-scroll border rounded-md custom-scrollbar">
+              <div className="w-24 h-48 overflow-y-auto border rounded-md custom-scrollbar">
                 {minutes.map((minute) => (
                   <div
                     key={minute}
