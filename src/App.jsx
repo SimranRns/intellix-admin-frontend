@@ -16,6 +16,7 @@ import StudentSelectionPage from "./component/Admin/Student/StudentSelectionPage
 import ParentDetails from "./component/Admin/Student/ParentDetails";
 import SuccessMessage from "./component/Admin/Student/SuccessMessage";
 import View_Profile from "./component/Admin/Team/View_Profile";
+import Leads from "./component/Admin/Leads/Leads";
 // import { Route } from "lucide-react";
 const App = () => {
   return (
@@ -39,6 +40,7 @@ const App = () => {
           <Route path="/add_student_model2" element={<StudentSelectionPage />} />
           <Route path="/add_student_model3" element={<ParentDetails />} />
           <Route path="/addStudent" element={<SuccessMessage />} />
+          <Route path="/Leads" element={<Leads/>} />
 
 
 

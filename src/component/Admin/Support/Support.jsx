@@ -20,7 +20,7 @@ import {
   BreadcrumbSeparator,
 } from "../../src/components/ui/breadcrumb";
 import Header from "../Dashboard/Header";
-import { Badge, CalendarIcon, SearchIcon } from "lucide-react";
+import {  CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 
 const Support = () => {
@@ -29,7 +29,7 @@ const Support = () => {
       id: 1,
       title: "Nshans",
       description: "marksheet 1",
-      status: "solved", // Changed status to "solved"
+      status: "solved", 
       image: myimg,
       solvedAt: new Date("2025-03-18T15:27:07"), 
       messsage: "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups."
@@ -65,7 +65,7 @@ const Support = () => {
       id: 10,
       title: "hans",
       description: "marksheet 2",
-      status: "solved", // Changed status to "solved"
+      status: "solved",
       image: myimg,
       solvedAt: new Date("2025-03-18T15:27:07"), 
       messsage: "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups."
@@ -74,7 +74,7 @@ const Support = () => {
       id: 11,
       title: "Nshans",
       description: "marksheet 3",
-      status: "solved", // Changed status to "solved"
+      status: "solved", 
       image: myimg,
       solvedAt: new Date("2025-03-18T15:27:07"), 
       messsage: "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups."
@@ -112,7 +112,7 @@ const Support = () => {
             <div className="flex justify-between">
               <div>
                 <Tabs
-                  defaultValue="solved" // Set default tab to "solved"
+                  defaultValue="solved" 
                   onValueChange={setActiveTab}
                   className="flex justify-self-start mb-4 md:mb-6"
                 >
@@ -144,8 +144,6 @@ const Support = () => {
               <div className="flex flex-col md:flex-row justify-end gap-4 mb-4 md:mb-6">
                 <Input
                   placeholder="Search tickets..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
                   className="w-full md:w-1/2 lg:w-2/3 border-gray-300 rounded-lg px-4 py-2 shadow-sm"
                 />
 
@@ -183,7 +181,6 @@ const Support = () => {
                       {ticket.status === "unsolved" && (
                         <Button
                           className="mt-3 md:mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg transition-all"
-                          // Removed onClick
                         >
                           Mark as Solved
                         </Button>
@@ -202,9 +199,7 @@ const Support = () => {
                             }
                           </p>
                           <Button
-                            className="mt-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg transition-all"
-                            // Removed onClick
-                          >
+                            className="mt-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg transition-all">
                             Delete
                           </Button>
                         </div>
