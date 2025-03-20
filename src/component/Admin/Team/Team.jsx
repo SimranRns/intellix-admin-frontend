@@ -130,6 +130,7 @@ const Teachers = [
     ],
     image: "https://github.com/shadcn.png",
   },
+  
 ];
 
 import {
@@ -146,12 +147,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "../../src/components/ui/popover";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Team = ({ teacherData }) => {
   const [selectedOption, setSelectedOption] = useState("Newest");
   const [currentPage, setCurrentPage] = useState(1);
   const [teachersPerPage, setTeachersPerPage] = useState(10);
   const [profileImg, setProfileImg] = useState("https://github.com/shadcn.png");
+  const Navigate = useNavigate();
   const fileInputRef = useRef(null);
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -269,7 +272,7 @@ const Team = ({ teacherData }) => {
               </DropdownMenuTrigger>
 
               <DropdownMenuContent
-              
+
                 side="left"
                 align="start"
                 className="bg-white text-black w-40 shadow-md rounded-md mt-2  border border-blue-300 "
@@ -605,7 +608,7 @@ const Team = ({ teacherData }) => {
                         <DialogContent className="sm:max-w-[800px] shadow-lg p-6 rounded-lg h-[90%] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
                           <DialogHeader>
                             <DialogTitle className="text-center">
-                            Address Details
+                              Address Details
                             </DialogTitle>
                           </DialogHeader>
                           <hr />
@@ -617,7 +620,7 @@ const Team = ({ teacherData }) => {
                               )}
                               className="space-y-6"
                             >
-                            
+
                               {/* Two-Column Grid Layout */}
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 {/* Name Field */}
@@ -642,10 +645,10 @@ const Team = ({ teacherData }) => {
                                       <FormMessage />
                                     </FormItem>
                                   )}
-                              
+
                                 />
-                                     {/* Name Field */}
-                                     <FormField
+                                {/* Name Field */}
+                                <FormField
                                   control={additionalForm.control}
                                   name="Teachername"
                                   render={({ field }) => (
@@ -666,7 +669,7 @@ const Team = ({ teacherData }) => {
                                       <FormMessage />
                                     </FormItem>
                                   )}
-                              
+
                                 />
                               </div>
 
@@ -914,7 +917,7 @@ const Team = ({ teacherData }) => {
               </CardContent>
 
               <CardFooter className="flex justify-center gap-3 mt-5">
-                <Button className="bg-indigo-600 text-xs text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-indigo-700 transition-all">
+                <Button className="bg-indigo-600 text-xs text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-indigo-700 transition-all" onClick={() => Navigate("/View-Profile")}>
                   <User size={18} /> Profile
                 </Button>
                 <Button className="bg-orange-500 text-xs text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-orange-600 transition-all">

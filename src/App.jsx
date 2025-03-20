@@ -26,7 +26,7 @@ const App = () => {
           <Route path="/" element={<Login />} />
           <Route path="/Adminlogin" element={<AdminLogin />} />
           <Route path="/Dashboard" element={<Dashboard />} />
-          <Route path="/inbox" element={<View_Profile />} />
+          <Route path="/inbox" element={<div>inbox</div>} />
           <Route path="/students" element={<StudentHeader />} />
           <Route path="/accounts" element={<div>Accounts </div>} />
           <Route path="/attendance" element={<Attendance />} />
@@ -39,6 +39,7 @@ const App = () => {
           <Route path="/add_student_model2" element={<StudentSelectionPage />} />
           <Route path="/add_student_model3" element={<ParentDetails />} />
           <Route path="/addStudent" element={<SuccessMessage />} />
+          <Route path="/View-Profile" element={<View_Profile />} />
 
 
 
