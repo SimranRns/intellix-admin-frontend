@@ -1,133 +1,14 @@
-// import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../src/components/ui/dialog";
-// import { Button } from "../../src/components/ui/button";
-// import { Label } from "../../src/components/ui/label";
-// import { Input } from "../../src/components/ui/input";
-// import { useNavigate } from "react-router-dom";
-
-// const ProceedModal = ({ o, c }) => {
-
-//     const handleChange = (e) => {
-//         const { name, value } = e.target;
-      
-//         let regex;
-      
-//         if (name === "address") {
-//           regex = /^[A-Za-z0-9\s,.-]+$/; // Address ke liye alphabets, numbers, spaces, comma, dot, hyphen allowed
-//         } else {
-//           regex = /^[A-Za-z\s]+$/; // Name aur School ke liye sirf alphabets aur spaces allowed
-//         }
-      
-//         if (value === "" || regex.test(value)) {
-//           setFormData((prevData) => ({ ...prevData, [name]: value }));
-//         }
-//       };
-
-      
-
-
-//     const navigate = useNavigate();
-//     return (
-//         <Dialog open={o} onOpenChange={c}>
-//             <DialogContent className="sm:max-w-[700px] p-6 rounded-lg">
-//                 <DialogHeader>
-//                     <DialogTitle className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4 ">Enter Your Details</DialogTitle>
-//                 </DialogHeader>
-
-//                 <div className="grid gap-4">
-
-//                    <div>
-//   <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">
-//     Enter Address
-//   </Label>
-//   <Input
-//     type="text"
-//     name="address"
-//     value={formData.address}
-//     onChange={handleChange}
-//     className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-//     placeholder="Enter your address"
-//   />
-// </div>
-
-
-//                     <div className="grid grid-cols-2 gap-4">
-
-//                         <div>
-//                             <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter Aadhaar Number</Label>
-//                             <Input className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Aadhaar number" />
-//                         </div>
-
-
-//                         <div>
-//                             <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter Pan No.</Label>
-//                             <Input className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Pan number" />
-//                             {/* <p className="text-red-500 text-sm">PAN card number is invalid.</p> */}
-//                         </div>
-//                     </div>
-
-
-//                     <div className="grid grid-cols-2 gap-4">
-//                         <div>
-//                             <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">
-//                                 Upload Aadhaar Document
-//                             </Label>
-//                             <p className="text-gray-500 text-sm">(upload front and back in pdf)</p>
-//                             <div className="w-full border border-gray-300 rounded-xl p-3 sm:p-2 focus:ring-4 focus:ring-blue-500 shadow-lg cursor-pointer">
-//                                 <Label htmlFor="file-upload" className="cursor-pointer text-gray-500 ml-2">
-//                                     Click to Upload
-//                                 </Label>
-//                                 <Input type="file" id="file-upload" className="hidden" />
-//                             </div>
-//                         </div>
-
-//                         {/* <div>
-//                             <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Upload Pan photo</Label>
-//                             <p className="text-gray-500 text-sm">(upload front and back in pdf)</p>
-//                             <Button variant="outline" className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg">Upload pdf</Button>
-//                         </div> */}
-
-//                         <div>
-//                             <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">
-//                                 Upload Pan Photo
-//                             </Label>
-//                             <p className="text-gray-500 text-sm">(upload front and back in pdf)</p>
-//                             <div className="w-full border border-gray-300 rounded-xl p-3 sm:p-2 focus:ring-4 focus:ring-blue-500 shadow-lg cursor-pointer">
-//                                 <Label htmlFor="pan-upload" className="cursor-pointer text-gray-500 ml-2">
-//                                     Upload PDF
-//                                 </Label>
-//                                 <Input type="file" id="pan-upload" className="hidden" />
-//                             </div>
-//                         </div>
-
-//                     </div>
-
-
-//                     <div className="flex justify-center mt-4">
-//                         <Button onClick={() => navigate("/add_student_model2")} className="bg-blue-700 hover:bg-blue-600 text-white px-10 py-3 rounded-lg w-full sm:w-[500px] text-lg">
-//                             Submit
-//                         </Button>
-//                     </div>
-//                 </div>
-//             </DialogContent>
-//         </Dialog>
-//     );
-// };
-
-// export default ProceedModal;
-
-
-
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../src/components/ui/dialog";
 import { Button } from "../../src/components/ui/button";
 import { Label } from "../../src/components/ui/label";
 import { Input } from "../../src/components/ui/input";
 import { useNavigate } from "react-router-dom";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 const ProceedModal = ({ o, c }) => {
     const navigate = useNavigate();
 
-    // ✅ Form state
     const [formData, setFormData] = useState({
         address: "",
         aadhaarNumber: "",
@@ -136,56 +17,68 @@ const ProceedModal = ({ o, c }) => {
         panDocument: null
     });
 
-    // ✅ Address change handler (Alphabets, numbers, spaces, comma, dot, hyphen allowed)
-    const handleChangeAddress = (e) => {
+    const [errors, setErrors] = useState({});
+
+    const handleChange = (e) => {
         const { name, value } = e.target;
-        const regex = /^[A-Za-z0-9\s,.-]+$/;
-        if (value === "" || regex.test(value)) {
-            setFormData((prevData) => ({ ...prevData, [name]: value }));
-        }
+        setFormData((prevData) => ({ ...prevData, [name]: value }));
+        setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
     };
 
-    // ✅ Aadhaar Number change handler (Only numbers, exactly 12 digits)
-    const handleChangeAadhaar = (e) => {
-        const { name, value } = e.target;
-        const regex = /^[0-9]{0,12}$/; // 0-12 digits allowed
-        if (value === "" || regex.test(value)) {
-            setFormData((prevData) => ({ ...prevData, [name]: value }));
-        }
-    };
-
-    // ✅ PAN Number change handler (Alphanumeric, 10 characters)
-    const handleChangePan = (e) => {
-        const { name, value } = e.target;
-        const regex = /^[A-Z0-9]{0,10}$/i; // 0-10 characters allowed
-        if (value === "" || regex.test(value)) {
-            setFormData((prevData) => ({ ...prevData, [name]: value.toUpperCase() })); // Convert to uppercase
-        }
-    };
-
-    // ✅ Aadhaar Document Upload Handler
-    const handleAadhaarUpload = (e) => {
+    const handleFileUpload = (e, field) => {
         const file = e.target.files[0];
-        setFormData((prevData) => ({ ...prevData, aadhaarDocument: file }));
+        if (file && file.type === "application/pdf") {
+            setFormData((prevData) => ({ ...prevData, [field]: file }));
+            setErrors((prevErrors) => ({ ...prevErrors, [field]: "" }));
+        } else {
+            setErrors((prevErrors) => ({ ...prevErrors, [field]: "Only PDF files are allowed!" }));
+        }
     };
 
-    // ✅ PAN Document Upload Handler
-    const handlePanUpload = (e) => {
-        const file = e.target.files[0];
-        setFormData((prevData) => ({ ...prevData, panDocument: file }));
+    const handleSubmit = () => {
+        let newErrors = {};
+
+        if (!formData.address.trim()) {
+            newErrors.address = "Address is required!";
+        }
+        if (!formData.aadhaarNumber || formData.aadhaarNumber.length !== 12) {
+            newErrors.aadhaarNumber = "Aadhaar number must be 12 digits!";
+        }
+        if (!formData.panNumber || formData.panNumber.length !== 10) {
+            newErrors.panNumber = "PAN number must be 10 characters!";
+        }
+        if (!formData.aadhaarDocument) {
+            newErrors.aadhaarDocument = "Aadhaar document is required!";
+        }
+        if (!formData.panDocument) {
+            newErrors.panDocument = "PAN document is required!";
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+navigate("/add_student_model2")
+      
     };
 
     return (
-        <Dialog open={o} onOpenChange={c}>
+      <div>
+        <FaArrowLeftLong
+        onClick={() => navigate("/add_student_model")}
+        style={{ cursor: "pointer" }}
+        className="fixed top-5 left-5 text-3xl z-[9999] bg-white p-2 rounded-full shadow-lg"
+      />
+          <Dialog open={o} onOpenChange={c}>
+            
             <DialogContent className="sm:max-w-[700px] p-6 rounded-lg">
                 <DialogHeader>
-                    <DialogTitle className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">
+                    <DialogTitle className="block text-gray-700 font-semibold text-lg sm:text-3xl mb-4 text-center">
                         Enter Your Details
                     </DialogTitle>
                 </DialogHeader>
 
                 <div className="grid gap-4">
-                    {/* Address Field */}
                     <div>
                         <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">
                             Enter Address
@@ -194,13 +87,13 @@ const ProceedModal = ({ o, c }) => {
                             type="text"
                             name="address"
                             value={formData.address}
-                            onChange={handleChangeAddress}
+                            onChange={handleChange}
                             className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                             placeholder="Enter your address"
                         />
+                        {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
                     </div>
 
-                    {/* Aadhaar and PAN Number Fields */}
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">
@@ -210,10 +103,11 @@ const ProceedModal = ({ o, c }) => {
                                 type="text"
                                 name="aadhaarNumber"
                                 value={formData.aadhaarNumber}
-                                onChange={handleChangeAadhaar}
+                                onChange={handleChange}
                                 className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                 placeholder="Aadhaar number (12 digits)"
                             />
+                            {errors.aadhaarNumber && <p className="text-red-500 text-sm mt-1">{errors.aadhaarNumber}</p>}
                         </div>
 
                         <div>
@@ -224,14 +118,14 @@ const ProceedModal = ({ o, c }) => {
                                 type="text"
                                 name="panNumber"
                                 value={formData.panNumber}
-                                onChange={handleChangePan}
+                                onChange={handleChange}
                                 className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                 placeholder="PAN number (10 characters)"
                             />
+                            {errors.panNumber && <p className="text-red-500 text-sm mt-1">{errors.panNumber}</p>}
                         </div>
                     </div>
 
-                    {/* Document Upload Fields */}
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">
@@ -246,10 +140,11 @@ const ProceedModal = ({ o, c }) => {
                                     type="file"
                                     id="aadhaar-upload"
                                     className="hidden"
-                                    onChange={handleAadhaarUpload}
+                                    onChange={(e) => handleFileUpload(e, "aadhaarDocument")}
                                     accept=".pdf"
                                 />
                             </div>
+                            {errors.aadhaarDocument && <p className="text-red-500 text-sm mt-1">{errors.aadhaarDocument}</p>}
                         </div>
 
                         <div>
@@ -265,25 +160,23 @@ const ProceedModal = ({ o, c }) => {
                                     type="file"
                                     id="pan-upload"
                                     className="hidden"
-                                    onChange={handlePanUpload}
+                                    onChange={(e) => handleFileUpload(e, "panDocument")}
                                     accept=".pdf"
                                 />
                             </div>
+                            {errors.panDocument && <p className="text-red-500 text-sm mt-1">{errors.panDocument}</p>}
                         </div>
                     </div>
 
-                    {/* Submit Button */}
                     <div className="flex justify-center mt-4">
-                        <Button
-                            onClick={() => navigate("/add_student_model2")}
-                            className="bg-blue-700 hover:bg-blue-600 text-white px-10 py-3 rounded-lg w-full sm:w-[500px] text-lg"
-                        >
+                        <Button onClick={handleSubmit} className="bg-blue-700 hover:bg-blue-600 text-white px-10 py-3 rounded-lg w-full sm:w-[500px] text-lg">
                             Submit
                         </Button>
                     </div>
                 </div>
             </DialogContent>
         </Dialog>
+      </div>
     );
 };
 
