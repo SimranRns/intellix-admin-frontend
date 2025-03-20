@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../src/components/ui/dialog";
 import { Button } from "../../src/components/ui/Button";
@@ -7,23 +7,26 @@ import { Input } from "../../src/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../src/components/ui/select";
 import ProceedModal from "./ProceedModel";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-// import { ToastContainer, toast } from 'react-toastify';
+// Zod Validation Schema
+const schema = z.object({
+  name: z.string().min(3, "Name kam se kam 3 characters ka hona chahiye").regex(/^[A-Za-z\s]+$/, "Sirf alphabets allowed hain"),
+  school: z.string().min(3, "School name kam se kam 3 characters ka hona chahiye").regex(/^[A-Za-z\s]+$/, "Sirf alphabets allowed hain"),
+  email: z.string().email("Valid email enter karein"),
+  gender: z.string().min(1, "Gender select karna zaroori hai"),
+  contact: z.string().min(10, "Contact number 10 digits ka hona chahiye").max(10, "Contact number 10 digits ka hona chahiye"),
+  category: z.string().min(1, "Category select karna zaroori hai"),
+  serialNo: z.string().min(1, "Serial number required hai"),
+  dob: z.string().min(1, "DOB select karein"),
+});
+
 const AddStudentModal = () => {
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenPro, setIsModalOpenPro] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    school: "",
-    email: "",
-    gender: "",
-    contact: "",
-    category: "",
-    serialNo: "",
-    dob: "",
-  });
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     setIsModalOpen(true);
@@ -34,170 +37,129 @@ const AddStudentModal = () => {
     navigate("/students");
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  // React Hook Form with Zod
+  const {
+    register,
+    handleSubmit,
+    setValue, 
+     setError,
+    clearErrors,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
 
-  const handleChangeName = (e) => {
-    const { name, value } = e.target;
-      const regex = /^[A-Za-z\s]+$/;
-      if (value === "" || regex.test(value)) {
-      setFormData({ ...formData, [name]: value });
+
+  const onSubmit = (data) => {
+    console.log("Form Data:", data);
+    if (!data.gender) {
+      setError("gender", { type: "manual", message: "Gender is required" });
     }
+    if (!data.category) {
+      setError("category", { type: "manual", message: "Category is required" });
+    }
+    setIsModalOpen(false);
+    setTimeout(() => setIsModalOpenPro(true), 200);
   };
 
 
-const handleChangeSchool = (e) => {
-  const { name, value } = e.target;
-  const regex = /^[A-Za-z\s]+$/;
-  
-  if (value === "" || regex.test(value)) {
-    setFormData({ ...formData, [name]: value });
-  }
-};
-
-
-const handleChangeEmail = (e) => {
-  const { name, value } = e.target;
-
-  const regex = /^[a-zA-Z0-9._@]+$/;
-
-  if (value === "" || regex.test(value)) {
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  }
-};
- 
-  
-
-  const isFormValid = () => {
-    return Object.values(formData).every((field) => field.trim() !== "");
-  };
-
-  const handleProceed = () => {
-    if (isFormValid()) {
-      setIsModalOpen(false);
-      setTimeout(() => setIsModalOpenPro(true), 200);
-    } 
-    // else {
-    //   toast.warning("Please fill all required fields!");
-    // }
-  };
 
   return (
-    <div> 
-  <FaArrowLeftLong
-    onClick={()=>handleClose()}
-   style={{cursor:"pointer"}}
-    className=" fixed top-5 left-5 text-3xl z-[9999] bg-white p-2 rounded-full shadow-lg"
-  />
+    <div>
+      <FaArrowLeftLong
+        onClick={handleClose}
+        style={{ cursor: "pointer" }}
+        className="fixed top-5 left-5 text-3xl z-[9999] bg-white p-2 rounded-full shadow-lg"
+      />
 
-      <Dialog      open={isModalOpen} onOpenChange={handleClose} >
- 
-
-        <DialogContent className="sm:max-w-[1000px]  z-[1000]">
-          <DialogHeader >
-
-          
-            <DialogTitle className='text-3xl text-center'>Add Student Details</DialogTitle>
+      <Dialog open={isModalOpen} onOpenChange={handleClose}>
+        <DialogContent className="sm:max-w-[1000px] z-[1000]">
+          <DialogHeader>
+            <DialogTitle className="text-3xl text-center">Add Student Details</DialogTitle>
           </DialogHeader>
 
-          <div className="grid grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 gap-4">
             <div>
-                <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter Name *</Label>
-                <Input type="text" name="name"  value={formData.name} onChange={handleChangeName} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Your name" />
-          </div>
+              <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter Name *</Label>
+              <Input {...register("name")} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg" placeholder="Your name" />
+              {errors.name && <p className="text-red-500">{errors.name.message}</p>}
+            </div>
 
-          
-            
+            <div>
+              <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Previous-School *</Label>
+              <Input {...register("school")} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg" placeholder="Previous School Name" />
+              {errors.school && <p className="text-red-500">{errors.school.message}</p>}
+            </div>
 
-<div>
-  <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">
-    Previous-School *
-  </Label>
-  <Input
-    type="text"
-    name="school"
-    value={formData.school}
-    onChange={handleChangeSchool}
-    className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-    placeholder="Previous School Name"
-  />
-</div>
-
-
-<div>
-  <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">
-    Enter Email
-  </Label>
-  <Input
-    name="email"
-    type="email"
-    value={formData.email}
-    onChange={handleChangeEmail} 
-    className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-    placeholder="example@gmail.com"
-  />
-</div>
+            <div>
+              <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter Email *</Label>
+              <Input {...register("email")} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg" placeholder="example@gmail.com" />
+              {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+            </div>
 
             <div>
               <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Select Gender *</Label>
-              <Select className="z-50 relative overflow-visible"  onValueChange={(value) => setFormData({ ...formData, gender: value })}>
-                <SelectTrigger className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-0 focus:outline-none shadow-lg">
-                  <SelectValue placeholder="none" />
+              <Select onValueChange={(value) =>{ setValue("gender", value)
+            clearErrors("gender")}}>
+                <SelectTrigger className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg">
+                  <SelectValue placeholder="Select Gender" />
                 </SelectTrigger>
-                <SelectContent  className="absolute z-[9999] bg-white shadow-lg">
+                <SelectContent className="absolute z-[10000] bg-white shadow-lg">
                   <SelectItem value="male">Male</SelectItem>
                   <SelectItem value="female">Female</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
               </Select>
+              {errors.gender && <p className="text-red-500">{errors.gender.message}</p>}
             </div>
+
             <div>
               <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter Contact No.</Label>
-              <Input name="contact" type="number" value={formData.contact} onChange={handleChange} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Phone number" />
+              <Input {...register("contact")} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg" placeholder="Phone number" />
+              {errors.contact && <p className="text-red-500">{errors.contact.message}</p>}
             </div>
+
             <div>
               <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Select Category *</Label>
-              <Select className="z-50 relative overflow-visible"  onValueChange={(value) => setFormData({ ...formData, category: value })}>
-                <SelectTrigger className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-0 focus:outline-none shadow-lg">
-                  <SelectValue placeholder="none" />
+              <Select onValueChange={(value) => {setValue("category", value) 
+            clearErrors("category")}}>
+                <SelectTrigger className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg">
+                  <SelectValue placeholder="Select Category" />
                 </SelectTrigger>
-                <SelectContent className="absolute z-[9999] bg-white shadow-lg">
+                <SelectContent className="absolute z-[10000] bg-white shadow-lg">
                   <SelectItem value="general">General</SelectItem>
                   <SelectItem value="obc">OBC</SelectItem>
                   <SelectItem value="sc">SC</SelectItem>
                   <SelectItem value="st">ST</SelectItem>
                 </SelectContent>
               </Select>
+              {errors.category && <p className="text-red-500">{errors.category.message}</p>}
             </div>
+
             <div>
               <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter Serial No. *</Label>
-              <Input name="serialNo" type='number' value={formData.serialNo} onChange={handleChange} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-0 focus:outline-none shadow-lg" placeholder="serial number" />
+              <Input {...register("serialNo")} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg" placeholder="Serial number" />
+              {errors.serialNo && <p className="text-red-500">{errors.serialNo.message}</p>}
             </div>
+
             <div>
               <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter DOB *</Label>
-              <Input name="dob" type="date" value={formData.dob} onChange={handleChange} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-0 focus:outline-none shadow-lg" />
+              <Input {...register("dob")} type="date" className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg" />
+              {errors.dob && <p className="text-red-500">{errors.dob.message}</p>}
             </div>
-          </div>
 
-          <div className="flex justify-center mt-4">
-            <Button
-              onClick={handleProceed}
-              className="bg-blue-700 hover:bg-blue-600 text-white px-10 py-3 rounded-lg min-w-[250px] w-full sm:w-[500px] h-[40px] text-lg"
-            >
-              Proceed
-            </Button>
-          </div>
+            <div className="flex justify-center mt-4 col-span-2">
+              <Button type="submit" className="bg-blue-700 hover:bg-blue-600 text-white px-10 py-3 rounded-lg">Proceed</Button>
+            </div>
+          </form>
         </DialogContent>
       </Dialog>
+
       <ProceedModal o={isModalOpenPro} c={setIsModalOpenPro} />
-      {/* <ToastContainer /> */}
     </div>
   );
 };
 
 export default AddStudentModal;
-
-
 
 
