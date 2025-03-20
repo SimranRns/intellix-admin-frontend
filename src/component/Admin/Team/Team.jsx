@@ -8,6 +8,12 @@ import TimePicker from "../../src/components/ui/time-picker";
 import { format } from "date-fns";
 import { Calendar } from "../../src/components/ui/calendar";
 import { cn } from "../../src/lib/utils";
+import { Button } from "@headlessui/react";
+import { z } from "zod";
+import { Icon } from "@radix-ui/react-select";
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Input } from "../../src/components/ui/input";
+import { Label } from "../../src/components/ui/label";
 import {
   ChevronDown,
   Mail,
@@ -23,9 +29,6 @@ import {
   CalendarIcon,
   MapPinHouse,
 } from "lucide-react";
-import { Button } from "@headlessui/react";
-import { z } from "zod";
-import { Icon } from "@radix-ui/react-select";
 import {
   SidebarInset,
   SidebarProvider,
@@ -56,7 +59,6 @@ import {
   PaginationPrevious,
 } from "../../src/components/ui/pagination";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -74,8 +76,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../src/components/ui/dialog";
-import { Input } from "../../src/components/ui/input";
-import { Label } from "../../src/components/ui/label";
 
 // Schema for the first form (Basic Details)
 const basicDetailsSchema = z.object({
@@ -100,6 +100,12 @@ const additionalDetailsSchema = z.object({
   JoiningDate: z.coerce.date().refine((date) => !isNaN(date.getTime()), {
     message: "Invalid date format",
   }),
+});
+// **Define Zod Schema for Validation**
+const teacherFormSchema = z.object({
+  address: z.string().min(5, "Address must be at least 5 characters"),
+  districtName: z.string().min(3, "District is required"),
+  departmentSelection: z.string().min(1, "Please select a department"),  
 });
 
 // Mock teacher data
@@ -151,11 +157,47 @@ import { Navigate, useNavigate } from "react-router-dom";
 
 const Team = ({ teacherData }) => {
   const [selectedOption, setSelectedOption] = useState("Newest");
+  const [selectedDepartment, setSelectedDepartment] =
+    useState("Select Department");
   const [currentPage, setCurrentPage] = useState(1);
   const [teachersPerPage, setTeachersPerPage] = useState(10);
   const [profileImg, setProfileImg] = useState("https://github.com/shadcn.png");
   const Navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [Addteacher, setteacher] = useState(false);
+  const [AddDetails, setAddDetails] = useState(false);
+  const [Deleteteacher, setDelete] = useState(false);
+  const [ChangeTime, setChangeTime] = useState(false);
+  const [inTime, setInTime] = useState("");
+  const [outTime, setOutTime] = useState("");
+  const [InputName, setInputName] = useState("");
   const fileInputRef = useRef(null);
+
+  // const [selectedDepartment, setSelectedDepartment] = useState("");
+  const departmentList = ["Science", "Mathematics", "History", "English", "Computer Science"];
+ // **React Hook Form Setup**
+ const teacherForm = useForm({
+  resolver: zodResolver(teacherFormSchema),
+  defaultValues: {
+    address: "",
+    districtName: "",
+    departmentSelection: "",
+  },
+});
+
+// **Unique Function Name: handleTeacherFormSubmit**
+const handleTeacherFormSubmit = (formData) => {
+  console.log("Teacher Form Data:", formData);
+};
+
+
+
+  const handleChange = (e) => {
+    setInputName(e.target.value);
+    console.log("helo");
+    console.log(InputName);
+  };
+
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -191,13 +233,6 @@ const Team = ({ teacherData }) => {
     startIndex,
     startIndex + teachersPerPage
   );
-  const [open, setOpen] = useState(false);
-  const [Addteacher, setteacher] = useState(false);
-  const [AddDetails, setAddDetails] = useState(false);
-  const [Deleteteacher, setDelete] = useState(false);
-  const [ChangeTime, setChangeTime] = useState(false);
-  const [inTime, setInTime] = useState("");
-  const [outTime, setOutTime] = useState("");
   // Initialize useForm
   // Form instances
   const basicForm = useForm({
@@ -220,6 +255,18 @@ const Team = ({ teacherData }) => {
       emergencyContact: "",
     },
   });
+  const main = () => {
+    const formData = additionalForm.getValues();
+    const validationResult = additionalDetailsSchema.safeParse(formData);
+
+    if (validationResult.success) {
+      setteacher(false); // Close first dialog
+      setAddDetails(true); // Open second dialog
+    } else {
+      setAddDetails(false);
+      // alert("Please fill all required fields!");
+    }
+  };
 
   // Handle Form Submission
   const onSubmit = (data) => {
@@ -272,7 +319,6 @@ const Team = ({ teacherData }) => {
               </DropdownMenuTrigger>
 
               <DropdownMenuContent
-
                 side="left"
                 align="start"
                 className="bg-white text-black w-40 shadow-md rounded-md mt-2  border border-blue-300 "
@@ -371,10 +417,14 @@ const Team = ({ teacherData }) => {
                             <FormControl>
                               <div className="relative flex items-center">
                                 <Input
+                                  value={InputName}
+                                  onChange={handleChange}
                                   placeholder="John Doe"
-                                  {...field}
+                                  {...field} // Agar ye issue create kar raha hai to hata kar dekho
                                   className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                 />
+
+                                {/* <input type="text"  onChange={handleChange} /> */}
                                 <span className="absolute right-4 text-gray-500">
                                   <User size={21} />
                                 </span>
@@ -598,9 +648,10 @@ const Team = ({ teacherData }) => {
                     {/* Submit Button */}
                     <div className="flex justify-end">
                       <Button
-                        onClick={() => setAddDetails(true)}
+                        onClick={() => main()}
                         type="submit"
                         className="bg-indigo-600 text-white px-9 py-2 rounded-lg hover:bg-indigo-700"
+                        // disabled={!InputName}
                       >
                         Save
                       </Button>
@@ -620,7 +671,6 @@ const Team = ({ teacherData }) => {
                               )}
                               className="space-y-6"
                             >
-
                               {/* Two-Column Grid Layout */}
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 {/* Name Field */}
@@ -645,7 +695,6 @@ const Team = ({ teacherData }) => {
                                       <FormMessage />
                                     </FormItem>
                                   )}
-
                                 />
                                 {/* Name Field */}
                                 <FormField
@@ -669,8 +718,48 @@ const Team = ({ teacherData }) => {
                                       <FormMessage />
                                     </FormItem>
                                   )}
-
                                 />
+
+                                  {/* Name Field */}
+                                  <FormField
+                                  control={additionalForm.control}
+                                  name="Teachername"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Select Department*</FormLabel>
+                                      <FormControl>
+                                        <div className="relative flex items-center">
+                                        <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button className="w-full  border border-blue-300 rounded-xl p-5 shadow-lg py-2 focus:ring-1 focus:ring-blue-500 font-sm flex items-center justify-between">
+                                      <span className="text-gray-700">
+                                        {selectedDepartment ||
+                                          "Select Department"}
+                                      </span>
+                                      <ChevronDown size={16} className="ml-2" />
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent className="max-h-[20vh] overflow-y-auto bg-white  w-[44vh] shadow-md rounded-md mt-2 border border-blue-300">
+                                    {departments.map((dept, index) => (
+                                      <DropdownMenuItem
+                                        key={index}
+                                        onClick={() =>
+                                          setSelectedDepartment(dept)
+                                        }
+                                        className="cursor-pointer hover:bg-blue-600 hover:text-white px-4 py-2"
+                                      >
+                                        {dept}
+                                      </DropdownMenuItem>
+                                    ))}
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                                        </div>
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              
                               </div>
 
                               {/* Submit Button */}
@@ -907,7 +996,7 @@ const Team = ({ teacherData }) => {
                   {teacher.subjects.map((item, i) => (
                     <span
                       key={i}
-                      className="bg-blue-100 px-3 py-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1"
+                      className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1"
                     >
                       <item.icon size={16} />
                       {item.subject}
@@ -943,10 +1032,11 @@ const Team = ({ teacherData }) => {
                 <PaginationLink
                   href="#"
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`px-4 py-2 rounded-md ${currentPage === i + 1
-                    ? "bg-blue-600 text-white"
-                    : "hover:bg-blue-500  hover:text-white"
-                    }`}
+                  className={`px-4 py-2 rounded-md ${
+                    currentPage === i + 1
+                      ? "bg-blue-600 text-white"
+                      : "hover:bg-blue-500  hover:text-white"
+                  }`}
                 >
                   {i + 1}
                 </PaginationLink>
