@@ -40,7 +40,7 @@ const View_Profile = () => {
         firstname: "",
         lastname: "",
         enrolllmentid: "",
-        salary: "",
+        salary: "",    
         dob: "",
         gender: "",
         highqualify: "",
