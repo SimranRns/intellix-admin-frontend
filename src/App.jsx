@@ -19,6 +19,7 @@ import Leads from "./component/Admin/Leads/Leads";
 import ViewProfile from "./component/Admin/Team/ViewProfile";
 import Department from "./component/Admin/Team/Manage_sallery";
 import Manage_sallery from "./component/Admin/Team/Manage_sallery";
+import ProceedModal from "./component/Admin/Student/ProceedModel";
 // import { Route } from "lucide-react";
 const App = () => {
   return (
@@ -39,6 +40,7 @@ const App = () => {
           <Route path="/settings" element={<Settings />} />
           <Route path="/support" element={<Support />} />
           <Route path="/add_student_model" element={<AddStudentModal />} />
+          <Route path="/ProceedModal" element={<ProceedModal />} />
           <Route path="/add_student_model2" element={<StudentSelectionPage />} />
           <Route path="/add_student_model3" element={<ParentDetails />} />
           <Route path="/addStudent" element={<SuccessMessage />} />

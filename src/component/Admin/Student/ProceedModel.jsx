@@ -16,7 +16,7 @@ const ProceedModal = ({ o, c }) => {
         aadhaarDocument: null,
         panDocument: null
     });
-
+// const navigate = useNavigate()
     const [errors, setErrors] = useState({});
 
     const handleChange = (e) => {
@@ -67,20 +67,20 @@ navigate("/add_student_model2")
         <FaArrowLeftLong
         onClick={() => navigate("/add_student_model")}
         style={{ cursor: "pointer" }}
-        className="fixed top-5 left-5 text-3xl z-[9999] bg-white p-2 rounded-full shadow-lg"
+        className="fixed text-3xl z-[9999]  p-2 rounded-full shadow-lg"
       />
           <Dialog open={o} onOpenChange={c}>
             
             <DialogContent className="sm:max-w-[700px] p-6 rounded-lg">
                 <DialogHeader>
-                    <DialogTitle className="block text-gray-700 font-semibold text-lg sm:text-3xl mb-4 text-center">
+                    <DialogTitle className="block  font-semibold text-lg sm:text-3xl mb-4 text-center">
                         Enter Your Details
                     </DialogTitle>
                 </DialogHeader>
 
                 <div className="grid gap-4">
                     <div>
-                        <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">
+                        <Label className="block font-semibold text-lg sm:text-xl mb-4">
                             Enter Address
                         </Label>
                         <Input
@@ -96,7 +96,7 @@ navigate("/add_student_model2")
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">
+                            <Label className="block  font-semibold text-lg sm:text-xl mb-4">
                                 Enter Aadhaar Number
                             </Label>
                             <Input
@@ -111,7 +111,7 @@ navigate("/add_student_model2")
                         </div>
 
                         <div>
-                            <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">
+                            <Label className="block  font-semibold text-lg sm:text-xl mb-4">
                                 Enter PAN No.
                             </Label>
                             <Input
@@ -127,45 +127,59 @@ navigate("/add_student_model2")
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
+                      
                         <div>
-                            <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">
-                                Upload Aadhaar Document
-                            </Label>
-                            <p className="text-gray-500 text-sm">(Upload front and back in PDF)</p>
-                            <div className="w-full border border-gray-300 rounded-xl p-3 sm:p-2 focus:ring-4 focus:ring-blue-500 shadow-lg cursor-pointer">
-                                <Label htmlFor="aadhaar-upload" className="cursor-pointer text-gray-500 ml-2">
-                                    Click to Upload
-                                </Label>
-                                <Input
-                                    type="file"
-                                    id="aadhaar-upload"
-                                    className="hidden"
-                                    onChange={(e) => handleFileUpload(e, "aadhaarDocument")}
-                                    accept=".pdf"
-                                />
-                            </div>
-                            {errors.aadhaarDocument && <p className="text-red-500 text-sm mt-1">{errors.aadhaarDocument}</p>}
-                        </div>
+    <Label className="block font-semibold text-lg sm:text-xl mb-4">
+        Upload Aadhaar Document
+    </Label>
+    <p className="text-sm">(Upload front and back in PDF)</p>
+    <div className="w-full border border-gray-300 rounded-xl p-3 sm:p-2 focus:ring-4 focus:ring-blue-500 shadow-lg cursor-pointer">
+        <Label htmlFor="aadhaar-upload" className="cursor-pointer ml-2">
+            {formData.aadhaarFileName || "Click to Upload"}
+        </Label>
+        <Input
+            type="file"
+            id="aadhaar-upload"
+            className="hidden"
+            onChange={(e) => {
+                handleFileUpload(e, "aadhaarDocument");
+                setFormData((prev) => ({
+                    ...prev,
+                    aadhaarFileName: e.target.files[0]?.name || "",
+                }));
+            }}
+            accept=".pdf"
+        />
+    </div>
+    {errors.aadhaarDocument && <p className="text-red-500 text-sm mt-1">{errors.aadhaarDocument}</p>}
+</div>
 
-                        <div>
-                            <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">
-                                Upload PAN Photo
-                            </Label>
-                            <p className="text-gray-500 text-sm">(Upload front and back in PDF)</p>
-                            <div className="w-full border border-gray-300 rounded-xl p-3 sm:p-2 focus:ring-4 focus:ring-blue-500 shadow-lg cursor-pointer">
-                                <Label htmlFor="pan-upload" className="cursor-pointer text-gray-500 ml-2">
-                                    Upload PDF
-                                </Label>
-                                <Input
-                                    type="file"
-                                    id="pan-upload"
-                                    className="hidden"
-                                    onChange={(e) => handleFileUpload(e, "panDocument")}
-                                    accept=".pdf"
-                                />
-                            </div>
-                            {errors.panDocument && <p className="text-red-500 text-sm mt-1">{errors.panDocument}</p>}
-                        </div>
+<div>
+    <Label className="block font-semibold text-lg sm:text-xl mb-4">
+        Upload PAN Photo
+    </Label>
+    <p className="text-sm">(Upload front and back in PDF)</p>
+    <div className="w-full border border-gray-300 rounded-xl p-3 sm:p-2 focus:ring-4 focus:ring-blue-500 shadow-lg cursor-pointer">
+        <Label htmlFor="pan-upload" className="cursor-pointer ml-2">
+            {formData.panFileName || "Upload PDF"}
+        </Label>
+        <Input
+            type="file"
+            id="pan-upload"
+            className="hidden"
+            onChange={(e) => {
+                handleFileUpload(e, "panDocument");
+                setFormData((prev) => ({
+                    ...prev,
+                    panFileName: e.target.files[0]?.name || "",
+                }));
+            }}
+            accept=".pdf"
+        />
+    </div>
+    {errors.panDocument && <p className="text-red-500 text-sm mt-1">{errors.panDocument}</p>}
+</div>
+
                     </div>
 
                     <div className="flex justify-center mt-4">

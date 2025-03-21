@@ -11,7 +11,7 @@ const SuccessMessage = () => {
         <p
           style={{
             textAlign: "center",
-            color: "rgb(60, 60, 60)",
+            
             fontSize: "35px",
             fontWeight: "600",
           }}
@@ -29,7 +29,7 @@ const SuccessMessage = () => {
 
       <div className="flex justify-center items-center mt-[10%]">
   <button onClick={() => navigate("/students")}
-    className="bg-[#8147e7] text-white 
+    className="bg-[#8147e7] 
                rounded-lg min-w-[350px] w-full sm:w-[400px] h-[50px] text-lg 
                flex justify-center items-center"
   >
