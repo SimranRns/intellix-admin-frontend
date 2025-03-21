@@ -52,9 +52,7 @@ const TimePicker = ({ label, selectedTime, setSelectedTime }) => {
                   </div>
                 ))}
               </div>
-
               <span className="mx-2 font-bold">:</span>
-
               {/* Minute List (Scrollable) */}
               <div className="w-24 h-48 overflow-y-auto border rounded-md custom-scrollbar">
                 {minutes.map((minute) => (
