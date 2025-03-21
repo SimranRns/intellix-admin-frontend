@@ -32,7 +32,7 @@ import { useNavigate } from "react-router-dom";
 const studentGroups = [
   {
     id: "123456789",
-    name: "Samantha William",
+    name: "Emily Clarke",
     fatherName: "Mana William",
     batch: "Batch A",
     image:
@@ -161,7 +161,7 @@ const StudentHeader = () => {
               </DropdownMenu>
 
 
-             
+
               <Button onClick={() => navigate("/add_student_model")}
                 className="bg-[#3d3690] text-white font-semibold px-5 py-2
                rounded-lg hover:bg-[#3d3690] hover:opacity-90">
@@ -184,73 +184,85 @@ const StudentHeader = () => {
                 </TableRow>
               </TableHeader>
 
-             
 
-<TableBody>
-  {displayedStudents.map((student, index) => (
-    <TableRow key={index} className="hover:bg-transparent">
-      <TableCell className="text-blue-600 font-medium">
-        {student.id}
-      </TableCell>
-      <TableCell className="flex items-center space-x-3">
-        <img
-          src={student.image}
-          alt={student.name}
-          className="w-10 h-10 object-cover rounded-full border-2 border-gray-300 shadow-sm"
-        />
-        <span className="font-medium">{student.name}</span>
-      </TableCell>
-      <TableCell>{student.fatherName}</TableCell>
-      <TableCell>{student.batch}</TableCell>
-      <TableCell>
-        <button className="bg-green-500 text-white px-3 py-1 rounded-lg">
-          + Add Payment
-        </button>
-      </TableCell>
-      <TableCell>
-        <MoreVertical className="text-gray-600 cursor-pointer" size={20} />
-      </TableCell>
-    </TableRow>
-  ))}
-</TableBody>
+
+              <TableBody>
+                {displayedStudents.map((student, index) => (
+                  <TableRow key={index} className="hover:bg-transparent">
+                    <TableCell className="text-blue-600 font-medium">
+                      {student.id}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-col md:flex-row md:items-center md:gap-3">
+                        <img src={student.image} alt={student.name} className="w-10 h-10 object-cover rounded-full border-2 border-gray-300 shadow-sm" />
+                        <span className="font-medium">{student.name}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <span className="block md:inline">{student.fatherName}</span>
+                    </TableCell>
+                    {/* <TableCell className="flex items-center space-x-3">
+                    <div className="grid grid-cols-2 gap-1">
+                    <img
+                        src={student.image}
+                        alt={student.name}
+                        className="w-10 h-7 object-cover rounded-full border-2 border-gray-300 shadow-sm"
+                      />
+                      <span className="font-medium">{student.name}</span>
+                    </div>
+                    </TableCell>
+                    <TableCell className="space-x-4">{student.fatherName}</TableCell> */}
+                    <TableCell>{student.batch}</TableCell>
+                    <TableCell>
+                      <button className="bg-green-500 text-white px-3 sm:py-1 md:py-2 rounded-lg"
+                      >
+                        + Add Payment
+                      </button>
+                    </TableCell>
+                    <TableCell>
+                      <MoreVertical className="text-gray-600 cursor-pointer" size={20} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
 
 
             </Table>
           </div>
 
 
-          
 
-<div className="flex items-center justify-center md:justify-end space-x-3 mt-5 w-full pr-8">
-  <Button
-    variant="ghost"
-    disabled={currentPage === 1}
-    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-    className="hover:bg-transparent hover:text-inherit"
-  >
-    <ChevronLeft className="w-5 h-5" />
-  </Button>
 
-  {[1, 2].map((page) => (
-    <Button
-      key={page}
-      variant={currentPage === page ? "default" : "ghost"}
-      onClick={() => setCurrentPage(page)}
-      className={`px-4 py-2 ${currentPage === page ? "bg-[#3d3690] text-white" : "bg-gray-100 text-gray-700"} rounded-lg hover:bg-transparent hover:text-inherit`}
-    >
-      {page}
-    </Button>
-  ))}
+          <div className="flex items-center justify-center md:justify-end space-x-3 mt-5 w-full pr-8">
+            <Button
+              variant="ghost"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              className="hover:bg-transparent hover:text-inherit"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </Button>
 
-  <Button
-    variant="ghost"
-    disabled={currentPage === 2}
-    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, 2))}
-    className="hover:bg-transparent hover:text-inherit"
-  >
-    <ChevronRight className="w-5 h-5" />
-  </Button>
-</div>
+            {[1, 2].map((page) => (
+              <Button
+                key={page}
+                variant={currentPage === page ? "default" : "ghost"}
+                onClick={() => setCurrentPage(page)}
+                className={`px-4 py-2 ${currentPage === page ? "bg-[#3d3690] text-white" : "bg-gray-100 text-gray-700"} rounded-lg hover:bg-transparent hover:text-inherit`}
+              >
+                {page}
+              </Button>
+            ))}
+
+            <Button
+              variant="ghost"
+              disabled={currentPage === 2}
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, 2))}
+              className="hover:bg-transparent hover:text-inherit"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </Button>
+          </div>
 
         </div>
       </SidebarInset>

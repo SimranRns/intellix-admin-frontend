@@ -10,18 +10,20 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import "./Student.css"
 
-// Zod Validation Schema
+
 const schema = z.object({
-  name: z.string().min(3, "Name kam se kam 3 characters ka hona chahiye").regex(/^[A-Za-z\s]+$/, "Sirf alphabets allowed hain"),
-  school: z.string().min(3, "School name kam se kam 3 characters ka hona chahiye").regex(/^[A-Za-z\s]+$/, "Sirf alphabets allowed hain"),
-  email: z.string().email("Valid email enter karein"),
-  gender: z.string().min(1, "Gender select karna zaroori hai"),
-  contact: z.string().min(10, "Contact number 10 digits ka hona chahiye").max(10, "Contact number 10 digits ka hona chahiye"),
-  category: z.string().min(1, "Category select karna zaroori hai"),
-  serialNo: z.string().min(1, "Serial number required hai"),
-  dob: z.string().min(1, "DOB select karein"),
+  name: z.string().min(3, "Name must be at least 3 characters long").regex(/^[A-Za-z\s]+$/, "Only alphabets are allowed"),
+  school: z.string().min(3, "School name must be at least 3 characters long").regex(/^[A-Za-z\s]+$/, "Only alphabets are allowed"),
+  email: z.string().email("Enter a valid email"),
+  gender: z.string().min(1, "Gender selection is required"),
+  contact: z.string().min(10, "Contact number must be 10 digits long").max(10, "Contact number must be 10 digits long"),
+  category: z.string().min(1, "Category selection is required"),
+  serialNo: z.string().min(1, "Serial number is required"),
+  dob: z.string().min(1, "Date of Birth is required"),
 });
+
 
 const AddStudentModal = () => {
   const navigate = useNavigate();
@@ -37,12 +39,12 @@ const AddStudentModal = () => {
     navigate("/students");
   };
 
-  // React Hook Form with Zod
+
   const {
     register,
     handleSubmit,
-    setValue, 
-     setError,
+    setValue,
+    setError,
     clearErrors,
     formState: { errors },
   } = useForm({
@@ -68,43 +70,45 @@ const AddStudentModal = () => {
     <div>
       <FaArrowLeftLong
         onClick={handleClose}
-        style={{ cursor: "pointer" }}
-        className="fixed top-5 left-5 text-3xl z-[9999] bg-white p-2 rounded-full shadow-lg"
+        style={{ cursor: "pointer", outline: "none", border: "none" }}
+        className="fixed  text-3xl z-[999] "
       />
 
       <Dialog open={isModalOpen} onOpenChange={handleClose}>
-        <DialogContent className="sm:max-w-[1000px] z-[1000]">
+        <DialogContent className="sm:max-w-[1000px] z-[99999] ">
           <DialogHeader>
             <DialogTitle className="text-3xl text-center">Add Student Details</DialogTitle>
           </DialogHeader>
 
           <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 gap-4">
             <div>
-              <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter Name *</Label>
-              <Input {...register("name")} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg" placeholder="Your name" />
+              <Label className="block  font-semibold text-lg sm:text-xl mb-4">Enter Name *</Label>
+              <Input type="string" {...register("name")} className="w-full border-gray-30 rounded-xl p-3 sm:p-5 shadow-lg" placeholder="Your name" />
               {errors.name && <p className="text-red-500">{errors.name.message}</p>}
             </div>
 
             <div>
-              <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Previous-School *</Label>
+              <Label className="block  font-semibold text-lg sm:text-xl mb-4">Previous-School *</Label>
               <Input {...register("school")} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg" placeholder="Previous School Name" />
               {errors.school && <p className="text-red-500">{errors.school.message}</p>}
             </div>
 
             <div>
-              <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter Email *</Label>
+              <Label className="block  font-semibold text-lg sm:text-xl mb-4">Enter Email *</Label>
               <Input {...register("email")} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg" placeholder="example@gmail.com" />
               {errors.email && <p className="text-red-500">{errors.email.message}</p>}
             </div>
 
             <div>
-              <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Select Gender *</Label>
-              <Select onValueChange={(value) =>{ setValue("gender", value)
-            clearErrors("gender")}}>
+              <Label className="block  font-semibold text-lg sm:text-xl mb-4">Select Gender *</Label>
+              <Select onValueChange={(value) => {
+                setValue("gender", value)
+                clearErrors("gender")
+              }}>
                 <SelectTrigger className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg">
                   <SelectValue placeholder="Select Gender" />
                 </SelectTrigger>
-                <SelectContent className="absolute z-[10000] bg-white shadow-lg">
+                <SelectContent className="absolute z-[999999]  shadow-lg">
                   <SelectItem value="male">Male</SelectItem>
                   <SelectItem value="female">Female</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
@@ -114,19 +118,21 @@ const AddStudentModal = () => {
             </div>
 
             <div>
-              <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter Contact No.</Label>
+              <Label className="block  font-semibold text-lg sm:text-xl mb-4">Enter Contact No.</Label>
               <Input {...register("contact")} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg" placeholder="Phone number" />
               {errors.contact && <p className="text-red-500">{errors.contact.message}</p>}
             </div>
 
             <div>
-              <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Select Category *</Label>
-              <Select onValueChange={(value) => {setValue("category", value) 
-            clearErrors("category")}}>
+              <Label className="block  font-semibold text-lg sm:text-xl mb-4">Select Category *</Label>
+              <Select onValueChange={(value) => {
+                setValue("category", value)
+                clearErrors("category")
+              }}>
                 <SelectTrigger className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg">
                   <SelectValue placeholder="Select Category" />
                 </SelectTrigger>
-                <SelectContent className="absolute z-[10000] bg-white shadow-lg">
+                <SelectContent className="absolute z-[999999]  shadow-lg">
                   <SelectItem value="general">General</SelectItem>
                   <SelectItem value="obc">OBC</SelectItem>
                   <SelectItem value="sc">SC</SelectItem>
@@ -137,25 +143,31 @@ const AddStudentModal = () => {
             </div>
 
             <div>
-              <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter Serial No. *</Label>
+              <Label className="block  font-semibold text-lg sm:text-xl mb-4">Enter Serial No. *</Label>
               <Input {...register("serialNo")} className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg" placeholder="Serial number" />
               {errors.serialNo && <p className="text-red-500">{errors.serialNo.message}</p>}
             </div>
 
             <div>
-              <Label className="block text-gray-700 font-semibold text-lg sm:text-xl mb-4">Enter DOB *</Label>
-              <Input {...register("dob")} type="date" className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg" />
+              <Label className="block font-semibold text-lg sm:text-xl mb-4">Enter DOB *</Label><Input
+                {...register("dob")}
+                type="date"
+                className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg bg-white dark:bg-black"
+                style={{ WebkitAppearance: "none", position: "relative" }}
+              />
+
+
               {errors.dob && <p className="text-red-500">{errors.dob.message}</p>}
             </div>
 
             <div className="flex justify-center mt-4 col-span-2">
-              <Button type="submit" className="bg-blue-700 hover:bg-blue-600 text-white px-10 py-3 rounded-lg">Proceed</Button>
+              <Button onClick={() => navigate("/ProceedModal")} type="submit" className="bg-blue-700 hover:bg-blue-500  px-10 py-3 rounded-lg text-white dark:text-white">Proceed</Button>
             </div>
           </form>
         </DialogContent>
       </Dialog>
 
-      <ProceedModal o={isModalOpenPro} c={setIsModalOpenPro} />
+      {/* <ProceedModal o={isModalOpenPro} c={setIsModalOpenPro} /> */}
     </div>
   );
 };
