@@ -34,7 +34,7 @@ import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '../../src/components/ui/breadcrumb';
 import { Separator } from '@radix-ui/react-dropdown-menu';
-const View_Profile = () => {
+const ViewProfile = () => {
     const form = useForm();
     const [formdata, setformdata] = useState({
         firstname: "",
@@ -390,4 +390,4 @@ const View_Profile = () => {
     );
 }
 
-export default View_Profile
+export default ViewProfile

@@ -15,8 +15,10 @@ import Team from "./component/Admin/Team/Team";
 import StudentSelectionPage from "./component/Admin/Student/StudentSelectionPage";
 import ParentDetails from "./component/Admin/Student/ParentDetails";
 import SuccessMessage from "./component/Admin/Student/SuccessMessage";
-import View_Profile from "./component/Admin/Team/View_Profile";
 import Leads from "./component/Admin/Leads/Leads";
+import ViewProfile from "./component/Admin/Team/ViewProfile";
+import Department from "./component/Admin/Team/Manage_sallery";
+import Manage_sallery from "./component/Admin/Team/Manage_sallery";
 // import { Route } from "lucide-react";
 const App = () => {
   return (
@@ -29,7 +31,7 @@ const App = () => {
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/inbox" element={<div>inbox</div>} />
           <Route path="/students" element={<StudentHeader />} />
-          <Route path="/accounts" element={<div>Accounts </div>} />
+          <Route path="/accounts" element={<Manage_sallery />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/Advertisment" element={<Advertisment />} />
           <Route path="/team" element={<Team />} />
@@ -40,8 +42,8 @@ const App = () => {
           <Route path="/add_student_model2" element={<StudentSelectionPage />} />
           <Route path="/add_student_model3" element={<ParentDetails />} />
           <Route path="/addStudent" element={<SuccessMessage />} />
-          <Route path="/View-Profile" element={<View_Profile />} />
-          <Route path="/Leads" element={<Leads/>} />
+          <Route path="/View-Profile" element={<ViewProfile />} />
+          <Route path="/Leads" element={<Leads />} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -243,7 +243,7 @@ const Attendance = () => {
               <Button
                 variant="outline"
                 className={cn(
-                  "w-[280px] justify-start text-left shadow-sm border border-2 border-blue-200 shadow-blue-500/50 font-normal m-5",
+                  "w-[280px] justify-start text-left shadow-sm  border-2 border-blue-200 shadow-blue-500/50 font-normal m-5",
                   !date && "text-muted-foreground"
                 )}
               >

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import intellix_icon from "../../../../assets/Image/intellix.png";
-import { X, Grip, Home, Inbox, User, Users, Wallet, ChartColumnIncreasing, CircleHelp, Settings, Clipboard } from "lucide-react";
+import { X, Grip, Home, User, Users, Wallet, ChartColumnIncreasing, CircleHelp, Settings, Clipboard, ListFilterPlus, FileBadge } from "lucide-react";
 import {
     Sidebar,
     SidebarContent,
@@ -18,11 +18,12 @@ const AppSidebar = (props) => {
 
     const items = [
         { title: "Dashboard", url: "/dashboard", icon: Home },
-        { title: "Inbox", url: "/inbox", icon: Inbox },
+        { title: "Academics", url: "/academy", icon: FileBadge },
         { title: "Students", url: "/students", icon: Users },
         { title: "Accounts", url: "/accounts", icon: Wallet },
         { title: "Attendance", url: "/attendance", icon: ChartColumnIncreasing },
         { title: "Team", url: "/team", icon: Users },
+        { title: "Leads", url: "/lead", icon: ListFilterPlus },
         { title: "Advertisment", url: "/Advertisment", icon: Clipboard },
         { title: "Support", url: "/support", icon: CircleHelp },
         { title: "Settings", url: "/settings", icon: Settings },

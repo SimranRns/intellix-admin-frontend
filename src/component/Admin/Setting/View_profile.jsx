@@ -16,7 +16,7 @@ import { Button } from "../../src/components/ui/button";
 import "./Setting.css";
 import { Camera } from "lucide-react";
 
-const ViewProfile = () => {
+const View_Profile = () => {
     const [profileImg, setProfileImg] = useState("https://github.com/shadcn.png");
     const fileInputRef = useRef(null);
     const handleImageChange = (event) => {
@@ -108,4 +108,4 @@ const ViewProfile = () => {
     );
 };
 
-export default ViewProfile;
+export default View_Profile;
