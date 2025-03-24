@@ -29,6 +29,8 @@ import {
   Phone,
   CalendarIcon,
   MapPinHouse,
+  Banknote,
+  ArrowLeft,
 } from "lucide-react";
 import {
   SidebarInset,
@@ -101,7 +103,6 @@ const additionalDetailsSchema = z.object({
   JoiningDate: z.coerce.date().refine((date) => !isNaN(date.getTime()), {
     message: "Invalid date format",
   }),
-  Teachername: z.string().min(2, "Name must be at least 2 characters"),
 });
 
 const additionalDetailsSchema2 = z.object({
@@ -129,6 +130,12 @@ const additionalDetailsSchema2 = z.object({
     .optional(),
 
   departmentSelection: z.string().min(1, "Department selection is required."),
+});
+
+const bankDetailsSchema = z.object({
+  accountNumber: z.string().min(10, "Account Number must be at least 10 digits"),
+  ifscCode: z.string().regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC Code"),
+  accountHolderName: z.string().min(3, "Name should be at least 3 characters"),
 });
 
 // Mock teacher data
@@ -187,9 +194,10 @@ const Team = ({ teacherData }) => {
   const [profileImg, setProfileImg] = useState("https://github.com/shadcn.png");
   const Navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [Addteacher, setteacher] = useState(false);
-  const [AddDetails, setAddDetails] = useState(false);
-  const [AddBankDetails, setAddBankDetails] = useState(false);
+  const [Addteacher, setTeacher] = useState(false);//first
+  const [AddDetails, setAddDetails] = useState(false);//secondd
+  const [AddBankDetails, setAddBankDetails] = useState(false);//third
+  const [AddConfrom, setAddConfrom] = useState(false);//fourth
   const [Deleteteacher, setDelete] = useState(false);
   const [ChangeTime, setChangeTime] = useState(false);
   const [inTime, setInTime] = useState("");
@@ -289,22 +297,103 @@ const Team = ({ teacherData }) => {
       departmentSelection: "",
     },
   });
+  const additionalForm3 = useForm({
+    resolver: zodResolver(bankDetailsSchema),
+    defaultValues: {
+      accountNumber: "",
+      ifscCode: "",
+      accountHolderName: "",
+    },
+  });
+  ///////dilog function
 
-  const main = (e) => {
-    e.preventDefault(); // ✅ Prevent page reload
+  const main = async (e) => {
+    e.preventDefault();
+
+    const isValid = await additionalForm.trigger();
+
+    if (!isValid) {
+      console.log("Validation failed:", additionalForm.formState.errors);
+      return;
+    }
+
     const formData = additionalForm.getValues();
     const validationResult = additionalDetailsSchema.safeParse(formData);
 
     if (validationResult.success) {
-      setteacher(false); // ✅ Close first modal
-      setAddDetails(true); // ✅ Open second modal
+      console.log("Data submitted:", formData);
+      setTeacher(false);
+      setAddDetails(true);
     } else {
-      console.log(validationResult.error.format()); // Debug errors
-     
-      // setAddDetails(false); // ❌ Prevent second modal opening
+      console.log("Validation errors:", validationResult.error.format());
+
+      Object.entries(validationResult.error.format()).forEach(([key, value]) => {
+        additionalForm.setError(key, {
+          type: "manual",
+          message: value._errors?.[0] || "Invalid field",
+        });
+      });
     }
   };
 
+  //second dilog function
+  const mainSecond = async (e) => {
+    e.preventDefault();
+
+    const isValid = await additionalForm2.trigger();
+
+    if (!isValid) {
+      console.log("Validation failed:", additionalForm2.formState.errors);
+      return;
+    }
+
+    const formData = additionalForm2.getValues();
+    const validationResult = additionalDetailsSchema2.safeParse(formData);
+
+    if (validationResult.success) {
+      console.log("Data submitted:", formData);
+      setAddDetails(false);
+      setAddBankDetails(true);
+    } else {
+      console.log("Validation errors:", validationResult.error.format());
+
+      Object.entries(validationResult.error.format()).forEach(([key, value]) => {
+        additionalForm2.setError(key, {
+          type: "manual",
+          message: value._errors?.[0] || "Invalid field",
+        });
+      });
+    }
+  };
+  ///////////third dilog
+  const mainthird = async (e) => {
+    e.preventDefault();
+
+    const isValid = await additionalForm3.trigger();
+
+    if (!isValid) {
+      console.log("Validation failed:", additionalForm3.formState.errors);
+      return;
+    }
+
+    const formData = additionalForm3.getValues();
+    const validationResult = bankDetailsSchema.safeParse(formData);
+
+    if (validationResult.success) {
+      console.log("Data submitted:", formData);
+      setAddBankDetails(false);
+      setAddConfrom(true);
+    } else {
+      console.log("Validation errors:", validationResult.error.format());
+
+      Object.entries(validationResult.error.format()).forEach(([key, value]) => {
+        additionalForm3.setError(key, {
+          type: "manual",
+          message: value._errors?.[0] || "Invalid field",
+        });
+      });
+    }
+  };
   const onSubmit = (data) => {
     console.log("Form Submitted:", data);
   };
@@ -320,7 +409,9 @@ const Team = ({ teacherData }) => {
   const handleAdditionalFormSubmit2 = (data) => {
     console.log("Additional Form Data:", data);
   };
-
+  const handleAdditionalFormSubmit3 = (data) => {
+    console.log("Submitted Data:", data);
+  };
   const { watch, setValue } = additionalForm2;
   const isSameAddress = watch("terms");
   const residentialAddress = watch("ResidentialAddress");
@@ -337,12 +428,12 @@ const Team = ({ teacherData }) => {
     }
   }, [isSameAddress, residentialAddress, district, state, pincode, setValue]);
 
-  useEffect(() => {
-    if (AddDetails) {
-      setteacher(false);
-      setAddDetails(true); // ✅ Close first modal when second opens
-    }
-  }, [AddDetails]); // ✅ Runs when addDetails changes
+  // useEffect(() => {
+  //   if (AddDetails) {
+  //     setteacher(false);
+  //     setAddDetails(true); // ✅ Close first modal when second opens
+  //   }
+  // }, [AddDetails]); // ✅ Runs when addDetails changes
 
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
@@ -380,7 +471,6 @@ const Team = ({ teacherData }) => {
                   <ChevronDown size={16} className="ml-2" />
                 </Button>
               </DropdownMenuTrigger>
-
               <DropdownMenuContent
                 side="left"
                 align="start"
@@ -412,133 +502,33 @@ const Team = ({ teacherData }) => {
               Departments
             </Button>
             {/* Department Button */}
-            <Button 
-            onClick={() => setAddBankDetails(true)}
-            className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm">
+            <Button
+
+              className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm">
               Ex-Employee
             </Button>
-            <Dialog open={AddBankDetails} onOpenChange={setAddBankDetails}>
-                        <DialogContent className="sm:max-w-[800px] shadow-lg p-6 rounded-lg overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
-                          <DialogHeader>
-                            <DialogTitle className="text-center">
-                            Bank Account Details
-                            </DialogTitle>
-                          </DialogHeader>
-                          <hr />
-
-                          <Form {...additionalForm2}>
-                            <form
-                              onSubmit={additionalForm2.handleSubmit(
-                                handleAdditionalFormSubmit2
-                              )}
-                              className="space-y-6"
-                            >
-                              {/* Two-Column Grid Layout */}
-                              <div className="grid grid-cols-1 sm:grid-cols-1 gap-6">
-                                {/* Residential Address Field */}
-                                <FormField
-                                  control={additionalForm2.control}
-                                  name="ResidentialAddress"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>Enter Bank Account Number </FormLabel>
-                                      <FormControl>
-                                        <div className="relative flex items-center">
-                                          <Input
-                                            placeholder="Enter Account Number"
-                                            {...field}
-                                            type="String"
-                                            className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                          />
-                                          <span className="absolute right-4 text-gray-500">
-                                            <MapPinHouse size={21} />
-                                          </span>
-                                        </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                {/* District Field */}
-                                <FormField
-                                  control={additionalForm2.control}
-                                  name="District"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>Enter IFSC Code</FormLabel>
-                                      <FormControl>
-                                        <div className="relative flex items-center">
-                                          <Input
-                                            placeholder="EnterBank IFSC Code"
-                                            {...field}
-                                            className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                          />
-                                          <span className="absolute right-4 text-gray-500">
-                                            <MapPinHouse size={21} />
-                                          </span>
-                                        </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                {/* State Field */}
-                                <FormField
-                                  control={additionalForm2.control}
-                                  name="State"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>Enter Account Holder Name</FormLabel>
-                                      <FormControl>
-                                        <div className="relative flex items-center">
-                                          <Input
-                                            placeholder="Enter Bank Account Holder Name"
-                                            {...field}
-                                            className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                          />
-                                          <span className="absolute right-4 text-gray-500">
-                                            <MapPinHouse size={21} />
-                                          </span>
-                                        </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                
-                                
-                              </div>
-
-                              {/* Submit Button */}
-                              <div className="flex justify-end">
-                                <Button
-                                  type="submit"
-                                  className="bg-indigo-600 text-white px-9 py-2 rounded-lg hover:bg-indigo-700"
-                                >
-                                  Save
-                                </Button>
-                              </div>
-                            </form>
-                          </Form>
-                        </DialogContent>
-                      </Dialog>
-
 
             {/* Add Teacher Button */}
             <Button
-              onClick={() => setteacher(true)}
+              onClick={() => setTeacher(true)}
               className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm"
             >
               + Add Employee
             </Button>
 
-            <Dialog open={Addteacher} onOpenChange={setteacher}>
+            {/* //First dilog */}
+            <Dialog open={Addteacher} onOpenChange={setTeacher}>
               <DialogContent className="sm:max-w-[800px] shadow-lg p-6 rounded-lg h-[90%] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
-                <DialogHeader>
-                  <DialogTitle className="text-center">
-                    Add Employee
-                  </DialogTitle>
-                </DialogHeader>
+                {/* Back Arrow & Title */}
+                <div className="flex items-center mb-4">
+                  <button
+                    onClick={() => setteacher(false)}
+                    className="text-gray-600 hover:text-gray-800"
+                  >
+                    <ArrowLeft size={24} />
+                  </button>
+                  <DialogTitle className="text-center flex-1">Add Employee</DialogTitle>
+                </div>
                 <hr />
 
                 <Form {...additionalForm}>
@@ -827,345 +817,458 @@ const Team = ({ teacherData }) => {
                         Save
                       </Button>
 
-                      <Dialog open={AddDetails} onOpenChange={setAddDetails}>
-                        <DialogContent className="sm:max-w-[800px] shadow-lg p-6 rounded-lg h-[90%] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
-                          <DialogHeader>
-                            <DialogTitle className="text-center">
-                              Access Control Details
-                            </DialogTitle>
-                          </DialogHeader>
-                          <hr />
-
-                          <Form {...additionalForm2}>
-                            <form
-                              onSubmit={additionalForm2.handleSubmit(
-                                handleAdditionalFormSubmit2
-                              )}
-                              className="space-y-6"
-                            >
-                              {/* Two-Column Grid Layout */}
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                {/* Residential Address Field */}
-                                <FormField
-                                  control={additionalForm2.control}
-                                  name="ResidentialAddress"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>Residential Address</FormLabel>
-                                      <FormControl>
-                                        <div className="relative flex items-center">
-                                          <Input
-                                            placeholder="Enter Residential Address"
-                                            {...field}
-                                            type="String"
-                                            className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                          />
-                                          <span className="absolute right-4 text-gray-500">
-                                            <MapPinHouse size={21} />
-                                          </span>
-                                        </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                {/* District Field */}
-                                <FormField
-                                  control={additionalForm2.control}
-                                  name="District"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>District</FormLabel>
-                                      <FormControl>
-                                        <div className="relative flex items-center">
-                                          <Input
-                                            placeholder="Enter District Name"
-                                            {...field}
-                                            className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                          />
-                                          <span className="absolute right-4 text-gray-500">
-                                            <MapPinHouse size={21} />
-                                          </span>
-                                        </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                {/* State Field */}
-                                <FormField
-                                  control={additionalForm2.control}
-                                  name="State"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>State</FormLabel>
-                                      <FormControl>
-                                        <div className="relative flex items-center">
-                                          <Input
-                                            placeholder="Enter State Name"
-                                            {...field}
-                                            className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                          />
-                                          <span className="absolute right-4 text-gray-500">
-                                            <MapPinHouse size={21} />
-                                          </span>
-                                        </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                {/* Pincode Field */}
-                                <FormField
-                                  control={additionalForm2.control}
-                                  name="Pincode"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>Pincode</FormLabel>
-                                      <FormControl>
-                                        <div className="relative flex items-center">
-                                          <Input
-                                            placeholder="Enter Pincode "
-                                            {...field}
-                                            type="number"
-                                            className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                          />
-                                          <span className="absolute right-4 text-gray-500">
-                                            <MapPinHouse size={21} />
-                                          </span>
-                                        </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <hr className="border-gray-300 my-4" />
-                                <FormField
-                                  control={additionalForm2.control}
-                                  name="terms"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel className="text-lg font-semibold text-gray-500">
-                                        Permanent Address
-                                      </FormLabel>
-                                      <div className="flex items-center space-x-3 mt-2">
-                                        <Checkbox
-                                          id="terms"
-                                          className="w-4 sm:w-5 h-4 sm:h-5"
-                                          checked={field.value}
-                                          onCheckedChange={(checked) =>
-                                            field.onChange(checked)
-                                          }
-                                        />
-                                        <Label
-                                          htmlFor="terms"
-                                          className="text-gray-500 text-sm sm:text-sm"
-                                        >
-                                          Use the same address as Residential
-                                          Address
-                                        </Label>
-                                      </div>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                {/*  Permanent Address Fields */}
-                                <FormField
-                                  control={additionalForm2.control}
-                                  name="PermanentAddress"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>Permanent Address</FormLabel>
-                                      <FormControl>
-                                        <div className="relative flex items-center">
-                                          <Input
-                                            placeholder="Enter Permanent Address"
-                                            {...field}
-                                            disabled={isSameAddress} // Disable if checkbox is checked
-                                            className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                          />
-                                          <span className="absolute right-4 text-gray-500">
-                                            <MapPinHouse size={21} />
-                                          </span>
-                                        </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <FormField
-                                  control={additionalForm2.control}
-                                  name="PermanentDistrict"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>District</FormLabel>
-                                      <FormControl>
-                                        <div className="relative flex items-center">
-                                          <Input
-                                            placeholder="Enter District Name"
-                                            {...field}
-                                            disabled={isSameAddress}
-                                            className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                          />
-                                          <span className="absolute right-4 text-gray-500">
-                                            <MapPinHouse size={21} />
-                                          </span>
-                                        </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <FormField
-                                  control={additionalForm2.control}
-                                  name="PermanentState"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>State</FormLabel>
-                                      <FormControl>
-                                        <div className="relative flex items-center">
-                                          <Input
-                                            placeholder="Enter State Name"
-                                            {...field}
-                                            disabled={isSameAddress}
-                                            className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                          />
-                                          <span className="absolute right-4 text-gray-500">
-                                            <MapPinHouse size={21} />
-                                          </span>
-                                        </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <FormField
-                                  control={additionalForm2.control}
-                                  name="PermanentPincode"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel> Pincode</FormLabel>
-                                      <FormControl>
-                                        <div className="relative flex items-center">
-                                          <Input
-                                            placeholder="Enter Pincode"
-                                            {...field}
-                                            disabled={isSameAddress}
-                                            type="number"
-                                            className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                          />
-                                          <span className="absolute right-4 text-gray-500">
-                                            <MapPinHouse size={21} />
-                                          </span>
-                                        </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                {/* Department Selection Dropdown */}
-                                <FormField
-                                  control={additionalForm2.control}
-                                  name="departmentSelection"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>Select Department*</FormLabel>
-                                      <FormControl>
-                                        <div className="relative flex items-center">
-                                          <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                              <Button
-                                                type="button"
-                                                className="w-full border border-blue-300 rounded-xl p-5 shadow-lg py-2 focus:ring-1 focus:ring-blue-500 font-sm flex items-center justify-between"
-                                              >
-                                                <span className="text-gray-500">
-                                                  {field.value ||
-                                                    "Select Department"}
-                                                </span>
-                                                <ChevronDown
-                                                  size={16}
-                                                  className="ml-2"
-                                                />
-                                              </Button>
-                                            </DropdownMenuTrigger>
-
-                                            <DropdownMenuContent
-                                              align="start"
-                                              className="max-h-[20vh] overflow-y-auto w-[44vh] shadow-md rounded-md mt-2 border border-gray-300 "
-                                            >
-                                              {departmentList?.map(
-                                                (dept, index) => (
-                                                  <DropdownMenuItem
-                                                    key={index}
-                                                    onClick={() => {
-                                                      field.onChange(dept);
-                                                      setSelectedDepartment(
-                                                        dept
-                                                      );
-                                                    }}
-                                                    className="cursor-pointer px-4 py-2 hover:bg-blue-600 hover:text-white bg-white text-gray-800"
-                                                  >
-                                                    {dept}
-                                                  </DropdownMenuItem>
-                                                )
-                                              )}
-                                            </DropdownMenuContent>
-                                          </DropdownMenu>
-                                        </div>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                {/* Teacher/Professor or Academics Staff*/}
-                                <FormField
-                                  control={additionalForm2.control}
-                                  name="isTeacher"
-                                  render={({ field }) => (
-                                    <FormItem className="mt-1">
-                                      <FormLabel className="text-md font-semibold text-gray-800">
-                                        Add as a Teacher, Professor, or Academic
-                                        Staff
-                                      </FormLabel>
-                                      <div className="flex items-center space-x-3 mt-2 pt-2">
-                                        <Checkbox
-                                          id="isTeacher"
-                                          className="w-4 sm:w-5 h-4 sm:h-5"
-                                          checked={field.value}
-                                          onCheckedChange={(checked) =>
-                                            field.onChange(checked)
-                                          }
-                                        />
-                                        <Label
-                                          htmlFor="isTeacher"
-                                          className="text-gray-500 text-sm sm:text-sm"
-                                        >
-                                          Add as a Teacher/Professor or Academic
-                                          Staff
-                                        </Label>
-                                      </div>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                              </div>
-
-                              {/* Submit Button */}
-                              <div className="flex justify-end">
-                                <Button
-                                  type="submit"
-                                  className="bg-indigo-600 text-white px-9 py-2 rounded-lg hover:bg-indigo-700"
-                                >
-                                  Save
-                                </Button>
-                              </div>
-                            </form>
-                          </Form>
-                        </DialogContent>
-                      </Dialog>
                     </div>
                   </form>
                 </Form>
+              </DialogContent>
+            </Dialog>
+
+            {/* //second dilog */}
+            <Dialog open={AddDetails} onOpenChange={setAddDetails}>
+              <DialogContent className="sm:max-w-[800px] shadow-lg p-6 rounded-lg h-[90%] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
+                {/* Back Arrow & Title */}
+                <div className="flex items-center mb-4">
+                  <button
+                    onClick={() => setAddDetails(false)}
+                    className="text-gray-600 hover:text-gray-800"
+                  >
+                    <ArrowLeft size={24} />
+                  </button>
+                  <DialogTitle className="text-center flex-1">Access Control Details</DialogTitle>
+                </div>
+                <hr />
+
+                <Form {...additionalForm2}>
+                  <form
+                    onSubmit={additionalForm2.handleSubmit(
+                      handleAdditionalFormSubmit2
+                    )}
+                    className="space-y-6"
+                  >
+                    {/* Two-Column Grid Layout */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      {/* Residential Address Field */}
+                      <FormField
+                        control={additionalForm2.control}
+                        name="ResidentialAddress"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Residential Address</FormLabel>
+                            <FormControl>
+                              <div className="relative flex items-center">
+                                <Input
+                                  placeholder="Enter Residential Address"
+                                  {...field}
+                                  type="String"
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                />
+                                <span className="absolute right-4 text-gray-500">
+                                  <MapPinHouse size={21} />
+                                </span>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      {/* District Field */}
+                      <FormField
+                        control={additionalForm2.control}
+                        name="District"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>District</FormLabel>
+                            <FormControl>
+                              <div className="relative flex items-center">
+                                <Input
+                                  placeholder="Enter District Name"
+                                  {...field}
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                />
+                                <span className="absolute right-4 text-gray-500">
+                                  <MapPinHouse size={21} />
+                                </span>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      {/* State Field */}
+                      <FormField
+                        control={additionalForm2.control}
+                        name="State"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>State</FormLabel>
+                            <FormControl>
+                              <div className="relative flex items-center">
+                                <Input
+                                  placeholder="Enter State Name"
+                                  {...field}
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                />
+                                <span className="absolute right-4 text-gray-500">
+                                  <MapPinHouse size={21} />
+                                </span>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      {/* Pincode Field */}
+                      <FormField
+                        control={additionalForm2.control}
+                        name="Pincode"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Pincode</FormLabel>
+                            <FormControl>
+                              <div className="relative flex items-center">
+                                <Input
+                                  placeholder="Enter Pincode "
+                                  {...field}
+                                  type="number"
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                />
+                                <span className="absolute right-4 text-gray-500">
+                                  <MapPinHouse size={21} />
+                                </span>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <hr className="border-gray-300 my-4" />
+                      <FormField
+                        control={additionalForm2.control}
+                        name="terms"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-lg font-semibold text-gray-500">
+                              Permanent Address
+                            </FormLabel>
+                            <div className="flex items-center space-x-3 mt-2">
+                              <Checkbox
+                                id="terms"
+                                className="w-4 sm:w-5 h-4 sm:h-5"
+                                checked={field.value}
+                                onCheckedChange={(checked) =>
+                                  field.onChange(checked)
+                                }
+                              />
+                              <Label
+                                htmlFor="terms"
+                                className="text-gray-500 text-sm sm:text-sm"
+                              >
+                                Use the same address as Residential
+                                Address
+                              </Label>
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      {/*  Permanent Address Fields */}
+                      <FormField
+                        control={additionalForm2.control}
+                        name="PermanentAddress"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Permanent Address</FormLabel>
+                            <FormControl>
+                              <div className="relative flex items-center">
+                                <Input
+                                  placeholder="Enter Permanent Address"
+                                  {...field}
+                                  disabled={isSameAddress} // Disable if checkbox is checked
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                />
+                                <span className="absolute right-4 text-gray-500">
+                                  <MapPinHouse size={21} />
+                                </span>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={additionalForm2.control}
+                        name="PermanentDistrict"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>District</FormLabel>
+                            <FormControl>
+                              <div className="relative flex items-center">
+                                <Input
+                                  placeholder="Enter District Name"
+                                  {...field}
+                                  disabled={isSameAddress}
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                />
+                                <span className="absolute right-4 text-gray-500">
+                                  <MapPinHouse size={21} />
+                                </span>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={additionalForm2.control}
+                        name="PermanentState"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>State</FormLabel>
+                            <FormControl>
+                              <div className="relative flex items-center">
+                                <Input
+                                  placeholder="Enter State Name"
+                                  {...field}
+                                  disabled={isSameAddress}
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                />
+                                <span className="absolute right-4 text-gray-500">
+                                  <MapPinHouse size={21} />
+                                </span>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={additionalForm2.control}
+                        name="PermanentPincode"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel> Pincode</FormLabel>
+                            <FormControl>
+                              <div className="relative flex items-center">
+                                <Input
+                                  placeholder="Enter Pincode"
+                                  {...field}
+                                  disabled={isSameAddress}
+                                  type="number"
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                />
+                                <span className="absolute right-4 text-gray-500">
+                                  <MapPinHouse size={21} />
+                                </span>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      {/* Department Selection Dropdown */}
+                      <FormField
+                        control={additionalForm2.control}
+                        name="departmentSelection"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Select Department*</FormLabel>
+                            <FormControl>
+                              <div className="relative flex items-center">
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button
+                                      type="button"
+                                      className="w-full border border-blue-300 rounded-xl p-5 shadow-lg py-2 focus:ring-1 focus:ring-blue-500 font-sm flex items-center justify-between"
+                                    >
+                                      <span className="text-gray-500">
+                                        {field.value ||
+                                          "Select Department"}
+                                      </span>
+                                      <ChevronDown
+                                        size={16}
+                                        className="ml-2"
+                                      />
+                                    </Button>
+                                  </DropdownMenuTrigger>
+
+                                  <DropdownMenuContent
+                                    align="start"
+                                    className="max-h-[20vh] overflow-y-auto w-[44vh] shadow-md rounded-md mt-2 border border-gray-300 "
+                                  >
+                                    {departmentList?.map(
+                                      (dept, index) => (
+                                        <DropdownMenuItem
+                                          key={index}
+                                          onClick={() => {
+                                            field.onChange(dept);
+                                            setSelectedDepartment(
+                                              dept
+                                            );
+                                          }}
+                                          className="cursor-pointer px-4 py-2 hover:bg-blue-600 hover:text-white bg-white text-gray-800"
+                                        >
+                                          {dept}
+                                        </DropdownMenuItem>
+                                      )
+                                    )}
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      {/* Teacher/Professor or Academics Staff*/}
+                      <FormField
+                        control={additionalForm2.control}
+                        name="isTeacher"
+                        render={({ field }) => (
+                          <FormItem className="mt-1">
+                            <FormLabel className="text-md font-semibold text-gray-800">
+                              Add as a Teacher, Professor, or Academic
+                              Staff
+                            </FormLabel>
+                            <div className="flex items-center space-x-3 mt-2 pt-2">
+                              <Checkbox
+                                id="isTeacher"
+                                className="w-4 sm:w-5 h-4 sm:h-5"
+                                checked={field.value}
+                                onCheckedChange={(checked) =>
+                                  field.onChange(checked)
+                                }
+                              />
+                              <Label
+                                htmlFor="isTeacher"
+                                className="text-gray-500 text-sm sm:text-sm"
+                              >
+                                Add as a Teacher/Professor or Academic
+                                Staff
+                              </Label>
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Submit Button */}
+                    <div className="flex justify-end">
+                      <Button
+                        onClick={(e) => mainSecond(e)}
+                        // onClick={() => setAddBankDetails(true)}
+                        type="submit"
+                        className="bg-indigo-600 text-white px-9 py-2 rounded-lg hover:bg-indigo-700"
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
+
+            {/* //third dilog */}
+            <Dialog open={AddBankDetails} onOpenChange={setAddBankDetails}>
+              <DialogContent className="sm:max-w-[800px] shadow-lg p-6 rounded-lg overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
+
+                {/* Back Arrow & Title */}
+                <div className="flex items-center mb-4">
+                  <button
+                    onClick={() => setAddBankDetails(false)}
+                    className="text-gray-600 hover:text-gray-800"
+                  >
+                    <ArrowLeft size={24} />
+                  </button>
+                  <DialogTitle className="text-center flex-1">Bank Account Details</DialogTitle>
+                </div>
+
+                <hr />
+
+                <Form {...additionalForm3}>
+                  <form onSubmit={additionalForm3.handleSubmit(handleAdditionalFormSubmit3)} className="space-y-6">
+
+                    {/* Two-Column Grid Layout */}
+                    <div className="grid grid-cols-1 sm:grid-cols-1 gap-6">
+
+                      {/* Account Number */}
+                      <FormField control={additionalForm3.control} name="accountNumber" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Enter Bank Account Number</FormLabel>
+                          <FormControl>
+                            <div className="relative flex items-center">
+                              <Input placeholder="Enter Account Number" {...field} type="text" className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+
+                      {/* IFSC Code */}
+                      <FormField control={additionalForm3.control} name="ifscCode" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Enter IFSC Code</FormLabel>
+                          <FormControl>
+                            <div className="relative flex items-center">
+                              <Input placeholder="Enter Bank IFSC Code" {...field} className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+
+                      {/* Account Holder Name */}
+                      <FormField control={additionalForm3.control} name="accountHolderName" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Enter Account Holder Name</FormLabel>
+                          <FormControl>
+                            <div className="relative flex items-center">
+                              <Input placeholder="Enter Bank Account Holder Name" {...field} className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+
+                    </div>
+
+                    {/* Submit Button */}
+                    <div className="flex justify-end">
+                      <Button
+                        onClick={(e) => mainthird(e)}
+
+                        type="submit" className="bg-indigo-600 text-white px-9 py-2 rounded-lg hover:bg-indigo-700">
+                        Save
+                      </Button>
+                    </div>
+
+                  </form>
+                </Form>
+
+              </DialogContent>
+            </Dialog>
+
+            {/* confirm dilog */}
+            <Dialog open={AddConfrom} onOpenChange={setAddConfrom}>
+              <DialogContent className="w-full max-w-[90vw] sm:max-w-[400px] p-4">
+                <DialogHeader>
+                  <DialogTitle className="text-center text-lg font-semibold">
+                    Confirm Export
+                  </DialogTitle>
+                </DialogHeader>
+
+                <DialogFooter className="flex flex-wrap justify-between gap-2">
+                  <Button
+                    onClick={() => setAddConfrom(false)}
+                    variant="outline"
+                    className="w-full sm:w-auto"
+                  >
+                    Cancel
+                  </Button>
+                  <Button className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white">
+                    Confirm
+                  </Button>
+                </DialogFooter>
               </DialogContent>
             </Dialog>
           </div>
@@ -1423,11 +1526,10 @@ const Team = ({ teacherData }) => {
                 <PaginationLink
                   href="#"
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`px-4 py-2 rounded-md ${
-                    currentPage === i + 1
-                      ? "bg-blue-600 text-white"
-                      : "hover:bg-blue-500  hover:text-white"
-                  }`}
+                  className={`px-4 py-2 rounded-md ${currentPage === i + 1
+                    ? "bg-blue-600 text-white"
+                    : "hover:bg-blue-500  hover:text-white"
+                    }`}
                 >
                   {i + 1}
                 </PaginationLink>
