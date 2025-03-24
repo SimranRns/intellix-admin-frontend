@@ -35,16 +35,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../src/components/ui/select";
-
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "../../src/components/ui/dropdown-menu";
-
 import { Checkbox } from "../../src/components/ui/checkbox";
 
+import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "../../src/components/ui/card";
 import {
   Table,
   TableHeader,
@@ -55,11 +54,48 @@ import {
 } from "../../src/components/ui/table";
 import { Pencil, Trash2 } from "lucide-react";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../../src/components/ui/dialog";
+import { Label } from "../../src/components/ui/label";
+
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+} from "../../src/components/ui/dropdown-menu";
+import { ArrowUpRight, ArrowDownRight } from "lucide-react";
+
 const Leads = () => {
+  const stats = [
+    { title: "Views", value: "7,265", change: "+11.07%", up: true },
+    { title: "Visits", value: "3,671", change: "-0.03%", up: false },
+    { title: "New Users", value: "156", change: "+13.57%", up: true },
+    { title: "Active Users", value: "2,318", change: "+6.08%", up: true },
+  ];
   const [date, setDate] = useState(null);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All Categories");
   const [status, setStatus] = useState("All Status");
+
+  const data = [
+    { name: "JavaScript", value: 30, color: "#E91E63" }, // Pink
+    { name: "HTML/CSS", value: 20, color: "#FF9800" }, // Orange
+    { name: "Python", value: 25, color: "#FFEB3B" }, // Yellow
+    { name: "SQL", value: 20, color: "#4CAF50" }, // Green
+    { name: "TypeScript", value: 5, color: "#673AB7" }, // Purple
+  ];
 
   const [leads, setLeads] = useState([
     {
@@ -153,7 +189,7 @@ const Leads = () => {
       <AppSidebar />
       <SidebarInset>
         {/* Header Section */}
-        <header className="flex h-16 gap-2 items-center px-4">
+        {/* <header className="flex h-16 gap-2 items-center px-4">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="h-4 mr-2" />
           <Breadcrumb>
@@ -167,17 +203,73 @@ const Leads = () => {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-        </header>
+        </header> */}
 
-        <div className="bg-white p-6 rounded-lg shadow-md max-w-6xl mx-auto">
+        <div className="flex  items-center gap-6 p-6 bg-white rounded-lg">
+          {/* Lead Generation Chart */}
+          <Card className="w-full sm:w-[280px] md:w-[320px] flex-shrink-0 flex items-center p-4">
+            <div className="flex-1">
+            <CardTitle className="text-left font-semibold text-gray-600">
+                  Highest Source of Lead Generation
+                </CardTitle>
+              <CardHeader>
+                <CardTitle className="text-left text-lg font-semibold">
+                  Total Leads: 10
+                </CardTitle>
+                
+              </CardHeader>
+            </div>
+            <div className="h-20 w-40 flex justify-center items-center">
+              <PieChart width={120} height={120}>
+                <Pie
+                  data={data}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={50}
+                  innerRadius={20}
+                  dataKey="value"
+                  label={false}
+                >
+                  {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </div>
+          </Card>
+          {/* Analytics Cards - 2x2 Grid */}
+          <div className="grid grid-cols-4 gap-4">
+            {stats.map((stat, index) => (
+              <Card
+                key={index}
+                className="w-40 md:w-44 bg-blue-50 p-4 rounded-lg shadow-md"
+              >
+                <CardContent className="flex flex-col items-center">
+                  <span className="text-gray-600 text-sm">{stat.title}</span>
+                  <span className="text-2xl font-bold">{stat.value}</span>
+                  <div className="flex items-center gap-1 text-sm">
+                    <span
+                      className={stat.up ? "text-green-600" : "text-red-600"}
+                    >
+                      {stat.change}
+                    </span>
+                    {stat.up ? (
+                      <ArrowUpRight className="h-4 w-4 text-green-600" />
+                    ) : (
+                      <ArrowDownRight className="h-4 w-4 text-red-600" />
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        <div className="p-6 rounded-lg shadow-md max-w-6xl mx-auto">
           <div className="flex flex-wrap justify-between gap-2 mb-4">
-            <Input
-              placeholder="Search Leads..."
-              className="w-1/4"
-            />
-            <Button variant="default" className="bg-blue-600 text-white">
-              Search
-            </Button>
+            <Input placeholder="Search Leads..." className="w-1/4" />
+            <Button className="bg-blue-600 text-white ">Search</Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -224,23 +316,22 @@ const Leads = () => {
               <PopoverTrigger asChild>
                 <Button
                   variant={"outline"}
-                  className={`w-[240px] justify-start text-left font-normal ${
-                    !date ? "text-muted-foreground" : ""
-                  }`}
+                  // className={`w-[240px] justify-start text-left font-normal ${
+                  //   !date ? "text-muted-foreground" : ""
+                  // }`}
                 >
                   <CalendarIcon className="mr-2" />
                   {date ? format(date, "PPP") : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
+
               <PopoverContent
                 align="start"
                 className="flex w-auto flex-col space-y-2 p-2"
               >
-                <Select
-                   
-                >
+                <Select>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select" />
+                    <SelectValue placeholder="Select " />
                   </SelectTrigger>
                   <SelectContent position="popper">
                     <SelectItem value="0">Today</SelectItem>
@@ -255,35 +346,102 @@ const Leads = () => {
               </PopoverContent>
             </Popover>
 
-            <Button variant="default" className="bg-blue-600">
-              <PlusIcon className="mr-1" /> Add Leads
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="bg-blue-600 text-white">
+                  <PlusIcon className="mr-1" /> Add Leads
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[525px]">
+                <DialogHeader>
+                  <DialogTitle>Add Leads </DialogTitle>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Input
+                      id="name"
+                      value="Enter Name"
+                      className="col-span-4"
+                    />
+                    <Input
+                      id="name"
+                      value="Enter Email"
+                      className="col-span-4"
+                    />
+                    <Input
+                      id="name"
+                      value="Enter Address"
+                      className="col-span-4"
+                    />
+                    <Input
+                      id="name"
+                      value="Enter Contect"
+                      className="col-span-4"
+                    />
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue
+                          className="span-10"
+                          placeholder="Select Categories"
+                        />
+                      </SelectTrigger>
+                      <SelectContent position="popper">
+                        <SelectItem value="next">Nextjs</SelectItem>
+                        <SelectItem value="sveltekit">SvelteKit</SelectItem>
+                        <SelectItem value="astro">Astro</SelectItem>
+                        <SelectItem value="nuxt">Nuxtjs</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="submit">submit</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant=" " className="bg-blue-600  text-white">
+                  <PlusIcon className="mr-0" /> Add Category
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[525px]">
+                <DialogHeader>
+                  <DialogTitle>Add Category </DialogTitle>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <Label htmlFor="name" className="text-left">
+                    Enter Category Name
+                  </Label>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Input id="name" value="Enter" className="col-span-4" />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="submit">Add Category</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
             <Button variant="default" className="bg-blue-600 ">
               My Leads
-            </Button>
-
-            <Button variant="default" className="bg-blue-600 ">
-              <PlusIcon className="mr-1" /> Add Category
             </Button>
           </div>
 
           <div className="overflow-x-auto">
             <Table className="min-w-full border rounded-lg">
-              <TableHeader className="bg-blue-600 ">
+              <TableHeader className>
                 <TableRow>
                   <TableHead className="w-10 text-center">
                     <Checkbox />
                   </TableHead>
-                  <TableHead>Created At</TableHead>
-                  <TableHead>Assigned To</TableHead>
-                  <TableHead>First Name</TableHead>
-                  <TableHead>Last Name</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead> Address</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Mobile Number</TableHead>
-                  <TableHead>Company Name</TableHead>
-                  <TableHead>Lead Source</TableHead>
-                  <TableHead>Updated At</TableHead>
+                  <TableHead> Category</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead className="text-center">Action</TableHead>
                 </TableRow>
               </TableHeader>
@@ -293,38 +451,35 @@ const Leads = () => {
                     <TableCell className="text-center">
                       <Checkbox />
                     </TableCell>
-                    <TableCell>{lead.createdAt}</TableCell>
-                    <TableCell>{lead.assignedTo}</TableCell>
                     <TableCell>{lead.firstName}</TableCell>
                     <TableCell>{lead.lastName}</TableCell>
                     <TableCell>{lead.email}</TableCell>
                     <TableCell>{lead.mobile}</TableCell>
                     <TableCell>{lead.company}</TableCell>
                     <TableCell>{lead.leadSource}</TableCell>
-                    <TableCell>{lead.updatedAt}</TableCell>
                     <TableCell className="flex gap-2 justify-center">
-                      <Button
-                        size="icon"
-                        variant="outline"
-                        className="text-blue-600 border-blue-600"
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="outline"
-                        className="text-red-600 border-red-600"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline">Open</Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuLabel>Panel Position</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuRadioGroup>
+                            <DropdownMenuRadioItem value="top">
+                              Top
+                            </DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem value="bottom">
+                              Bottom
+                            </DropdownMenuRadioItem>
+                          </DropdownMenuRadioGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-
-
-
           </div>
         </div>
       </SidebarInset>
