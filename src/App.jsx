@@ -39,11 +39,15 @@ const App = () => {
           {/* <Route path="/support" element={<div>Support </div>} /> */}
           <Route path="/settings" element={<Settings />} />
           <Route path="/support" element={<Support />} />
+
+
           <Route path="/add_student_model" element={<AddStudentModal />} />
           <Route path="/ProceedModal" element={<ProceedModal />} />
-          <Route path="/add_student_model2" element={<StudentSelectionPage />} />
-          <Route path="/add_student_model3" element={<ParentDetails />} />
-          <Route path="/addStudent" element={<SuccessMessage />} />
+          <Route path="/StudentSelectionPage" element={<StudentSelectionPage />} />
+          <Route path="/ParentDetails" element={<ParentDetails />} />
+          <Route path="/add" element={<SuccessMessage />} />
+
+
           <Route path="/View-Profile" element={<ViewProfile />} />
           <Route path="/Leads" element={<Leads />} />
         </Routes>

@@ -1,34 +1,31 @@
-import { useNavigate } from "react-router-dom";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
+import { validationSchema } from "./Student.validation";
 
-const schema = z.object({
-  selectedCourse: z.string().min(1, { message: "Course selection is required" }),
-  selectedBatch: z.string().min(1, { message: "Batch selection is required" }),
-  
-});
+
 
 const StudentSelectionPage = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(validationSchema),
   });
 
   const onSubmit = (data) => {
     console.log("Form Data:", data);
-    navigate("/add_student_model3");
+   navigate("/ParentDetails")
   };
 
   return (
     <div>
       <FaArrowLeftLong
-            onClick={() => navigate("/add_student_model4")}
+           onClick={navigate("/ProceedModal")}
             style={{ cursor: "pointer", outline: "none", border: "none" }}
             className="fixed  text-3xl z-[999] "
           />

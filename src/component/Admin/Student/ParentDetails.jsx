@@ -2,28 +2,20 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useNavigate } from "react-router-dom";
+
 import { Input } from "../../src/components/ui/input";
 import { Button } from "../../src/components/ui/button";
 import { Label } from "../../src/components/ui/label";
 import { Card, CardContent } from "../../src/components/ui/card";
 import { UploadCloud } from "lucide-react";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import { zodSchema } from "./Student.validation";
 
 
-const schema = z.object({
-  fatherName: z.string().min(2, "Father's name is required").regex(/^[A-Za-z\s]+$/, "Only alphabets allowed"),
-  motherName: z.string().min(2, "Mother's name is required").regex(/^[A-Za-z\s]+$/, "Only alphabets allowed"),
-  guardianAadhaar: z.string().length(12, "Aadhaar must be 12 digits").regex(/^\d+$/, "Only numbers allowed"),
-  guardianBankAccount: z.string().min(8, "Account number must be at least 8 digits").regex(/^\d+$/, "Only numbers allowed"),
-  ifscCode: z.string().length(11, "IFSC must be 11 characters").regex(/^[A-Z0-9]+$/, "Invalid IFSC format"),
-  guardianPan: z.any().refine((file) => file && file.type === "application/pdf", {
-    message: "Only PDF files are allowed",
-  }),
-});
+
 
 const ParentDetails = () => {
-  const navigate = useNavigate();
+
 
 
   const {
@@ -32,13 +24,13 @@ const ParentDetails = () => {
     setValue,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(zodSchema),
   });
 
   const onSubmit = (data) => {
     console.log("Form Data:", data);
     // alert("Form submitted successfully!");
-    navigate("/add_student_model2");
+    navigate("/add");
   };
 
   const handleFileUpload = (e) => {
@@ -49,7 +41,7 @@ const ParentDetails = () => {
   return (
     <div className="flex items-center justify-center min-h-screen">
       <FaArrowLeftLong
-        onClick={() => navigate("/add_student_model")}
+      onClick={navigate("/StudentSelectionPage")}
         style={{ cursor: "pointer", outline: "none", border: "none" }}
         className="fixed top-5 left-5  text-3xl z-[999] "
       />
@@ -115,7 +107,7 @@ const ParentDetails = () => {
             </div>
 
             <div className="flex justify-center mt-4">
-              <Button onClick={navigate("/addStudent")} type="submit" className="w-56 bg-blue-700 text-white text-lg py-2 rounded-lg hover:bg-blue-600">
+              <Button  type="submit" className="w-56 bg-blue-700 text-white text-lg py-2 rounded-lg hover:bg-blue-600">
                 Add Student
               </Button>
             </div>
