@@ -383,7 +383,7 @@ const Attendance = () => {
                 <p className="text-center text-gray-600">
                   Are you sure you want to export the report from{" "}
                   <b>{fromDate.toLocaleDateString()}</b> to{" "}
-                  <b>{toDate.toLocaleDateString()}</b>?
+                  <b>{toDate.toLocaleDateString()}</b>? 
                 </p>
 
                 <DialogFooter className="flex justify-between">
