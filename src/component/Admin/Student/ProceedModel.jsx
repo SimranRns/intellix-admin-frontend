@@ -1,14 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../src/components/ui/dialog";
 import { Button } from "../../src/components/ui/button";
 import { Label } from "../../src/components/ui/label";
 import { Input } from "../../src/components/ui/input";
-import { useNavigate } from "react-router-dom";
+
 import { FaArrowLeftLong } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
-const ProceedModal = ({ o, c }) => {
-    const navigate = useNavigate();
-
+const ProceedModal = () => {
+    const navigate = useNavigate()
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    useEffect(() => {
+        setIsModalOpen(true);
+        
+      }, []);
     const [formData, setFormData] = useState({
         address: "",
         aadhaarNumber: "",
@@ -16,7 +21,7 @@ const ProceedModal = ({ o, c }) => {
         aadhaarDocument: null,
         panDocument: null
     });
-// const navigate = useNavigate()
+
     const [errors, setErrors] = useState({});
 
     const handleChange = (e) => {
@@ -58,18 +63,17 @@ const ProceedModal = ({ o, c }) => {
             setErrors(newErrors);
             return;
         }
-navigate("/add_student_model2")
-      
+navigate("/StudentSelectionPage")
     };
 
     return (
       <div>
         <FaArrowLeftLong
-        onClick={() => navigate("/add_student_model")}
+       onClick={navigate("/add_student_model")}
         style={{ cursor: "pointer" }}
         className="fixed text-3xl z-[9999]  p-2 rounded-full shadow-lg"
       />
-          <Dialog open={o} onOpenChange={c}>
+          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             
             <DialogContent className="sm:max-w-[700px] p-6 rounded-lg">
                 <DialogHeader>
