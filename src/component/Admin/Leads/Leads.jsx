@@ -19,7 +19,7 @@ import Header from "../Dashboard/Header";
 import { Button } from "../../src/components/ui/button";
 import { Input } from "../../src/components/ui/input";
 
-import { addDays, format } from "date-fns";
+import { format } from "date-fns";
 import { CalendarIcon, DownloadIcon, PlusIcon } from "lucide-react";
 
 import { Calendar } from "../../src/components/ui/calendar";
@@ -35,9 +35,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../src/components/ui/select";
-import { Checkbox } from "../../src/components/ui/checkbox";
 
-import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
+import { PieChart, Pie, Cell, Tooltip } from "recharts";
 import {
   Card,
   CardHeader,
@@ -52,12 +51,10 @@ import {
   TableBody,
   TableCell,
 } from "../../src/components/ui/table";
-import { Pencil, Trash2 } from "lucide-react";
 
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -70,14 +67,13 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
 } from "../../src/components/ui/dropdown-menu";
 import { ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 const Leads = () => {
+  
+  const [categoryName, setCategoryName] = useState("");
   const stats = [
     { title: "Views", value: "7,265", change: "+11.07%", up: true },
     { title: "Visits", value: "3,671", change: "-0.03%", up: false },
@@ -85,7 +81,7 @@ const Leads = () => {
     { title: "Active Users", value: "2,318", change: "+6.08%", up: true },
   ];
   const [date, setDate] = useState(null);
-  const [search, setSearch] = useState("");
+  // const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All Categories");
   const [status, setStatus] = useState("All Status");
 
@@ -121,75 +117,44 @@ const Leads = () => {
     },
   ]);
 
-  const lead = [
+  const data1 = [
     {
-      id: 1,
-      createdAt: "02-06-2022 10:26",
-      assignedTo: "Jayson Webb",
-      firstName: "Ellie",
-      lastName: "Edgington",
-      email: "Ellie.Thompson@southamtyres.co.uk",
-      mobile: "+07823 884562",
-      company: "Micheldever Tyre Services Ltd",
-      leadSource: "Web",
-      updatedAt: "02-06-2022 10:26",
+      name: "dvsn",
+      address: "jaipur",
+      email: "myselfyashu6@gmail.com",
+      phone: "78787643565",
+      category: "industory2",
+      status: "Converted",
+      assigned: "shivi",
+      time: "24-02-2024",
     },
     {
-      id: 2,
-      createdAt: "31-05-2022 10:26",
-      assignedTo: "Jayson Webb",
-      firstName: "Sunnie",
-      lastName: "Browne",
-      email: "sunniebrowne@live.com",
-      mobile: "+447565540783",
-      company: "PrintsPro / Printing",
-      leadSource: "Referral",
-      updatedAt: "02-06-2022 10:26",
+      name: "dvsn",
+      address: "jaipur",
+      email: "myselfyashu6@gmail.com",
+      phone: "78787643565",
+      category: "industory2",
+      status: "Inconservation",
+      assigned: "veer",
+      time: "24-02-2024",
     },
     {
-      id: 3,
-      createdAt: "26-05-2022 15:08",
-      assignedTo: "P Vivek",
-      firstName: "P",
-      lastName: "Vivek",
-      email: "vivek@telsamedia.com",
-      mobile: "+917567774639",
-      company: "Tesla Media",
-      leadSource: "Social Media",
-      updatedAt: "26-05-2022 15:08",
-    },
-    {
-      id: 4,
-      createdAt: "26-05-2022 15:08",
-      assignedTo: "P Vivek",
-      firstName: "P",
-      lastName: "Vivek",
-      email: "vivek@telsamedia.com",
-      mobile: "+917567774639",
-      company: "Tesla Media",
-      leadSource: "Social Media",
-      updatedAt: "26-05-2022 15:08",
-    },
-    {
-      id: 5,
-      createdAt: "26-05-2022 15:08",
-      assignedTo: "P Vivek",
-      firstName: "P",
-      lastName: "Vivek",
-      email: "vivek@telsamedia.com",
-      mobile: "+917567774639",
-      company: "Tesla Media",
-      leadSource: "Social Media",
-      updatedAt: "26-05-2022 15:08",
+      name: "dvsn",
+      address: "jaipur",
+      email: "myselfyashu6@gmail.com",
+      phone: "78787643565",
+      category: "Inconservation",
+      status: "Inconservation",
+      assigned: "Amrita",
+      time: "24-02-2024",
     },
   ];
-
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       <AppSidebar />
       <SidebarInset>
         {/* Header Section */}
-        {/* <header className="flex h-16 gap-2 items-center px-4">
+        <header className="flex h-16 gap-2 items-center px-4">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="h-4 mr-2" />
           <Breadcrumb>
@@ -203,20 +168,19 @@ const Leads = () => {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-        </header> */}
+        </header>
 
-        <div className="flex  items-center gap-6 p-6 bg-white rounded-lg">
+        <div className="flex flex-col md:flex-row items-center gap-6 p-6  rounded-lg">
           {/* Lead Generation Chart */}
-          <Card className="w-full sm:w-[280px] md:w-[320px] flex-shrink-0 flex items-center p-4">
-            <div className="flex-1">
-            <CardTitle className="text-left font-semibold text-gray-600">
-                  Highest Source of Lead Generation
-                </CardTitle>
+          <Card className="w-full sm:w-[280px] md:w-[320px] flex-shrink-0 flex flex-col items-center p-4">
+            <div className="flex-1 w-full">
+              <CardTitle className="text-left font-semibold">
+                Highest Source of Lead Generation
+              </CardTitle>
               <CardHeader>
                 <CardTitle className="text-left text-lg font-semibold">
                   Total Leads: 10
                 </CardTitle>
-                
               </CardHeader>
             </div>
             <div className="h-20 w-40 flex justify-center items-center">
@@ -238,32 +202,26 @@ const Leads = () => {
               </PieChart>
             </div>
           </Card>
-          {/* Analytics Cards - 2x2 Grid */}
-          <div className="grid grid-cols-4 gap-4">
-            {stats.map((stat, index) => (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full ">
+            {[
+              { title: "Hot Leads", value: "30.00", change: "+5", up: true },
+              { title: "Converted Leads", value: "10.00", change: "-2", up: false },
+              { title: "In Conversation Leads", value: "50.00", change: "+8", up: true },
+              { title: "Dropped Leads", value: "10.00", change: "-3", up: false }
+            ].map((stat, index) => (
               <Card
                 key={index}
-                className="w-40 md:w-44 bg-blue-50 p-4 rounded-lg shadow-md"
+                className="w-full md:w-44  p-4 rounded-lg shadow-md "
               >
-                <CardContent className="flex flex-col items-center">
-                  <span className="text-gray-600 text-sm">{stat.title}</span>
+                <CardContent className="flex flex-col align-center pt-9 text-center">
+                  <span className="text-sm ">{stat.title}</span>
                   <span className="text-2xl font-bold">{stat.value}</span>
-                  <div className="flex items-center gap-1 text-sm">
-                    <span
-                      className={stat.up ? "text-green-600" : "text-red-600"}
-                    >
-                      {stat.change}
-                    </span>
-                    {stat.up ? (
-                      <ArrowUpRight className="h-4 w-4 text-green-600" />
-                    ) : (
-                      <ArrowDownRight className="h-4 w-4 text-red-600" />
-                    )}
-                  </div>
+                 
                 </CardContent>
               </Card>
             ))}
           </div>
+
         </div>
 
         <div className="p-6 rounded-lg shadow-md max-w-6xl mx-auto">
@@ -316,9 +274,9 @@ const Leads = () => {
               <PopoverTrigger asChild>
                 <Button
                   variant={"outline"}
-                  // className={`w-[240px] justify-start text-left font-normal ${
-                  //   !date ? "text-muted-foreground" : ""
-                  // }`}
+                  className={`w-[240px] justify-start text-left font-normal ${
+                    !date ? "text-muted-foreground" : ""
+                  }`}
                 >
                   <CalendarIcon className="mr-2" />
                   {date ? format(date, "PPP") : <span>Pick a date</span>}
@@ -401,86 +359,88 @@ const Leads = () => {
             </Dialog>
 
             <Dialog>
-              <DialogTrigger asChild>
-                <Button variant=" " className="bg-blue-600  text-white">
-                  <PlusIcon className="mr-0" /> Add Category
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[525px]">
-                <DialogHeader>
-                  <DialogTitle>Add Category </DialogTitle>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <Label htmlFor="name" className="text-left">
-                    Enter Category Name
-                  </Label>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Input id="name" value="Enter" className="col-span-4" />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button type="submit">Add Category</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-
+      <DialogTrigger asChild>
+        <Button variant=" " className="bg-blue-600 text-white">
+          <PlusIcon className="mr-0" /> Add Category
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[525px]">
+        <DialogHeader>
+          <DialogTitle>Add Category</DialogTitle>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <Label htmlFor="name" className="text-left">
+            Enter Category Name
+          </Label>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Input
+              id="name"
+              value={categoryName}
+              onChange={(e) => setCategoryName(e.target.value)}
+              placeholder="Enter category name"
+              className="col-span-4"
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button type="submit">Add Category</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
             <Button variant="default" className="bg-blue-600 ">
               My Leads
             </Button>
           </div>
 
-          <div className="overflow-x-auto">
-            <Table className="min-w-full border rounded-lg">
-              <TableHeader className>
-                <TableRow>
-                  <TableHead className="w-10 text-center">
-                    <Checkbox />
-                  </TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead> Address</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Mobile Number</TableHead>
-                  <TableHead> Category</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-center">Action</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {lead.map((lead) => (
-                  <TableRow key={lead.id} className="border-b">
-                    <TableCell className="text-center">
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>{lead.firstName}</TableCell>
-                    <TableCell>{lead.lastName}</TableCell>
-                    <TableCell>{lead.email}</TableCell>
-                    <TableCell>{lead.mobile}</TableCell>
-                    <TableCell>{lead.company}</TableCell>
-                    <TableCell>{lead.leadSource}</TableCell>
-                    <TableCell className="flex gap-2 justify-center">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="outline">Open</Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          <DropdownMenuLabel>Panel Position</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuRadioGroup>
-                            <DropdownMenuRadioItem value="top">
-                              Top
-                            </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="bottom">
-                              Bottom
-                            </DropdownMenuRadioItem>
-                          </DropdownMenuRadioGroup>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+          <Card className="p-4 w-full overflow-hidden">
+            <div className="w-full h-40 overflow-y-auto border rounded-md">
+              <Table className="w-full">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Address</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Phone</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Assigned Name</TableHead>
+                    <TableHead>Time</TableHead>
+                    <TableHead>Action</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+                </TableHeader>
+                <TableBody>
+                  {data1.map((item, index) => (
+                    <TableRow key={index} className="">
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell>{item.address}</TableCell>
+                      <TableCell>{item.email}</TableCell>
+                      <TableCell>{item.phone}</TableCell>
+                      <TableCell>{item.category}</TableCell>
+                      <TableCell>{item.status}</TableCell>
+                      <TableCell>{item.assigned}</TableCell>
+                      <TableCell>{item.time}</TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              size="icon"
+                              className="bg-blue-500 hover:bg-blue-600 text-white"
+                            >
+                              <ChevronRight size={16} />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem>Change Status</DropdownMenuItem>
+                            <DropdownMenuItem>Assign Leads</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </Card>
         </div>
       </SidebarInset>
     </SidebarProvider>
