@@ -74,15 +74,15 @@ const ExEmployees = () => {
             ],
             image: "https://github.com/shadcn.png",
         },
-        
+
         // Add more dummy teachers here...
     ];
-    
+
     const [teachersPerPage, setTeachersPerPage] = useState(6); // Change from 10 to 6
     const totalPages = Math.ceil(Teachers.length / teachersPerPage);
     const startIndex = (currentPage - 1) * teachersPerPage;
     const selectedTeachers = Teachers.slice(startIndex, startIndex + teachersPerPage);
-    
+
     return (
         <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
             <AppSidebar />
@@ -229,39 +229,39 @@ const ExEmployees = () => {
 
                 {/* Pagination */}
                 <Pagination>
-    <PaginationContent>
-        <PaginationItem>
-            <PaginationPrevious
-                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
-            />
-        </PaginationItem>
+                    <PaginationContent>
+                        <PaginationItem>
+                            <PaginationPrevious
+                                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                                disabled={currentPage === 1}
+                            />
+                        </PaginationItem>
 
-        {Array.from({ length: totalPages }, (_, i) => (
-            <PaginationItem key={i}>
-                <PaginationLink
-                    as="button"
-                    onClick={() => setCurrentPage(i + 1)}
-                    className={`px-4 py-2 rounded-md ${currentPage === i + 1
-                        ? "bg-blue-600 text-white"
-                        : "hover:bg-blue-500  hover:text-white"
-                        }`}
-                >
-                    {i + 1}
-                </PaginationLink>
-            </PaginationItem>
-        ))}
+                        {Array.from({ length: totalPages }, (_, i) => (
+                            <PaginationItem key={i}>
+                                <PaginationLink
+                                    as="button"
+                                    onClick={() => setCurrentPage(i + 1)}
+                                    className={`px-4 py-2 rounded-md ${currentPage === i + 1
+                                        ? "bg-blue-600 text-white"
+                                        : "hover:bg-blue-500  hover:text-white"
+                                        }`}
+                                >
+                                    {i + 1}
+                                </PaginationLink>
+                            </PaginationItem>
+                        ))}
 
-        <PaginationItem>
-            <PaginationNext
-                onClick={() =>
-                    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-                }
-                disabled={currentPage === totalPages}
-            />
-        </PaginationItem>
-    </PaginationContent>
-</Pagination>
+                        <PaginationItem>
+                            <PaginationNext
+                                onClick={() =>
+                                    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                                }
+                                disabled={currentPage === totalPages}
+                            />
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
 
             </SidebarInset>
         </SidebarProvider>
