@@ -220,7 +220,7 @@ const StudentHeader = () => {
                       </button>
                     </TableCell>
                     <TableCell>
-                      <MoreVertical className="text-gray-600 cursor-pointer" size={20} />
+                      <MoreVertical className=" cursor-pointer" size={20} />
                     </TableCell>
                   </TableRow>
                 ))}
