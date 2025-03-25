@@ -186,9 +186,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 
 const Team = ({ teacherData }) => {
   const [selectedOption, setSelectedOption] = useState("Newest");
-  const [selectedDepartment, setSelectedDepartment] =
-    useState("Select Department");
-
+  const [selectedDepartment, setSelectedDepartment] = useState("Select Department");
   const [currentPage, setCurrentPage] = useState(1);
   const [teachersPerPage, setTeachersPerPage] = useState(10);
   const [profileImg, setProfileImg] = useState("https://github.com/shadcn.png");
@@ -204,8 +202,8 @@ const Team = ({ teacherData }) => {
   const [outTime, setOutTime] = useState("");
   const [InputName, setInputName] = useState("");
   const fileInputRef = useRef(null);
+  const [date, setDate] = useState("");
 
-  // const [selectedDepartment, setSelectedDepartment] = useState("");
   const departmentList = [
     "Science",
     "Mathematics",
@@ -214,24 +212,6 @@ const Team = ({ teacherData }) => {
     "Computer Science",
   ];
 
-  // **Unique Function Name: handleTeacherFormSubmit**
-  const handleTeacherFormSubmit = (formData) => {
-    console.log("Teacher Form Data:", formData);
-  };
-
-  const handleChange = (e) => {
-    setInputName(e.target.value);
-    console.log("helo");
-    console.log(InputName);
-  };
-
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setProfileImg(imageUrl);
-    }
-  };
   const updateTeachersPerPage = () => {
     const width = window.innerWidth;
     if (width < 640) {
@@ -241,11 +221,6 @@ const Team = ({ teacherData }) => {
     } else {
       setTeachersPerPage(6); // Desktop
     }
-  };
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Prevents page refresh
-    console.log("Submitted Date:", date);
-    // You can send the date to an API or handle it as needed
   };
 
   // Update on window resize
@@ -270,7 +245,6 @@ const Team = ({ teacherData }) => {
       subject: teacherData?.subject || "",
     },
   });
-
   const additionalForm = useForm({
     resolver: zodResolver(additionalDetailsSchema),
     defaultValues: {
@@ -305,8 +279,9 @@ const Team = ({ teacherData }) => {
       accountHolderName: "",
     },
   });
-  ///////dilog function
 
+
+  ///////dilog function
   const main = async (e) => {
     e.preventDefault();
 
@@ -394,10 +369,32 @@ const Team = ({ teacherData }) => {
       });
     }
   };
+
+  // **Unique Function Name: handleTeacherFormSubmit**
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevents page refresh
+    console.log("Submitted Date:", date);
+    // You can send the date to an API or handle it as needed
+  };
+  const handleTeacherFormSubmit = (formData) => {
+    console.log("Teacher Form Data:", formData);
+  };
+
+  const handleChange = (e) => {
+    setInputName(e.target.value);
+    console.log(InputName);
+  };
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setProfileImg(imageUrl);
+    }
+  };
   const onSubmit = (data) => {
     console.log("Form Submitted:", data);
   };
-  const [date, setDate] = useState("");
 
   const handleBasicFormSubmit = (data) => {
     console.log("Basic Form Data:", data);
@@ -427,13 +424,6 @@ const Team = ({ teacherData }) => {
       setValue("PermanentPincode", pincode);
     }
   }, [isSameAddress, residentialAddress, district, state, pincode, setValue]);
-
-  // useEffect(() => {
-  //   if (AddDetails) {
-  //     setteacher(false);
-  //     setAddDetails(true); // ✅ Close first modal when second opens
-  //   }
-  // }, [AddDetails]); // ✅ Runs when addDetails changes
 
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
