@@ -185,6 +185,7 @@ import {
 import { Navigate, useNavigate } from "react-router-dom";
 
 const Team = ({ teacherData }) => {
+  const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState("Newest");
   const [selectedDepartment, setSelectedDepartment] = useState("Select Department");
   const [currentPage, setCurrentPage] = useState(1);
@@ -203,6 +204,7 @@ const Team = ({ teacherData }) => {
   const [InputName, setInputName] = useState("");
   const fileInputRef = useRef(null);
   const [date, setDate] = useState("");
+
 
   const departmentList = [
     "Science",
@@ -245,6 +247,8 @@ const Team = ({ teacherData }) => {
       subject: teacherData?.subject || "",
     },
   });
+
+
   const additionalForm = useForm({
     resolver: zodResolver(additionalDetailsSchema),
     defaultValues: {
@@ -283,7 +287,7 @@ const Team = ({ teacherData }) => {
 
   ///////dilog function
   const main = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
 
     const isValid = await additionalForm.trigger();
 
@@ -409,6 +413,20 @@ const Team = ({ teacherData }) => {
   const handleAdditionalFormSubmit3 = (data) => {
     console.log("Submitted Data:", data);
   };
+  const handleConfirm = async () => {
+    try {
+      // Simulate API call or form submission
+      await new Promise((resolve) => setTimeout(resolve, 1500)); // Mock delay (1.5s)
+
+      console.log("Data Submitted Successfully!");
+
+      // Close the dialog after successful submission
+      setAddConfrom(false);
+    } catch (error) {
+      console.error("Submission failed:", error);
+    }
+  };
+
   const { watch, setValue } = additionalForm2;
   const isSameAddress = watch("terms");
   const residentialAddress = watch("ResidentialAddress");
@@ -493,6 +511,7 @@ const Team = ({ teacherData }) => {
             </Button>
             {/* Department Button */}
             <Button
+            onClick={()=>Navigate("/Ex-Employee")}
 
               className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm">
               Ex-Employee
@@ -508,15 +527,12 @@ const Team = ({ teacherData }) => {
 
             {/* //First dilog */}
             <Dialog open={Addteacher} onOpenChange={setTeacher}>
-              <DialogContent className="sm:max-w-[800px] shadow-lg p-6 rounded-lg h-[90%] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
+              <DialogContent
+           onPointerDownOutside={(e) => e.preventDefault()}
+           onEscapeKeyDown={(e) => e.preventDefault()}
+               className="sm:max-w-[800px] shadow-lg p-6 rounded-lg h-[90%] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
                 {/* Back Arrow & Title */}
                 <div className="flex items-center mb-4">
-                  <button
-                    onClick={() => setteacher(false)}
-                    className="text-gray-600 hover:text-gray-800"
-                  >
-                    <ArrowLeft size={24} />
-                  </button>
                   <DialogTitle className="text-center flex-1">Add Employee</DialogTitle>
                 </div>
                 <hr />
@@ -741,59 +757,47 @@ const Team = ({ teacherData }) => {
                       <FormField
                         control={additionalForm.control}
                         name="JoiningDate"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-col mt-2">
-                            <FormLabel>Joining Date</FormLabel>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <FormControl>
-                                  <Button
-                                    variant="outline"
-                                    className={cn(
-                                      "w-[260px] flex items-center justify-between border border-blue-400 rounded-xl  px-4 py-2 shadow-lg",
-                                      !field.value && "text-muted-foreground"
-                                    )}
-                                  >
-                                    {field.value ? (
-                                      format(
-                                        new Date(field.value),
-                                        "yyyy-MM-dd"
-                                      ) // Ensuring correct format
-                                    ) : (
-                                      <span className="text-gray-500">
-                                        Select Joining Date
-                                      </span>
-                                    )}
-                                    <CalendarIcon className="h-5 w-5" />
-                                  </Button>
-                                </FormControl>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                className="w-auto p-0"
-                                align="start"
-                              >
-                                <Calendar
-                                  mode="single"
-                                  selected={
-                                    field.value
-                                      ? new Date(field.value)
-                                      : undefined
-                                  }
-                                  onSelect={(date) =>
-                                    field.onChange(date?.toISOString())
-                                  } // Storing correct format
-                                  disabled={(date) =>
-                                    date > new Date() ||
-                                    date < new Date("1900-01-01")
-                                  }
-                                  initialFocus
-                                />
-                              </PopoverContent>
-                            </Popover>
+                        render={({ field }) => {
+                          const inputRef = useRef(null); // Ref for the hidden date input
 
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                          return (
+                            <FormItem className="flex flex-col mt-2">
+                              <FormLabel>Joining Date</FormLabel>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <FormControl>
+                                    <Button
+                                      variant="outline"
+                                      className="w-[260px] flex items-center text-gray-500 justify-between border border-blue-400 rounded-xl px-4 py-2 shadow-lg"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        inputRef.current?.showPicker(); // Opens the date input
+                                      }}
+                                    >
+                                      {field.value ? (
+                                        format(new Date(field.value), "yyyy-MM-dd")
+                                      ) : (
+                                        <span className="text-gray-500">Select Joining Date</span>
+                                      )}
+                                      <CalendarIcon className="h-5 w-5" />
+                                    </Button>
+                                  </FormControl>
+                                </PopoverTrigger>
+
+                                {/* Hidden native date input */}
+                                <Input
+                                  ref={inputRef}
+                                  type="date"
+                                  className="opacity-0 cursor-pointer"
+                                  value={field.value ? format(new Date(field.value), "yyyy-MM-dd") : ""}
+                                  onChange={(e) => field.onChange(e.target.value)}
+                                />
+                              </Popover>
+
+                              <FormMessage />
+                            </FormItem>
+                          );
+                        }}
                       />
                     </div>
 
@@ -815,11 +819,20 @@ const Team = ({ teacherData }) => {
 
             {/* //second dilog */}
             <Dialog open={AddDetails} onOpenChange={setAddDetails}>
-              <DialogContent className="sm:max-w-[800px] shadow-lg p-6 rounded-lg h-[90%] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
+              <DialogContent
+              onPointerDownOutside={(e) => e.preventDefault()}
+              onEscapeKeyDown={(e) => e.preventDefault()}
+              className="sm:max-w-[800px] shadow-lg p-6 rounded-lg h-[90%] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
                 {/* Back Arrow & Title */}
                 <div className="flex items-center mb-4">
                   <button
-                    onClick={() => setAddDetails(false)}
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevents triggering parent dialogs
+                      setAddDetails(false);
+                      setTeacher(true)
+
+                    }}
                     className="text-gray-600 hover:text-gray-800"
                   >
                     <ArrowLeft size={24} />
@@ -1160,12 +1173,15 @@ const Team = ({ teacherData }) => {
 
             {/* //third dilog */}
             <Dialog open={AddBankDetails} onOpenChange={setAddBankDetails}>
-              <DialogContent className="sm:max-w-[800px] shadow-lg p-6 rounded-lg overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
+              <DialogContent
+              onPointerDownOutside={(e) => e.preventDefault()}
+              onEscapeKeyDown={(e) => e.preventDefault()}
+              className="sm:max-w-[800px] shadow-lg p-6 rounded-lg overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
 
                 {/* Back Arrow & Title */}
                 <div className="flex items-center mb-4">
                   <button
-                    onClick={() => setAddBankDetails(false)}
+                    onClick={() => { setAddBankDetails(false); setAddDetails(true) }}
                     className="text-gray-600 hover:text-gray-800"
                   >
                     <ArrowLeft size={24} />
@@ -1240,27 +1256,42 @@ const Team = ({ teacherData }) => {
 
             {/* confirm dilog */}
             <Dialog open={AddConfrom} onOpenChange={setAddConfrom}>
-              <DialogContent className="w-full max-w-[90vw] sm:max-w-[400px] p-4">
-                <DialogHeader>
-                  <DialogTitle className="text-center text-lg font-semibold">
+              <DialogContent 
+              onPointerDownOutside={(e) => e.preventDefault()}
+              onEscapeKeyDown={(e) => e.preventDefault()}
+              className="w-full max-w-[90vw] sm:max-w-[400px] p-6 rounded-lg">
+                {/* Back Arrow & Title */}
+                <div className="flex items-center mb-6">
+                  <button
+                    onClick={() => { setAddConfrom(false); setAddBankDetails(true); }}
+                    className="text-gray-500 hover:text-gray-700 transition-colors"
+                  >
+                    <ArrowLeft size={24} />
+                  </button>
+                  <DialogTitle className="text-center flex-1 text-lg font-semibold">
                     Confirm Export
                   </DialogTitle>
-                </DialogHeader>
+                </div>
 
-                <DialogFooter className="flex flex-wrap justify-between gap-2">
+                {/* Dialog Footer */}
+                <DialogFooter className="flex justify-end gap-3">
                   <Button
                     onClick={() => setAddConfrom(false)}
                     variant="outline"
-                    className="w-full sm:w-auto"
+                    className="w-full sm:w-auto border-gray-300 text-gray-700 hover:bg-gray-100 transition"
                   >
                     Cancel
                   </Button>
-                  <Button className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white">
+                  <Button
+                    onClick={handleConfirm} // Handle form submission & dialog close
+                    className="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-md shadow-md transition-all"
+                  >
                     Confirm
                   </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
+
           </div>
         </div>
 
@@ -1312,7 +1343,10 @@ const Team = ({ teacherData }) => {
               </DropdownMenu>
               {/* dialog box change Time */}
               <Dialog open={ChangeTime} onOpenChange={setChangeTime}>
-                <DialogContent className="sm:max-w-[425px]  shadow-lg p-6 rounded-lg">
+                <DialogContent
+                onPointerDownOutside={(e) => e.preventDefault()}
+                onEscapeKeyDown={(e) => e.preventDefault()}
+                className="sm:max-w-[425px]  shadow-lg p-6 rounded-lg">
                   <DialogHeader>
                     <DialogTitle className="text-center text-[29px]">
                       Change Time
@@ -1352,7 +1386,10 @@ const Team = ({ teacherData }) => {
               </Dialog>
               {/* dialog box Delete */}
               <Dialog open={Deleteteacher} onOpenChange={setDelete}>
-                <DialogContent className="sm:max-w-[425px]  shadow-lg p-6 rounded-lg">
+                <DialogContent
+                onPointerDownOutside={(e) => e.preventDefault()}
+                onEscapeKeyDown={(e) => e.preventDefault()}
+                className="sm:max-w-[425px]  shadow-lg p-6 rounded-lg">
                   <DialogHeader>
                     <DialogTitle className="text-center text-[29px]">
                       Deactivate Employee
@@ -1375,7 +1412,10 @@ const Team = ({ teacherData }) => {
               </Dialog>
               {/* dialog box edit */}
               <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="sm:max-w-[425px]  shadow-lg p-6 rounded-lg">
+                <DialogContent
+                onPointerDownOutside={(e) => e.preventDefault()}
+                onEscapeKeyDown={(e) => e.preventDefault()}
+                className="sm:max-w-[425px]  shadow-lg p-6 rounded-lg">
                   <DialogHeader>
                     <DialogTitle className="text-">Edit Task</DialogTitle>
                   </DialogHeader>
@@ -1493,7 +1533,9 @@ const Team = ({ teacherData }) => {
                 >
                   <User size={18} /> Profile
                 </Button>
-                <Button className="bg-orange-500 text-xs text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-orange-600 transition-all">
+                <Button
+                 onClick={() => Navigate("/manage_salary")}
+                 className="bg-orange-500 text-xs text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-orange-600 transition-all">
                   <HandCoins size={18} /> Manage Salary
                 </Button>
               </CardFooter>
