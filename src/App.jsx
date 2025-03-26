@@ -24,6 +24,7 @@ import Leads from "./component/Admin/Leads/Leads";
 import ExEmployees from "./component/Admin/Team/ExEmployees";
 import Department_access from "./component/Admin/Team/Department_access";
 import MyLeads from "./component/Admin/Leads/MyLeads/MyLeads";
+import Profile from "./component/Admin/Student/Exan/Profile";
 // import { Route } from "lucide-react";
 const App = () => {
   return (
@@ -51,6 +52,7 @@ const App = () => {
           />
           <Route path="/ParentDetails" element={<ParentDetails />} />
           <Route path="/add" element={<SuccessMessage />} />
+          <Route path="/view/profile" element={<Profile />} />
 
           <Route path="/View-Profile" element={<ViewProfile />} />
           <Route path="/Ex-Employee" element={<ExEmployees />} />

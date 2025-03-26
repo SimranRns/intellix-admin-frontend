@@ -6,6 +6,7 @@ import {
   MoreVertical,
   ChevronRight,
   ChevronLeft,
+
 } from "lucide-react";
 import {
   Table,
@@ -16,8 +17,18 @@ import {
   TableRow,
 } from "../../src/components/ui/table";
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../src/components/ui/dropdown-menu";
+import { DropdownMenuContent, DropdownMenuTrigger } from "../../src/components/ui/dropdown-menu";
 
+
+import {
+  DropdownMenu,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+
+} from "../../src/components/ui/dropdown-menu"
 
 
 import { Button } from "../../src/components/ui/Button";
@@ -220,7 +231,57 @@ const StudentHeader = () => {
                       </button>
                     </TableCell>
                     <TableCell>
-                      <MoreVertical className=" cursor-pointer" size={20} />
+                    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <MoreVertical className="cursor-pointer" size={20} />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuLabel>My Profile</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem onClick={()=>navigate("/view/profile")}>
+            Profile
+            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+          </DropdownMenuItem>
+
+          {/* Nested Dropdown Start */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <DropdownMenuItem>
+                Other
+                <DropdownMenuShortcut>⌘O</DropdownMenuShortcut>
+              </DropdownMenuItem>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>More Options</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                Payment History
+                <DropdownMenuShortcut>⌘PH</DropdownMenuShortcut>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                Attendance
+                <DropdownMenuShortcut>⌘A</DropdownMenuShortcut>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                View Marksheet
+                <DropdownMenuShortcut>⌘VM</DropdownMenuShortcut>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                Mark as RT
+                <DropdownMenuShortcut>⌘M</DropdownMenuShortcut>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {/* Nested Dropdown End */}
+
+          <DropdownMenuItem>
+            Delete
+            <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))}
