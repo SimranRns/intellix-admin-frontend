@@ -22,6 +22,7 @@ import Manage_sallery from "./component/Admin/Team/Manage_sallery";
 import ProceedModal from "./component/Admin/Student/ProceedModel";
 import Leads from "./component/Admin/Leads/Leads";
 import ExEmployees from "./component/Admin/Team/ExEmployees";
+import Profile from "./component/Admin/Student/Exan/Profile";
 // import { Route } from "lucide-react";
 const App = () => {
   return (
@@ -48,6 +49,7 @@ const App = () => {
           <Route path="/StudentSelectionPage" element={<StudentSelectionPage />} />
           <Route path="/ParentDetails" element={<ParentDetails />} />
           <Route path="/add" element={<SuccessMessage />} />
+          <Route path="/view/profile" element={<Profile />} />
 
 
           <Route path="/View-Profile" element={<ViewProfile />} />
