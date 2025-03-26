@@ -22,19 +22,19 @@ import Manage_sallery from "./component/Admin/Team/Manage_sallery";
 import ProceedModal from "./component/Admin/Student/ProceedModel";
 import Leads from "./component/Admin/Leads/Leads";
 import ExEmployees from "./component/Admin/Team/ExEmployees";
+import Department_access from "./component/Admin/Team/Department_access";
 // import { Route } from "lucide-react";
 const App = () => {
   return (
     <div>
       <BrowserRouter>
-
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/Adminlogin" element={<AdminLogin />} />
           <Route path="/Dashboard" element={<Dashboard />} />
-          <Route path="/inbox" element={<div>inbox</div>} />
           <Route path="/students" element={<StudentHeader />} />
-          <Route path="/accounts" element={<div>account</div>} />
+          <Route path="/accounts" element={<div>accounts</div>} />
+          <Route path="/access" element={<Department_access />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/Advertisment" element={<Advertisment />} />
           <Route path="/team" element={<Team />} />
@@ -42,13 +42,14 @@ const App = () => {
           <Route path="/settings" element={<Settings />} />
           <Route path="/support" element={<Support />} />
 
-
           <Route path="/add_student_model" element={<AddStudentModal />} />
           <Route path="/ProceedModal" element={<ProceedModal />} />
-          <Route path="/StudentSelectionPage" element={<StudentSelectionPage />} />
+          <Route
+            path="/StudentSelectionPage"
+            element={<StudentSelectionPage />}
+          />
           <Route path="/ParentDetails" element={<ParentDetails />} />
           <Route path="/add" element={<SuccessMessage />} />
-
 
           <Route path="/View-Profile" element={<ViewProfile />} />
           <Route path="/Ex-Employee" element={<ExEmployees />} />

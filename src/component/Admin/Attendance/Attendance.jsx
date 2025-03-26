@@ -141,7 +141,7 @@ const Attendance = () => {
     setTimeout(() => setOpenSecondModal(true), 300); // Open second modal with slight delay for smooth transition
   };
   return (
-    <SidebarProvider style={{ "--sidebar-width": "19rem" }}>
+    <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       <AppSidebar />
       <SidebarInset>
         {/* Header with sidebar trigger */}
