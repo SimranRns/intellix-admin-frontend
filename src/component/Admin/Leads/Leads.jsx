@@ -55,6 +55,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -70,9 +71,9 @@ import {
 } from "../../src/components/ui/dropdown-menu";
 import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { ChevronRight } from "lucide-react";
+import { Navigate } from "react-router-dom";
 
 const Leads = () => {
-  
   const [categoryName, setCategoryName] = useState("");
   const stats = [
     { title: "Views", value: "7,265", change: "+11.07%", up: true },
@@ -149,6 +150,9 @@ const Leads = () => {
       time: "24-02-2024",
     },
   ];
+
+  const [department, setDepartment] = useState("Please Select");
+
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       <AppSidebar />
@@ -205,9 +209,24 @@ const Leads = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full ">
             {[
               { title: "Hot Leads", value: "30.00", change: "+5", up: true },
-              { title: "Converted Leads", value: "10.00", change: "-2", up: false },
-              { title: "In Conversation Leads", value: "50.00", change: "+8", up: true },
-              { title: "Dropped Leads", value: "10.00", change: "-3", up: false }
+              {
+                title: "Converted Leads",
+                value: "10.00",
+                change: "-2",
+                up: false,
+              },
+              {
+                title: "In Conversation Leads",
+                value: "50.00",
+                change: "+8",
+                up: true,
+              },
+              {
+                title: "Dropped Leads",
+                value: "10.00",
+                change: "-3",
+                up: false,
+              },
             ].map((stat, index) => (
               <Card
                 key={index}
@@ -216,12 +235,10 @@ const Leads = () => {
                 <CardContent className="flex flex-col align-center pt-9 text-center">
                   <span className="text-sm ">{stat.title}</span>
                   <span className="text-2xl font-bold">{stat.value}</span>
-                 
                 </CardContent>
               </Card>
             ))}
           </div>
-
         </div>
 
         <div className="p-6 rounded-lg shadow-md max-w-6xl mx-auto">
@@ -359,35 +376,35 @@ const Leads = () => {
             </Dialog>
 
             <Dialog>
-      <DialogTrigger asChild>
-        <Button variant=" " className="bg-blue-600 text-white">
-          <PlusIcon className="mr-0" /> Add Category
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[525px]">
-        <DialogHeader>
-          <DialogTitle>Add Category</DialogTitle>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <Label htmlFor="name" className="text-left">
-            Enter Category Name
-          </Label>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Input
-              id="name"
-              value={categoryName}
-              onChange={(e) => setCategoryName(e.target.value)}
-              placeholder="Enter category name"
-              className="col-span-4"
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit">Add Category</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-            <Button variant="default" className="bg-blue-600 ">
+              <DialogTrigger asChild>
+                <Button variant=" " className="bg-blue-600 text-white">
+                  <PlusIcon className="mr-0" /> Add Category
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[525px]">
+                <DialogHeader>
+                  <DialogTitle>Add Category</DialogTitle>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <Label htmlFor="name" className="text-left">
+                    Enter Category Name
+                  </Label>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Input
+                      id="name"
+                      value={categoryName}
+                      onChange={(e) => setCategoryName(e.target.value)}
+                      placeholder="Enter category name"
+                      className="col-span-4"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="submit">Add Category</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            <Button variant="default" className="bg-blue-600 " onClick={(e)=>{Navigate("/Leads/MyLeads")}}>
               My Leads
             </Button>
           </div>
@@ -420,7 +437,7 @@ const Leads = () => {
                       <TableCell>{item.assigned}</TableCell>
                       <TableCell>{item.time}</TableCell>
                       <TableCell>
-                        <DropdownMenu>
+                        {/* <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
                               size="icon"
@@ -430,8 +447,155 @@ const Leads = () => {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem>Change Status</DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button variant="outline">
+                                    Change Status
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px]">
+                                  <DialogHeader>
+                                    <DialogTitle>Change Status of dvsn</DialogTitle>
+                                  </DialogHeader>
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button
+                                        variant="outline"
+                                        className="w-full"
+                                      >
+                                        {category}
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent>
+                                      <DropdownMenuItem
+                                        onClick={() =>
+                                          setCategory("Converted")
+                                        }
+                                      >
+                                        Converted
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem
+                                        onClick={() =>
+                                          setCategory("Hot")
+                                        }
+                                      >
+                                        Hot
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem
+                                        onClick={() => setCategory("Inconservation")}
+                                      >
+                                        Inconservation
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem
+                                        onClick={() => setCategory("Droped")}
+                                      >
+                                        Droped
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+
+                                        
+                                </DialogContent>
+                              </Dialog>
+                            </DropdownMenuItem>
+
                             <DropdownMenuItem>Assign Leads</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu> */}
+
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              size="icon"
+                              className="bg-blue-500 hover:bg-blue-600"
+                            >
+                              <ChevronRight size={16} />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            {/* Change Status Dialog */}
+                            <DropdownMenuItem asChild>
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button variant="outline">
+                                    Change Status
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[725px]">
+                                  <DialogHeader>
+                                    <DialogTitle>
+                                      Change Status of dvsn
+                                    </DialogTitle>
+                                  </DialogHeader>                                 
+                                    <select
+                                      className="border rounded p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
+                                      value={department}
+                                      onChange={(e) =>
+                                        setDepartment(e.target.value)
+                                      }
+                                    >
+                                      <option  value="Converted"> Converted</option>
+                                      <option value="Sales">Hot</option>
+                                      <option value="Marketing">
+                                      In Conversation
+                                      </option>
+                                      <option value="Support">Dropped</option>
+                                    </select>
+                                </DialogContent>
+                              </Dialog>
+                            </DropdownMenuItem>
+
+                            {/* Assign Leads Dialog */}
+                            <DropdownMenuItem asChild>
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    className="dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                                  >
+                                    Assign Leads
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px] bg-white dark:bg-gray-900 dark:text-white border dark:border-gray-700">
+                                  <DialogHeader>
+                                    <DialogTitle className="text-gray-900 dark:text-white">
+                                      Assign Lead
+                                    </DialogTitle>
+                                  </DialogHeader>
+
+                                  {/* Department Selection Dropdown */}
+                                  <div className="flex flex-col gap-3">
+                                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                      Select Department
+                                    </label>
+                                    <select
+                                      className="border rounded p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
+                                      value={department}
+                                      onChange={(e) =>
+                                        setDepartment(e.target.value)
+                                      }
+                                    >
+                                      <option value="Select"> Select</option>
+                                      <option value="Sales">Sales</option>
+                                      <option value="Marketing">
+                                        Marketing
+                                      </option>
+                                      <option value="Support">Support</option>
+                                    </select>
+                                  </div>
+
+                                  <DialogFooter>
+                                    <Button
+                                      type="submit"
+                                      className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800 text-white"
+                                    >
+                                      Assign
+                                    </Button>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>

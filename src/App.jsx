@@ -22,6 +22,7 @@ import Manage_sallery from "./component/Admin/Team/Manage_sallery";
 import ProceedModal from "./component/Admin/Student/ProceedModel";
 import Leads from "./component/Admin/Leads/Leads";
 import ExEmployees from "./component/Admin/Team/ExEmployees";
+import MyLeads from "./component/Admin/Leads/MyLeads/MyLeads";
 // import { Route } from "lucide-react";
 const App = () => {
   return (
@@ -54,6 +55,7 @@ const App = () => {
           <Route path="/Ex-Employee" element={<ExEmployees />} />
           <Route path="/manage_salary" element={<Manage_sallery />} />
           <Route path="/Leads" element={<Leads />} />
+          <Route path="/Leads/MyLeads" element={<MyLeads />} />
         </Routes>
       </BrowserRouter>
     </div>
