@@ -17,7 +17,7 @@ import ParentDetails from "./component/Admin/Student/ParentDetails";
 import SuccessMessage from "./component/Admin/Student/SuccessMessage";
 // import Leads from "./component/Admin/Leads/Leads";
 import ViewProfile from "./component/Admin/Team/ViewProfile";
-import Department from "./component/Admin/Team/Manage_sallery";
+
 import Manage_sallery from "./component/Admin/Team/Manage_sallery";
 import ProceedModal from "./component/Admin/Student/ProceedModel";
 import Leads from "./component/Admin/Leads/Leads";
@@ -25,6 +25,7 @@ import ExEmployees from "./component/Admin/Team/ExEmployees";
 import Department_access from "./component/Admin/Team/Department_access";
 import MyLeads from "./component/Admin/Leads/MyLeads/MyLeads";
 import Profile from "./component/Admin/Student/Exan/Profile";
+import Departments from "./component/Admin/Team/Departments";
 // import { Route } from "lucide-react";
 const App = () => {
   return (
@@ -36,7 +37,8 @@ const App = () => {
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/students" element={<StudentHeader />} />
           <Route path="/accounts" element={<div>accounts</div>} />
-          <Route path="/access" element={<Department_access />} />
+          <Route path="/Access" element={<Department_access />} />
+          <Route path="/Departments" element={<Departments />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/Advertisment" element={<Advertisment />} />
           <Route path="/team" element={<Team />} />
