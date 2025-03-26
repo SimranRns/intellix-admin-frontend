@@ -48,14 +48,14 @@ const ExEmployees = () => {
 
     // States for Dialogs & Pagination
     const [open, setOpen] = useState(false);
-    const [Deleteteacher, setDelete] = useState(false);
+    const [DeleteEmployee, setDelete] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const Teachers = [
+    const Employees = [
         {
             id: 1,
             name: "Munaroh Steffani",
-            post: "Math Teacher",
+            post: "Math Employee",
             subjects: [
                 { subject: "Joined 01-01-2024", icon: Clock },
                 { subject: "Assigned 13", icon: Logs },
@@ -66,7 +66,7 @@ const ExEmployees = () => {
         {
             id: 2,
             name: "John Doe",
-            post: "Physics Teacher",
+            post: "Physics Employee",
             subjects: [
                 { subject: "Joined 02-01-2024", icon: Clock },
                 { subject: "Assigned 15", icon: Logs },
@@ -74,15 +74,13 @@ const ExEmployees = () => {
             ],
             image: "https://github.com/shadcn.png",
         },
-        
-        // Add more dummy teachers here...
     ];
-    
-    const [teachersPerPage, setTeachersPerPage] = useState(6); // Change from 10 to 6
-    const totalPages = Math.ceil(Teachers.length / teachersPerPage);
-    const startIndex = (currentPage - 1) * teachersPerPage;
-    const selectedTeachers = Teachers.slice(startIndex, startIndex + teachersPerPage);
-    
+
+    const [employeesPerPage, setEmployeesPerPage] = useState(6);
+    const totalPages = Math.ceil(Employees.length / employeesPerPage);
+    const startIndex = (currentPage - 1) * employeesPerPage;
+    const selectedEmployees = Employees.slice(startIndex, startIndex + employeesPerPage);
+
     return (
         <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
             <AppSidebar />
@@ -126,9 +124,9 @@ const ExEmployees = () => {
 
                 {/* Cards Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
-                    {selectedTeachers.map((teacher) => (
+                    {selectedEmployees.map((employee) => (
                         <Card
-                            key={teacher.id}
+                            key={employee.id}
                             className="w-full max-w-[350px] shadow-sm shadow-blue-500/50 rounded-xl p-6 relative mx-auto"
                         >
                             {/* Options Menu */}
@@ -145,15 +143,15 @@ const ExEmployees = () => {
                                 >
                                     <DropdownMenuItem
                                         onClick={() => setDelete(true)}
-                                        className="cursor-pointer text-red-500 hover:bg-gray-200 px-4 py-2 text-md text-center"
+                                        className="cursor-pointer text-green-500 hover:bg-gray-200 px-4 py-2 text-md text-center"
                                     >
-                                        Delete
+                                    Activate Employee
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
 
                             {/* dialog box Delete */}
-                            <Dialog open={Deleteteacher} onOpenChange={setDelete}>
+                            <Dialog open={DeleteEmployee} onOpenChange={setDelete}>
                                 <DialogContent
                                     onPointerDownOutside={(e) => e.preventDefault()}
                                     onEscapeKeyDown={(e) => e.preventDefault()}
@@ -184,20 +182,20 @@ const ExEmployees = () => {
                                 <Avatar className="shadow-md w-24 h-24 rounded-full">
                                     <AvatarImage
                                         className="rounded-full  border-4 border-blue-600"
-                                        src={teacher.image}
-                                        alt={teacher.name}
+                                        src={employee.image}
+                                        alt={employee.name}
                                     />
-                                    <AvatarFallback>{teacher.name.charAt(0)}</AvatarFallback>
+                                    <AvatarFallback>{employee.name.charAt(0)}</AvatarFallback>
                                 </Avatar>
-                                <CardTitle className="mt-4 text-xl font-bold Teacher_name">
-                                    {teacher.name}
+                                <CardTitle className="mt-4 text-xl font-bold Employee_name">
+                                    {employee.name}
                                 </CardTitle>
-                                <CardDescription>Teacher</CardDescription>
+                                <CardDescription>Employee</CardDescription>
                             </CardHeader>
 
                             <CardContent className="text-center">
                                 <div className="flex flex-wrap justify-center gap-2">
-                                    {teacher.subjects.map((item, i) => (
+                                    {employee.subjects.map((item, i) => (
                                         <span
                                             key={i}
                                             className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1"
@@ -212,12 +210,12 @@ const ExEmployees = () => {
                             <CardFooter className="flex justify-center gap-3 mt-5">
                                 <Button
                                     className="bg-indigo-600 text-xs text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-indigo-700 transition-all"
-                                    onClick={() => Navigate("/View-Profile")}
+                                    onClick={() => navigate("/View-Profile")}
                                 >
                                     <User size={18} /> Profile
                                 </Button>
                                 <Button
-                                    onClick={() => Navigate("/manage_salary")}
+                                    onClick={() => navigate("/manage_salary")}
                                     className="bg-orange-500 text-xs text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-orange-600 transition-all">
                                     <HandCoins size={18} /> Manage Salary
                                 </Button>
@@ -226,42 +224,42 @@ const ExEmployees = () => {
                     ))}
                 </div>
 
-
                 {/* Pagination */}
                 <Pagination>
-    <PaginationContent>
-        <PaginationItem>
-            <PaginationPrevious
-                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
-            />
-        </PaginationItem>
+                    <PaginationContent>
+                        <PaginationItem>
+                            <PaginationPrevious
+                                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                                disabled={currentPage === 1}
+                            />
+                        </PaginationItem>
 
-        {Array.from({ length: totalPages }, (_, i) => (
-            <PaginationItem key={i}>
-                <PaginationLink
-                    as="button"
-                    onClick={() => setCurrentPage(i + 1)}
-                    className={`px-4 py-2 rounded-md ${currentPage === i + 1
-                        ? "bg-blue-600 text-white"
-                        : "hover:bg-blue-500  hover:text-white"
-                        }`}
-                >
-                    {i + 1}
-                </PaginationLink>
-            </PaginationItem>
-        ))}
+                        {Array.from({ length: totalPages }, (_, i) => (
+                            <PaginationItem key={i}>
+                                <PaginationLink
+                                    as="button"
+                                    onClick={() => setCurrentPage(i + 1)}
+                                    className={`px-4 py-2 rounded-md ${currentPage === i + 1
+                                        ? "bg-blue-600 text-white"
+                                        : "hover:bg-blue-500  hover:text-white"
+                                        }`}
+                                >
+                                    {i + 1}
+                                </PaginationLink>
+                            </PaginationItem>
+                        ))}
 
-        <PaginationItem>
-            <PaginationNext
-                onClick={() =>
-                    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-                }
-                disabled={currentPage === totalPages}
-            />
-        </PaginationItem>
-    </PaginationContent>
-</Pagination>
+                        <PaginationItem>
+                            <PaginationNext
+                                onClick={() =>
+                                    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                                }
+                                disabled={currentPage === totalPages}
+                            />
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
+
 
             </SidebarInset>
         </SidebarProvider>

@@ -506,7 +506,11 @@ const Team = ({ teacherData }) => {
             </DropdownMenu>
 
             {/* Department Button */}
-            <Button className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm">
+            <Button
+            onClick={()=>{Navigate("/Departments")}}
+
+             className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm">
+
               Departments
             </Button>
             {/* Department Button */}
@@ -1269,7 +1273,7 @@ const Team = ({ teacherData }) => {
                     <ArrowLeft size={24} />
                   </button>
                   <DialogTitle className="text-center flex-1 text-lg font-semibold">
-                    Confirm Export
+                    Confirm
                   </DialogTitle>
                 </div>
 
