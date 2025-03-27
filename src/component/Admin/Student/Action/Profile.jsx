@@ -12,7 +12,6 @@ import {
 } from "../../../src/components/ui/breadcrumb";
 
 import { useNavigate } from "react-router-dom";
-import { Button } from "../../../src/components/ui/Button";
 import Header from "../../Dashboard/Header";
 
 const Profile = () => {

@@ -24,8 +24,10 @@ import Leads from "./component/Admin/Leads/Leads";
 import ExEmployees from "./component/Admin/Team/ExEmployees";
 import Department_access from "./component/Admin/Team/Department_access";
 import MyLeads from "./component/Admin/Leads/MyLeads/MyLeads";
-import Profile from "./component/Admin/Student/Exan/Profile";
+
 import Departments from "./component/Admin/Team/Departments";
+import Profile from "./component/Admin/Student/Action/Profile";
+import Payment_History from "./component/Admin/Student/Action/Payment_History";
 // import { Route } from "lucide-react";
 const App = () => {
   return (
@@ -55,6 +57,7 @@ const App = () => {
           <Route path="/ParentDetails" element={<ParentDetails />} />
           <Route path="/add" element={<SuccessMessage />} />
           <Route path="/view/profile" element={<Profile />} />
+          <Route path="/student-payment-history" element={<Payment_History />} />
 
           <Route path="/View-Profile" element={<ViewProfile />} />
           <Route path="/Ex-Employee" element={<ExEmployees />} />

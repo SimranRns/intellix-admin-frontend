@@ -69,6 +69,8 @@ const ManageSalary = () => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [tab, setTab] = useState("tab1");
+
+  
   const [open, setOpen] = useState(false);
   const [salaryData, setSalaryData] = useState([]);
   const [opensec, setopensec] = useState(false);
@@ -438,5 +440,7 @@ const goback = ()=>{
     </div>
   );
 };
+
+
 
 export default ManageSalary;
