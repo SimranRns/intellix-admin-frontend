@@ -16,7 +16,8 @@ import {
 import Header from "../Dashboard/Header";
 import { ArrowLeft, Ellipsis, Search, User, Eye, Users } from "lucide-react";
 import { Button } from "../../src/components/ui/Button";
-import { Form, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Form, FormMessage } from "../../src/components/ui/form";
 import {
   Pagination,
   PaginationContent,
@@ -41,12 +42,16 @@ import {
 } from "../../src/components/ui/dialog";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../../src/components/ui/chart";
 import { LabelList, Pie, PieChart } from "recharts";
-import { FormControl, FormField, FormItem, FormLabel } from "../../src/components/ui/form";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel } from "../../src/components/ui/form";
 import { Input } from "../../src/components/ui/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+const formSchema = z.object({
+  Department: z.string().min(2, {
+    message: "Department must be at least 2 characters.",
+  }),
+});
 const Departments = () => {
   const navigate = useNavigate();
   const chartData = [
@@ -60,7 +65,7 @@ const Departments = () => {
     },
     new: {
       label: "New Employees",
-      color: "hsl(var(--chart-1))", // Green
+      color: "hsl(var(--chart-1))",
     },
     old: {
       label: "Old Employees",
@@ -68,22 +73,15 @@ const Departments = () => {
     },
     interns: {
       label: "Interns",
-      color: "hsl(var(--chart-3))", // Blue
+      color: "hsl(var(--chart-3))",
     },
   };
-  const departmentSchema = z.object({
-    departmentName: z.string().min(1, "Department name is required"),
-  });
+
   const [DeleteDepartments, setDeleteDepartments] = useState(false);
   const [addDepartment, setAddDepartment] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const addDepartmentFrom = useForm({
-    resolver: zodResolver(departmentSchema),
-    defaultValues: {
-      departmentName: "",
-    },
-  });
+
 
   const departmentsList = [
     {
@@ -100,9 +98,16 @@ const Departments = () => {
     },
 
   ];
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      Department: "",
+    },
+  });
+  const { handleSubmit } = form;
 
-  const handleChangedepartment = (data) => {
-    console.log("Form Data:", data);
+  const handleAdddepartment = (data) => {
+    console.log("Form Submitted:", data);
   };
 
   const departmentsPerPage = 6;
@@ -128,7 +133,7 @@ const Departments = () => {
           </Breadcrumb>
         </header>
 
-        <div className="w-full shadow-md rounded-lg flex flex-wrap sm:flex-nowrap items-center justify-between px-4 sm:px-8 py-4 mt-6 gap-3 bg-white">
+        <div className="w-full shadow-md shadow-blue-300/30 rounded-lg flex flex-wrap sm:flex-nowrap items-center justify-between px-4 sm:px-8 py-4 mt-6 gap-3">
           <div className="flex items-center gap-3">
             <Button
               className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm flex items-center gap-2"
@@ -145,41 +150,31 @@ const Departments = () => {
               <span>Add Department</span>
             </Button>
             <Dialog open={addDepartment} onOpenChange={setAddDepartment}>
-              <DialogContent className="sm:max-w-[600px] shadow-lg p-6 rounded-lg">
+              <DialogContent
+                onPointerDownOutside={(e) => e.preventDefault()}
+                onEscapeKeyDown={(e) => e.preventDefault()}
+                className=" sm:max-w-[600px] shadow-lg p-6 rounded-lg">
                 <DialogHeader>
                   <DialogTitle className="text-center">Add Department</DialogTitle>
                 </DialogHeader>
-                {/* <Form {...addDepartmentFrom}>
-                  <form onSubmit={addDepartmentFrom.handleSubmit(handleChangedepartment)} className="space-y-6">
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(handleAdddepartment)} className="space-y-8">
                     <FormField
-                      control={addDepartmentFrom.control}
-                      name="departmentName"
+                      control={form.control}
+                      name="Department"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Residential Address</FormLabel>
+                          <FormLabel>Enter name of department</FormLabel>
                           <FormControl>
-                            <div className="relative flex items-center">
-                              <Input
-                                placeholder="Enter Residential Address"
-                                {...field}
-                                type="String"
-                                className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                              />
-                              <span className="absolute right-4 text-gray-500">
-                                <MapPinHouse size={21} />
-                              </span>
-                            </div>
+                            <Input placeholder="Department" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <Button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded-lg">
-                      Save
-                    </Button>
+                    <Button type="submit">Confirm</Button>
                   </form>
-                </Form> */}
-
+                </Form>
               </DialogContent>
             </Dialog>
           </div>
@@ -187,7 +182,9 @@ const Departments = () => {
           {/* Search Bar */}
           <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full sm:max-w-md">
             <Search size={18} className="text-gray-500" />
-            <input type="text" placeholder="Search here..." className="ml-2 w-full outline-none bg-transparent text-sm" />
+            <input
+              name="search"
+              type="text" placeholder="By Employee Name..." className="ml-2 w-full outline-none bg-transparent text-sm" />
           </div>
         </div>
 
@@ -204,20 +201,20 @@ const Departments = () => {
               {/* Dropdown Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="absolute top-4 right-4 bg-blue-100 p-2 rounded-lg shadow-sm hover:bg-gray-200">
+                  <button className="absolute top-4 right-4 bg-blue-100 p-2 rounded-lg shadow-sm">
                     <Ellipsis className="text-gray-500" size={24} />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-40 bg-gray-100 mt-1 shadow-md rounded-md">
+                <DropdownMenuContent align="end" className="w-40 bg-gray-200 mt-1 shadow-md rounded-md">
                   <DropdownMenuItem
                     onClick={() => setDeleteDepartments(true)}
-                    className="cursor-pointer text-red-500 hover:bg-gray-200 px-4 py-2 text-md text-center "
+                    className="cursor-pointer text-red-500 hover:bg-gray-100 px-4 py-2 text-md text-center "
                   >
                     Deactivate
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-
+              {/* //deactivate dilog  */}
               <Dialog open={DeleteDepartments} onOpenChange={setDeleteDepartments}>
                 <DialogContent className="sm:max-w-[425px] shadow-lg p-6 rounded-lg">
                   <DialogHeader>
@@ -240,7 +237,7 @@ const Departments = () => {
                   <div className="flex items-center gap-2">
                     <Users size={24} className="text-blue-500" />
                     <span className="text-lg font-bold">{department.departmentUser}</span>
-                    <span className="text-sm text-gray-600">{department.departmentemployee}</span>
+                    <span className="text-sm text-gray-400">{department.departmentemployee}</span>
                   </div>
                 </div>
               </CardHeader>
@@ -258,7 +255,7 @@ const Departments = () => {
                         dataKey="category"
                         className="fill-background"
                         stroke="none"
-                        fontSize={8}
+                        fontSize={9}
                         formatter={(value) => (chartConfig[value] ? chartConfig[value].label : value)}
                       />
                     </Pie>
@@ -268,7 +265,9 @@ const Departments = () => {
 
               {/* Card Footer Buttons */}
               <CardFooter className="flex justify-center gap-4 mt-1">
-                <Button className="bg-blue-600 text-xs text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-blue-500 transition-all">
+                <Button
+                  onClick={() => navigate("/View_User")}
+                  className="bg-blue-600 text-xs text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-blue-500 transition-all">
                   <User size={18} /> View User
                 </Button>
                 <Button

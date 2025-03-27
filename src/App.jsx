@@ -26,6 +26,8 @@ import Department_access from "./component/Admin/Team/Department_access";
 import MyLeads from "./component/Admin/Leads/MyLeads/MyLeads";
 import Profile from "./component/Admin/Student/Exan/Profile";
 import Departments from "./component/Admin/Team/Departments";
+import View_User from "./component/Admin/Team/View_User";
+import Account from "./component/Admin/Accounts/Account";
 // import { Route } from "lucide-react";
 const App = () => {
   return (
@@ -36,7 +38,7 @@ const App = () => {
           <Route path="/Adminlogin" element={<AdminLogin />} />
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/students" element={<StudentHeader />} />
-          <Route path="/accounts" element={<div>accounts</div>} />
+          <Route path="/accounts" element={<Account/>} />
           <Route path="/Access" element={<Department_access />} />
           <Route path="/Departments" element={<Departments />} />
           <Route path="/attendance" element={<Attendance />} />
@@ -57,10 +59,12 @@ const App = () => {
           <Route path="/view/profile" element={<Profile />} />
 
           <Route path="/View-Profile" element={<ViewProfile />} />
+          <Route path="/View_User" element={<View_User />} />
           <Route path="/Ex-Employee" element={<ExEmployees />} />
           <Route path="/manage_salary" element={<Manage_sallery />} />
           <Route path="/Leads" element={<Leads />} />
           <Route path="/Leads/MyLeads" element={<MyLeads />} />
+          
         </Routes>
       </BrowserRouter>
     </div>

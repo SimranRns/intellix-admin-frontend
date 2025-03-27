@@ -116,7 +116,7 @@ const ExEmployees = () => {
                         <Search size={18} className="text-gray-500" />
                         <input
                             type="text"
-                            placeholder="Search here..."
+                            placeholder="By Employee Name..."
                             className="ml-2 w-full outline-none bg-transparent"
                         />
                     </div>

@@ -171,7 +171,6 @@ const Teachers = [
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -179,7 +178,6 @@ import {
 } from "../../src/components/ui/form";
 import {
   Popover,
-  PopoverContent,
   PopoverTrigger,
 } from "../../src/components/ui/popover";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -378,10 +376,6 @@ const Team = ({ teacherData }) => {
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents page refresh
     console.log("Submitted Date:", date);
-    // You can send the date to an API or handle it as needed
-  };
-  const handleTeacherFormSubmit = (formData) => {
-    console.log("Teacher Form Data:", formData);
   };
 
   const handleChange = (e) => {
@@ -389,16 +383,16 @@ const Team = ({ teacherData }) => {
     console.log(InputName);
   };
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setProfileImg(imageUrl);
-    }
-  };
-  const onSubmit = (data) => {
-    console.log("Form Submitted:", data);
-  };
+  // const handleImageChange = (event) => {
+  //   const file = event.target.files[0];
+  //   if (file) {
+  //     const imageUrl = URL.createObjectURL(file);
+  //     setProfileImg(imageUrl);
+  //   }
+  // };
+  // const onSubmit = (data) => {
+  //   console.log("Form Submitted:", data);
+  // };
 
   const handleBasicFormSubmit = (data) => {
     console.log("Basic Form Data:", data);
@@ -461,12 +455,12 @@ const Team = ({ teacherData }) => {
           </Breadcrumb>
         </header>
 
-        <div className="w-full shadow-md rounded-lg flex flex-col sm:flex-row items-center justify-between px-4 sm:px-8 py-4 mt-6 space-y-4 sm:space-y-0">
+        <div className="w-full  shadow-md shadow-blue-300/30 rounded-lg flex flex-col sm:flex-row items-center justify-between px-4 sm:px-8 py-4 mt-6 space-y-4 sm:space-y-0">
           <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full sm:max-w-md">
             <Search size={18} className="text-gray-500" />
             <input
               type="text"
-              placeholder="Search here..."
+              placeholder="By Employee Name..."
               className="ml-2 w-full outline-none bg-transparent"
             />
           </div>
