@@ -32,7 +32,7 @@ const DepartmentAccess = () => {
     "Leads",
     "Leads",
     "Leads",
-    
+
     "Sports",
   ]);
   const [availableAccess, setAvailableAccess] = useState([
@@ -44,7 +44,6 @@ const DepartmentAccess = () => {
     "Cultural Activities",
     "Cultural Activities",
     "Cultural Activities",
-    
   ]);
 
   const goBack = () => {
@@ -79,7 +78,7 @@ const DepartmentAccess = () => {
           <div className="p-10  mt-5">
             <Button
               onClick={goBack}
-              className="bg-white text-black border-2 border-black hover:bg-blue-500 hover:text-white hover:border-blue-800 flex items-center gap-3 px-6 py-3 mb-8 rounded-lg shadow-md transition duration-300"
+              className="bg-white text-black border-2 border-black  flex items-center gap-3 px-6 py-3 mb-8 rounded-lg shadow-md   hover:bg-white hover:text-black"
             >
               <ArrowLeft size={22} /> Go Back
             </Button>
