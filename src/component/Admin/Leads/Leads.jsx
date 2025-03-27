@@ -71,9 +71,10 @@ import {
 } from "../../src/components/ui/dropdown-menu";
 import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { ChevronRight } from "lucide-react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Leads = () => {
+  const Navigate = useNavigate()
   const [categoryName, setCategoryName] = useState("");
   const stats = [
     { title: "Views", value: "7,265", change: "+11.07%", up: true },
@@ -404,7 +405,7 @@ const Leads = () => {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-            <Button variant="default" className="bg-blue-600 " onClick={(e)=>{Navigate("/Leads/MyLeads")}}>
+            <Button variant="default" className="bg-blue-600 " onClick={()=>Navigate("/MyLeads")}>
               My Leads
             </Button>
           </div>
