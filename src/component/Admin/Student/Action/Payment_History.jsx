@@ -6,7 +6,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import Header from '../../Dashboard/Header';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../../src/components/ui/tabs";
 import { ArrowBack } from '@mui/icons-material';
-import { Button } from '@headlessui/react';
+import { Button } from '../../../src/components/ui/button';
 
 const Payment_History = () => {
 
