@@ -28,6 +28,8 @@ import MyLeads from "./component/Admin/Leads/MyLeads/MyLeads";
 import Departments from "./component/Admin/Team/Departments";
 import Profile from "./component/Admin/Student/Action/Profile";
 import Payment_History from "./component/Admin/Student/Action/Payment_History";
+import Account from "./component/Admin/Accounts/Account";
+import View_User from "./component/Admin/Team/View_User";
 // import { Route } from "lucide-react";
 const App = () => {
   return (
@@ -35,6 +37,7 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
+          
           <Route path="/Adminlogin" element={<AdminLogin />} />
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/students" element={<StudentHeader />} />

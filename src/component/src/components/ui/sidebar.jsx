@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
-import { Grip } from "lucide-react";
+import { Grip, Menu, X } from "lucide-react";
 
 import { useIsMobile } from "../../hooks/use-mobile";
 import { cn } from "../../lib/utils";
@@ -35,7 +35,7 @@ function useSidebar() {
   return context;
 }
 
-const SidebarProvider = React.forwardRef(
+const SidebarProvider = React.forwardRef( 
   (
     {
       defaultOpen = true,
@@ -233,20 +233,28 @@ const SidebarTrigger = React.forwardRef(
   ({ className, onClick, ...props }, ref) => {
     const { toggleSidebar } = useSidebar();
 
+    const [isOpen, setIsOpen] = React.useState(true);
+
+    console.log('isOpenwww', isOpen)
+
     return (
       <Button
         ref={ref}
         data-sidebar="trigger"
         variant="ghost"
         size="icon"
-        className={cn("h-20 w-10", className)}
+        className={cn(
+          "absolute top-3.5 left-4 z-50 h-10 w-10 rounded-lg  ", // Fixed at the top
+          className
+        )}
         onClick={(event) => {
           onClick?.(event);
           toggleSidebar();
+          setIsOpen((prev) => !prev); // Toggle icon state
         }}
         {...props}
       >
-        <Grip />
+        {!isOpen ? <X size={20} /> : <Grip size={20} />}
         <span className="sr-only">Toggle Sidebar</span>
       </Button>
     );
@@ -536,7 +544,7 @@ const SidebarMenuAction = React.forwardRef(
           "peer-data-[size=lg]/menu-button:top-2.5",
           "group-data-[collapsible=icon]:hidden",
           showOnHover &&
-            "group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0",
+          "group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0",
           className
         )}
         {...props}

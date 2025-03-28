@@ -5,10 +5,7 @@ import {
     AvatarFallback,
     AvatarImage,
 } from "../../src/components/ui/avatar";
-import {
-    NavigationMenu,
-    NavigationMenuList,
-} from "../../src/components/ui/navigation-menu";
+
 import { Input } from "../../src/components/ui/input";
 import {
     DropdownMenu,
@@ -18,12 +15,15 @@ import {
 } from "../../src/components/ui/dropdown-menu";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "../../src/components/ui/sidebar";
 import AppSidebar from "../../src/components/ui/app-sidebar";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "../../src/components/ui/breadcrumb";
-import Header from "../Dashboard/Header";
-// import AppSidebar from "../Dashboard/Sidebar";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../src/components/ui/dialog";
+import { Button } from "../../src/components/ui/Button";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Account = () => {
     const [searchOpen, setSearchOpen] = useState(false);
+    const navigate = useNavigate()
+
+    const [logout, setLogout] = useState(false)
     const [darkMode, setDarkMode] = useState(
         localStorage.getItem("theme") === "dark"
     );
@@ -38,6 +38,16 @@ const Account = () => {
         }
     }, [darkMode]);
 
+    useEffect(() => {
+        if (logout) {
+            const timer = setTimeout(() => {
+                console.log("Auto closing dialog...");
+                setLogout(false);
+            }, 10000);
+
+            return () => clearTimeout(timer); // Cleanup timer
+        }
+    }, [logout]);
     return (
 
         <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
@@ -47,7 +57,7 @@ const Account = () => {
                     <SidebarTrigger className="-ml-1" />
                     <div className="flex w-full items-center justify-between">
                         {/* Dashboard Title */}
-                        <h1 className="text-2xl font-semibold text-blue-700 dark:text-white">
+                        <h1 className="text-2xl ps-9 font-semibold text-blue-700 dark:text-white">
                             Dashboard
                         </h1>
 
@@ -64,13 +74,13 @@ const Account = () => {
                         {/* Right Section: Icons & Profile */}
                         <div className="flex items-center space-x-6">
                             {/* Mobile Search Button */}
-                            <button 
-                    className="lg:hidden flex items-center focus:outline-none" 
-                    onClick={() => setSearchOpen(!searchOpen)}
-                    aria-label="Toggle search"
-                >
-                    <Search size={25} className="text-gray-700 dark:text-white" />
-                </button>
+                            <button
+                                className="lg:hidden flex items-center focus:outline-none"
+                                onClick={() => setSearchOpen(!searchOpen)}
+                                aria-label="Toggle search"
+                            >
+                                <Search size={25} className="text-gray-700 dark:text-white" />
+                            </button>
 
                             {/* Large Screens - Icons Outside Avatar */}
                             <div className="hidden lg:flex items-center space-x-4">
@@ -84,7 +94,10 @@ const Account = () => {
                                 </button>
 
                                 {/* Notifications Icon */}
-                                <Bell size={25} className="text-gray-700 dark:text-white" />
+                                <div className="relative">
+                                    <Bell size={25} className="text-gray-700 dark:text-white cursor-pointer" />
+                                    <span className="absolute top-0 right-0 -mt-1 -mr-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+                                </div>
                             </div>
 
                             {/* Avatar Dropdown (Contains Icons for md & sm) */}
@@ -109,18 +122,59 @@ const Account = () => {
                                     </div>
 
                                     {/* Profile & Logout */}
-                                    <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-gray-900 dark:text-white">
+                                    <DropdownMenuItem
+                                        onClick={() => navigate("/settings")}
+                                        className="flex items-center gap-2 cursor-pointer text-gray-900 dark:text-white">
                                         <User size={18} /> Profile
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-red-600 dark:text-red-400">
+                                    <DropdownMenuItem
+                                        onClick={() => { setLogout(true) }}
+
+                                        className="flex items-center gap-2 cursor-pointer text-red-600 dark:text-red-400">
                                         <LogOut size={18} /> Logout
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
+                            {/* Logout Confirmation Dialog */}
+                            <Dialog open={logout} onOpenChange={setLogout}>
+                                <DialogContent
+                                    onPointerDownOutside={(e) => e.preventDefault()} // Prevent outside click close
+                                    onEscapeKeyDown={(e) => e.preventDefault()} // Prevent Esc key close
+                                    className="sm:max-w-[425px] shadow-lg p-6 rounded-lg"
+                                >
+                                    <DialogHeader>
+                                        <DialogTitle className="text-center text-[22px] font-semibold">
+                                            Confirm Logout
+                                        </DialogTitle>
+                                        <DialogDescription className="text-center text-md">
+                                            Are you sure you want to log out?
+                                        </DialogDescription>
+                                    </DialogHeader>
+
+                                    <hr className="mt-4" />
+
+                                    {/* Action Buttons */}
+                                    <div className="flex justify-center gap-4 mt-4">
+                                        <Button
+                                            className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400"
+                                            onClick={() => setLogout(false)}
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+                                            onClick={() => {
+                                                console.log("Logging out..."); // Replace with actual logout logic
+                                                setLogout(false);
+                                            }}
+                                        >
+                                            Logout
+                                        </Button>
+                                    </div>
+                                </DialogContent>
+                            </Dialog>
                         </div>
                     </div>
-
-                    {/* Mobile Search Bar (Only visible when searchOpen is true) */}
                     {/* Mobile Search Bar (Only visible when searchOpen is true) */}
                     {searchOpen && (
                         <div className="absolute top-16 left-0 w-full bg-white dark:bg-gray-900 shadow-md p-2 lg:hidden">
@@ -135,8 +189,6 @@ const Account = () => {
                         </div>
                     )}
                 </header>
-
-
             </SidebarInset>
         </SidebarProvider>
     );
