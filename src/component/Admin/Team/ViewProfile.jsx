@@ -45,34 +45,33 @@ const ViewProfile = () => {
       },
     ],
     job: [{ enrol: "233455", salary: "20000" }],
-    expertise: ["Machine Learning", "Data Science", "Algorithms", "AI"],
   });
 
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       <AppSidebar />
-      <header className="flex h-16 items-center gap-4 px-6 shadow-md rounded-b-lg">
-        <SidebarTrigger className="-ml-1" />
-        <Separator orientation="vertical" className="mr-2 h-4" />
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem className="hidden md:block">
-              <BreadcrumbLink href="#">
-                <Header />
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator className="hidden md:block" />
-            <BreadcrumbItem>
-              <BreadcrumbPage className="text-lg font-semibold text-gray-700">
-                Department Access
-              </BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </header>
       <SidebarInset>
-        <div className="flex justify-center p-4 sm:p-6 w-full h-screen">
-          <Card className="w-full max-w-none shadow-md border rounded-xl bg-white">
+        <header className="flex h-16 items-center gap-4 px-6  shadow-md rounded-b-lg">
+          <SidebarTrigger className="-ml-1" />
+          <Separator orientation="vertical" className="mr-2 h-4" />
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem className="hidden md:block">
+                <BreadcrumbLink href="#">
+                  <Header />
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="hidden md:block" />
+              <BreadcrumbItem>
+                <BreadcrumbPage className="text-lg font-semibold text-gray-700">
+                  Department Access
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </header>
+        <div className="p-4 sm:p-6 w-full h-screen flex flex-col items-center">
+          <Card className="w-full max-w-4xl shadow-md border rounded-xl bg-white">
             <div className="relative w-full h-40 bg-indigo-700 rounded-t-xl flex items-center px-6">
               <Avatar className="w-24 h-24 border-4 border-white shadow-lg absolute -bottom-12 left-6">
                 <AvatarImage src={formdata.img} />
@@ -89,23 +88,19 @@ const ViewProfile = () => {
             </div>
 
             <CardContent className="mt-16 px-4 sm:px-6 pb-6">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center mt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center mt-4">
                 {["Joining Date", "D.O.B", "Phone", "Email"].map(
                   (label, index) => (
                     <div key={index}>
                       <p className="text-gray-600 font-medium">{label}</p>
                       <p className="text-lg font-semibold">
-                        {label === "Joining Date" ? (
-                          formdata.join_date
-                        ) : label === "D.O.B" ? (
-                          formdata.dob
-                        ) : label === "Phone" ? (
-                          formdata.phone
-                        ) : (
-                          <span className="text-blue-500">
-                            {formdata.email}
-                          </span>
-                        )}
+                        {label === "Joining Date"
+                          ? formdata.join_date
+                          : label === "D.O.B"
+                          ? formdata.dob
+                          : label === "Phone"
+                          ? formdata.phone
+                          : formdata.email}
                       </p>
                     </div>
                   )
@@ -148,17 +143,6 @@ const ViewProfile = () => {
                   <p className="font-semibold">Salary: {job.salary}</p>
                 </div>
               ))}
-
-              <Separator className="my-6" />
-
-              <h3 className="text-xl font-semibold mb-2">Expertise</h3>
-              <div className="flex flex-wrap gap-2">
-                {formdata.expertise.map((item, index) => (
-                  <Badge key={index} variant="outline" className="px-3 py-1">
-                    {item}
-                  </Badge>
-                ))}
-              </div>
             </CardContent>
           </Card>
         </div>
