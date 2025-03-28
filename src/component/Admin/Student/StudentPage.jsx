@@ -6,6 +6,7 @@ import {
   MoreVertical,
   ChevronRight,
   ChevronLeft,
+  Delete,
 
 } from "lucide-react";
 import {
@@ -156,25 +157,24 @@ const StudentHeader = () => {
             </div>
 
             <div className="flex items-center space-x-3 mt-3 md:mt-0">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="flex items-center space-x-2 border border-gray-300">
-                    <span>Newest</span>
-                    <ChevronDown size={16} />
-                  </Button>
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent align="end" className="w-36">
-                  <DropdownMenuItem>Newest</DropdownMenuItem>
-                  <DropdownMenuItem>Oldest</DropdownMenuItem>
-                  <DropdownMenuItem>Recent</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              
 
 
 
+              <Button 
+                className="bg-[#2563eb] text-white font-semibold px-5 py-2
+               rounded-lg hover:bg-[#3d3690] hover:opacity-90">
+                Ex-Student</Button>
+              <Button 
+                className="bg-[#2563eb] text-white font-semibold px-5 py-2
+               rounded-lg hover:bg-[#3d3690] hover:opacity-90">
+                Marksheet</Button>
+              <Button 
+                className="bg-[#2563eb] text-white font-semibold px-5 py-2
+               rounded-lg hover:bg-[#3d3690] hover:opacity-90">
+                + Add Excel</Button>
               <Button onClick={() => navigate("/add_student_model")}
-                className="bg-[#3d3690] text-white font-semibold px-5 py-2
+                className="bg-[#2563eb] text-white font-semibold px-5 py-2
                rounded-lg hover:bg-[#3d3690] hover:opacity-90">
                 + Add Student</Button>
 
@@ -212,17 +212,7 @@ const StudentHeader = () => {
                     <TableCell>
                       <span className="block md:inline">{student.fatherName}</span>
                     </TableCell>
-                    {/* <TableCell className="flex items-center space-x-3">
-                    <div className="grid grid-cols-2 gap-1">
-                    <img
-                        src={student.image}
-                        alt={student.name}
-                        className="w-10 h-7 object-cover rounded-full border-2 border-gray-300 shadow-sm"
-                      />
-                      <span className="font-medium">{student.name}</span>
-                    </div>
-                    </TableCell>
-                    <TableCell className="space-x-4">{student.fatherName}</TableCell> */}
+                   
                     <TableCell>{student.batch}</TableCell>
                     <TableCell>
                       <button className="bg-green-500 text-white px-3 sm:py-1 md:py-2 rounded-lg"
@@ -231,57 +221,33 @@ const StudentHeader = () => {
                       </button>
                     </TableCell>
                     <TableCell>
-                    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <MoreVertical className="cursor-pointer" size={20} />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>My Profile</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem onClick={()=>navigate("/view/profile")}>
-            Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-          </DropdownMenuItem>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <MoreVertical className="cursor-pointer" size={20} />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56">
+                          <DropdownMenuGroup>
+                            <DropdownMenuItem onClick={() => navigate("/view/profile")}>
+                              Profile
+                            </DropdownMenuItem>
 
-          {/* Nested Dropdown Start */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <DropdownMenuItem>
-                Other
-                <DropdownMenuShortcut>⌘O</DropdownMenuShortcut>
-              </DropdownMenuItem>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>More Options</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                Payment History
-                <DropdownMenuShortcut>⌘PH</DropdownMenuShortcut>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Attendance
-                <DropdownMenuShortcut>⌘A</DropdownMenuShortcut>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                View Marksheet
-                <DropdownMenuShortcut>⌘VM</DropdownMenuShortcut>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Mark as RT
-                <DropdownMenuShortcut>⌘M</DropdownMenuShortcut>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          {/* Nested Dropdown End */}
+                            <DropdownMenuItem onClick={()=>navigate("/student-payment-history")}>
+                              Payment_History
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              Attendance
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              View_Marksheet
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              Mark as RT
+                            </DropdownMenuItem>
 
-          <DropdownMenuItem>
-            Delete
-            <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+
+                          </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))}
