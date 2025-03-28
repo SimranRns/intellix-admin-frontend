@@ -41,6 +41,19 @@ import Header from "../Dashboard/Header";
 
 import { useNavigate } from "react-router-dom";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../../src/components/ui/dialog"
+import { Input } from "../../src/components/ui/input"
+import { Label } from "../../src/components/ui/label"
+
+
 const studentGroups = [
   {
     id: "123456789",
@@ -115,6 +128,7 @@ const StudentHeader = () => {
   const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [deletedialog, setdeletedialog] = useState(false);
 
   let totalPages = Math.ceil(studentGroups.length / PAGE_SIZE);
 
@@ -157,19 +171,19 @@ const StudentHeader = () => {
             </div>
 
             <div className="flex items-center space-x-3 mt-3 md:mt-0">
-              
 
 
 
-              <Button 
+
+              <Button
                 className="bg-[#2563eb] text-white font-semibold px-5 py-2
                rounded-lg hover:bg-[#3d3690] hover:opacity-90">
                 Ex-Student</Button>
-              <Button 
+              <Button
                 className="bg-[#2563eb] text-white font-semibold px-5 py-2
                rounded-lg hover:bg-[#3d3690] hover:opacity-90">
                 Marksheet</Button>
-              <Button 
+              <Button
                 className="bg-[#2563eb] text-white font-semibold px-5 py-2
                rounded-lg hover:bg-[#3d3690] hover:opacity-90">
                 + Add Excel</Button>
@@ -212,7 +226,7 @@ const StudentHeader = () => {
                     <TableCell>
                       <span className="block md:inline">{student.fatherName}</span>
                     </TableCell>
-                   
+
                     <TableCell>{student.batch}</TableCell>
                     <TableCell>
                       <button className="bg-green-500 text-white px-3 sm:py-1 md:py-2 rounded-lg"
@@ -231,7 +245,7 @@ const StudentHeader = () => {
                               Profile
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem onClick={()=>navigate("/student-payment-history")}>
+                            <DropdownMenuItem onClick={() => navigate("/student-payment-history")}>
                               Payment_History
                             </DropdownMenuItem>
                             <DropdownMenuItem>
@@ -242,6 +256,34 @@ const StudentHeader = () => {
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                               Mark as RT
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                              <Dialog open={deletedialog} onOpenChange={setdeletedialog}>
+                                <DialogTrigger >
+                                  Delete
+                                </DialogTrigger>
+                                <DialogContent onPointerDownOutside={(e) => e.preventDefault()}
+                                  onEscapeKeyDown={(e) => e.preventDefault()} className="sm:max-w-[425px]">
+                                  <DialogHeader >
+                                    <DialogTitle className="text-center mb-3">Delete Sudent</DialogTitle>
+                                    <DialogDescription className="text-center">
+                                      Are you sure you want to delete student?
+                                    </DialogDescription>
+                                  </DialogHeader>
+
+                                  <DialogFooter className="flex justify-between">
+                                    <Button
+                                      onClick={() => { setdeletedialog(false) }}
+                                      variant="outline"
+                                    >
+                                      Cancel
+                                    </Button>
+                                    <Button className="bg-green-600 hover:bg-green-700 text-white">
+                                      Confirm
+                                    </Button>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
                             </DropdownMenuItem>
 
 

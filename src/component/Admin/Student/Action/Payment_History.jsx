@@ -7,6 +7,7 @@ import Header from '../../Dashboard/Header';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../../src/components/ui/tabs";
 import { ArrowBack } from '@mui/icons-material';
 import { Button } from '@headlessui/react';
+import { ArrowLeft } from 'lucide-react';
 
 const Payment_History = () => {
 
@@ -58,7 +59,7 @@ const Payment_History = () => {
                         <Tabs defaultValue="missed" className="w-full">
                             <div className='flex justify-between p-6'>
                                 <Button className="border-2 border-gray-300 rounded-lg flex items-center gap-2 py-2 px-6" onClick={goback}>
-                                    <ArrowBack />
+                                <ArrowLeft />
                                     Payment Details
                                 </Button>
                                 <TabsList className="h-12 bg-transparent">
