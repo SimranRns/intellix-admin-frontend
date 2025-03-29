@@ -101,7 +101,7 @@ const MyLeads = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
+    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50 w-full">
       <aside className="md:w-64 w-full p-6 shadow-md flex flex-col gap-4">
         <Button
           onClick={goBack}
@@ -157,9 +157,9 @@ const MyLeads = () => {
         )}
       </aside>
 
-      <div className="bg-gray-50 min-h-screen m-5">
-        <Card className="p-4 mb-4 shadow-sm">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-4 items-center">
+      <div className="bg-gray-50 min-h-screen  w-full">
+        <Card className="p-4 mb-4 shadow-sm w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-4 items-center w-full">
             <Input type="date" className="w-full md:col-span-2 lg:col-span-2" />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -168,6 +168,7 @@ const MyLeads = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start">
+                <DropdownMenuItem>Set Default</DropdownMenuItem>
                 <DropdownMenuItem>Hot</DropdownMenuItem>
                 <DropdownMenuItem>In Conversation</DropdownMenuItem>
                 <DropdownMenuItem>Dropped</DropdownMenuItem>
@@ -181,9 +182,13 @@ const MyLeads = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start">
-                <DropdownMenuItem>Category A</DropdownMenuItem>
-                <DropdownMenuItem>Category B</DropdownMenuItem>
-                <DropdownMenuItem>Category C</DropdownMenuItem>
+                <DropdownMenuItem>Set Default</DropdownMenuItem>
+                <DropdownMenuItem>industory2</DropdownMenuItem>
+                <DropdownMenuItem>industory</DropdownMenuItem>
+                <DropdownMenuItem>system</DropdownMenuItem>
+                <DropdownMenuItem>tr</DropdownMenuItem>
+                <DropdownMenuItem>fsfd</DropdownMenuItem>
+                <DropdownMenuItem>ghd</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <Button className="bg-blue-600 hover:bg-blue-500 text-white md:col-span-2 lg:col-span-2">
@@ -191,7 +196,7 @@ const MyLeads = () => {
             </Button>
           </div>
 
-          <div className="flex justify-between mt-4">
+          <div className="flex justify-between mt-4 w-full">
             <Input className="w-[200px]" placeholder="Search all fields" />
             <div className="flex justify-end gap-2">
               <Button className="bg-blue-600 text-white">Search</Button>
@@ -200,10 +205,10 @@ const MyLeads = () => {
           </div>
         </Card>
 
-        <Card className="p-4 overflow-auto shadow-md">
-          <Table className="w-full min-w-[700px]">
+        <Card className="w-full overflow-auto">
+          <Table className="w-full">
             <TableHeader>
-              <TableRow>
+              <TableRow >
                 <TableHead>S.No</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Contact Number</TableHead>
