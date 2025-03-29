@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Sidebar from '../Dashboard/Sidebar'
 import { Disclosure } from '@headlessui/react';
 import Header from '../Dashboard/Header';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -50,26 +49,13 @@ const Settings = () => {
   return (
 
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
+      {/* Pass setActivePage to Sidebar */}
       <AppSidebar />
       <SidebarInset>
-        {/* Header Section */}
-        <header className="flex h-16 items-center gap-2 px-4">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">{<Header />}</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </header>
+        <Header />
 
         {/* Main Content Section */}
+        <main className="flex-1 overflow-auto mt-16">
         <div className="flex flex-1 flex-col gap-4   pt-0">
           <div className="grid  shadow-md shadow-blue-300/30">
             <Disclosure as="nav" className=" shadow">
@@ -197,6 +183,7 @@ const Settings = () => {
           </div>
 
         </div>
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );

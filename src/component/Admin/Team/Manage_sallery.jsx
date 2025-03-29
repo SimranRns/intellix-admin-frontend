@@ -70,15 +70,15 @@ const ManageSalary = () => {
   const [toDate, setToDate] = useState("");
   const [tab, setTab] = useState("tab1");
 
-  
+
   const [open, setOpen] = useState(false);
   const [salaryData, setSalaryData] = useState([]);
   const [opensec, setopensec] = useState(false);
   const [Salaryhistory, setSalaryhistory] = useState(initialSalaryData);
   const navigate = useNavigate();
-const goback = ()=>{
-  window.history.back();
-}
+  const goback = () => {
+    window.history.back();
+  }
   useEffect(() => {
     // Simulating fetching dynamic attendance data
     setAttendanceData([
@@ -155,16 +155,15 @@ const goback = ()=>{
       <aside className="md:w-64 w-full p-6 bg-white shadow-md flex flex-col gap-4">
         <Button
           onClick={goback}
-          className="flex items-center gap-2 bg-white hover:bg-white text-black border border-gray-300"
+          className="flex items-center gap-2 bg-blue-500 hover:blue-600  border border-gray-300"
         >
           <ArrowLeft className="w-5 h-5" /> Back
         </Button>
         <h4 className="text-xl font-semibold">Manage Salary</h4>
 
         <Button
-          className={`w-full bg-blue-600 hover:bg-blue-700 text-white mb-4 mt-5 ${
-            tab === "tab1" ? "font-bold" : ""
-          }`}
+          className={`w-full bg-blue-600 hover:bg-blue-700 text-white mb-4 mt-5 ${tab === "tab1" ? "font-bold" : ""
+            }`}
           onClick={() => {
             setTab("tab1");
           }}
@@ -173,9 +172,8 @@ const goback = ()=>{
         </Button>
 
         <Button
-          className={`w-full bg-blue-600 hover:bg-blue-700 text-white ${
-            tab === "tab2" ? "font-bold" : ""
-          }`}
+          className={`w-full bg-blue-600 hover:bg-blue-700 text-white ${tab === "tab2" ? "font-bold" : ""
+            }`}
           onClick={() => {
             setTab("tab2");
           }}
@@ -215,11 +213,10 @@ const goback = ()=>{
               {["Present", "Half Day", "Absent"].map((status) => (
                 <button
                   key={status}
-                  className={`px-4 py-2 ${
-                    selectedTab === status
+                  className={`px-4 py-2 ${selectedTab === status
                       ? "border-b-2 border-blue-600"
                       : "text-gray-600"
-                  }`}
+                    }`}
                   onClick={() => setSelectedTab(status)}
                 >
                   {status}
@@ -375,13 +372,12 @@ const goback = ()=>{
                       <td className="p-3">{item.punchOut}</td>
                       <td className="p-3">{item.date}</td>
                       <td
-                        className={`p-3 ${
-                          item.status === "Present"
+                        className={`p-3 ${item.status === "Present"
                             ? "text-green-600 font-semibold"
                             : item.status === "Half Day"
-                            ? "text-orange-400 font-semibold"
-                            : "text-red-600 font-semibold"
-                        }`}
+                              ? "text-orange-400 font-semibold"
+                              : "text-red-600 font-semibold"
+                          }`}
                       >
                         {item.status}
                       </td>

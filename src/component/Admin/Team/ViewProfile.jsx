@@ -49,103 +49,88 @@ const ViewProfile = () => {
 
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
+      {/* Pass setActivePage to Sidebar */}
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 items-center gap-4 px-6  shadow-md rounded-b-lg">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">
-                  <Header />
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage className="text-lg font-semibold text-gray-700">
-                  Department Access
-                </BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </header>
-        <div className="p-4 sm:p-6 w-full h-screen flex flex-col items-center">
-          <Card className="w-full max-w-4xl shadow-md border rounded-xl bg-white">
-            <div className="relative w-full h-40 bg-indigo-700 rounded-t-xl flex items-center px-6">
-              <Avatar className="w-24 h-24 border-4 border-white shadow-lg absolute -bottom-12 left-6">
-                <AvatarImage src={formdata.img} />
-                <AvatarFallback>JD</AvatarFallback>
-              </Avatar>
-              <div className="ml-32 mt-10">
-                <h2 className="text-2xl font-bold text-white">
-                  {formdata.name}
-                </h2>
-                <p className="text-md text-white opacity-80">
-                  {formdata.title}
-                </p>
+        <Header />
+        <main className="flex-1 overflow-auto">
+          <div className="p-4 sm:p-6 w-full h-screen flex flex-col items-center">
+            <Card className="w-full max-w-4xl shadow-md border rounded-xl bg-white">
+              <div className="relative w-full h-40 bg-indigo-700 rounded-t-xl flex items-center px-6">
+                <Avatar className="w-24 h-24 border-4 border-white shadow-lg absolute -bottom-12 left-6">
+                  <AvatarImage src={formdata.img} />
+                  <AvatarFallback>JD</AvatarFallback>
+                </Avatar>
+                <div className="ml-32 mt-10">
+                  <h2 className="text-2xl font-bold text-white">
+                    {formdata.name}
+                  </h2>
+                  <p className="text-md text-white opacity-80">
+                    {formdata.title}
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <CardContent className="mt-16 px-4 sm:px-6 pb-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center mt-4">
-                {["Joining Date", "D.O.B", "Phone", "Email"].map(
-                  (label, index) => (
-                    <div key={index}>
-                      <p className="text-gray-600 font-medium">{label}</p>
-                      <p className="text-lg font-semibold">
-                        {label === "Joining Date"
-                          ? formdata.join_date
-                          : label === "D.O.B"
-                          ? formdata.dob
-                          : label === "Phone"
-                          ? formdata.phone
-                          : formdata.email}
-                      </p>
+              <CardContent className="mt-16 px-4 sm:px-6 pb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center mt-4">
+                  {["Joining Date", "D.O.B", "Phone", "Email"].map(
+                    (label, index) => (
+                      <div key={index}>
+                        <p className="text-gray-600 font-medium">{label}</p>
+                        <p className="text-lg font-semibold">
+                          {label === "Joining Date"
+                            ? formdata.join_date
+                            : label === "D.O.B"
+                              ? formdata.dob
+                              : label === "Phone"
+                                ? formdata.phone
+                                : formdata.email}
+                        </p>
+                      </div>
+                    )
+                  )}
+                </div>
+
+                <Separator className="my-6" />
+
+                <h3 className="text-xl font-semibold mb-2">Education</h3>
+                <div className="space-y-2">
+                  {formdata.education.map((edu, index) => (
+                    <div
+                      key={index}
+                      className="border rounded-lg p-3 bg-gray-100"
+                    >
+                      <p className="font-medium">{edu.degree}</p>
+                      <p className="text-gray-600">{edu.year}</p>
                     </div>
-                  )
-                )}
-              </div>
+                  ))}
+                </div>
 
-              <Separator className="my-6" />
+                <Separator className="my-6" />
 
-              <h3 className="text-xl font-semibold mb-2">Education</h3>
-              <div className="space-y-2">
-                {formdata.education.map((edu, index) => (
-                  <div
-                    key={index}
-                    className="border rounded-lg p-3 bg-gray-100"
-                  >
-                    <p className="font-medium">{edu.degree}</p>
-                    <p className="text-gray-600">{edu.year}</p>
+                <h3 className="text-xl font-semibold mb-2">Address</h3>
+                {formdata.address.map((ads, index) => (
+                  <div key={index} className="p-3 border rounded-lg bg-gray-100">
+                    <p className="font-medium">State: {ads.state}</p>
+                    <p className="font-semibold">City: {ads.city}</p>
+                    <p className="font-semibold">Zip Code: {ads.zip_code}</p>
+                    <p className="font-semibold">Address: {ads.adrs}</p>
                   </div>
                 ))}
-              </div>
 
-              <Separator className="my-6" />
+                <Separator className="my-6" />
 
-              <h3 className="text-xl font-semibold mb-2">Address</h3>
-              {formdata.address.map((ads, index) => (
-                <div key={index} className="p-3 border rounded-lg bg-gray-100">
-                  <p className="font-medium">State: {ads.state}</p>
-                  <p className="font-semibold">City: {ads.city}</p>
-                  <p className="font-semibold">Zip Code: {ads.zip_code}</p>
-                  <p className="font-semibold">Address: {ads.adrs}</p>
-                </div>
-              ))}
-
-              <Separator className="my-6" />
-
-              <h3 className="text-xl font-semibold mb-2">School</h3>
-              {formdata.job.map((job, index) => (
-                <div key={index} className="p-3 border rounded-lg bg-gray-100">
-                  <p className="font-medium">Enrollment ID: {job.enrol}</p>
-                  <p className="font-semibold">Salary: {job.salary}</p>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
+                <h3 className="text-xl font-semibold mb-2">School</h3>
+                {formdata.job.map((job, index) => (
+                  <div key={index} className="p-3 border rounded-lg bg-gray-100">
+                    <p className="font-medium">Enrollment ID: {job.enrol}</p>
+                    <p className="font-semibold">Salary: {job.salary}</p>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );

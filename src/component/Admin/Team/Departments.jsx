@@ -116,170 +116,159 @@ const Departments = () => {
   const selectedDepartments = departmentsList.slice(startIndex, startIndex + departmentsPerPage);
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
+      {/* Pass setActivePage to Sidebar */}
       <AppSidebar />
       <SidebarInset>
+        <Header />
 
-        <header className="flex h-16 items-center gap-4 px-6 shadow-md rounded-b-lg">
-          <SidebarTrigger className="-ml-1" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">
-                  <Header />
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-            </BreadcrumbList>
-          </Breadcrumb>
-        </header>
-
-        <div className="w-full shadow-md shadow-blue-300/30 rounded-lg flex flex-wrap sm:flex-nowrap items-center justify-between px-4 sm:px-8 py-4 mt-6 gap-3">
-          <div className="flex items-center gap-3">
-            <Button
-              className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm flex items-center gap-2"
-              onClick={() => navigate(-1)}
-            >
-              <ArrowLeft size={18} />
-              <span className="hidden md:inline">Back to Department</span>
-            </Button>
-            <Button
-              onClick={() => setAddDepartment(true)}
-              className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm flex items-center gap-2"
-            >
-              <span className="text-lg">+</span>
-              <span>Add Department</span>
-            </Button>
-            <Dialog open={addDepartment} onOpenChange={setAddDepartment}>
-              <DialogContent
-                onPointerDownOutside={(e) => e.preventDefault()}
-                onEscapeKeyDown={(e) => e.preventDefault()}
-                className=" sm:max-w-[600px] shadow-lg p-6 rounded-lg">
-                <DialogHeader>
-                  <DialogTitle className="text-center">Add Department</DialogTitle>
-                </DialogHeader>
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(handleAdddepartment)} className="space-y-8">
-                    <FormField
-                      control={form.control}
-                      name="Department"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Enter name of department</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Department" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button type="submit">Confirm</Button>
-                  </form>
-                </Form>
-              </DialogContent>
-            </Dialog>
-          </div>
-
-          {/* Search Bar */}
-          <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full sm:max-w-md">
-            <Search size={18} className="text-gray-500" />
-            <input
-              name="search"
-              type="text" placeholder="By Employee Name..." className="ml-2 w-full outline-none bg-transparent text-sm" />
-          </div>
-        </div>
-
-        {/* Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 p-6">
-          {selectedDepartments.map((department) => (
-            <Card
-              key={department.id}
-              className="w-full max-w-[320px]  shadow-md shadow-blue-500/50 rounded-xl p-6 relative mx-auto"
-            >
-              {/* Department Name at the Top */}
-              <CardTitle className="text-lg font-extrabold">{department.departmentName}</CardTitle>
-
-              {/* Dropdown Menu */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="absolute top-4 right-4 bg-blue-100 p-2 rounded-lg shadow-sm">
-                    <Ellipsis className="text-gray-500" size={24} />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-40 bg-gray-200 mt-1 shadow-md rounded-md">
-                  <DropdownMenuItem
-                    onClick={() => setDeleteDepartments(true)}
-                    className="cursor-pointer text-red-500 hover:bg-gray-100 px-4 py-2 text-md text-center "
-                  >
-                    Deactivate
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              {/* //deactivate dilog  */}
-              <Dialog open={DeleteDepartments} onOpenChange={setDeleteDepartments}>
-                <DialogContent className="sm:max-w-[425px] shadow-lg p-6 rounded-lg">
+        <main className="flex-1 overflow-auto">
+          <div className="w-full shadow-md shadow-blue-300/30 rounded-lg flex flex-wrap sm:flex-nowrap items-center justify-between px-4 sm:px-8 py-4 mt-6 gap-3">
+            <div className="flex items-center gap-3">
+              <Button
+                className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm flex items-center gap-2"
+                onClick={() => navigate(-1)}
+              >
+                <ArrowLeft size={18} />
+                <span className="hidden md:inline">Back to Department</span>
+              </Button>
+              <Button
+                onClick={() => setAddDepartment(true)}
+                className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm flex items-center gap-2"
+              >
+                <span className="text-lg">+</span>
+                <span>Add Department</span>
+              </Button>
+              <Dialog open={addDepartment} onOpenChange={setAddDepartment}>
+                <DialogContent
+                  onPointerDownOutside={(e) => e.preventDefault()}
+                  onEscapeKeyDown={(e) => e.preventDefault()}
+                  className=" sm:max-w-[600px] shadow-lg p-6 rounded-lg">
                   <DialogHeader>
-                    <DialogTitle className="text-center text-[22px] font-bold">Deactivate Department</DialogTitle>
-                    <DialogDescription className="text-center text-md">
-                      Are you sure you want to deactivate this department?
-                    </DialogDescription>
+                    <DialogTitle className="text-center">Add Department</DialogTitle>
                   </DialogHeader>
-                  <hr className="mt-5" />
-                  <div className="flex justify-center">
-                    <Button className="bg-red-600 text-white px-5 py-3 rounded-lg hover:bg-red-700">
-                      Deactivate Department
-                    </Button>
-                  </div>
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(handleAdddepartment)} className="space-y-8">
+                      <FormField
+                        control={form.control}
+                        name="Department"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Enter name of department</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Department" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <Button type="submit">Confirm</Button>
+                    </form>
+                  </Form>
                 </DialogContent>
               </Dialog>
+            </div>
 
-              <CardHeader className="flex flex-col items-center">
-                <div className="flex flex-col items-center gap-1">
-                  <div className="flex items-center gap-2">
-                    <Users size={24} className="text-blue-500" />
-                    <span className="text-lg font-bold">{department.departmentUser}</span>
-                    <span className="text-sm text-gray-400">{department.departmentemployee}</span>
+            {/* Search Bar */}
+            <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full sm:max-w-md">
+              <Search size={18} className="text-gray-500" />
+              <input
+                name="search"
+                type="text" placeholder="By Employee Name..." className="ml-2 w-full outline-none bg-transparent text-sm" />
+            </div>
+          </div>
+
+          {/* Cards Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 p-6">
+            {selectedDepartments.map((department) => (
+              <Card
+                key={department.id}
+                className="w-full max-w-[320px]  shadow-md shadow-blue-500/50 rounded-xl p-6 relative mx-auto"
+              >
+                {/* Department Name at the Top */}
+                <CardTitle className="text-lg font-extrabold">{department.departmentName}</CardTitle>
+
+                {/* Dropdown Menu */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="absolute top-4 right-4 bg-blue-100 p-2 rounded-lg shadow-sm">
+                      <Ellipsis className="text-gray-500" size={24} />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-40 bg-gray-200 mt-1 shadow-md rounded-md">
+                    <DropdownMenuItem
+                      onClick={() => setDeleteDepartments(true)}
+                      className="cursor-pointer text-red-500 hover:bg-gray-100 px-4 py-2 text-md text-center "
+                    >
+                      Deactivate
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                {/* //deactivate dilog  */}
+                <Dialog open={DeleteDepartments} onOpenChange={setDeleteDepartments}>
+                  <DialogContent className="sm:max-w-[425px] shadow-lg p-6 rounded-lg">
+                    <DialogHeader>
+                      <DialogTitle className="text-center text-[22px] font-bold">Deactivate Department</DialogTitle>
+                      <DialogDescription className="text-center text-md">
+                        Are you sure you want to deactivate this department?
+                      </DialogDescription>
+                    </DialogHeader>
+                    <hr className="mt-5" />
+                    <div className="flex justify-center">
+                      <Button className="bg-red-600 text-white px-5 py-3 rounded-lg hover:bg-red-700">
+                        Deactivate Department
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
+                <CardHeader className="flex flex-col items-center">
+                  <div className="flex flex-col items-center gap-1">
+                    <div className="flex items-center gap-2">
+                      <Users size={24} className="text-blue-500" />
+                      <span className="text-lg font-bold">{department.departmentUser}</span>
+                      <span className="text-sm text-gray-400">{department.departmentemployee}</span>
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
+                </CardHeader>
 
-              {/* Chart Section */}
-              <CardContent className="flex-1 pb-0">
-                <ChartContainer
-                  config={chartConfig}
-                  className="mx-auto aspect-square max-h-[180px] [&_.recharts-text]:fill-background"
-                >
-                  <PieChart>
-                    <ChartTooltip content={<ChartTooltipContent nameKey="count" hideLabel />} />
-                    <Pie data={chartData} dataKey="count">
-                      <LabelList
-                        dataKey="category"
-                        className="fill-background"
-                        stroke="none"
-                        fontSize={9}
-                        formatter={(value) => (chartConfig[value] ? chartConfig[value].label : value)}
-                      />
-                    </Pie>
-                  </PieChart>
-                </ChartContainer>
-              </CardContent>
+                {/* Chart Section */}
+                <CardContent className="flex-1 pb-0">
+                  <ChartContainer
+                    config={chartConfig}
+                    className="mx-auto aspect-square max-h-[180px] [&_.recharts-text]:fill-background"
+                  >
+                    <PieChart>
+                      <ChartTooltip content={<ChartTooltipContent nameKey="count" hideLabel />} />
+                      <Pie data={chartData} dataKey="count">
+                        <LabelList
+                          dataKey="category"
+                          className="fill-background"
+                          stroke="none"
+                          fontSize={9}
+                          formatter={(value) => (chartConfig[value] ? chartConfig[value].label : value)}
+                        />
+                      </Pie>
+                    </PieChart>
+                  </ChartContainer>
+                </CardContent>
 
-              {/* Card Footer Buttons */}
-              <CardFooter className="flex justify-center gap-4 mt-1">
-                <Button
-                  onClick={() => navigate("/View_User")}
-                  className="bg-blue-600 text-xs text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-blue-500 transition-all">
-                  <User size={18} /> View User
-                </Button>
-                <Button
-                  onClick={() => { navigate("/Access") }}
-                  className="bg-orange-500 text-xs text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-orange-600 transition-all">
-                  <Eye size={18} /> Access
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
-
+                {/* Card Footer Buttons */}
+                <CardFooter className="flex justify-center gap-4 mt-1">
+                  <Button
+                    onClick={() => navigate("/View_User")}
+                    className="bg-blue-600 text-xs text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-blue-500 transition-all">
+                    <User size={18} /> View User
+                  </Button>
+                  <Button
+                    onClick={() => { navigate("/Access") }}
+                    className="bg-orange-500 text-xs text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-orange-600 transition-all">
+                    <Eye size={18} /> Access
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        </main>
         <Pagination>
           <PaginationContent>
             <PaginationItem>
