@@ -30,6 +30,7 @@ import Profile from "./component/Admin/Student/Action/Profile";
 import Payment_History from "./component/Admin/Student/Action/Payment_History";
 import Account from "./component/Admin/Accounts/Account";
 import View_User from "./component/Admin/Team/View_User";
+import StudentUploadModal from "./component/Admin/Student/Add_Excel/StudentUploadModal";
 // import { Route } from "lucide-react";
 const App = () => {
   return (
@@ -61,6 +62,7 @@ const App = () => {
           <Route path="/add" element={<SuccessMessage />} />
           <Route path="/view/profile" element={<Profile />} />
           <Route path="/student-payment-history" element={<Payment_History />} />
+          <Route path="/StudentUploadModal" element={<StudentUploadModal/>} />
 
           <Route path="/View-Profile" element={<ViewProfile />} />
           <Route path="/View_User" element={<View_User />} />
