@@ -19,9 +19,9 @@ const AppSidebar = ({ ...props }) => {
 
   const items = [
     { title: "Dashboard", url: "/dashboard", icon: Home },
-    { title: "Academics", url: "/academy", icon: FileBadge },
+    { title: "Academics", url: "/Academics", icon: FileBadge },
     { title: "Students", url: "/students", icon: Users },
-    { title: "Accounts", url: "/accounts", icon: Wallet },
+    { title: "Accounts", url: "/Accounts", icon: Wallet },
     { title: "Attendance", url: "/attendance", icon: ChartColumnIncreasing },
     { title: "Team", url: "/team", icon: Users },
     { title: "Leads", url: "/leads", icon: ListFilterPlus },

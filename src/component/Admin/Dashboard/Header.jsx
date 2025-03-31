@@ -43,7 +43,6 @@ const Header = () => {
   
             {/* Pass setActivePage to Sidebar */}
             {/* <AppSidebar setActivePage={setActivePage} /> */}
-
           
                 <header className="flex sticky top-0 shrink-0 gap-2 border-b h-16 bg-white dark:bg-gray-900 shadow-md items-center px-6">
                     <SidebarTrigger className="-ml-1" />

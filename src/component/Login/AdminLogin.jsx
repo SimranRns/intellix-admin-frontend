@@ -17,6 +17,7 @@ import { Input } from '../../component/src/components/ui/input';
 import { Label } from '../../component/src/components/ui/label';
 import { Checkbox } from '../../component/src/components/ui/checkbox';
 import { Button } from '../src/components/ui/Button';
+import { useNavigate } from 'react-router';
 const FormSchema = z.object({
     email: z.string().email('Invalid email address').min(1, 'Email is required'),
     password: z.string().min(6, 'Password must be at least 6 characters long'),
@@ -24,6 +25,7 @@ const FormSchema = z.object({
 });
 
 const AdminLogin = () => {
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const form = useForm({
         resolver: zodResolver(FormSchema),
@@ -111,7 +113,9 @@ const AdminLogin = () => {
                                     </FormItem>
                                 )}
                             />
-                            <Button className='w-full margin bg-gradient-to-r from-blue-500 to-blue-700 text-white py-3 sm:py-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-xl text-lg sm:text-xl font-bold' type="submit">Login</Button>
+                            <Button
+                            onClick={()=>{navigate("/Dashboard")}}
+                            className='w-full margin bg-gradient-to-r from-blue-500 to-blue-700 text-white py-3 sm:py-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-xl text-lg sm:text-xl font-bold' type="submit">Login</Button>
                         </form>
                     </Form>
                 </div>

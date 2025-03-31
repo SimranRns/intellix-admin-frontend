@@ -6,13 +6,6 @@ import {
     SidebarProvider,
     SidebarTrigger,
 } from "../../src/components/ui/sidebar";
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbSeparator,
-} from "../../src/components/ui/breadcrumb";
 import Header from "../Dashboard/Header";
 import { ArrowLeft, Search, } from "lucide-react";
 import { Button } from "../../src/components/ui/Button";
@@ -28,6 +21,7 @@ import {
 import { Card, CardHeader, CardTitle, CardContent, } from "../../src/components/ui/card";
 
 const View_User = () => {
+
     const navigate = useNavigate()
     const [currentPage, setCurrentPage] = useState(1);
     const UserList = [
@@ -172,7 +166,6 @@ const View_User = () => {
                         ))}
                     </div>
 
-                </main>
                 <Pagination>
                     <PaginationContent>
                         <PaginationItem>
@@ -207,6 +200,7 @@ const View_User = () => {
                         </PaginationItem>
                     </PaginationContent>
                 </Pagination>
+                </main>
 
             </SidebarInset>
         </SidebarProvider>

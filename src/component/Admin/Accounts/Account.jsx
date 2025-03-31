@@ -1,23 +1,57 @@
-import React, { useState } from 'react'
-import Header from '../Dashboard/Header'
-import { SidebarInset, SidebarProvider } from '../../src/components/ui/sidebar'
-import AppSidebar from '../../src/components/ui/app-sidebar'
+import React, { useState } from 'react';
+import Header from '../Dashboard/Header';
+import { SidebarInset, SidebarProvider } from '../../src/components/ui/sidebar';
+import AppSidebar from '../../src/components/ui/app-sidebar';
+import { Button } from '@headlessui/react';
+import { ArrowLeft, Search } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader } from '../../src/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel } from '../../src/components/ui/form';
+import { Input } from '../../src/components/ui/input';
+import Students from './Students';
+import Employee from './Employee';
 
-const Account = () => {
+const Account = () => {  
+    const [activeTab, setActiveTab] = useState('Student');
+
     return (
-
-
         <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
-        {/* Pass setActivePage to Sidebar */}
-        <AppSidebar />
-        <SidebarInset>
-          <Header />
-          <main className="flex-1 overflow-auto mt-10">
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nulla sapiente necessitatibus molestias, iste hic reiciendis ullam, dicta distinctio dolores impedit, dignissimos odio debitis! Tempora placeat provident ea sunt iure quibusdam, soluta doloremque sit nemo et veritatis obcaecati nesciunt iste cum! Tempore, totam. Itaque, officia nemo, cum explicabo cupiditate placeat, beatae totam doloribus numquam similique voluptatibus? Necessitatibus sunt impedit facilis! Reiciendis, dolore eaque. Cupiditate a iste ad commodi ipsum, sequi labore excepturi dignissimos odit assumenda iusto quaerat, explicabo autem eaque. Enim fuga asperiores repellat laudantium perspiciatis mollitia aspernatur vitae! Eius odit culpa in ad fuga, voluptatibus repudiandae amet reprehenderit et perspiciatis.</p>
-          </main>
-                </SidebarInset>
-        </SidebarProvider>
-    )
-}
+            <AppSidebar />
+            <SidebarInset>
+                <Header />
+                <main className="flex-1 overflow-auto">
+                    <div className="w-full shadow-md shadow-blue-300/30 rounded-lg flex flex-wrap sm:flex-nowrap items-center justify-between px-4 sm:px-8 py-4 gap-3">
+                        <div className="flex items-center gap-3">
+                            <button
+                                className={`rounded-md px-9 py-2 text-sm font-medium ${activeTab === 'Student' ? 'bg-blue-600 text-white' :  'bg-gray-200 text-gray-800 hover:bg-blue-500 hover:text-white'}`}
+                                onClick={() => setActiveTab('Student')}
+                            >
+                              Students Account
+                            </button>
+                            <button
+                               className={`rounded-md px-9 py-2 text-sm font-medium ${activeTab === 'Employee' ? 'bg-blue-600 text-white' :  'bg-gray-200 text-gray-800 hover:bg-blue-500 hover:text-white'}`}
+                                onClick={() => setActiveTab('Employee')}
+                            >
+                                Employee Account
+                            </button>
+                        </div>
+                    </div>
 
-export default Account
+                    {/* Tab Content */}
+                    <div className="mt-6 p-4">
+                        {activeTab === 'Student' ? (
+                            <div>
+                               <Students/>
+                            </div>
+                        ) : (
+                            <div>
+                            <Employee/>
+                            </div>
+                        )}
+                    </div>
+                </main>
+            </SidebarInset>
+        </SidebarProvider>
+    );
+};
+
+export default Account;

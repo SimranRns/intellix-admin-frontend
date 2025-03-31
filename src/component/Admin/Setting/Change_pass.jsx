@@ -64,19 +64,19 @@ const Settings = () => {
                   <div className="md:flex md:space-x-4">
                     <button
                       onClick={() => setTab(1)}
-                      className={`rounded-md px-3 py-2 text-sm font-medium ${tab === 1 ? 'bg-blue-600 text-white' : 'text-gray-500 hover:bg-blue-500 hover:text-white'}`}
+                      className={`rounded-md px-3 py-2 text-sm font-medium ${tab === 1 ? 'bg-blue-600 text-white' :  'bg-gray-200 text-gray-800 hover:bg-blue-500 hover:text-white'}`}
                     >
                       View Profile
                     </button>
                     <button
                       onClick={() => setTab(2)}
-                      className={`rounded-md px-3 py-2 text-sm font-medium ${tab === 2 ? 'bg-blue-600 text-white' : 'text-gray-500 hover:bg-blue-500 hover:text-white'}`}
+                      className={`rounded-md px-3 py-2 text-sm font-medium ${tab === 2 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-blue-500 hover:text-white'}`}
                     >
                       Change Password
                     </button>
                     <button
                       onClick={() => setTab(3)}
-                      className={`rounded-md px-2 py-2 text-sm font-medium ${tab === 3 ? 'bg-blue-600 text-white' : 'text-gray-500 hover:bg-blue-500 hover:text-white'}`}
+                      className={`rounded-md px-2 py-2 text-sm font-medium ${tab === 3 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-blue-500 hover:text-white'}`}
                     >
                       Upadte Profile
                     </button>
