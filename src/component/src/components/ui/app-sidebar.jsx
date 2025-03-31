@@ -25,7 +25,7 @@ const AppSidebar = ({ ...props }) => {
     { title: "Attendance", url: "/attendance", icon: ChartColumnIncreasing },
     { title: "Team", url: "/team", icon: Users },
     { title: "Leads", url: "/leads", icon: ListFilterPlus },
-    { title: "Advertisement", url: "/advertisement", icon: Clipboard },
+    { title: "Advertisement", url: "/Advertisement", icon: Clipboard },
     { title: "Support", url: "/support", icon: CircleHelp },
     { title: "Settings", url: "/settings", icon: Settings },
   ];

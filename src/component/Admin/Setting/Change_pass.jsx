@@ -55,7 +55,7 @@ const Settings = () => {
         <Header />
 
         {/* Main Content Section */}
-        <main className="flex-1 overflow-auto mt-16">
+        <main className="flex-1 overflow-auto">
         <div className="flex flex-1 flex-col gap-4   pt-0">
           <div className="grid  shadow-md shadow-blue-300/30">
             <Disclosure as="nav" className=" shadow">

@@ -142,26 +142,13 @@ const Attendance = () => {
   };
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
-      <AppSidebar />
-      <SidebarInset>
-        {/* Header with sidebar trigger */}
-        <header className="flex h-16 items-center gap-2 px-4">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">{<Header />}</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </header>
+    {/* Pass setActivePage to Sidebar */}
+    <AppSidebar />
+    <SidebarInset>
+      <Header />
 
         {/* Main container */}
+        <main className="flex-1 overflow-auto">
         <div className="m-6 p-6 rounded-lg shadow-sm shadow-blue-500/50">
           {/* Top counters */}
           <div className="grid grid-cols-4 gap-4 mb-6">
@@ -435,6 +422,7 @@ const Attendance = () => {
             )}
           </div>
         </div>
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );

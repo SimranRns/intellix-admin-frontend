@@ -448,7 +448,7 @@ const Team = ({ teacherData }) => {
       <SidebarInset>
         <Header />
         <main className="flex-1 overflow-auto">
-          <div className="w-full  shadow-md shadow-blue-300/30 rounded-lg flex flex-col sm:flex-row items-center justify-between px-4 sm:px-8 py-4 mt-6 space-y-4 sm:space-y-0">
+          <div className="w-full  shadow-md shadow-blue-300/30 rounded-lg flex flex-col sm:flex-row items-center justify-between px-4 sm:px-8 py-4 space-y-4 sm:space-y-0">
             <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full sm:max-w-md">
               <Search size={18} className="text-gray-500" />
               <input

@@ -58,7 +58,7 @@ const DepartmentAccess = () => {
         <SidebarInset>
           <Header />
           <main className="flex-1 overflow-auto">
-            <div className="p-10">
+            <div className="p-6">
               <Button
                 onClick={goBack}
                 className=" hover:bg-blue-500 hover:text-white flex items-center gap-3 px-6 py-4 mb-8 rounded-lg shadow-md transition duration-300"
