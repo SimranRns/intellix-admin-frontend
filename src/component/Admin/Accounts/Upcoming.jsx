@@ -51,10 +51,10 @@ const Upcoming = () => {
                                 className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm flex items-center gap-2"
                                 onClick={goBack}
                             >
-                                <ArrowLeft size={18} />
-                                <span className="hidden md:inline">Back to Account</span>
+                                <ArrowLeft size={18} />Back to Student Account
+                                <span className="hidden md:inline"></span>
                             </Button>
-                            <span className="text-white font-bold px-4 py-2 rounded-md text-sm flex items-center gap-2">Upcoming Batches</span>
+                            <span className="font-bold px-4 py-2 rounded-md text-sm flex items-center gap-2">Upcoming Batches</span>
                         </div>
 
                         {/* Search Bar */}

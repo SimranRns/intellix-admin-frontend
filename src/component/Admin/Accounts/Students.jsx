@@ -69,7 +69,7 @@ const Students = () => {
       </div>
 
       {/* 3 Cards Below in a Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-8xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-8xl">
         {cardData.map((card, index) => (
           <div key={index} className="w-full">
             <Card className="w-full p-4 shadow-lg rounded-2xl bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700">

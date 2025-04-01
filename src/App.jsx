@@ -37,6 +37,7 @@ import Received from "./component/Admin/Accounts/Received";
 import Upcoming from "./component/Admin/Accounts/Upcoming";
 import Missed from "./component/Admin/Accounts/Missed";
 import MarksheetForm from "./component/Admin/Student/Marksheet/MarksheetForm";
+import Department_list_Employee from "./component/Admin/Accounts/Department_list_Employee";
 // import { Route } from "lucide-react";
 const App = () => {
   const [loading, setLoading] = useState(true);
@@ -45,7 +46,7 @@ const App = () => {
     // Simulating site load time
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 100);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, []);
@@ -107,6 +108,7 @@ const App = () => {
           <Route path="/Received" element={<Received/>} />
           <Route path="/Upcoming" element={<Upcoming/>} />
           <Route path="/Missed" element={<Missed/>} />
+          <Route path="/Department_list_Employee" element={<Department_list_Employee/>} />
 
         </Routes>
       </BrowserRouter>
