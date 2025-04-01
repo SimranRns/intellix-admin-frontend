@@ -34,26 +34,8 @@ const Payment_History = () => {
         <div className="min-h-screen flex">
             <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
                 <AppSidebar />
-                <SidebarInset>
-                    <header className="flex h-16 items-center gap-4 px-6 shadow-md rounded-b-lg">
-                        <SidebarTrigger className="-ml-1" />
-                        <Separator orientation="vertical" className="mr-2 h-6" />
-                        <Breadcrumb>
-                            <BreadcrumbList>
-                                <BreadcrumbItem className="hidden md:block">
-                                    <BreadcrumbLink href="#">
-                                        <Header />
-                                    </BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator className="hidden md:block" />
-                                <BreadcrumbItem>
-                                    <BreadcrumbPage className="text-lg font-semibold text-gray-700">
-                                        Payment History
-                                    </BreadcrumbPage>
-                                </BreadcrumbItem>
-                            </BreadcrumbList>
-                        </Breadcrumb>
-                    </header>
+                       <SidebarInset>
+                         <Header/>
 
                     <div className='p-6'>
                         <Tabs defaultValue="missed" className="w-full">

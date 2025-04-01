@@ -138,24 +138,10 @@ const StudentHeader = () => {
   );
 
   return (
-    <SidebarProvider style={{ "--sidebar-width": "19rem" }}>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 items-center gap-2 px-4">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">{<Header />}</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </header>
+    <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
+      <AppSidebar/>
+        <SidebarInset>
+          <Header />
 
         <div className=" min-h-screen flex flex-col items-center p-4">
 
@@ -179,11 +165,11 @@ const StudentHeader = () => {
                 className="bg-[#2563eb] text-white font-semibold px-5 py-2
                rounded-lg hover:bg-[#3d3690] hover:opacity-90">
                 Ex-Student</Button>
-              <Button
+              <Button onClick={()=>navigate("/Marksheet")}
                 className="bg-[#2563eb] text-white font-semibold px-5 py-2
                rounded-lg hover:bg-[#3d3690] hover:opacity-90">
                 Marksheet</Button>
-              <Button
+              <Button onClick={() => navigate("/StudentUploadModal")}
                 className="bg-[#2563eb] text-white font-semibold px-5 py-2
                rounded-lg hover:bg-[#3d3690] hover:opacity-90">
                 + Add Excel</Button>
