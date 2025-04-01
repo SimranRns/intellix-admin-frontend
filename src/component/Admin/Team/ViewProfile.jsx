@@ -22,6 +22,8 @@ import {
   BreadcrumbSeparator,
 } from "../../src/components/ui/breadcrumb";
 import Header from "../Dashboard/Header";
+import { Button } from "@headlessui/react";
+import { ArrowLeft } from "lucide-react";
 
 const ViewProfile = () => {
   const [formdata] = useState({
@@ -46,16 +48,24 @@ const ViewProfile = () => {
     ],
     job: [{ enrol: "233455", salary: "20000" }],
   });
-
+  const goback = () => {
+    window.history.back();
+  };
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       {/* Pass setActivePage to Sidebar */}
       <AppSidebar />
       <SidebarInset>
         <Header />
+        <Button
+          onClick={goback}
+          className="w-20 shadow-md rounded-lg flex flex-wrap sm:flex-nowrap items-center justify-between px-4 sm:px-8 py-4 text-white bg-indigo-600 hover:bg-indigo-700  gap-3"
+        >
+          <ArrowLeft className="w-5 h-5" /> 
+        </Button>
         <main className="flex-1 overflow-auto">
           <div className="p-4 sm:p-6 w-full h-screen flex flex-col items-center">
-            <Card className="w-full max-w-4xl shadow-md border rounded-xl bg-white">
+            <Card className="w-full max-w-4xl shadow-md border rounded-xl ">
               <div className="relative w-full h-40 bg-indigo-700 rounded-t-xl flex items-center px-6">
                 <Avatar className="w-24 h-24 border-4 border-white shadow-lg absolute -bottom-12 left-6">
                   <AvatarImage src={formdata.img} />
@@ -81,10 +91,10 @@ const ViewProfile = () => {
                           {label === "Joining Date"
                             ? formdata.join_date
                             : label === "D.O.B"
-                              ? formdata.dob
-                              : label === "Phone"
-                                ? formdata.phone
-                                : formdata.email}
+                            ? formdata.dob
+                            : label === "Phone"
+                            ? formdata.phone
+                            : formdata.email}
                         </p>
                       </div>
                     )
@@ -96,10 +106,7 @@ const ViewProfile = () => {
                 <h3 className="text-xl font-semibold mb-2">Education</h3>
                 <div className="space-y-2">
                   {formdata.education.map((edu, index) => (
-                    <div
-                      key={index}
-                      className="border rounded-lg p-3 bg-gray-100"
-                    >
+                    <div key={index} className="border rounded-lg p-3 ">
                       <p className="font-medium">{edu.degree}</p>
                       <p className="text-gray-600">{edu.year}</p>
                     </div>
@@ -110,7 +117,7 @@ const ViewProfile = () => {
 
                 <h3 className="text-xl font-semibold mb-2">Address</h3>
                 {formdata.address.map((ads, index) => (
-                  <div key={index} className="p-3 border rounded-lg bg-gray-100">
+                  <div key={index} className="p-3 border rounded-lg ">
                     <p className="font-medium">State: {ads.state}</p>
                     <p className="font-semibold">City: {ads.city}</p>
                     <p className="font-semibold">Zip Code: {ads.zip_code}</p>
@@ -122,7 +129,7 @@ const ViewProfile = () => {
 
                 <h3 className="text-xl font-semibold mb-2">School</h3>
                 {formdata.job.map((job, index) => (
-                  <div key={index} className="p-3 border rounded-lg bg-gray-100">
+                  <div key={index} className="p-3 border rounded-lg ">
                     <p className="font-medium">Enrollment ID: {job.enrol}</p>
                     <p className="font-semibold">Salary: {job.salary}</p>
                   </div>
