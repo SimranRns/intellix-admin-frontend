@@ -36,6 +36,7 @@ import logo from './assets/Image/intellix.png'
 import Received from "./component/Admin/Accounts/Received";
 import Upcoming from "./component/Admin/Accounts/Upcoming";
 import Missed from "./component/Admin/Accounts/Missed";
+import MarksheetForm from "./component/Admin/Student/Marksheet/MarksheetForm";
 // import { Route } from "lucide-react";
 const App = () => {
   const [loading, setLoading] = useState(true);
@@ -95,6 +96,7 @@ const App = () => {
           <Route path="/view/profile" element={<Profile />} />
           <Route path="/student-payment-history" element={<Payment_History />} />
           <Route path="/StudentUploadModal" element={<StudentUploadModal/>} />
+          <Route path="/Marksheet" element={<MarksheetForm/>} />
 
           <Route path="/View-Profile" element={<ViewProfile />} />
           <Route path="/View_User" element={<View_User />} />

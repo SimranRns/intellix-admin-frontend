@@ -19,23 +19,9 @@ const Profile = () => {
 
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 items-center gap-2 px-4">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">{<Header />}</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </header>
+       <AppSidebar />
+              <SidebarInset>
+                <Header />
 
         <div className="w-[100%] mx-auto p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full p-6">
