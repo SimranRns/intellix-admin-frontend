@@ -101,8 +101,8 @@ const MyLeads = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50 w-full">
-      <aside className="md:w-64 w-full p-6 shadow-md flex flex-col gap-4">
+    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50 w-full ">
+      {/* <aside className="md:w-64 w-full p-6 shadow-md flex flex-col gap-4 ">
         <Button
           onClick={goBack}
           className="flex items-center gap-2 bg-white hover:bg-white text-black border border-gray-300"
@@ -155,9 +155,53 @@ const MyLeads = () => {
             </Button>
           </>
         )}
-      </aside>
+      </aside> */}
+<aside className="md:w-64 w-full p-6 shadow-md flex flex-col gap-4">
+      <Button
+        onClick={goBack}
+        className="flex items-center gap-2 bg-white hover:bg-white text-black border border-gray-300"
+      >
+        <ArrowLeft className="w-5 h-5" /> My Leads
+      </Button>
 
-      <div className="bg-gray-50 min-h-screen  w-full">
+      <Button
+        className={`w-full text-white mb-4 mt-3 ${tab === "tab1" ? "bg-blue-600" : ""}`}
+        onClick={() => handleTabClick("tab1")}
+      >
+        All Leads
+      </Button>
+
+      {/* Agar "All Leads" click kiya ho toh sab dikhao, warna sirf active tab */}
+      {(showFilters || tab !== "tab1") && (
+        <>
+          <Button
+            className={`w-full text-white mt-2 ${tab === "tab2" ? "bg-blue-600" : ""}`}
+            onClick={() => handleTabClick("tab2")}
+          >
+            Hot
+          </Button>
+          <Button
+            className={`w-full text-white mt-2 ${tab === "tab3" ? "bg-blue-600" : ""}`}
+            onClick={() => handleTabClick("tab3")}
+          >
+            In Conversation
+          </Button>
+          <Button
+            className={`w-full text-white mt-2 ${tab === "tab4" ? "bg-blue-600" : ""}`}
+            onClick={() => handleTabClick("tab4")}
+          >
+            Dropped
+          </Button>
+          <Button
+            className={`w-full text-white mt-2 ${tab === "tab5" ? "bg-blue-600" : ""}`}
+            onClick={() => handleTabClick("tab5")}
+          >
+            Converted
+          </Button>
+        </>
+      )}
+    </aside>
+      <div className="bg-gray-50 min-h-screen  w-full p-4">
         <Card className="p-4 mb-4 shadow-sm w-full">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-4 items-center w-full">
             <Input type="date" className="w-full md:col-span-2 lg:col-span-2" />

@@ -15,7 +15,7 @@ import { Input } from '../../component/src/components/ui/input';
 import { Label } from '../../component/src/components/ui/label';
 import { Checkbox } from '../../component/src/components/ui/checkbox';
 import { Button } from '../src/components/ui/Button';
-import { Navigate, useNavigate } from 'react-router';
+import {  useNavigate } from 'react-router';
 const FormSchema = z.object({
   Code: z.string().min(1, "Code is required"),
 });
