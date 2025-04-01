@@ -44,7 +44,7 @@ const App = () => {
     // Simulating site load time
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 5000);
+    }, 300);
 
     return () => clearTimeout(timer);
   }, []);
