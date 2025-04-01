@@ -52,9 +52,9 @@ const Received = () => {
                                 onClick={goBack}
                             >
                                 <ArrowLeft size={18} />
-                                <span className="hidden md:inline">Back to Account</span>
+                                <span className="hidden md:inline">Back to Student Account</span>
                             </Button>
-                            <span className="text-white font-bold px-4 py-2 rounded-md text-sm flex items-center gap-2">Received Batches</span>
+                            <span className="font-bold px-4 py-2 rounded-md text-sm flex items-center gap-2">Received Batches</span>
                         </div>
 
                         {/* Search Bar */}

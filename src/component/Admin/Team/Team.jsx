@@ -166,6 +166,39 @@ const Teachers = [
     ],
     image: "https://github.com/shadcn.png",
   },
+  {
+    id: 1,
+    name: "Munaroh Steffani",
+    post: "Math Teacher",
+    subjects: [
+      { subject: "Joined 01-01-2024", icon: Clock },
+      { subject: "Assigned 13", icon: Logs },
+      { subject: "Completed 3", icon: Logs },
+    ],
+    image: "https://github.com/shadcn.png",
+  },
+  {
+    id: 1,
+    name: "Munaroh Steffani",
+    post: "Math Teacher",
+    subjects: [
+      { subject: "Joined 01-01-2024", icon: Clock },
+      { subject: "Assigned 13", icon: Logs },
+      { subject: "Completed 3", icon: Logs },
+    ],
+    image: "https://github.com/shadcn.png",
+  },
+  {
+    id: 1,
+    name: "Munaroh Steffani",
+    post: "Math Teacher",
+    subjects: [
+      { subject: "Joined 01-01-2024", icon: Clock },
+      { subject: "Assigned 13", icon: Logs },
+      { subject: "Completed 3", icon: Logs },
+    ],
+    image: "https://github.com/shadcn.png",
+  },
 ];
 
 import {

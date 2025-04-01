@@ -44,7 +44,7 @@ const Header = () => {
             {/* Pass setActivePage to Sidebar */}
             {/* <AppSidebar setActivePage={setActivePage} /> */}
           
-                <header className="flex sticky top-0 shrink-0 gap-2 border-b h-16 bg-white dark:bg-gray-900 shadow-md items-center px-6">
+                <header className="flex sticky top-0 shrink-0 gap-2 border-b z-[50] h-16 bg-white dark:bg-gray-900 shadow-md items-center px-6">
                     <SidebarTrigger className="-ml-1" />
                     <div className="flex w-full items-center justify-between">
                         {/* Dynamic Page Title */}
