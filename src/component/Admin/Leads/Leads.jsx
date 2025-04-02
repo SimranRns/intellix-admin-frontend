@@ -71,6 +71,7 @@ import {
 import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { ChevronRight } from "lucide-react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { ScrollArea } from "../../src/components/ui/scroll-area";
 
 const Leads = () => {
   const rowsPerPage = 5; // Number of rows per page
@@ -169,75 +170,78 @@ const Leads = () => {
         <SidebarInset>
           <Header />
 
-          <div className="flex flex-col md:flex-row items-center gap-6 p-6  rounded-lg">
-            {/* Lead Generation Chart */}
-            <Card className="w-full sm:w-[280px] md:w-[320px] flex-shrink-0 flex flex-col items-center p-4">
-              <div className="flex-1 w-full">
-                <CardTitle className="text-left font-semibold">
-                  Highest Source of Lead Generation
-                </CardTitle>
-                <CardHeader>
-                  <CardTitle className="text-left text-lg font-semibold">
-                    Total Leads: 10
+          <ScrollArea className="w-full overflow-y-auto">
+            <div className="flex flex-col md:flex-row items-center gap-6 p-4 rounded-lg w-full">
+              <Card className="w-full sm:w-[280px] md:w-[320px] flex-shrink-0 flex flex-col items-center p-4">
+                <div className="flex-1 w-full">
+                  <CardTitle className="text-center font-semibold">
+                    Highest Source of Lead Generation
                   </CardTitle>
-                </CardHeader>
+                  <CardHeader>
+                    <CardTitle className="text-center text-lg font-semibold">
+                      Total Leads: 10
+                    </CardTitle>
+                  </CardHeader>
+                </div>
+                <div className="h-20 w-40 flex justify-center items-center">
+                  <PieChart width={120} height={120}>
+                    <Pie
+                      data={data}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={50}
+                      innerRadius={20}
+                      dataKey="value"
+                      label={false}
+                    >
+                      {data.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </div>
+              </Card>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 w-full">
+                {[
+                  {
+                    title: "Hot Leads",
+                    value: "30.00",
+                    change: "+5",
+                    up: true,
+                  },
+                  {
+                    title: "Converted Leads",
+                    value: "10.00",
+                    change: "-2",
+                    up: false,
+                  },
+                  {
+                    title: "InConversation Leads",
+                    value: "50.00",
+                    change: "+8",
+                    up: true,
+                  },
+                  {
+                    title: "Dropped Leads",
+                    value: "10.00",
+                    change: "-3",
+                    up: false,
+                  },
+                ].map((stat, index) => (
+                  <Card key={index} className="w-full p-4 rounded-lg shadow-md">
+                    <CardContent className="flex flex-col items-center pt-4 text-center">
+                      <span className="text-sm">{stat.title}</span>
+                      <span className="text-2xl font-bold">{stat.value}</span>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-              <div className="h-20 w-40 flex justify-center items-center">
-                <PieChart width={120} height={120}>
-                  <Pie
-                    data={data}
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={50}
-                    innerRadius={20}
-                    dataKey="value"
-                    label={false}
-                  >
-                    {data.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </div>
-            </Card>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full ">
-              {[
-                { title: "Hot Leads", value: "30.00", change: "+5", up: true },
-                {
-                  title: "Converted Leads",
-                  value: "10.00",
-                  change: "-2",
-                  up: false,
-                },
-                {
-                  title: "InConversation Leads",
-                  value: "50.00",
-                  change: "+8",
-                  up: true,
-                },
-                {
-                  title: "Dropped Leads",
-                  value: "10.00",
-                  change: "-3",
-                  up: false,
-                },
-              ].map((stat, index) => (
-                <Card
-                  key={index}
-                  className="w-full md:w-44  p-4 rounded-lg shadow-md "
-                >
-                  <CardContent className="flex flex-col align-center pt-9 text-center">
-                    <span className="text-sm ">{stat.title}</span>
-                    <span className="text-2xl font-bold">{stat.value}</span>
-                  </CardContent>
-                </Card>
-              ))}
             </div>
-          </div>
+          </ScrollArea>
 
-          <div className="p-6 rounded-lg shadow-md max-w-6xl mx-auto">
-            <div className="flex flex-wrap justify-between gap-2 mb-4">
+          <div className="p-6 rounded-lg shadow-md max-w-8xl mx-auto w-full ">
+            <div className="flex flex-wrap justify-between gap-2 mb-4 w-full">
               <Input placeholder="Search Leads..." className="w-1/4" />
               <Button className="bg-blue-600 text-white ">Search</Button>
               <DropdownMenu>
@@ -258,8 +262,8 @@ const Leads = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
               <DropdownMenu>
-                
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">{status}</Button>
                 </DropdownMenuTrigger>
@@ -278,63 +282,64 @@ const Leads = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
               <Button variant="outline">
                 <DownloadIcon className="h-4 w-4 mr-2" /> Export to Excel
               </Button>
               <Input type="date" className="w-60 md:col-span-2 lg:col-span-2" />
+
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="outline" className="bg-blue-600 text-white">
+                  <Button className="bg-blue-600 text-white">
                     <PlusIcon className="mr-1" /> Add Leads
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[525px]">
                   <DialogHeader>
-                    <DialogTitle>Add Leads </DialogTitle>
+                    <DialogTitle>Add Leads</DialogTitle>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-4 items-center gap-4">
                       <Input
                         id="name"
-                        value="Enter Name"
+                        placeholder="Enter Name"
                         className="col-span-4"
                       />
                       <Input
-                        id="name"
-                        value="Enter Email"
+                        id="email"
+                        placeholder="Enter Email"
                         className="col-span-4"
                       />
                       <Input
-                        id="name"
-                        value="Enter Address"
+                        id="address"
+                        placeholder="Enter Address"
                         className="col-span-4"
                       />
                       <Input
-                        id="name"
-                        value="Enter Contect"
+                        id="contact"
+                        placeholder="Enter Contact"
                         className="col-span-4"
                       />
+
                       <Select>
-                        <SelectTrigger>
-                          <SelectValue
-                            className="span-10"
-                            placeholder="Select Categories"
-                          />
+                        <SelectTrigger className="col-span-4">
+                          <SelectValue placeholder="Select Categories" />
                         </SelectTrigger>
                         <SelectContent position="popper">
-                          <SelectItem value="next">Nextjs</SelectItem>
+                          <SelectItem value="next">Next.js</SelectItem>
                           <SelectItem value="sveltekit">SvelteKit</SelectItem>
                           <SelectItem value="astro">Astro</SelectItem>
-                          <SelectItem value="nuxt">Nuxtjs</SelectItem>
+                          <SelectItem value="nuxt">Nuxt.js</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type="submit">submit</Button>
+                    <Button type="submit">Submit</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
+
               <Dialog>
                 <DialogTrigger asChild>
                   <Button variant=" " className="bg-blue-600 text-white">
@@ -374,7 +379,7 @@ const Leads = () => {
             </div>
 
             <div className="w-full h-50 overflow-y-auto border rounded-md">
-              <Table className="w-full table-auto">
+              <Table className="w-full">
                 <TableHeader className="sticky top-0  shadow-md">
                   <TableRow>
                     <TableHead>Name</TableHead>
@@ -409,7 +414,7 @@ const Leads = () => {
                               <ChevronRight size={16} />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
+                          <DropdownMenuContent align="end" className="">
                             <DropdownMenuItem asChild>
                               <Dialog>
                                 <DialogTrigger asChild>
@@ -447,10 +452,7 @@ const Leads = () => {
                             <DropdownMenuItem asChild>
                               <Dialog>
                                 <DialogTrigger asChild>
-                                  <Button
-                                    variant="outline"
-                                    className="dark:bg-gray-800 dark:text-white dark:border-gray-600"
-                                  >
+                                  <Button variant="outline">
                                     Assign Leads
                                   </Button>
                                 </DialogTrigger>
