@@ -38,6 +38,10 @@ import Upcoming from "./component/Admin/Accounts/Upcoming";
 import Missed from "./component/Admin/Accounts/Missed";
 import MarksheetForm from "./component/Admin/Student/Marksheet/MarksheetForm";
 import Department_list_Employee from "./component/Admin/Accounts/Department_list_Employee";
+import Batches from "./component/Admin/Academics/Academics_data/Batches";
+import Courses from "./component/Admin/Academics/Academics_data/Courses";
+import Sessions from "./component/Admin/Academics/Academics_data/Sessions";
+import Subjects from "./component/Admin/Academics/Academics_data/Subjects";
 // import { Route } from "lucide-react";
 const App = () => {
   const [loading, setLoading] = useState(true);
@@ -109,6 +113,10 @@ const App = () => {
           <Route path="/Upcoming" element={<Upcoming/>} />
           <Route path="/Missed" element={<Missed/>} />
           <Route path="/Department_list_Employee" element={<Department_list_Employee/>} />
+          <Route path="/Batches" element={<Batches/>} />
+          <Route path="/Courses" element={<Courses/>} />
+          <Route path="/Sessions" element={<Sessions/>} />
+          <Route path="/Subjects" element={<Subjects/>} />
 
         </Routes>
       </BrowserRouter>

@@ -23,21 +23,21 @@ const Academics = () => {
           title: "Sessions", 
           value: 42, 
           icon: <CalendarCheck className="w-6 h-6 text-green-600" />, 
-          link: "/sessions",
+          link: "/Sessions",
           Total: "Total Sessions" 
         },
         { 
           title: "Subjects", 
           value: 35, 
           icon: <BookOpen className="w-6 h-6 text-yellow-600" />, 
-          link: "/subjects",
+          link: "/Subjects",
           Total: "Total Subjects Active" 
         },
         { 
-          title: "Batches / Sections", 
+          title: "Batches / Section", 
           value: 56, 
           icon: <Users className="w-6 h-6 text-red-600" />, 
-          link: "/batches",
+          link: "/Batches",
           Total: "Total Batches" 
         }
       ];
