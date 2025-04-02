@@ -57,12 +57,15 @@ const ViewProfile = () => {
       <AppSidebar />
       <SidebarInset>
         <Header />
-        <Button
-          onClick={goback}
-          className="w-20 shadow-md rounded-lg flex flex-wrap sm:flex-nowrap items-center justify-between px-4 sm:px-8 py-4 text-white bg-indigo-600 hover:bg-indigo-700  gap-3"
-        >
-          <ArrowLeft className="w-5 h-5" /> 
-        </Button>
+        <div className="p-6">
+          <Button
+            className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm flex items-center gap-2"
+            onClick={goback}
+          >
+            <ArrowLeft size={18} />
+            <span className="hidden md:inline">Back to Team</span>
+          </Button>{" "}
+        </div>
         <main className="flex-1 overflow-auto">
           <div className="p-4 sm:p-6 w-full h-screen flex flex-col items-center">
             <Card className="w-full max-w-4xl shadow-md border rounded-xl ">

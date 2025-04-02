@@ -110,6 +110,7 @@ const App = () => {
           <Route path="/Missed" element={<Missed/>} />
           <Route path="/Department_list_Employee" element={<Department_list_Employee/>} />
 
+
         </Routes>
       </BrowserRouter>
     </div>
