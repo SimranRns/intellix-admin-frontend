@@ -254,7 +254,7 @@ export default function StudentUploadModal() {
             </div>
 
             {/* Submit Button */}
-            <Button type="submit" className="w-60 h-12 ml-[160px] bg-blue-600 text-white font-semibold py-3 text-lg rounded-lg">
+            <Button type="submit"  className="w-60 h-12  ml-[160px] bg-blue-600 text-white font-semibold py-3 text-lg rounded-lg">
               Add Students
             </Button>
           </form>
