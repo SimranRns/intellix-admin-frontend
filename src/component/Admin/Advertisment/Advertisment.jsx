@@ -21,6 +21,7 @@ import {
 import { Input } from "../../src/components/ui/input";
 import Add_school_img from "./Add_school_img";
 import Add_popular_course from "./Add_popular_course";
+import Notification from "./Notification";
 
 const Advertisment = () => {
   const [images, setImages] = useState([]); // Stores confirmed images
@@ -72,7 +73,7 @@ const Advertisment = () => {
           <div className="w-full">
             <Tabs defaultValue="tab1" className="m-5">
               <div className="overflow-x-auto md:overflow-hidden shadow-sm shadow-blue-300/50">
-                <TabsList className="flex bg-white-500 md:grid md:grid-cols-4 gap-3 whitespace-nowrap">
+                <TabsList className="flex bg-white-500 md:grid md:grid-cols-4 gap-8 whitespace-nowrap">
                   <TabsTrigger
                     value="tab1"
                     className="data-[state=active]:bg-blue-500 data-[state=active]:text-white"
@@ -147,8 +148,8 @@ const Advertisment = () => {
                           <Button
                             onClick={() => {
                               setIsDialogOpen(false);
-                              setTempImages([]); 
-                              setErrors({}); 
+                              setTempImages([]);
+                              setErrors({});
                             }}
                           >
                             Cancel
@@ -224,7 +225,7 @@ const Advertisment = () => {
                 <Add_popular_course />
               </TabsContent>
               <TabsContent value="tab4" className="p-4 text-left">
-                <p className="font-semibold text-xl">School Info 5 Content</p>
+                <Notification />
               </TabsContent>
             </Tabs>
           </div>
