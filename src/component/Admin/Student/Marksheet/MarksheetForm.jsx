@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import Header from '../../Dashboard/Header';
 import { SidebarInset, SidebarProvider } from '../../../src/components/ui/sidebar';
 import AppSidebar from '../../../src/components/ui/app-sidebar';
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router';
+import { Button } from '../../../src/components/ui/button';
 
 const MarksheetForm = () => {
   const [marksheetName, setMarksheetName] = useState('');
@@ -23,14 +26,26 @@ const MarksheetForm = () => {
 
   // Common Input Class
   const inputClass = "w-full border-2  border-gray-400 rounded-xl h-12 px-3 bg-transparent";
+  const navigate = useNavigate();
+
 
   return (
     <>
-      <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
+      {/* <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
         <AppSidebar />
         <SidebarInset>
           <Header />
-          <div className="w-[60vw] mx-auto p-4">
+         */}
+            <div>
+            <Button
+                            className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm flex items-center gap-2 m-2 mt-3"
+                            onClick={() => navigate(-1)}
+                          >
+                            <ArrowLeft size={18} />
+                            <span className="hidden md:inline">Back to student</span>
+                          </Button>
+            </div>
+          <div className="w-[60vw] h-[60vh] mx-auto p-4">
             <h2 className="text-2xl text-center font-semibold mb-4">Marksheet</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
 
@@ -76,9 +91,9 @@ const MarksheetForm = () => {
                   required
                 >
                   <option className='text-black' value="">Select Batch</option>
-                  <option  className='text-black'value="batch1">Batch 1</option>
+                  <option className='text-black' value="batch1">Batch 1</option>
                   <option className='text-black' value="batch2">Batch 2</option>
-                  <option  className='text-black'value="batch3">Batch 3</option>
+                  <option className='text-black' value="batch3">Batch 3</option>
                 </select>
               </div>
 
@@ -92,7 +107,7 @@ const MarksheetForm = () => {
                   className={inputClass}
                   required
                 >
-                  <option  className='text-black'value="">Select Student</option>
+                  <option className='text-black' value="">Select Student</option>
                   <option className='text-black' value="student1">Student 1</option>
                   <option className='text-black' value="student2">Student 2</option>
                   <option className='text-black' value="student3">Student 3</option>
@@ -111,7 +126,7 @@ const MarksheetForm = () => {
                 >
                   <option className='text-black' value="">Select Exam</option>
                   <option className='text-black' value="exam1">Exam 1</option>
-                  <option  className='text-black'value="exam2">Exam 2</option>
+                  <option className='text-black' value="exam2">Exam 2</option>
                   <option className='text-black' value="exam3">Exam 3</option>
                 </select>
               </div>
@@ -128,8 +143,8 @@ const MarksheetForm = () => {
 
             </form>
           </div>
-        </SidebarInset>
-      </SidebarProvider>
+          {/* </SidebarInset>
+        </SidebarProvider> */}
     </>
   );
 };

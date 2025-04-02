@@ -16,25 +16,25 @@ const addSchema = z.object({
     .string()
     .min(3, "Name must be at least 3 characters long")
     .regex(/^[A-Za-z\s]+$/, "Only alphabets (A-Z, a-z) and spaces are allowed"),
-  
+
   school: z
     .string()
     .min(3, "School name must be at least 3 characters long")
     .regex(/^[A-Za-z\s]+$/, "Only alphabets are allowed"),
-  
+
   email: z.string().email("Enter a valid email"),
-  
+
   gender: z.string().min(1, "Gender selection is required"),
-  
+
   contact: z
     .string()
     .length(10, "Contact number must be exactly 10 digits")
     .regex(/^[0-9]+$/, "Only numbers are allowed"),
-  
+
   category: z.string().min(1, "Category selection is required"),
-  
+
   serialNo: z.string().min(1, "Serial number is required"),
-  
+
   dob: z.string().min(1, "Date of Birth is required"),
 });
 
@@ -72,7 +72,7 @@ const AddStudentModal = () => {
 
   const onSubmit = (data) => {
     console.log("Validation successful:", data);
-    navigate('/ProceedModal'); 
+    navigate('/ProceedModal');
   };
 
   return (
@@ -85,7 +85,8 @@ const AddStudentModal = () => {
       />
 
       <Dialog open={isModalOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[1000px] z-[99999] bg-white dark:bg-black text-black dark:text-white">
+        <DialogContent className="sm:max-w-[1000px] z-[99999] bg-white dark:bg-black text-black dark:text-white" onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}>
 
           <DialogHeader>
             <DialogTitle className="text-3xl text-center">Add Student Details</DialogTitle>
@@ -127,7 +128,7 @@ const AddStudentModal = () => {
 
             <div>
               <Label className="block font-semibold text-lg sm:text-xl mb-4">Enter Contact No. *</Label>
-              <Input {...register("contact")} type="text" className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg" placeholder="Phone number" />
+              <Input {...register("contact")} type="number" className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg" placeholder="Phone number" />
               {errors.contact && <p className="text-red-500">{errors.contact.message}</p>}
             </div>
 
@@ -149,7 +150,7 @@ const AddStudentModal = () => {
 
             <div>
               <Label className="block font-semibold text-lg sm:text-xl mb-4">Enter Serial No. *</Label>
-              <Input {...register("serialNo")} type="text" className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg" placeholder="Serial number" />
+              <Input {...register("serialNo")} type="number" className="w-full border-gray-300 rounded-xl p-3 sm:p-5 shadow-lg" placeholder="Serial number" />
               {errors.serialNo && <p className="text-red-500">{errors.serialNo.message}</p>}
             </div>
 
