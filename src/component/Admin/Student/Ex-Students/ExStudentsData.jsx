@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import './Student.css';
+import React, { useState } from 'react'
+
 import {
   Search,
   ChevronDown,
@@ -16,9 +16,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../src/components/ui/table";
+} from "../../../src/components/ui/table";
 
-import { DropdownMenuContent, DropdownMenuTrigger } from "../../src/components/ui/dropdown-menu";
+import { DropdownMenuContent, DropdownMenuTrigger } from "../../../src/components/ui/dropdown-menu";
 
 
 import {
@@ -29,14 +29,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
 
-} from "../../src/components/ui/dropdown-menu"
+} from "../../../src/components/ui/dropdown-menu"
 
 
-import { Button } from "../../src/components/ui/Button";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "../../src/components/ui/sidebar";
+import { Button } from "../../../src/components/ui/Button";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "../../../src/components/ui/sidebar";
 
 import { Separator } from "@radix-ui/react-separator";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../../src/components/ui/breadcrumb";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../../../src/components/ui/breadcrumb";
 
 
 import { useNavigate } from "react-router-dom";
@@ -49,11 +49,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../src/components/ui/dialog"
-import { Input } from "../../src/components/ui/input"
-import { Label } from "../../src/components/ui/label"
-import Header from "../Dashboard/Header";
-import AppSidebar from "../../src/components/ui/app-sidebar";
+} from "../../../src/components/ui/dialog"
+import { Input } from "../../../src/components/ui/input"
+import { Label } from "../../../src/components/ui/label"
+
+import Header from '../../Dashboard/Header';
+import AppSidebar from '../../../src/components/ui/app-sidebar';
 
 
 const studentGroups = [
@@ -124,24 +125,24 @@ const studentGroups = [
 ];
 
 const PAGE_SIZE = 5;
-
-const StudentHeader = () => {
-
-  const navigate = useNavigate();
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [deletedialog, setdeletedialog] = useState(false);
-
-  let totalPages = Math.ceil(studentGroups.length / PAGE_SIZE);
-
-  const displayedStudents = studentGroups.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE
-  );
-
-
+const ExStudentsData = () => {
+    const navigate = useNavigate();
+  
+    const [currentPage, setCurrentPage] = useState(1);
+    const [deletedialog, setdeletedialog] = useState(false);
+  
+    let totalPages = Math.ceil(studentGroups.length / PAGE_SIZE);
+  
+    const displayedStudents = studentGroups.slice(
+      (currentPage - 1) * PAGE_SIZE,
+      currentPage * PAGE_SIZE
+    );
+    const goback = () => {
+      window.history.back();
+    };
   return (
-    <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
+    <div>
+       <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       <AppSidebar />
       <SidebarInset>
         <Header />
@@ -149,6 +150,15 @@ const StudentHeader = () => {
         <div className=" min-h-screen flex flex-col">
 
           <div className="w-full  shadow-md rounded-lg flex flex-col md:flex-row items-center justify-between px-4 md:px-8 py-4 mt-5">
+           
+
+            <div className="flex items-center space-x-1 sm:space-x-3 mt-3 md:mt-0">
+              <Button onClick={goback} 
+                className="bg-[#2563eb] text-white font-semibold px-1 sm:px-5 py-2
+               rounded-lg hover:bg-[#3d3690] hover:opacity-90">
+                Back to Students</Button> 
+
+            </div>
             <div className="flex items-center border border-gray-300 rounded-lg px-3 py-2 w-full max-w-md">
               <Search size={18} />
               <input
@@ -157,27 +167,7 @@ const StudentHeader = () => {
                 placeholder="Search here..."
                 className="ml-2"
               />
-            </div>
-
-            <div className="flex items-center space-x-1 sm:space-x-3 mt-3 md:mt-0">
-              <Button  onClick={() => navigate("/ExStudents")}
-                className="bg-[#2563eb] text-white font-semibold px-1 sm:px-5 py-2
-               rounded-lg hover:bg-[#3d3690] hover:opacity-90">
-                Ex-Student</Button>
-              <Button onClick={() => navigate("/Marksheet")}
-                className="bg-[#2563eb] text-white font-semibold px-1 sm:px-5 py-2
-               rounded-lg hover:bg-[#3d3690] hover:opacity-90">
-                Marksheet</Button>
-              <Button onClick={() => navigate("/StudentUploadModal")}
-                className="bg-[#2563eb] text-white font-semibold px-1 sm:px-5 py-2
-               rounded-lg hover:bg-[#3d3690] hover:opacity-90">
-                + Add Excel</Button>
-              <Button onClick={() => navigate("/add_student_model")}
-                className="bg-[#2563eb] text-white font-semibold px-1 sm:px-5 py-2
-               rounded-lg hover:bg-[#3d3690] hover:opacity-90">
-                + Add Student</Button>
-
-            </div>
+            </div>  
           </div>
 
 
@@ -226,9 +216,7 @@ const StudentHeader = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56">
                           <DropdownMenuGroup>
-                            <DropdownMenuItem onClick={() => navigate("/view/profile")}>
-                              Profile
-                            </DropdownMenuItem>
+                           
 
                             <DropdownMenuItem onClick={() => navigate("/student-payment-history")}>
                               Payment_History
@@ -239,13 +227,11 @@ const StudentHeader = () => {
                             <DropdownMenuItem>
                               View_Marksheet
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              Mark as RT
-                            </DropdownMenuItem>
+                           
                             <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                               <Dialog open={deletedialog} onOpenChange={setdeletedialog}>
                                 <DialogTrigger >
-                                  Delete
+                                  Undo Student
                                 </DialogTrigger>
                                 <DialogContent onPointerDownOutside={(e) => e.preventDefault()}
                                   onEscapeKeyDown={(e) => e.preventDefault()} className="sm:max-w-[425px]">
@@ -322,13 +308,9 @@ const StudentHeader = () => {
         </main>
       </SidebarInset>
     </SidebarProvider>
-  );
-};
+    </div>
+  )
+}
 
-export default StudentHeader;
-
-
-
-
-
+export default ExStudentsData
 
