@@ -42,6 +42,7 @@ import Batches from "./component/Admin/Academics/Academics_data/Batches";
 import Courses from "./component/Admin/Academics/Academics_data/Courses";
 import Sessions from "./component/Admin/Academics/Academics_data/Sessions";
 import Subjects from "./component/Admin/Academics/Academics_data/Subjects";
+import ThankYouCard from "./component/Admin/Dashboard/ThankYouCard";
 // import { Route } from "lucide-react";
 const App = () => {
   const [loading, setLoading] = useState(true);
@@ -110,13 +111,14 @@ const App = () => {
           <Route path="/Leads" element={<Leads />} />
           <Route path="/MyLeads" element={<MyLeads/>} />
           <Route path="/Received" element={<Received/>} />
-          <Route path="/Upcoming" element={<Upcoming/>} />
+          <Route path="/Upcoming" element={<Upcoming/>} />1
           <Route path="/Missed" element={<Missed/>} />
           <Route path="/Department_list_Employee" element={<Department_list_Employee/>} />
           <Route path="/Batches" element={<Batches/>} />
           <Route path="/Courses" element={<Courses/>} />
           <Route path="/Sessions" element={<Sessions/>} />
           <Route path="/Subjects" element={<Subjects/>} />
+          <Route path="/ThankYouCard" element={<ThankYouCard/>} />
 
 
         </Routes>

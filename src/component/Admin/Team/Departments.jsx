@@ -37,6 +37,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "../../src/components/ui/dialog";
@@ -47,6 +48,7 @@ import { Input } from "../../src/components/ui/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import ThankYouCard from "../Dashboard/ThankYouCard";
 const formSchema = z.object({
   Department: z.string().min(2, {
     message: "Department must be at least 2 characters.",
@@ -80,7 +82,7 @@ const Departments = () => {
   const [DeleteDepartments, setDeleteDepartments] = useState(false);
   const [addDepartment, setAddDepartment] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [AddConfrom, setAddConfrom] = useState(false)
 
 
   const departmentsList = [
@@ -105,10 +107,31 @@ const Departments = () => {
     },
   });
   const { handleSubmit } = form;
+  
+  const handleConfirm = async () => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
-  const handleAdddepartment = (data) => {
-    console.log("Form Submitted:", data);
+      console.log("Data Submitted Successfully!");
+
+      setAddConfrom(false);
+    } catch (error) {
+      console.error("Submission failed:", error);
+    }
   };
+  const handleAddDepartment = (data) => {
+    console.log("Form Submitted:", data);
+
+    // Reset the form fields
+    form.reset();
+
+    // Close the "Add Department" dialog
+    setAddDepartment(false);
+
+    // Open the confirmation dialog
+    setAddConfrom(true);
+  };
+
 
   const departmentsPerPage = 6;
   const totalPages = Math.ceil(departmentsList.length / departmentsPerPage);
@@ -147,7 +170,7 @@ const Departments = () => {
                     <DialogTitle className="text-center">Add Department</DialogTitle>
                   </DialogHeader>
                   <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleAdddepartment)} className="space-y-8">
+                    <form onSubmit={form.handleSubmit(handleAddDepartment)} className="space-y-8">
                       <FormField
                         control={form.control}
                         name="Department"
@@ -269,6 +292,31 @@ const Departments = () => {
             ))}
           </div>
         </main>
+
+        <Dialog open={AddConfrom} onOpenChange={setAddConfrom}>
+          <DialogContent
+            onPointerDownOutside={(e) => e.preventDefault()}
+            onEscapeKeyDown={(e) => e.preventDefault()}
+            className="w-full max-w-[90vw] sm:max-w-[400px] p-6 rounded-lg">
+            <ThankYouCard />
+            {/* Dialog Footer */}
+            <DialogFooter className="flex justify-end gap-3">
+              <Button
+                onClick={() => setAddConfrom(false)}
+                variant="outline"
+                className="w-full sm:w-auto mt-4 bg-white hover:bg-gray-200 px-5 py-2 rounded-md flex items-center  transition-all"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleConfirm} // Handle form submission & dialog close
+                className="w-full sm:w-auto mt-4 bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md flex items-center shadow-md transition-all"
+              >
+                Confirm
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         <Pagination>
           <PaginationContent>
             <PaginationItem>
