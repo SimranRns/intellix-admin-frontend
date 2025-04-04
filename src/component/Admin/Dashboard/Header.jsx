@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { LogOut, Search, Bell, User, Moon, Sun } from "lucide-react";
 import {
     Avatar, AvatarFallback, AvatarImage,
@@ -12,24 +12,27 @@ import AppSidebar from "../../src/components/ui/app-sidebar";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../src/components/ui/dialog";
 import { Button } from "../../src/components/ui/Button";
 import { useNavigate } from "react-router-dom";
+import ThemeContext from "./ThemeContext";
 
 const Header = () => {
     const [searchOpen, setSearchOpen] = useState(false);
     const [logout, setLogout] = useState(false);
-    const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
+    // const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
     const [activePage, setActivePage] = useState("Dashboard"); // Tracks active page
+
+    const { darkMode, setDarkMode } = useContext(ThemeContext);
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (darkMode) {
-            document.documentElement.classList.add("dark");
-            localStorage.setItem("theme", "dark");
-        } else {
-            document.documentElement.classList.remove("dark");
-            localStorage.setItem("theme", "light");
-        }
-    }, [darkMode]);
+    // useEffect(() => {
+    //     if (darkMode) {
+    //         document.documentElement.classList.add("dark");
+    //         localStorage.setItem("theme", "dark");
+    //     } else {
+    //         document.documentElement.classList.remove("dark");
+    //         localStorage.setItem("theme", "light");
+    //     }
+    // }, [darkMode]);
 
     useEffect(() => {
         if (logout) {
