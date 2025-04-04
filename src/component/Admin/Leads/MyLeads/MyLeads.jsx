@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button } from "../../../src/components/ui/button";
 import { ArrowLeft, ChevronRight } from "lucide-react";
 import { Card } from "../../../src/components/ui/card";
@@ -18,6 +18,7 @@ import {
   TableRow,
 } from "../../../src/components/ui/table";
 import { DownloadCloud } from "lucide-react";
+import ThemeContext from "../../Dashboard/ThemeContext";
 
 const MyLeads = () => {
   const [data, setData] = useState([
@@ -75,6 +76,7 @@ const MyLeads = () => {
 
   const [tab, setTab] = useState("tab1");
   const [showFilters, setShowFilters] = useState(false);
+  const { darkMode, setDarkMode } = useContext(ThemeContext);
 
   const goBack = () => {
     window.history.back();
@@ -101,61 +103,7 @@ const MyLeads = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50 w-full ">
-      {/* <aside className="md:w-64 w-full p-6 shadow-md flex flex-col gap-4 ">
-        <Button
-          onClick={goBack}
-          className="flex items-center gap-2 bg-white hover:bg-white text-black border border-gray-300"
-        >
-          <ArrowLeft className="w-5 h-5" /> My Leads
-        </Button>
-
-        <Button
-          className={`w-full text-white mb-4 mt-3 ${
-            tab === "tab1" ? "bg-blue-600" : ""
-          }`}
-          onClick={() => handleTabClick("tab1")}
-        >
-          All Leads
-        </Button>
-
-        {showFilters && (
-          <>
-            <Button
-              className={`w-full text-white mt-2 ${
-                tab === "tab2" ? "bg-blue-600" : ""
-              }`}
-              onClick={() => handleTabClick("tab2")}
-            >
-              Hot
-            </Button>
-            <Button
-              className={`w-full text-white mt-2 ${
-                tab === "tab3" ? "bg-blue-600" : ""
-              }`}
-              onClick={() => handleTabClick("tab3")}
-            >
-              In Conversation
-            </Button>
-            <Button
-              className={`w-full text-white mt-2 ${
-                tab === "tab4" ? "bg-blue-600" : ""
-              }`}
-              onClick={() => handleTabClick("tab4")}
-            >
-              Dropped
-            </Button>
-            <Button
-              className={`w-full text-white mt-2 ${
-                tab === "tab5" ? "bg-blue-600" : ""
-              }`}
-              onClick={() => handleTabClick("tab5")}
-            >
-              Converted
-            </Button>
-          </>
-        )}
-      </aside> */}
+    <div className={`flex flex-col md:flex-row min-h-screen bg-gray-50 w-full ${darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-black"}`}>
       <aside className="md:w-64 w-full p-6 shadow-md flex flex-col gap-4">
         <Button
           onClick={goBack}

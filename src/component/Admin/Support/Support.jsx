@@ -32,7 +32,7 @@ const Support = () => {
       status: "solved",
       image: myimg,
       solvedAt: new Date("2025-03-18T15:27:07"),
-      messsage:
+      message:
         "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
     },
     {
@@ -69,7 +69,7 @@ const Support = () => {
       status: "solved",
       image: myimg,
       solvedAt: new Date("2025-03-18T15:27:07"),
-      messsage:
+      message:
         "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
     },
     {
@@ -79,7 +79,7 @@ const Support = () => {
       status: "solved",
       image: myimg,
       solvedAt: new Date("2025-03-18T15:27:07"),
-      messsage:
+      message:
         "Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
     },
   ];
@@ -149,21 +149,61 @@ const Support = () => {
                       ticket.title.toLowerCase().includes(search.toLowerCase())
                   )
                   .map((ticket) => (
+                    // <Card
+                    //   key={ticket.id}
+                    //   className=" shadow-lg rounded-xl p-4 md:p-6 flex flex-col md:flex-row gap-4 items-center transition-transform hover:scale-105 w-100"
+                    // >
+                    //   <img
+                    //     src={ticket.image}
+                    //     alt={ticket.title}
+                    //     className="w-24 h-24 md:w-28 md:h-28 rounded-lg border shadow-sm object-cover"
+                    //   />
+                    //   <div className="flex-1 text-center md:text-left">
+                    //     <h2 className="text-lg md:text-xl font-semibold ">
+                    //       {ticket.title}
+                    //     </h2>
+                    //     <p className="text-sm ">{ticket.user}</p>
+                    //     <p className="text-sm  mt-1 md:mt-2">
+                    //       {ticket.description}
+                    //     </p>
+                    //     {ticket.status === "unsolved" && (
+                    //       <Button className="mt-3 md:mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg transition-all">
+                    //         Mark as Solved
+                    //       </Button>
+                    //     )}
+                    //     {ticket.status === "solved" && (
+                    //       <div className="mt-3 md:mt-4">
+                    //         <p className="text-xs text-gray-300 flex items-center">
+                    //           <CalendarIcon className="mr-1 h-3 w-3" />:{" "}
+                    //           {ticket.solvedAt
+                    //             ? format(ticket.solvedAt, "yyyy-MM-dd HH:mm:ss")
+                    //             : "N/A"}
+                    //         </p>
+                    //         <p className="text-xs text-gray-500 flex items-center">
+                    //           {ticket.messsage}
+                    //         </p>
+                    //         <Button className="mt-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg transition-all">
+                    //           Delete
+                    //         </Button>
+                    //       </div>
+                    //     )}
+                    //   </div>
+                    // </Card>
                     <Card
                       key={ticket.id}
-                      className=" shadow-lg rounded-xl p-4 md:p-6 flex flex-col md:flex-row gap-4 items-center transition-transform hover:scale-105 w-100"
+                      className="shadow-lg rounded-xl p-4 md:p-6 flex flex-col gap-4 items-center transition-transform hover:scale-105 w-full"
                     >
                       <img
                         src={ticket.image}
                         alt={ticket.title}
                         className="w-24 h-24 md:w-28 md:h-28 rounded-lg border shadow-sm object-cover"
                       />
-                      <div className="flex-1 text-center md:text-left">
-                        <h2 className="text-lg md:text-xl font-semibold ">
+                      <div className="text-center">
+                        <h2 className="text-lg md:text-xl font-semibold">
                           {ticket.title}
                         </h2>
-                        <p className="text-sm ">{ticket.user}</p>
-                        <p className="text-sm  mt-1 md:mt-2">
+                        <p className="text-sm">{ticket.user}</p>
+                        <p className="text-sm mt-1 md:mt-2">
                           {ticket.description}
                         </p>
                         {ticket.status === "unsolved" && (
@@ -173,14 +213,14 @@ const Support = () => {
                         )}
                         {ticket.status === "solved" && (
                           <div className="mt-3 md:mt-4">
-                            <p className="text-xs text-gray-300 flex items-center">
-                              <CalendarIcon className="mr-1 h-3 w-3" />:{" "}
+                            <p className="text-xs text-gray-300 flex items-center justify-center">
+                              <CalendarIcon className="mr-1 h-3 w-3" />{" "}
                               {ticket.solvedAt
                                 ? format(ticket.solvedAt, "yyyy-MM-dd HH:mm:ss")
                                 : "N/A"}
                             </p>
-                            <p className="text-xs text-gray-500 flex items-center">
-                              {ticket.messsage}
+                            <p className="text-xs text-gray-500">
+                              {ticket.message}
                             </p>
                             <Button className="mt-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg transition-all">
                               Delete
