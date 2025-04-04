@@ -417,35 +417,7 @@ const Leads = () => {
                 </DialogContent>
               </Dialog>
 
-              {/* <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant=" " className="bg-blue-600 text-white">
-                    <PlusIcon className="mr-0" /> Add Category
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[525px]">
-                  <DialogHeader>
-                    <DialogTitle>Add Category</DialogTitle>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <Label htmlFor="name" className="text-left">
-                      Enter Category Name
-                    </Label>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Input
-                        id="name"
-                        value={categoryName}
-                        onChange={(e) => setCategoryName(e.target.value)}
-                        placeholder="Enter category name"
-                        className="col-span-4"
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button type="submit">Add Category</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog> */}
+             
               <Button
                 variant="default"
                 className="bg-blue-600 "
