@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,8 @@ import {
     FormLabel,
     FormMessage,
 } from "../../src/components/ui/form";
+import { Dialog, DialogContent, DialogFooter } from '../../src/components/ui/dialog';
+import ThankYouCard from '../Dashboard/ThankYouCard';
 
 // ✅ Define Zod Validation Schema
 const formSchema = z.object({
@@ -26,6 +28,8 @@ const formSchema = z.object({
 });
 
 const Update = () => {
+    const [AddConfrom, setAddConfrom] = useState(false)
+    
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -37,9 +41,25 @@ const Update = () => {
             pincode: "",
         },
     });
-
+    const handleConfirm = async () => {
+        try {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+    
+          console.log("Data Submitted Successfully!");
+    
+          setAddConfrom(false);
+        } catch (error) {
+          console.error("Submission failed:", error);
+        }
+      };
     const onSubmit = (data) => {
         console.log("Form Data:", data);
+    
+        // Reset the form fields
+        form.reset();
+    
+        // Open the confirmation dialog
+        setAddConfrom(true);
     };
 
     return (
@@ -162,6 +182,32 @@ const Update = () => {
                     </Form>
                 </CardContent>
             </Card>
+
+
+            <Dialog open={AddConfrom} onOpenChange={setAddConfrom}>
+          <DialogContent
+            onPointerDownOutside={(e) => e.preventDefault()}
+            onEscapeKeyDown={(e) => e.preventDefault()}
+            className="w-full max-w-[90vw] sm:max-w-[400px] p-6 rounded-lg">
+            <ThankYouCard />
+            {/* Dialog Footer */}
+            <DialogFooter className="flex justify-end gap-3">
+              <Button
+                onClick={() => setAddConfrom(false)}
+                variant="outline"
+                className="w-full sm:w-auto mt-4 bg-white hover:bg-gray-200 px-5 py-2 rounded-md flex items-center  transition-all"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleConfirm} // Handle form submission & dialog close
+                className="w-full sm:w-auto mt-4 bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md flex items-center shadow-md transition-all"
+              >
+                Confirm
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         </div>
     );
 };

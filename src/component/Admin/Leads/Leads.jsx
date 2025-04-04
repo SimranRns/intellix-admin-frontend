@@ -5,28 +5,11 @@ import {
   SidebarTrigger,
 } from "../../src/components/ui/sidebar";
 import AppSidebar from "../../src/components/ui/app-sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "../../src/components/ui/breadcrumb";
 import Header from "../Dashboard/Header";
 
 import { Button } from "../../src/components/ui/button";
 import { Input } from "../../src/components/ui/input";
-
-import { format } from "date-fns";
 import { CalendarIcon, DownloadIcon, PlusIcon } from "lucide-react";
-
-import { Calendar } from "../../src/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../../src/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -54,7 +37,6 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -68,10 +50,13 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "../../src/components/ui/dropdown-menu";
-import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { ChevronRight } from "lucide-react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { ScrollArea } from "../../src/components/ui/scroll-area";
+
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const Leads = () => {
   const rowsPerPage = 5; // Number of rows per page
@@ -157,11 +142,45 @@ const Leads = () => {
   const [Employee, setEmployee] = useState("Please Select");
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [open, setOpen] = useState(false);
   const totalPages = Math.ceil(data1.length / rowsPerPage);
   const currentData = data1.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
+
+  const leadSchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    email: z.string().email("Invalid email"),
+    address: z.string().min(1, "Address is required"),
+    contact: z.string().min(10, "Contact must be at least 10 digits"),
+    category: z.string().min(1, "Category is required"),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(leadSchema),
+    // resolver: zodResolver(categorySchema),
+  });
+
+  const onSubmit = (data) => {
+    console.log("Form Data:", data);
+    console.log("Category Added:", data);
+    reset();
+    setOpen(false);
+  };
+
+  const categorySchema = z.object({
+    name: z.string().min(1, "Category name is required"),
+  });
+
+
+
 
   return (
     <>
@@ -298,49 +317,107 @@ const Leads = () => {
                   <DialogHeader>
                     <DialogTitle>Add Leads</DialogTitle>
                   </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Input
-                        id="name"
-                        placeholder="Enter Name"
-                        className="col-span-4"
-                      />
-                      <Input
-                        id="email"
-                        placeholder="Enter Email"
-                        className="col-span-4"
-                      />
-                      <Input
-                        id="address"
-                        placeholder="Enter Address"
-                        className="col-span-4"
-                      />
-                      <Input
-                        id="contact"
-                        placeholder="Enter Contact"
-                        className="col-span-4"
-                      />
+                  <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="grid gap-4 py-4"
+                  >
+                    <Input
+                      {...register("name")}
+                      placeholder="Enter Name"
+                      className="col-span-4"
+                    />
+                    {errors.name && (
+                      <p className="text-red-500">{errors.name.message}</p>
+                    )}
 
-                      <Select>
-                        <SelectTrigger className="col-span-4">
-                          <SelectValue placeholder="Select Categories" />
-                        </SelectTrigger>
-                        <SelectContent position="popper">
-                          <SelectItem value="next">Next.js</SelectItem>
-                          <SelectItem value="sveltekit">SvelteKit</SelectItem>
-                          <SelectItem value="astro">Astro</SelectItem>
-                          <SelectItem value="nuxt">Nuxt.js</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button type="submit">Submit</Button>
-                  </DialogFooter>
+                    <Input
+                      {...register("email")}
+                      placeholder="Enter Email"
+                      className="col-span-4"
+                    />
+                    {errors.email && (
+                      <p className="text-red-500">{errors.email.message}</p>
+                    )}
+
+                    <Input
+                      {...register("address")}
+                      placeholder="Enter Address"
+                      className="col-span-4"
+                    />
+                    {errors.address && (
+                      <p className="text-red-500">{errors.address.message}</p>
+                    )}
+
+                    <Input
+                      {...register("contact")}
+                      placeholder="Enter Contact"
+                      className="col-span-4"
+                    />
+                    {errors.contact && (
+                      <p className="text-red-500">{errors.contact.message}</p>
+                    )}
+
+                    <Select
+                      onValueChange={(value) => setValue("category", value)}
+                    >
+                      <SelectTrigger className="col-span-4">
+                        <SelectValue placeholder="Select Categories" />
+                      </SelectTrigger>
+                      <SelectContent position="popper">
+                        <SelectItem value="next">Next.js</SelectItem>
+                        <SelectItem value="sveltekit">SvelteKit</SelectItem>
+                        <SelectItem value="astro">Astro</SelectItem>
+                        <SelectItem value="nuxt">Nuxt.js</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {errors.category && (
+                      <p className="text-red-500">{errors.category.message}</p>
+                    )}
+
+                    <DialogFooter>
+                      <Button type="submit">Submit</Button>
+                    </DialogFooter>
+                  </form>
                 </DialogContent>
               </Dialog>
 
-              <Dialog>
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                  <Button className="bg-blue-600 text-white">
+                    <PlusIcon className="mr-0" /> Add Category
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[525px]">
+                  <DialogHeader>
+                    <DialogTitle>Add Category</DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="grid gap-4 py-4">
+                      <Label htmlFor="name" className="text-left">
+                        Enter Category Name
+                      </Label>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Input
+                          id="name"
+                          {...register("name")}
+                          placeholder="Enter category name"
+                          className="col-span-4"
+                        />
+                        {errors.name && (
+                          <p className="text-red-500 text-sm">
+                            {errors.name.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button type="submit">Add Category</Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
+
+              {/* <Dialog>
                 <DialogTrigger asChild>
                   <Button variant=" " className="bg-blue-600 text-white">
                     <PlusIcon className="mr-0" /> Add Category
@@ -368,7 +445,7 @@ const Leads = () => {
                     <Button type="submit">Add Category</Button>
                   </DialogFooter>
                 </DialogContent>
-              </Dialog>
+              </Dialog> */}
               <Button
                 variant="default"
                 className="bg-blue-600 "

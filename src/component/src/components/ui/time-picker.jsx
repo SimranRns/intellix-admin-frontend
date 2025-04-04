@@ -37,38 +37,49 @@ const TimePicker = ({ label, selectedTime, setSelectedTime }) => {
             {/* Hour & Minute Scrollable Dropdowns */}
             <div className="w-full flex justify-between">
               {/* Hour List (Scrollable) */}
-              <div className="w-24 h-48 overflow-y-auto border rounded-md custom-scrollbar">
+              <div
+                className="w-24 h-48 overflow-y-auto border rounded-md custom-scrollbar"
+                onWheel={(e) => {
+                  e.currentTarget.scrollTop += e.deltaY;
+                }}
+              >
                 {hours.map((hour) => (
                   <div
                     key={hour}
                     onClick={() => setSelectedHour(hour)}
-                    className={`cursor-pointer  px-3 py-2 text-center ${
-                      selectedHour === hour
+                    className={`cursor-pointer px-3 py-2 text-center ${selectedHour === hour
                         ? "bg-blue-500 text-white"
-                        : "hover:bg-gray-200"
-                    }`}
+                        : "hover:bg-gray-200 text-black"
+                      }`}
                   >
                     {hour}
                   </div>
                 ))}
               </div>
+
               <span className="mx-2 font-bold">:</span>
+
               {/* Minute List (Scrollable) */}
-              <div className="w-24 h-48 overflow-y-auto border rounded-md custom-scrollbar">
+              <div
+                className="w-24 h-48 overflow-y-auto border rounded-md custom-scrollbar"
+                onWheel={(e) => {
+                  e.currentTarget.scrollTop += e.deltaY;
+                }}
+              >
                 {minutes.map((minute) => (
                   <div
                     key={minute}
                     onClick={() => setSelectedMinute(minute)}
-                    className={`cursor-pointer px-3 py-2 text-center ${
-                      selectedMinute === minute
+                    className={`cursor-pointer px-3 py-2 text-center ${selectedMinute === minute
                         ? "bg-blue-500 text-white"
-                        : "hover:bg-gray-200"
-                    }`}
+                        : "hover:bg-gray-200 text-black"
+                      }`}
                   >
                     {minute}
                   </div>
                 ))}
               </div>
+
             </div>
           </div>
 

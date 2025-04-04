@@ -215,6 +215,7 @@ import {
 } from "../../src/components/ui/popover";
 import { Navigate, useNavigate } from "react-router-dom";
 import AppSidebar from "../../src/components/ui/app-sidebar";
+import ThankYouCard from "../Dashboard/ThankYouCard";
 
 const Team = ({ teacherData }) => {
   const navigate = useNavigate();
@@ -320,10 +321,9 @@ const Team = ({ teacherData }) => {
 
   ///////dilog function
   const main = async (e) => {
-    // e.preventDefault();
+    // e.preventDefault(); // Uncomment if inside a form submit handler
 
     const isValid = await additionalForm.trigger();
-
     if (!isValid) {
       console.log("Validation failed:", additionalForm.formState.errors);
       return;
@@ -334,6 +334,8 @@ const Team = ({ teacherData }) => {
 
     if (validationResult.success) {
       console.log("Data submitted:", formData);
+      additionalForm.reset();
+      setTeacher("");
       setTeacher(false);
       setAddDetails(true);
     } else {
@@ -364,6 +366,8 @@ const Team = ({ teacherData }) => {
 
     if (validationResult.success) {
       console.log("Data submitted:", formData);
+      additionalForm2.reset();
+      setAddDetails("")
       setAddDetails(false);
       setAddBankDetails(true);
     } else {
@@ -382,7 +386,6 @@ const Team = ({ teacherData }) => {
     e.preventDefault();
 
     const isValid = await additionalForm3.trigger();
-
     if (!isValid) {
       console.log("Validation failed:", additionalForm3.formState.errors);
       return;
@@ -393,6 +396,8 @@ const Team = ({ teacherData }) => {
 
     if (validationResult.success) {
       console.log("Data submitted:", formData);
+      additionalForm3.reset();
+      setAddBankDetails("")
       setAddBankDetails(false);
       setAddConfrom(true);
     } else {
@@ -410,8 +415,20 @@ const Team = ({ teacherData }) => {
   // **Unique Function Name: handleTeacherFormSubmit**
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents page refresh
-    console.log("Submitted Date:", date);
-  };
+
+    console.log("Submitted Time:", { inTime, outTime });
+
+    // Reset the time pickers
+    setInTime(null);
+    setOutTime(null);
+
+    // Close the Change Time dialog
+    setChangeTime(false);
+
+    // Open the confirmation dialog
+    setAddConfrom(true);
+};
+
 
   const handleChange = (e) => {
     setInputName(e.target.value);
@@ -428,13 +445,21 @@ const Team = ({ teacherData }) => {
   // const onSubmit = (data) => {
   //   console.log("Form Submitted:", data);
   // };
-
   const handleBasicFormSubmit = (data) => {
     console.log("Basic Form Data:", data);
-  };
+
+    // Reset form fields after submission
+    basicForm.reset();
+
+    // Close the dialog
+    setOpen(false);
+    setAddConfrom(true)
+};
+
 
   const handleAdditionalFormSubmit = (data) => {
     console.log("Additional Form Data:", data);
+
   };
   const handleAdditionalFormSubmit2 = (data) => {
     console.log("Additional Form Data:", data);
@@ -444,12 +469,10 @@ const Team = ({ teacherData }) => {
   };
   const handleConfirm = async () => {
     try {
-      // Simulate API call or form submission
-      await new Promise((resolve) => setTimeout(resolve, 1500)); // Mock delay (1.5s)
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       console.log("Data Submitted Successfully!");
 
-      // Close the dialog after successful submission
       setAddConfrom(false);
     } catch (error) {
       console.error("Submission failed:", error);
@@ -502,7 +525,7 @@ const Team = ({ teacherData }) => {
                 <DropdownMenuContent
                   side="left"
                   align="start"
-                  className="bg-white text-black w-40 shadow-md rounded-md mt-2  border border-blue-300 "
+                  className="bg-white z-[50] text-black w-40 shadow-md rounded-md mt-2  border border-blue-300 "
                 >
                   <DropdownMenuItem
                     onClick={() => setSelectedOption("Newest")}
@@ -1278,43 +1301,7 @@ const Team = ({ teacherData }) => {
                 </DialogContent>
               </Dialog>
 
-              {/* confirm dilog */}
-              <Dialog open={AddConfrom} onOpenChange={setAddConfrom}>
-                <DialogContent
-                  onPointerDownOutside={(e) => e.preventDefault()}
-                  onEscapeKeyDown={(e) => e.preventDefault()}
-                  className="w-full max-w-[90vw] sm:max-w-[400px] p-6 rounded-lg">
-                  {/* Back Arrow & Title */}
-                  <div className="flex items-center mb-6">
-                    <button
-                      onClick={() => { setAddConfrom(false); setAddBankDetails(true); }}
-                      className="text-gray-500 hover:text-gray-700 transition-colors"
-                    >
-                      <ArrowLeft size={24} />
-                    </button>
-                    <DialogTitle className="text-center flex-1 text-lg font-semibold">
-                      Confirm
-                    </DialogTitle>
-                  </div>
 
-                  {/* Dialog Footer */}
-                  <DialogFooter className="flex justify-end gap-3">
-                    <Button
-                      onClick={() => setAddConfrom(false)}
-                      variant="outline"
-                      className="w-full sm:w-auto border-gray-300 text-gray-700 hover:bg-gray-100 transition"
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      onClick={handleConfirm} // Handle form submission & dialog close
-                      className="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-md shadow-md transition-all"
-                    >
-                      Confirm
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
 
             </div>
           </div>
@@ -1399,6 +1386,7 @@ const Team = ({ teacherData }) => {
                           </div>
                         </div>
                         <Button
+                        onClick={() => setChangeTime(false)}
                           type="submit"
                           className="bg-indigo-500 text-white px-5 w-full py-2 rounded-lg hover:bg-indigo-600"
                         >
@@ -1408,6 +1396,7 @@ const Team = ({ teacherData }) => {
                     </div>
                   </DialogContent>
                 </Dialog>
+
                 {/* dialog box Delete */}
                 <Dialog open={Deleteteacher} onOpenChange={setDelete}>
                   <DialogContent
@@ -1426,6 +1415,7 @@ const Team = ({ teacherData }) => {
                     <hr className="mt-5"></hr>
                     <div className="flex justify-center">
                       <Button
+                      onClick={() => {setDelete(false),setAddConfrom(true)}}
                         type="submit"
                         className="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700"
                       >
@@ -1434,6 +1424,7 @@ const Team = ({ teacherData }) => {
                     </div>
                   </DialogContent>
                 </Dialog>
+
                 {/* dialog box edit */}
                 <Dialog open={open} onOpenChange={setOpen}>
                   <DialogContent
@@ -1509,6 +1500,7 @@ const Team = ({ teacherData }) => {
                         {/* Buttons */}
                         <div className="flex justify-between">
                           <Button
+                          
                             type="submit"
                             className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700"
                           >
@@ -1567,6 +1559,33 @@ const Team = ({ teacherData }) => {
             ))}
           </div>
 
+
+          {/* confirm dilog */}
+          <Dialog open={AddConfrom} onOpenChange={setAddConfrom}>
+            <DialogContent
+              onPointerDownOutside={(e) => e.preventDefault()}
+              onEscapeKeyDown={(e) => e.preventDefault()}
+              className="w-full max-w-[90vw] sm:max-w-[400px] p-6 rounded-lg">
+              <ThankYouCard />
+              {/* Dialog Footer */}
+              <DialogFooter className="flex justify-end gap-3">
+                <Button
+                  onClick={() => setAddConfrom(false)}
+                  variant="outline"
+                  className="w-full sm:w-auto mt-4 bg-white hover:bg-gray-200 px-5 py-2 rounded-md flex items-center  transition-all"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleConfirm} // Handle form submission & dialog close
+                  className="w-full sm:w-auto mt-4 bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md flex items-center shadow-md transition-all"
+                >
+                  Confirm
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
           {/* Pagination */}
           <Pagination>
             <PaginationContent>
@@ -1602,6 +1621,7 @@ const Team = ({ teacherData }) => {
               </PaginationItem>
             </PaginationContent>
           </Pagination>
+
         </main>
 
       </SidebarInset>
