@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Team.css"
+import "./Team.css";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import {
   SidebarInset,
@@ -26,7 +26,14 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "../../src/components/ui/pagination";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../../src/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "../../src/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -41,9 +48,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../src/components/ui/dialog";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../../src/components/ui/chart";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "../../src/components/ui/chart";
 import { LabelList, Pie, PieChart } from "recharts";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel } from "../../src/components/ui/form";
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "../../src/components/ui/form";
 import { Input } from "../../src/components/ui/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -82,23 +99,21 @@ const Departments = () => {
   const [DeleteDepartments, setDeleteDepartments] = useState(false);
   const [addDepartment, setAddDepartment] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [AddConfrom, setAddConfrom] = useState(false)
-
+  const [AddConfrom, setAddConfrom] = useState(false);
 
   const departmentsList = [
     {
       id: 1,
       departmentName: "Teaching",
       departmentUser: "10,000",
-      departmentemployee: "Employee"
+      departmentemployee: "Employee",
     },
     {
       id: 2,
       departmentName: "Finance",
       departmentUser: "20,000",
-      departmentemployee: "Employee"
+      departmentemployee: "Employee",
     },
-
   ];
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -107,7 +122,7 @@ const Departments = () => {
     },
   });
   const { handleSubmit } = form;
-  
+
   const handleConfirm = async () => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -132,11 +147,13 @@ const Departments = () => {
     setAddConfrom(true);
   };
 
-
   const departmentsPerPage = 6;
   const totalPages = Math.ceil(departmentsList.length / departmentsPerPage);
   const startIndex = (currentPage - 1) * departmentsPerPage;
-  const selectedDepartments = departmentsList.slice(startIndex, startIndex + departmentsPerPage);
+  const selectedDepartments = departmentsList.slice(
+    startIndex,
+    startIndex + departmentsPerPage
+  );
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       {/* Pass setActivePage to Sidebar */}
@@ -165,12 +182,18 @@ const Departments = () => {
                 <DialogContent
                   onPointerDownOutside={(e) => e.preventDefault()}
                   onEscapeKeyDown={(e) => e.preventDefault()}
-                  className=" sm:max-w-[600px] shadow-lg p-6 rounded-lg">
+                  className=" sm:max-w-[600px] shadow-lg p-6 rounded-lg"
+                >
                   <DialogHeader>
-                    <DialogTitle className="text-center">Add Department</DialogTitle>
+                    <DialogTitle className="text-center">
+                      Add Department
+                    </DialogTitle>
                   </DialogHeader>
                   <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleAddDepartment)} className="space-y-8">
+                    <form
+                      onSubmit={form.handleSubmit(handleAddDepartment)}
+                      className="space-y-8"
+                    >
                       <FormField
                         control={form.control}
                         name="Department"
@@ -196,7 +219,10 @@ const Departments = () => {
               <Search size={18} className="text-gray-500" />
               <input
                 name="search"
-                type="text" placeholder="By Employee Name..." className="ml-2 w-full outline-none bg-transparent text-sm" />
+                type="text"
+                placeholder="By Employee Name..."
+                className="ml-2 w-full outline-none bg-transparent text-sm"
+              />
             </div>
           </div>
 
@@ -208,7 +234,9 @@ const Departments = () => {
                 className="w-full max-w-[320px]  shadow-md shadow-blue-500/50 rounded-xl p-6 relative mx-auto"
               >
                 {/* Department Name at the Top */}
-                <CardTitle className="text-lg font-extrabold">{department.departmentName}</CardTitle>
+                <CardTitle className="text-lg font-extrabold">
+                  {department.departmentName}
+                </CardTitle>
 
                 {/* Dropdown Menu */}
                 <DropdownMenu>
@@ -217,7 +245,10 @@ const Departments = () => {
                       <Ellipsis className="text-gray-500" size={24} />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-40 bg-gray-200 mt-1 shadow-md rounded-md">
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-40 mt-1 shadow-md rounded-md"
+                  >
                     <DropdownMenuItem
                       onClick={() => setDeleteDepartments(true)}
                       className="cursor-pointer text-red-500 hover:bg-gray-100 px-4 py-2 text-md text-center "
@@ -227,17 +258,27 @@ const Departments = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
                 {/* //deactivate dilog  */}
-                <Dialog open={DeleteDepartments} onOpenChange={setDeleteDepartments}>
+                <Dialog
+                  open={DeleteDepartments}
+                  onOpenChange={setDeleteDepartments}
+                >
                   <DialogContent className="sm:max-w-[425px] shadow-lg p-6 rounded-lg">
                     <DialogHeader>
-                      <DialogTitle className="text-center text-[22px] font-bold">Deactivate Department</DialogTitle>
+                      <DialogTitle className="text-center text-[22px] font-bold">
+                        Deactivate Department
+                      </DialogTitle>
                       <DialogDescription className="text-center text-md">
                         Are you sure you want to deactivate this department?
                       </DialogDescription>
                     </DialogHeader>
                     <hr className="mt-5" />
                     <div className="flex justify-center">
-                      <Button className="bg-red-600 text-white px-5 py-3 rounded-lg hover:bg-red-700">
+                      <Button
+                        onClick={() => {
+                          setDeleteDepartments(false), setAddConfrom(true);
+                        }}
+                        className="bg-red-600 text-white px-5 py-3 rounded-lg hover:bg-red-700"
+                      >
                         Deactivate Department
                       </Button>
                     </div>
@@ -248,8 +289,12 @@ const Departments = () => {
                   <div className="flex flex-col items-center gap-1">
                     <div className="flex items-center gap-2">
                       <Users size={24} className="text-blue-500" />
-                      <span className="text-lg font-bold">{department.departmentUser}</span>
-                      <span className="text-sm text-gray-400">{department.departmentemployee}</span>
+                      <span className="text-lg font-bold">
+                        {department.departmentUser}
+                      </span>
+                      <span className="text-sm text-gray-400">
+                        {department.departmentemployee}
+                      </span>
                     </div>
                   </div>
                 </CardHeader>
@@ -261,14 +306,22 @@ const Departments = () => {
                     className="mx-auto aspect-square max-h-[180px] [&_.recharts-text]:fill-background"
                   >
                     <PieChart>
-                      <ChartTooltip content={<ChartTooltipContent nameKey="count" hideLabel />} />
+                      <ChartTooltip
+                        content={
+                          <ChartTooltipContent nameKey="count" hideLabel />
+                        }
+                      />
                       <Pie data={chartData} dataKey="count">
                         <LabelList
                           dataKey="category"
                           className="fill-background"
                           stroke="none"
                           fontSize={9}
-                          formatter={(value) => (chartConfig[value] ? chartConfig[value].label : value)}
+                          formatter={(value) =>
+                            chartConfig[value]
+                              ? chartConfig[value].label
+                              : value
+                          }
                         />
                       </Pie>
                     </PieChart>
@@ -279,12 +332,16 @@ const Departments = () => {
                 <CardFooter className="flex justify-center gap-4 mt-1">
                   <Button
                     onClick={() => navigate("/View_User")}
-                    className="bg-blue-600 text-xs text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-blue-500 transition-all">
+                    className="bg-blue-600 text-xs text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-blue-500 transition-all"
+                  >
                     <User size={18} /> View User
                   </Button>
                   <Button
-                    onClick={() => { navigate("/Access") }}
-                    className="bg-orange-500 text-xs text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-orange-600 transition-all">
+                    onClick={() => {
+                      navigate("/Access");
+                    }}
+                    className="bg-orange-500 text-xs text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-orange-600 transition-all"
+                  >
                     <Eye size={18} /> Access
                   </Button>
                 </CardFooter>
@@ -293,18 +350,20 @@ const Departments = () => {
           </div>
         </main>
 
+        {/* Confrom dilog */}
         <Dialog open={AddConfrom} onOpenChange={setAddConfrom}>
           <DialogContent
             onPointerDownOutside={(e) => e.preventDefault()}
             onEscapeKeyDown={(e) => e.preventDefault()}
-            className="w-full max-w-[90vw] sm:max-w-[400px] p-6 rounded-lg">
+            className="w-full max-w-[90vw] sm:max-w-[400px] p-6 rounded-lg"
+          >
             <ThankYouCard />
             {/* Dialog Footer */}
             <DialogFooter className="flex justify-end gap-3">
               <Button
                 onClick={() => setAddConfrom(false)}
                 variant="outline"
-                className="w-full sm:w-auto mt-4 bg-white hover:bg-gray-200 px-5 py-2 rounded-md flex items-center  transition-all"
+                className="w-full sm:w-auto text-black mt-4 hover:text-black bg-gray-100 hover:bg-gray-200 px-5 py-2 rounded-md flex items-center  transition-all"
               >
                 Cancel
               </Button>
@@ -317,6 +376,7 @@ const Departments = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
         <Pagination>
           <PaginationContent>
             <PaginationItem>
@@ -331,10 +391,11 @@ const Departments = () => {
                 <PaginationLink
                   as="button"
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`px-4 py-2 rounded-md ${currentPage === i + 1
-                    ? "bg-blue-600 text-white"
-                    : "hover:bg-blue-500  hover:text-white"
-                    }`}
+                  className={`px-4 py-2 rounded-md ${
+                    currentPage === i + 1
+                      ? "bg-blue-600 text-white"
+                      : "hover:bg-blue-500  hover:text-white"
+                  }`}
                 >
                   {i + 1}
                 </PaginationLink>
@@ -351,7 +412,6 @@ const Departments = () => {
             </PaginationItem>
           </PaginationContent>
         </Pagination>
-
       </SidebarInset>
     </SidebarProvider>
   );

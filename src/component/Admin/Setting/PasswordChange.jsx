@@ -154,7 +154,7 @@ const PasswordChange = () => {
               <Button
                 onClick={() => setAddConfrom(false)}
                 variant="outline"
-                className="w-full sm:w-auto mt-4 bg-white hover:bg-gray-200 px-5 py-2 rounded-md flex items-center  transition-all"
+                className="w-full sm:w-auto text-black mt-4 bg-gray-100 hover:text-black hover:bg-gray-200 px-5 py-2 rounded-md flex items-center  transition-all"
               >
                 Cancel
               </Button>

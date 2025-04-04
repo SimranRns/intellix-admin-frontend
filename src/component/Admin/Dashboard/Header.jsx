@@ -43,9 +43,6 @@ const Header = () => {
 
     return (
     <>
-  
-            {/* Pass setActivePage to Sidebar */}
-            {/* <AppSidebar setActivePage={setActivePage} /> */}
           
                 <header className="flex sticky top-0 shrink-0 gap-2 border-b z-[50] h-16 bg-white dark:bg-gray-900 shadow-md items-center px-6">
                     <SidebarTrigger className="-ml-1" />
@@ -59,7 +56,7 @@ const Header = () => {
                         {/* Search Bar */}
                         <div className="relative hidden lg:flex items-center border border-blue-400 dark:border-gray-600 shadow rounded w-full max-w-md">
                             <Search size={20} className="absolute left-3 text-gray-500 dark:text-gray-400" />
-                            <Input type="search" placeholder="Search" className="border-none bg-transparent focus:ring-0 w-full pl-10 text-gray-900 dark:text-white" />
+                            <Input type="number" placeholder="By Search Year..." className="border-none bg-transparent focus:ring-0 w-full pl-10 text-gray-900 dark:text-white" />
                         </div>
 
                         {/* Right Section: Icons & Profile */}

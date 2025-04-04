@@ -14,7 +14,7 @@ const Academics = () => {
     const cardData = [
         { 
           title: "Courses / Classes", 
-          value: 0, 
+          value: 10, 
           icon: <Book className="w-6 h-6 text-blue-600" />, 
           link: "/Courses",
           Total: "Total Courses Active" 

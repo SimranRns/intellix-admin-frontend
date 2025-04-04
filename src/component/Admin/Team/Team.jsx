@@ -1352,6 +1352,7 @@ const Team = ({ teacherData }) => {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
+
                 {/* dialog box change Time */}
                 <Dialog open={ChangeTime} onOpenChange={setChangeTime}>
                   <DialogContent
@@ -1572,7 +1573,7 @@ const Team = ({ teacherData }) => {
                 <Button
                   onClick={() => setAddConfrom(false)}
                   variant="outline"
-                  className="w-full sm:w-auto mt-4 bg-white hover:bg-gray-200 px-5 py-2 rounded-md flex items-center  transition-all"
+                  className="w-full sm:w-auto mt-4 bg-gray-100 hover:bg-gray-200 hover:text-black px-5 py-2 rounded-md text-black flex items-center transition-all"
                 >
                   Cancel
                 </Button>
