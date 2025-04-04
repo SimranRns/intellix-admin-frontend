@@ -177,7 +177,7 @@ const AddPopularCourse = () => {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-3 gap-6 w-full max-w-7xl">
         {cards.map((card, index) => (
-          <Card key={index} className="shadow-lg rounded-lg overflow-hidden">
+          <Card key={index} className="shadow-md shadow-blue-500/50 rounded-lg overflow-hidden">
             <CardHeader>
               <CardTitle className="text-center text-xl font-semibold">
                 {card.title}
