@@ -139,8 +139,9 @@ import { Input } from "../../../src/components/ui/input";
 import { Label } from "../../../src/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../src/components/ui/select";
 import { Card, CardContent } from "../../../src/components/ui/card";
-import { ArrowLeft, UploadCloud } from "lucide-react";
+import {  UploadCloud } from "lucide-react";
 import { useNavigate } from "react-router";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 const studentSchema = z.object({
   course: z.string().min(1, "Course selection is required."),
@@ -196,8 +197,11 @@ export default function StudentUploadModal() {
 
   return (
     <div className="flex justify-center items-center min-h-screen p-4">
+              <FaArrowLeftLong onClick={goback} 
+              style={{ cursor: "pointer", outline: "none", border: "none", zIndex: 999999 }}
+        className="fixed top-4 left-4 text-3xl" />
       <Card className="w-full max-w-2xl p-8 relative rounded-xl">
-        <ArrowLeft onClick={goback} className="absolute top-4 left-4 cursor-pointer" />
+
         <CardContent className="space-y-6">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Select Course */}

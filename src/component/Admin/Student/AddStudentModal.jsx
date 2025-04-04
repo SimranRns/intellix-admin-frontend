@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "./Student.css";
+import { set } from "date-fns";
 
 const addSchema = z.object({
   name: z
@@ -46,9 +47,13 @@ const AddStudentModal = () => {
     setIsModalOpen(true);
   }, []);
 
+ 
+
   const handleClose = () => {
-    navigate("/students");
+    setIsModalOpen(false);
+    navigate("/students"); // ✅ Direct navigate karna
   };
+
 
   const {
     register,
@@ -80,13 +85,23 @@ const AddStudentModal = () => {
 
       <FaArrowLeftLong
         onClick={handleClose}
-        style={{ cursor: "pointer", outline: "none", border: "none" }}
-        className="fixed text-3xl z-[999]"
+        style={{ cursor: "pointer", outline: "none", border: "none", zIndex: 999999 }}
+        className="fixed top-4 left-4 text-3xl"
       />
 
-      <Dialog open={isModalOpen} onOpenChange={handleClose}>
-        <DialogContent className="sm:max-w-[1000px] z-[99999] bg-white dark:bg-black text-black dark:text-white" onPointerDownOutside={(e) => e.preventDefault()}
-          onEscapeKeyDown={(e) => e.preventDefault()}>
+      <Dialog open={isModalOpen} onOpenChange={(open) => {
+        if (!open) {
+          handleClose();
+        }
+      }}>
+
+
+        <DialogContent
+          className="sm:max-w-[1000px] z-[99999] bg-white dark:bg-black text-black dark:text-white"
+          onPointerDownOutside={handleClose} // ✅ Modal ke bahar click karne par close hoga
+          onEscapeKeyDown={handleClose} // ✅ Escape dabane par bhi close hoga
+        >
+
 
           <DialogHeader>
             <DialogTitle className="text-3xl text-center">Add Student Details</DialogTitle>
@@ -161,7 +176,8 @@ const AddStudentModal = () => {
             </div>
 
             <div className="flex justify-center mt-4 col-span-2">
-              <Button type="submit" className="bg-blue-700 hover:bg-blue-500 px-10 py-3 rounded-lg text-white">
+              <Button type="submit" className="bg-blue-700 
+              hover:bg-blue-500 px-10 py-3 rounded-lg text-white">
                 Proceed
               </Button>
             </div>

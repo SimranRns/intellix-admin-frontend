@@ -52,7 +52,7 @@ const Payment_History = () => {
                             </div>
 
                             {['missed', 'upcoming', 'paid'].map((tab) => (
-                                <TabsContent key={tab} value={tab} className="p-6 mt-4 rounded-lg shadow-lg">
+                                <TabsContent key={tab} value={tab} className="p-6 mt-4 rounded-lg ">
                                     <table className="w-full border-collapse border border-gray-300">
                                         <thead>
                                             <tr>

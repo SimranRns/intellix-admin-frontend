@@ -25,18 +25,18 @@ const MarksheetForm = () => {
   };
 
   // Common Input Class
-  const inputClass = "w-full border-2  border-gray-400 rounded-xl h-12 px-3 bg-transparent";
+  const inputClass = "w-full border-2  border-gray-400 rounded-xl h-10 px-3 bg-transparent";
   const navigate = useNavigate();
 
 
   return (
     <>
-      {/* <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
+      <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
         <AppSidebar />
         <SidebarInset>
           <Header />
-         */}
-            <div>
+        
+            <div className="w-full border rounded-lg flex gap-5">
             <Button
                             className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm flex items-center gap-2 m-2 mt-3"
                             onClick={() => navigate(-1)}
@@ -44,9 +44,10 @@ const MarksheetForm = () => {
                             <ArrowLeft size={18} />
                             <span className="hidden md:inline">Back to student</span>
                           </Button>
+                          <h2 className="text-2xl text-center font-semibold mb-4 mt-3" >Marksheet</h2>
             </div>
-          <div className="w-[60vw] h-[60vh] mx-auto p-4">
-            <h2 className="text-2xl text-center font-semibold mb-4">Marksheet</h2>
+          <div className="w-[60vw] h-[60vh] mx-auto">
+            {/* <h2 className="text-2xl text-center font-semibold mb-4">Marksheet</h2> */}
             <form onSubmit={handleSubmit} className="space-y-4">
 
               {/* Marksheet Name */}
@@ -143,8 +144,8 @@ const MarksheetForm = () => {
 
             </form>
           </div>
-          {/* </SidebarInset>
-        </SidebarProvider> */}
+          </SidebarInset>
+        </SidebarProvider>
     </>
   );
 };
