@@ -22,6 +22,7 @@ import { Input } from "../../src/components/ui/input";
 import Add_school_img from "./Add_school_img";
 import Add_popular_course from "./Add_popular_course";
 import Notification from "./Notification";
+import { Trash2 } from "lucide-react";
 
 const Advertisment = () => {
   const [images, setImages] = useState([]);
@@ -100,7 +101,8 @@ const Advertisment = () => {
                         Add Banner
                       </Button>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent onPointerDownOutside={(e) => e.preventDefault()}
+                      onEscapeKeyDown={(e) => e.preventDefault()}>
                       <DialogHeader>
                         <DialogTitle className="text-center">
                           Choose Banner
@@ -142,7 +144,7 @@ const Advertisment = () => {
                     {images.map((img, index) => (
                       <Card
                         key={img.id}
-                        className="w-[350px] shadow-md shadow-blue-500/50"
+                        className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden border border-gray-100/50 "
                       >
                         <CardHeader>
                           <img
@@ -153,10 +155,10 @@ const Advertisment = () => {
                         <CardContent className="flex justify-end">
                           {/* Button to Open Delete Dialog */}
                           <Button
-                            className="bg-red-500 text-white hover:bg-red-600"
+                            className="mt-4 w-full bg-gradient-to-r from-red-500 to-pink-600 text-white py-2 rounded-xl hover:from-red-600 hover:to-pink-700 transition-all"
                             onClick={() => confirmDelete(index)}
                           >
-                            Delete
+                            <Trash2 size={20} className="mr-2" /> Delete
                           </Button>
                         </CardContent>
                       </Card>
@@ -171,25 +173,28 @@ const Advertisment = () => {
                     setDeleteDialog({ open, index: null })
                   }
                 >
-                  <DialogContent>
+                  <DialogContent onPointerDownOutside={(e) => e.preventDefault()}
+                    onEscapeKeyDown={(e) => e.preventDefault()}>
                     <DialogHeader>
-                      <DialogTitle className="text-center">
-                        Confirm Delete
-                      </DialogTitle>
+                      <DialogTitle  >Confirm Deletion</DialogTitle>
                     </DialogHeader>
-                    <p className="text-center">
-                      Are you sure you want to delete this image?
-                    </p>
+                    <div className="py-4">
+                      <p>Are you sure you want to delete this course?</p>
+                      <p className="text-sm text-gray-500 mt-2">
+                        This action cannot be undone.
+                      </p>
+                    </div>
                     <DialogFooter className="flex justify-between">
                       <Button
                         onClick={() =>
                           setDeleteDialog({ open: false, index: null })
                         }
+                        variant="outline"
                       >
                         Cancel
                       </Button>
                       <Button
-                        className="bg-green-600 text-white hover:bg-green-700 "
+                        className="bg-red-600 text-white hover:bg-red-700 "
                         onClick={handleDeleteImage}
                       >
                         Confirm

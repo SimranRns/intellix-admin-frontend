@@ -7,7 +7,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "../../src/components/ui/popover";
-import { Calendar } from "../../src/components/ui/calendar";
 import { Input } from "../../src/components/ui/input";
 import {
   Dialog,
@@ -24,6 +23,15 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Card } from "../../src/components/ui/card";
+import { ScrollArea } from "../../src/components/ui/scroll-area";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../../src/components/ui/form";
 
 const FormSchema = z.object({
   title: z.string().min(1, "Title is required!"),
@@ -34,11 +42,14 @@ const Notification = () => {
   const [date, setDate] = useState(null);
   const [time, setTime] = useState("");
   const [notifications, setNotifications] = useState([]);
+  const [cardToDelete, setCardToDelete] = useState(null); // Track which card to delete
   const inputRef = useRef(null);
   const [selected, setSelected] = useState(null);
   const [open, setOpen] = useState(false);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const [error, setError] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -74,36 +85,41 @@ const Notification = () => {
     reset();
   };
 
+  const handleDeleteClick = (index) => {
+    setCardToDelete(index);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (cardToDelete !== null) {
+      setNotifications((prev) => prev.filter((_, i) => i !== cardToDelete));
+      setDeleteDialogOpen(false);
+      setCardToDelete(null);
+    }
+  };
+
   return (
     <div className="p-4 sm:p-6 lg:p-8 w-full max-w-7xl mx-auto">
       <div className="flex flex-col gap-6">
         {/* Controls Section */}
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
           <div className="w-full sm:w-auto flex-1">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-3xl text-gray-500 border border-blue-400 rounded-xl px-4 py-2 shadow-lg flex justify-between items-center"
-                >
-                  {date ? format(new Date(date), "yyyy-MM-dd") : "Select Date"}
-                  <CalendarIcon className="h-5 w-5" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  className="rounded-md border"
-                />
-              </PopoverContent>
-            </Popover>
+            <Button
+              variant="outline"
+              className="w-[260px] flex items-center justify-between border border-blue-400 rounded-xl px-4 py-2 shadow-lg"
+              onClick={(e) => {
+                e.preventDefault();
+                inputRef.current?.showPicker();
+              }}
+            >
+              {date ? format(new Date(date), "yyy-MM-dd") : "Select Date"}
+              <CalendarIcon className="h-5 w-5" />
+            </Button>
             <Input
               ref={inputRef}
               type="date"
-              className="hidden"
-              value={date ? format(new Date(date), "yyyy-MM-dd") : ""}
+              className="opacity-0 absolute -z-10"
+              value={date || ""}
               onChange={(e) => setDate(e.target.value)}
             />
           </div>
@@ -115,15 +131,9 @@ const Notification = () => {
                 <Plus size={20} /> Add Notification
               </Button>
             </DialogTrigger>
-            <DialogContent
-              className="w-full max-w-[90vw] sm:max-w-md p-6 rounded-lg shadow-lg border"
-              onPointerDownOutside={(e) => e.preventDefault()}
-              onEscapeKeyDown={(e) => e.preventDefault()}
-            >
+            <DialogContent className="max-w-sm w-full">
               <DialogHeader>
-                <DialogTitle className="text-center text-lg sm:text-xl font-semibold">
-                  Select Notification Type
-                </DialogTitle>
+                <DialogTitle>Select Notification Type</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 my-4">
                 {["public", "private"].map((type) => (
@@ -137,10 +147,7 @@ const Notification = () => {
                       checked={selected === type}
                       onCheckedChange={() => handleCheckboxChange(type)}
                     />
-                    <Label
-                      htmlFor={type}
-                      className="text-sm font-medium cursor-pointer"
-                    >
+                    <Label htmlFor={type}>
                       {type.charAt(0).toUpperCase() + type.slice(1)}
                     </Label>
                   </div>
@@ -163,14 +170,12 @@ const Notification = () => {
 
         {/* Create Notification Modal */}
         <Dialog open={editProfileOpen} onOpenChange={setEditProfileOpen}>
-          <DialogContent className="w-full max-w-[90vw] sm:max-w-md p-6 rounded-lg shadow-lg border">
+          <DialogContent className="max-w-sm w-full">
             <DialogHeader>
-              <DialogTitle className="text-lg sm:text-xl font-semibold">
-                Create Notification
-              </DialogTitle>
+              <DialogTitle>Create Notification</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="space-y-2">
+              <div>
                 <Label htmlFor="title">Title</Label>
                 <Input
                   id="title"
@@ -181,7 +186,7 @@ const Notification = () => {
                   <p className="text-red-500 text-sm">{errors.title.message}</p>
                 )}
               </div>
-              <div className="space-y-2">
+              <div>
                 <Label htmlFor="desc">Description</Label>
                 <Textarea
                   id="desc"
@@ -192,7 +197,7 @@ const Notification = () => {
                   <p className="text-red-500 text-sm">{errors.desc.message}</p>
                 )}
               </div>
-              <DialogFooter className="flex justify-end">
+              <DialogFooter>
                 <Button
                   type="submit"
                   className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
@@ -209,46 +214,41 @@ const Notification = () => {
           {notifications.map((notif, index) => (
             <Card
               key={index}
-              className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden border border-gray-100/50 "
+              className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden border border-gray-100/50"
             >
-              <div className="p-4 sm:p-6 relative">
-                <div className="" />
+              <div className="p-4 sm:p-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
                   <h3 className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                     {notif.title}
                   </h3>
                   <span
-                    className={`mt-2 sm:mt-0 px-2 py-1 rounded-full text-xs font-semibold uppercase ${
-                      notif.type === "urgent"
+                    className={`mt-2 sm:mt-0 px-2 py-1 rounded-full text-xs font-semibold uppercase ${notif.type === "urgent"
                         ? "bg-red-500/10 text-red-600 border border-red-500/20"
                         : "bg-blue-500/10 text-blue-600 border border-blue-500/20"
-                    }`}
+                      }`}
                   >
                     {notif.type}
                   </span>
                 </div>
-                <p className=" text-sm sm:text-base leading-relaxed bg-gray-50/20 p-3 rounded-xl">
-                  {notif.desc}
-                </p>
-                <div className="mt-4 flex items-center justify-between text-xs sm:text-sm text-gray-500 border-2 border-gray-100 p-2 rounded-xl">
+                <ScrollArea className="h-[150px] w-full rounded-lg border border-gray-200 p-4 shadow-sm">
+                  <p className="text-sm sm:text-base leading-relaxed bg-gray-100/50 p-4 rounded-xl text-gray-800">
+                    {notif.desc}
+                  </p>
+                </ScrollArea>
+                <div className="mt-4 flex items-center justify-between text-xs text-gray-500 border-2 border-gray-100 p-2 rounded-xl">
                   <div className="flex items-center">
-                    <CalendarIcon className="h-4 w-4 mr-2" />
+                    <CalendarIcon className="h-4$w-4 mr-2" />
                     <span>
                       {notif.date
                         ? format(new Date(notif.date), "MMM dd, yyyy")
-                        : "N/A"}{" "}
-                      
+                        : "N/A"}
                     </span>
                   </div>
                   <div className="h-2 w-2 rounded-full bg-blue-400" />
                 </div>
                 <Button
+                  onClick={() => handleDeleteClick(index)}
                   className="mt-4 w-full bg-gradient-to-r from-red-500 to-pink-600 text-white py-2 rounded-xl hover:from-red-600 hover:to-pink-700 transition-all"
-                  // onClick={() =>
-                  //   setNotifications(
-                  //     notifications.filter((_, i) => i !== index)
-                  //   )
-                  // }
                 >
                   <Trash2 size={20} className="mr-2" /> Delete
                 </Button>
@@ -256,6 +256,37 @@ const Notification = () => {
             </Card>
           ))}
         </div>
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]"    onPointerDownOutside={(e) => e.preventDefault()}
+                  onEscapeKeyDown={(e) => e.preventDefault()}>
+            <DialogHeader>
+              <DialogTitle>Confirm Deletion</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <p>Are you sure you want to delete this notification?</p>
+              <p className="text-sm text-gray-500 mt-2">
+                This action cannot be undone.
+              </p>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setDeleteDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+              onClick={() => setDeleteDialogOpen(false)}
+                // onClick={confirmDelete}
+                className="bg-red-500 hover:bg-red-600"
+              >
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

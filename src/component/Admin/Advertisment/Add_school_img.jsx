@@ -50,7 +50,7 @@ const AddSchoolImg = () => {
     <div>
         
       <div className="flex justify-center items-center mt-7 p-4">
-        <Card className="w-full max-w-lg shadow-lg rounded-2xl  ">
+        <Card className=" shadow-blue-500/50 w-full max-w-lg shadow-lg rounded-2xl   overflow-hidden border border-gray-100/50">
           <CardHeader>
             <CardTitle className="text-xl font-semibold text-center">
               Add School Image

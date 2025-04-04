@@ -6,6 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "../../src/components/ui/dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -22,12 +23,12 @@ import { Input } from "../../src/components/ui/input";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "../../src/components/ui/card";
 import { ScrollArea } from "../../src/components/ui/scroll-area";
+import { Trash2 } from "lucide-react";
 
 const FormSchema = z.object({
   title: z.string().min(1, { message: "Title is required!" }),
@@ -41,6 +42,8 @@ const AddPopularCourse = () => {
   const [cards, setCards] = useState([]);
   const [imagePreview, setImagePreview] = useState(null);
   const [open, setOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [cardToDelete, setCardToDelete] = useState(null);
 
   const form = useForm({
     resolver: zodResolver(FormSchema),
@@ -80,9 +83,22 @@ const AddPopularCourse = () => {
     setOpen(false);
   };
 
+  const handleDeleteClick = (index) => {
+    setCardToDelete(index);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (cardToDelete !== null) {
+      setCards((prevCards) => prevCards.filter((_, i) => i !== cardToDelete));
+      setDeleteDialogOpen(false);
+      setCardToDelete(null);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center space-y-6 p-4 sm:p-6 md:p-8">
-      <div className=" w-full flex justify-end">
+      <div className="w-full flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button className="px-6 py-2 text-lg rounded-md shadow-md">
@@ -94,7 +110,7 @@ const AddPopularCourse = () => {
             onPointerDownOutside={(e) => e.preventDefault()}
             onEscapeKeyDown={(e) => e.preventDefault()}
           >
-            <DialogHeader> 
+            <DialogHeader>
               <DialogTitle className="text-center text-2xl font-semibold">
                 Add Course
               </DialogTitle>
@@ -175,11 +191,12 @@ const AddPopularCourse = () => {
           </DialogContent>
         </Dialog>
       </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-3 gap-6 w-full max-w-7xl">
         {cards.map((card, index) => (
-          <Card key={index} className="shadow-md shadow-blue-500/50 rounded-lg overflow-hidden">
+          <Card key={index} className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden border border-gray-100/50">
             <CardHeader>
-              <CardTitle className="text-center text-xl font-semibold">
+              <CardTitle className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                 {card.title}
               </CardTitle>
             </CardHeader>
@@ -192,17 +209,52 @@ const AddPopularCourse = () => {
                 />
               )}
             </CardContent>
-            <ScrollArea className="h-[150px] w-full rounded-md border p-4">
-              <CardDescription>{card.desc}</CardDescription>
+            <ScrollArea className="h-[150px] w-full rounded-lg border border-gray-200 p-4 shadow-sm">
+              <p className="text-sm sm:text-base leading-relaxed bg-gray-100/50 p-4 rounded-xl text-gray-800">
+                {card.desc}
+              </p>
             </ScrollArea>
             <CardFooter className="mt-5 flex justify-center">
-              <Button className="bg-red-500 text-white hover:bg-red-600 hover:text-white">
-                Delete
+              <Button
+                onClick={() => handleDeleteClick(index)}
+                className="mt-4 w-full bg-gradient-to-r from-red-500 to-pink-600 text-white py-2 rounded-xl hover:from-red-600 hover:to-pink-700 transition-all"
+              >
+                <Trash2 size={20} className="mr-2" /> Delete
               </Button>
             </CardFooter>
           </Card>
         ))}
       </div>
+
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]" onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()} >
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p>Are you sure you want to delete this course?</p>
+            <p className="text-sm text-gray-500 mt-2">
+              This action cannot be undone.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              // onClick={confirmDelete}
+              onClick={() => setDeleteDialogOpen(false)}
+              className="bg-red-500 hover:bg-red-600"
+            >
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
