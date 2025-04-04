@@ -10,7 +10,7 @@ import { Input } from '../../../src/components/ui/input'
 import { useNavigate } from 'react-router'
 
 const Batches = () => {
-    const [AddBatches,setAddBatches] = useState()
+    const [AddBatches, setAddBatches] = useState()
     // const [navigate,setnavigate] = useNavigate()
     const goBack = () => {
         window.history.back();
@@ -67,7 +67,7 @@ const Batches = () => {
                             </Dialog>
                         </div>
 
-                        {/* Search Bar */}
+                        {/* Search Bar */}b 
                         <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full sm:max-w-md">
                             <Search size={18} className="text-gray-500" />
                             <input
