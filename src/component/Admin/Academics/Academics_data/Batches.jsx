@@ -17,7 +17,7 @@ const Batches = () => {
     };
     return (
         <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
-            <AppSidebar />
+            <AppSidebar /> 
             <SidebarInset>
                 <Header />
                 <main className="flex-1 overflow-auto">
@@ -67,7 +67,7 @@ const Batches = () => {
                             </Dialog>
                         </div>
 
-                        {/* Search Bar */}b 
+                        {/* Search Bar */}
                         <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full sm:max-w-md">
                             <Search size={18} className="text-gray-500" />
                             <input

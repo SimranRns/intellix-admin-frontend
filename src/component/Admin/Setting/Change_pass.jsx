@@ -35,24 +35,24 @@ const Settings = () => {
         <div className="flex flex-1 flex-col gap-4   pt-0">
           <div className="grid  shadow-md shadow-blue-300/30">
             <Disclosure as="nav" className=" shadow">
-              <div className=" px-4 sm:px-6 lg:px-8">
+              <div className=" px-4  lg:px-8">
                 <div className="flex justify-between h-16 items-center w-full">
                   <div className="md:flex md:space-x-4">
                     <button
                       onClick={() => setTab(1)}
-                      className={`rounded-md px-3 py-2 text-sm font-medium ${tab === 1 ? 'bg-blue-600 text-white' :  'bg-gray-200 text-gray-800 hover:bg-blue-500 hover:text-white'}`}
+                      className={`rounded-md px-3 py-2 text-[12px] font-medium ${tab === 1 ? 'bg-blue-600 text-white' :  'bg-gray-200 text-gray-800 hover:bg-blue-500 hover:text-white'}`}
                     >
                       View Profile
                     </button>
                     <button
                       onClick={() => setTab(2)}
-                      className={`rounded-md px-1 py-2 mx-2 text-sm font-medium ${tab === 2 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-blue-500 hover:text-white'}`}
+                      className={`rounded-md px-2 py-2 mx-2 text-[13px] font-medium ${tab === 2 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-blue-500 hover:text-white'}`}
                     >
                       Change Password
                     </button>
                     <button
                       onClick={() => setTab(3)}
-                      className={`rounded-md px-1 py-2  text-sm font-medium ${tab === 3 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-blue-500 hover:text-white'}`}
+                      className={`rounded-md px-2 py-2  text-[13px] font-medium ${tab === 3 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-blue-500 hover:text-white'}`}
                     >
                       Upadte Profile
                     </button>

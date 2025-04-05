@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   SidebarProvider,
   SidebarInset,
@@ -66,6 +66,7 @@ const Attendance = () => {
   const [loading, setLoading] = useState(false);
   const [openFirstModal, setOpenFirstModal] = useState(false);
   const [openSecondModal, setOpenSecondModal] = useState(false);
+  const inputRef = useRef(null);
   // For the date/time display at the bottom
   // const currentDateTime = new Date().toLocaleString();
 
@@ -176,11 +177,10 @@ const Attendance = () => {
                 <button
                   key={tab}
                   onClick={() => setSelectedTab(tab)}
-                  className={`px-4 py-2 rounded-lg border shadow-md ${
-                    selectedTab === tab
-                      ? "bg-blue-600 text-white"
-                      : "bg-white text-gray-700"
-                  }`}
+                  className={`px-4 py-2 rounded-lg border shadow-md ${selectedTab === tab
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-gray-700"
+                    }`}
                 >
                   {tab}
                 </button>
@@ -225,28 +225,32 @@ const Attendance = () => {
             </div>
 
             {/* Date picker */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-[280px] justify-start text-left shadow-sm border border-2 border-blue-200 shadow-blue-500/50 font-normal m-5",
-                    !date && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "PPP") : <span>Pick a date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+            <div className="w-full sm:w-auto flex-1">
+              <Button
+                variant="outline"
+
+                className="w-[250px] flex items-center text-left justify-between shadow-sm  border border-blue-400 rounded-xl px-4 py-2 shadow-blue-500/50 font-normal mb-5"
+                onClick={(e) => {
+                  e.preventDefault();
+                  inputRef.current?.showPicker();
+                }}
+              >
+                {date ? format(new Date(date), "yyy-MM-dd") : "Pick a date"}
+                <CalendarIcon className="h-5 w-5" />
+
+              </Button>
+
+              <Input
+                ref={inputRef}
+                type="date"
+                className="opacity-0 absolute -z-10"
+                value={date || ""}
+                onChange={(e) => setDate(e.target.value)}
+              />
+
+            </div>
+
+
 
             {/* Action buttons (Apply, Set Attendance, Export Report) */}
 

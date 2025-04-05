@@ -54,7 +54,7 @@ const Header = () => {
                         </h1>
 
                         {/* Search Bar */}
-                        <div className="relative hidden lg:flex items-center border border-blue-400 dark:border-gray-600 shadow rounded w-full max-w-md">
+                        <div className="relative hidden lg:flex items-center border border-blue-400 dark:border-gray-600 shadow rounded-lg w-full max-w-md">
                             <Search size={20} className="absolute left-3 text-gray-500 dark:text-gray-400" />
                             <Input type="number" placeholder="By Search Year..." className="border-none bg-transparent focus:ring-0 w-full pl-10 text-gray-900 dark:text-white" />
                         </div>
