@@ -4,20 +4,65 @@ import { SidebarInset, SidebarProvider } from '../../../src/components/ui/sideba
 import Header from '../../Dashboard/Header'
 import { Button } from '../../../src/components/ui/Button'
 import { ArrowLeft, Search } from 'lucide-react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../src/components/ui/dialog'
-import { Form, FormControl, FormField, FormItem, FormLabel } from '../../../src/components/ui/form'
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle
+} from '../../../src/components/ui/dialog'
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from '../../../src/components/ui/form'
 import { Input } from '../../../src/components/ui/input'
-import { useNavigate } from 'react-router'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "../../../src/components/ui/select"
+// ✅ Zod schema for validation
+const batchSchema = z.object({
+    batchName: z.string().min(1, 'Batch name is required'),
+    course: z.string().min(1, 'course name is required')
+})
+
+
+
 
 const Batches = () => {
-    const [AddBatches, setAddBatches] = useState()
-    // const [navigate,setnavigate] = useNavigate()
+    const [AddBatches, setAddBatches] = useState(false)
+
+    const form = useForm({
+        resolver: zodResolver(batchSchema),
+        defaultValues: {
+            batchName: ''
+        }
+    })
+
+    const onSubmit = (data) => {
+        console.log('Batch submitted:', data)
+        // handle batch creation logic here
+        setAddBatches(false)
+        form.reset()
+    }
     const goBack = () => {
-        window.history.back();
-    };
+        window.history.back()
+    }
+
     return (
-        <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
-            <AppSidebar /> 
+        <SidebarProvider style={{ '--sidebar-width': '15rem' }}>
+            <AppSidebar />
             <SidebarInset>
                 <Header />
                 <main className="flex-1 overflow-auto">
@@ -41,28 +86,42 @@ const Batches = () => {
                                 <DialogContent
                                     onPointerDownOutside={(e) => e.preventDefault()}
                                     onEscapeKeyDown={(e) => e.preventDefault()}
-                                    className=" sm:max-w-[600px] shadow-lg p-6 rounded-lg">
+                                    className="sm:max-w-[600px] shadow-lg p-6 rounded-lg"
+                                >
                                     <DialogHeader>
                                         <DialogTitle className="text-center">Add Batches</DialogTitle>
                                     </DialogHeader>
-                                    {/* <Form {...form}>
-                                        <form onSubmit={form.handleSubmit(handleAdddepartment)} className="space-y-8">
+                                    <Form {...form}>
+                                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                                             <FormField
                                                 control={form.control}
-                                                name="Department"
+                                                name="batchName"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Enter name of department</FormLabel>
+                                                        <FormLabel>Enter name of Batch</FormLabel>
                                                         <FormControl>
-                                                            <Input placeholder="Department" {...field} />
+                                                            <Input placeholder="Batch Name" {...field} />
                                                         </FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
                                             />
-                                            <Button type="submit">Confirm</Button>
+                                            <Select>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select a Course" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectGroup>
+                                                        <SelectLabel>Select course</SelectLabel>
+                                                        <SelectItem value="course1">course1</SelectItem>
+                                                        <SelectItem value="course2">course2</SelectItem>
+
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
+                                            <Button type="submit" className="bg-blue-600 text-white hover:bg-blue-500">Confirm</Button>
                                         </form>
-                                    </Form> */}
+                                    </Form>
                                 </DialogContent>
                             </Dialog>
                         </div>
@@ -72,12 +131,13 @@ const Batches = () => {
                             <Search size={18} className="text-gray-500" />
                             <input
                                 name="search"
-                                type="text" placeholder="By Batches Name..." className="ml-2 w-full outline-none bg-transparent text-sm" />
+                                type="text"
+                                placeholder="By Batches Name..."
+                                className="ml-2 w-full outline-none bg-transparent text-sm"
+                            />
                         </div>
                     </div>
-
                 </main>
-
             </SidebarInset>
         </SidebarProvider>
     )

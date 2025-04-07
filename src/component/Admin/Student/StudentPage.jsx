@@ -405,7 +405,7 @@ const StudentHeader = () => {
                               <DropdownMenuItem onClick={() => navigate("/student-payment-history")}>
                                 Payment_History
                               </DropdownMenuItem>
-                              <DropdownMenuItem>
+                              <DropdownMenuItem onClick={()=>navigate("/student_attendance")}>
                                 Attendance
                               </DropdownMenuItem>
                               <DropdownMenuItem>
