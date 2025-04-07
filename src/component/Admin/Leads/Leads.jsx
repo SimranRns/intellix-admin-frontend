@@ -57,6 +57,7 @@ import { ScrollArea } from "../../src/components/ui/scroll-area";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import ThankYouCard from "../Dashboard/ThankYouCard";
 
 const Leads = () => {
   const rowsPerPage = 5; // Number of rows per page
@@ -140,7 +141,7 @@ const Leads = () => {
 
   const [department, setDepartment] = useState("Please Select");
   const [Employee, setEmployee] = useState("Please Select");
-
+  const [AddConfrom, setAddConfrom] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [open, setOpen] = useState(false);
   const totalPages = Math.ceil(data1.length / rowsPerPage);
@@ -157,30 +158,46 @@ const Leads = () => {
     category: z.string().min(1, "Category is required"),
   });
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(leadSchema),
-    // resolver: zodResolver(categorySchema),
+  const form = useForm({
+    defaultValues: {},
   });
-
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    console.log("Category Added:", data);
-    reset();
-    setOpen(false);
-  };
-
   const categorySchema = z.object({
     name: z.string().min(1, "Category name is required"),
   });
 
+  const {
+    register: categoryRegister,
+    handleSubmit: handleCategorySubmit,
+    reset: categoryReset,
+    formState: { errors: categoryErrors },
+  } = useForm({
+    resolver: zodResolver(categorySchema),
+  });
+  const handlecategory = (data) => {
+    console.log("Category Form Data:", data);
+    setAddConfrom(true); // show confirmation dialog
+    categoryReset(); // reset this specific form
+    setOpen(false);
+  };
 
+  const onSubmit = (data) => {
+    console.log("Form Data:", data);
+    // ✅ only happens after validation passes
+    form.reset();
+    setOpen(false);
+  };
 
+  const handleConfirm = async () => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      console.log("Data Submitted Successfully!");
+
+      setAddConfrom(false);
+    } catch (error) {
+      console.error("Submission failed:", error);
+    }
+  };
 
   return (
     <>
@@ -317,81 +334,7 @@ const Leads = () => {
                   <DialogHeader>
                     <DialogTitle>Add Leads</DialogTitle>
                   </DialogHeader>
-                  <form
-                    onSubmit={handleSubmit(onSubmit)}
-                    className="grid gap-4 py-4"
-                  >
-                    <Input
-                      {...register("name")}
-                      placeholder="Enter Name"
-                      className="col-span-4"
-                    />
-                    {errors.name && (
-                      <p className="text-red-500">{errors.name.message}</p>
-                    )}
-
-                    <Input
-                      {...register("email")}
-                      placeholder="Enter Email"
-                      className="col-span-4"
-                    />
-                    {errors.email && (
-                      <p className="text-red-500">{errors.email.message}</p>
-                    )}
-
-                    <Input
-                      {...register("address")}
-                      placeholder="Enter Address"
-                      className="col-span-4"
-                    />
-                    {errors.address && (
-                      <p className="text-red-500">{errors.address.message}</p>
-                    )}
-
-                    <Input
-                      {...register("contact")}
-                      placeholder="Enter Contact"
-                      className="col-span-4"
-                    />
-                    {errors.contact && (
-                      <p className="text-red-500">{errors.contact.message}</p>
-                    )}
-
-                    <Select
-                      onValueChange={(value) => setValue("category", value)}
-                    >
-                      <SelectTrigger className="col-span-4">
-                        <SelectValue placeholder="Select Categories" />
-                      </SelectTrigger>
-                      <SelectContent position="popper">
-                        <SelectItem value="next">Next.js</SelectItem>
-                        <SelectItem value="sveltekit">SvelteKit</SelectItem>
-                        <SelectItem value="astro">Astro</SelectItem>
-                        <SelectItem value="nuxt">Nuxt.js</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {errors.category && (
-                      <p className="text-red-500">{errors.category.message}</p>
-                    )}
-
-                    <DialogFooter>
-                      <Button type="submit">Submit</Button>
-                    </DialogFooter>
-                  </form>
-                </DialogContent>
-              </Dialog>
-
-              <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger asChild>
-                  <Button className="bg-blue-600 text-white">
-                    <PlusIcon className="mr-0" /> Add Category
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[525px]">
-                  <DialogHeader>
-                    <DialogTitle>Add Category</DialogTitle>
-                  </DialogHeader>
-                  <form onSubmit={handleSubmit(onSubmit)}>
+                  <form onSubmit={handleCategorySubmit(handlecategory)}>
                     <div className="grid gap-4 py-4">
                       <Label htmlFor="name" className="text-left">
                         Enter Category Name
@@ -399,13 +342,13 @@ const Leads = () => {
                       <div className="grid grid-cols-4 items-center gap-4">
                         <Input
                           id="name"
-                          {...register("name")}
+                          {...categoryRegister("name")}
                           placeholder="Enter category name"
                           className="col-span-4"
                         />
-                        {errors.name && (
+                        {categoryErrors.name && (
                           <p className="text-red-500 text-sm">
-                            {errors.name.message}
+                            {categoryErrors.name.message}
                           </p>
                         )}
                       </div>
@@ -416,8 +359,44 @@ const Leads = () => {
                   </form>
                 </DialogContent>
               </Dialog>
+              {/* add Category */}
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                  <Button className="bg-blue-600 text-white">
+                    <PlusIcon className="mr-0" /> Add Category
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[525px]">
+                  <DialogHeader>
+                    <DialogTitle>Add Category</DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={form.handleSubmit(handlecategory)}>
+                    <div className="grid gap-4 py-4">
+                      <Label htmlFor="name" className="text-left">
+                        Enter Category Name
+                      </Label>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Input
+                          id="name"
+                          // {...register("name")}
+                          placeholder="Enter category name"
+                          className="col-span-4"
+                        />
+                        {/* {errors.name && (
+                          <p className="text-red-500 text-sm">
+                            {errors.name.message}
+                          </p>
+                        )} */}
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button type="submit">Add Category</Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
 
-             
+              {/* My Leads */}
               <Button
                 variant="default"
                 className="bg-blue-600 "
@@ -551,6 +530,7 @@ const Leads = () => {
 
                                   <DialogFooter>
                                     <Button
+                                      onClick={() => setAddConfrom(true)}
                                       type="submit"
                                       className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800 text-white"
                                     >
@@ -588,6 +568,32 @@ const Leads = () => {
               </button>
             </div>
           </div>
+
+          <Dialog open={AddConfrom} onOpenChange={setAddConfrom}>
+            <DialogContent
+              onPointerDownOutside={(e) => e.preventDefault()}
+              onEscapeKeyDown={(e) => e.preventDefault()}
+              className="w-full max-w-[90vw] sm:max-w-[400px] p-6 rounded-lg"
+            >
+              <ThankYouCard />
+              {/* Dialog Footer */}
+              <DialogFooter className="flex justify-end gap-3">
+                <Button
+                  onClick={() => setAddConfrom(false)}
+                  variant="outline"
+                  className="w-full sm:w-auto text-black mt-4 bg-gray-100 hover:text-black hover:bg-gray-200 px-5 py-2 rounded-md flex items-center  transition-all"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleConfirm} // Handle form submission & dialog close
+                  className="w-full sm:w-auto mt-4 bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md flex items-center shadow-md transition-all"
+                >
+                  Confirm
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </SidebarInset>
       </SidebarProvider>
     </>
