@@ -67,6 +67,8 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+
+
 const additionalDetailsSchema = z.object({
   Teachername: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email format"),
@@ -153,6 +155,9 @@ const studentGroups = [
 const PAGE_SIZE = 5;
 
 const StudentHeader = () => {
+  const dueInputRef = useRef(null);
+  const startInputRef = useRef(null);
+  const endInputRef = useRef(null);
   const [date, setDate] = useState(null); // Define date state
   const [startDate, setStartDate] = useState(new Date("2025-03-04"));
   const [endDate, setEndDate] = useState(new Date("2025-03-04"));
@@ -225,6 +230,14 @@ const StudentHeader = () => {
                rounded-lg hover:bg-[#3d3690] hover:opacity-90">
                   + Add Student</Button>
 
+                  <Checkbox id="terms" />
+      <label
+        htmlFor="terms"
+        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+      >
+       RT
+      </label>
+
               </div>
             </div>
 
@@ -262,25 +275,38 @@ const StudentHeader = () => {
 
                       <TableCell>{student.batch}</TableCell>
                       <TableCell>
-
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="outline" className="bg-green-500 text-white px-3 sm:py-1 md:py-2 rounded-lg">+ Add Payment</Button>
+                            <Button variant="outline" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-base font-medium">
+                              + Add Payment
+                            </Button>
                           </DialogTrigger>
-                          <DialogContent className="sm:max-w-[600px] p-6 rounded-lg" onPointerDownOutside={(e) => e.preventDefault()}
-                            onEscapeKeyDown={(e) => e.preventDefault()}>
-                            <DialogHeader>
-                              <DialogTitle className="text-3xl font-semibold"> Setup Payment</DialogTitle>
 
+                          <DialogContent
+                            className="sm:max-w-[600px] p-6 rounded-xl"
+                            onPointerDownOutside={(e) => e.preventDefault()}
+                            onEscapeKeyDown={(e) => e.preventDefault()}
+                          >
+                            <DialogHeader>
+                              <DialogTitle className="text-2xl sm:text-3xl font-semibold text-center mb-4">
+                                Setup Payment
+                              </DialogTitle>
                             </DialogHeader>
-                            <div className="grid gap-4 py-4">
-                              <label className="block text-2xl font-medium ">Grand Total :</label>
-                              <Input type="text" placeholder="₹" className="mt-1 w-64 h-24" />
-                              <div className="flex space-x-4">
+
+                            <div className="space-y-6">
+                              {/* Grand Total */}
+                              <div>
+                                <label className="block text-xl font-medium mb-2">Grand Total:</label>
+                                <Input type="text" placeholder="₹" className="w-full h-14 text-lg" />
+                              </div>
+
+                              {/* Payment Option Selector */}
+                              <div className="flex gap-4">
                                 {["Pay in EMIs", "Pay in One Shot"].map((type) => (
                                   <div
                                     key={type}
-                                    className={`flex items-center space-x-3 p-3 rounded-md border transition cursor-pointer `}
+                                    className={`flex items-center gap-2 px-4 py-3 border rounded-md cursor-pointer ${selected === type ? "border-blue-500" : ""
+                                      }`}
                                     onClick={() => handleCheckboxChange(type)}
                                   >
                                     <Checkbox
@@ -288,108 +314,133 @@ const StudentHeader = () => {
                                       checked={selected === type}
                                       onCheckedChange={() => handleCheckboxChange(type)}
                                     />
-                                    <label htmlFor={type} className="text-sm font-medium cursor-pointer">
+                                    <label htmlFor={type} className="text-base font-medium cursor-pointer">
                                       {type}
                                     </label>
                                   </div>
                                 ))}
                               </div>
-                              <div>
-                                {selected === "Pay in EMIs" ? (
-                                  <div className="mt-4 grid grid-cols-2 gap-7">
-                                    <div>
-                                      <label className="block text-2xl font-medium">Discount Amount</label>
-                                      <Input type="text" placeholder="Enter Amount" className="mt-1" />
-                                    </div>
-                                    <div>
-                                      <label className="block text-2xl font-medium">EMI Count *</label>
-                                      <Input type="text" placeholder="Number of EMIs" className="mt-1" />
-                                    </div>
 
-                                    <div className="mt-4 grid grid-cols-2 gap-4">
-                                      <div>
-                                        <label className="block text-2xl font-medium">Start Date *</label>
-                                        <Popover>
-                                          <PopoverTrigger asChild>
-                                            <Button variant="outline" className="w-full flex justify-between">
-                                              {format(startDate, "dd/MM/yyyy")}
-                                              <CalendarIcon className="w-4 h-4" />
-                                            </Button>
-                                          </PopoverTrigger>
-                                          <PopoverContent>
-                                            <Calendar mode="single" selected={startDate} onSelect={setStartDate} />
-                                          </PopoverContent>
-                                        </Popover>
-                                      </div>
-                                      <div>
-                                        <label className="block text-2xl font-medium">End Date *</label>
-                                        <Popover>
-                                          <PopoverTrigger asChild>
-                                            <Button variant="outline" className="w-full flex justify-between">
-                                              {format(endDate, "dd/MM/yyyy")}
-                                              <CalendarIcon className="w-4 h-4" />
-                                            </Button>
-                                          </PopoverTrigger>
-                                          <PopoverContent>
-                                            <Calendar mode="single" selected={endDate} onSelect={setEndDate} />
-                                          </PopoverContent>
-                                        </Popover>
-                                      </div>
-                                    </div>
-
+                              {/* Conditional Sections */}
+                              {selected === "Pay in EMIs" ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                  {/* Discount */}
+                                  <div>
+                                    <label className="block text-lg font-medium mb-1">Discount Amount</label>
+                                    <Input type="number" placeholder="Enter Amount" className="w-full" />
                                   </div>
-                                ) : (
-                                  <div className="mt-4 grid grid-cols-2 gap-4">
-                                    <div>
-                                      <label className="block text-2xl font-medium">Start Date *</label>
-                                      <Popover>
-                                        <PopoverTrigger asChild>
-                                          <Button variant="outline" className="w-full flex justify-between">
-                                            {format(startDate, "dd/MM/yyyy")}
-                                            <CalendarIcon className="w-4 h-4" />
-                                          </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent>
-                                          <Calendar mode="single" selected={startDate} onSelect={setStartDate} />
-                                        </PopoverContent>
-                                      </Popover>
-                                    </div>
-                                    <div>
 
-                                      <Popover>``
-                                        <PopoverTrigger asChild>
-                                          <Button
-                                            variant="outline"
-                                            className={cn(
-                                              "w-[280px] justify-start text-left shadow-sm border border-2 border-blue-200 shadow-blue-500/50 font-normal m-5",
-                                              !date && "text-muted-foreground"
-                                            )}
-                                          >
-                                            <CalendarIcon className="mr-2 h-4 w-4" />
-                                            {date ? format(date, "PPP") : <span>Pick a date</span>}
-                                          </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-auto p-0">
-                                          <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
-                                        </PopoverContent>
-                                      </Popover>
-                                    </div>
-
+                                  {/* EMI Count */}
+                                  <div>
+                                    <label className="block text-lg font-medium mb-1">EMI Count *</label>
+                                    <Input type="number" placeholder="Number of EMIs" className="w-full" />
                                   </div>
-                                )}
-                              </div>
 
+                                  {/* Start and End Date */}
+                                  <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+  {/* Start Date */}
+  <div className="w-full sm:w-auto flex-1">
+    <label className="block text-lg font-medium mb-1">Start Date *</label>
 
+    <Button
+      variant="outline"
+      className="w-full flex items-center text-left justify-between shadow-sm border border-blue-400 rounded-xl px-4 py-2 shadow-blue-500/50 font-normal mb-5"
+      onClick={(e) => {
+        e.preventDefault();
+        startInputRef.current?.showPicker();
+      }}
+    >
+      {startDate ? format(new Date(startDate), "dd/MM/yyyy") : "Pick a date"}
+      <CalendarIcon className="h-5 w-5 ml-2" />
+    </Button>
 
+    <Input
+      ref={startInputRef}
+      type="date"
+      className="opacity-0 absolute -z-10"
+      value={startDate || ""}
+      onChange={(e) => setStartDate(e.target.value)}
+    />
+  </div>
 
+  {/* End Date */}
+  <div className="w-full sm:w-auto flex-1">
+    <label className="block text-lg font-medium mb-1">End Date *</label>
+
+    <Button
+      variant="outline"
+      className="w-full flex items-center text-left justify-between shadow-sm border border-blue-400 rounded-xl px-4 py-2 shadow-blue-500/50 font-normal mb-5"
+      onClick={(e) => {
+        e.preventDefault();
+        endInputRef.current?.showPicker();
+      }}
+    >
+      {endDate ? format(new Date(endDate), "dd/MM/yyyy") : "Pick a date"}
+      <CalendarIcon className="h-5 w-5 ml-2" />
+    </Button>
+
+    <Input
+      ref={endInputRef}
+      type="date"
+      className="opacity-0 absolute -z-10"
+      value={endDate || ""}
+      onChange={(e) => setEndDate(e.target.value)}
+    />
+  </div>
+</div>
+
+                                </div>
+                              ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                  {/* Discount */}
+                                  <div>
+                                    <label className="block text-lg font-medium mb-1">Discount Amount</label>
+                                    <Input type="number" placeholder="Amount" className="w-full" />
+                                  </div>
+
+                                  {/* End Date */}
+                                  <div className="w-full sm:w-auto flex-1">
+      <label className="block text-lg font-medium mb-1">Due Date</label>
+
+      <Button
+        variant="outline"
+        className="w-full flex items-center text-left justify-between shadow-sm border border-blue-400 rounded-xl px-4 py-2 shadow-blue-500/50 font-normal mb-5"
+        onClick={(e) => {
+          e.preventDefault();
+          dueInputRef.current?.showPicker();
+        }}
+      >
+        {endDate ? format(new Date(endDate), "dd/MM/yyyy") : "Pick a date"}
+        <CalendarIcon className="h-5 w-5 ml-2" />
+      </Button>
+
+      <Input
+        ref={dueInputRef}
+        type="date"
+        className="opacity-0 absolute -z-10"
+        value={endDate || ""}
+        onChange={(e) => setEndDate(e.target.value)}
+      />
+    </div>
+
+                                  {/* Remark */}
+                                  <div className="md:col-span-2">
+                                    <label className="block text-lg font-medium mb-1">Remark</label>
+                                    <Input type="text" placeholder="Course Fee" className="w-full" />
+                                  </div>
+                                </div>
+                              )}
                             </div>
+
                             <DialogFooter >
-                              <Button className="w-40  mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg">
+                              
+                              <Button className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold py-3 rounded-xl">
                                 Proceed To Payment
                               </Button>
                             </DialogFooter>
                           </DialogContent>
                         </Dialog>
+
                       </TableCell>
                       <TableCell>
                         <DropdownMenu>

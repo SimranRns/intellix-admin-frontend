@@ -59,8 +59,8 @@ const MarksheetForm = () => {
   };
 
   const inputClass =
-    'w-full border border-gray-200 rounded-lg h-12 px-10 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-300 placeholder-gray-400';
-  const labelClass = 'block font-medium text-gray-700 text-lg mb-2 flex items-center gap-2';
+    'w-full border border-gray-200 rounded-lg h-12 px-10  focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-300 placeholder-black';
+  const labelClass = 'block font-medium text-lg mb-2 flex items-center gap-2 ';
   const iconClass = 'text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2';
   const errorClass = 'text-red-500 text-sm mt-1';
   const navigate = useNavigate();
@@ -85,8 +85,8 @@ const MarksheetForm = () => {
           <div className="w-full max-w-xl rounded-2xl shadow-md shadow-blue-500/50 p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Marksheet Name */}
-              <div className="relative">
-                <label htmlFor="marksheetName" className={`${labelClass} bg-transparent`}>
+              <div className="relative ">
+                <label htmlFor="marksheetName" className={`${labelClass} `}>
                   <FileText size={18} /> Marksheet Name *
                 </label>
                 <input
@@ -97,7 +97,7 @@ const MarksheetForm = () => {
                     setMarksheetName(e.target.value);
                     clearError('marksheetName', e.target.value.trim());
                   }}
-                  className={`${inputClass} ${errors.marksheetName ? 'border-red-500' : ''}`}
+                  className={`${inputClass} text-black ${errors.marksheetName ? 'border-red-500' : ''}`}
                   placeholder="e.g., Semester 1 Results"
                 />
                 <FileText size={18} className={iconClass} />
@@ -116,7 +116,8 @@ const MarksheetForm = () => {
                     setCourse(e.target.value);
                     clearError('course', e.target.value);
                   }}
-                  className={`${inputClass} ${errors.course ? 'border-red-500' : ''}`}
+                  className={`${inputClass} text-black   ${errors.course ? 'border-red-500' : ''}`}
+                  
                 >
                   <option value="" className='text-black'>Select Course</option>
                   <option value="course1" className='text-black'>Course 1</option>
@@ -139,7 +140,7 @@ const MarksheetForm = () => {
                     setBatch(e.target.value);
                     clearError('batch', e.target.value);
                   }}
-                  className={`${inputClass} ${errors.batch ? 'border-red-500' : ''}`}
+                  className={`${inputClass} text-black ${errors.batch ? 'border-red-500' : ''}`}
                 >
                   <option className='text-black' value="">Select Batch</option>
                   <option className='text-black' value="batch1">Batch 1</option>
@@ -162,7 +163,7 @@ const MarksheetForm = () => {
                     setStudent(e.target.value);
                     clearError('student', e.target.value);
                   }}
-                  className={`${inputClass} ${errors.student ? 'border-red-500' : ''}`}
+                  className={`${inputClass} text-black ${errors.student ? 'border-red-500' : ''}`}
                 >
                   <option className='text-black' value="">Select Student</option>
                   <option className='text-black' value="student1">Student 1</option>
@@ -185,7 +186,7 @@ const MarksheetForm = () => {
                     setExam(e.target.value);
                     clearError('exam', e.target.value);
                   }}
-                  className={`${inputClass} ${errors.exam ? 'border-red-500' : ''}`}
+                  className={`${inputClass} text-black ${errors.exam ? 'border-red-500' : ''}`}
                 >
                   <option className='text-black' value="">Select Exam</option>
                   <option className='text-black' value="exam1">Exam 1</option>
