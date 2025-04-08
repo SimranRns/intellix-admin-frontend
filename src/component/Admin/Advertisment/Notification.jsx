@@ -223,8 +223,8 @@ const Notification = () => {
                   </h3>
                   <span
                     className={`mt-2 sm:mt-0 px-2 py-1 rounded-full text-xs font-semibold uppercase ${notif.type === "urgent"
-                        ? "bg-red-500/10 text-red-600 border border-red-500/20"
-                        : "bg-blue-500/10 text-blue-600 border border-blue-500/20"
+                      ? "bg-red-500/10 text-red-600 border border-red-500/20"
+                      : "bg-blue-500/10 text-blue-600 border border-blue-500/20"
                       }`}
                   >
                     {notif.type}
@@ -255,12 +255,53 @@ const Notification = () => {
               </div>
             </Card>
           ))}
+
+          {/* dummy card */}
+
+          <Card
+
+            className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden border border-gray-100/50"
+          >
+            <div className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
+                <h3 className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  About Advertisment
+                </h3>
+                <span
+                  className={`mt-2 sm:mt-0 px-2 py-1 rounded-full text-xs font-semibold uppercase bg-blue-500/10 text-blue-600 border border-blue-500/20 `}
+                >
+                  Public
+                </span>
+              </div>
+              <ScrollArea className="h-[150px] w-full rounded-lg border border-gray-200 p-4 shadow-sm">
+                <p className="text-sm sm:text-base leading-relaxed bg-gray-100/50 p-4 rounded-xl text-gray-800">
+                 Advertisment
+                </p>
+              </ScrollArea>
+              <div className="mt-4 flex items-center justify-between text-xs text-gray-500 border-2 border-gray-100 p-2 rounded-xl">
+                <div className="flex items-center">
+                  <CalendarIcon className="h-4$w-4 mr-2" />
+                  <span>
+                   date
+                  </span>
+                </div>
+                <div className="h-2 w-2 rounded-full bg-blue-400" />
+              </div>
+              <Button
+             
+                className="mt-4 w-full bg-gradient-to-r from-red-500 to-pink-600 text-white py-2 rounded-xl hover:from-red-600 hover:to-pink-700 transition-all"
+              >
+                <Trash2 size={20} className="mr-2" /> Delete
+              </Button>
+            </div>
+          </Card>
+
         </div>
 
         {/* Delete Confirmation Dialog */}
         <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-          <DialogContent className="sm:max-w-[425px]"    onPointerDownOutside={(e) => e.preventDefault()}
-                  onEscapeKeyDown={(e) => e.preventDefault()}>
+          <DialogContent className="sm:max-w-[425px]" onPointerDownOutside={(e) => e.preventDefault()}
+            onEscapeKeyDown={(e) => e.preventDefault()}>
             <DialogHeader>
               <DialogTitle>Confirm Deletion</DialogTitle>
             </DialogHeader>
@@ -278,7 +319,7 @@ const Notification = () => {
                 Cancel
               </Button>
               <Button
-              onClick={() => setDeleteDialogOpen(false)}
+                onClick={() => setDeleteDialogOpen(false)}
                 // onClick={confirmDelete}
                 className="bg-red-500 hover:bg-red-600"
               >

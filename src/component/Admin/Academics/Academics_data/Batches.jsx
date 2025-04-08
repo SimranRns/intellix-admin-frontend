@@ -34,9 +34,17 @@ import {
 // ✅ Zod schema for validation
 const batchSchema = z.object({
     batchName: z.string().min(1, 'Batch name is required'),
-    course: z.string().min(1, 'course name is required')
+    course: z.string().min(1, { message: "Course is required" }),
 })
 
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "../../../src/components/ui/card"
 
 
 
@@ -46,7 +54,8 @@ const Batches = () => {
     const form = useForm({
         resolver: zodResolver(batchSchema),
         defaultValues: {
-            batchName: ''
+            batchName: '',
+            course: ''
         }
     })
 
@@ -59,6 +68,20 @@ const Batches = () => {
     const goBack = () => {
         window.history.back()
     }
+    const [card, setcard] = useState([
+        {
+            batchname: "BCA",
+            course: "English"
+        },
+        {
+            batchname: "BCA",
+            course: "English"
+        },
+        {
+            batchname: "BCA",
+            course: "English"
+        },
+    ])
 
     return (
         <SidebarProvider style={{ '--sidebar-width': '15rem' }}>
@@ -106,19 +129,26 @@ const Batches = () => {
                                                     </FormItem>
                                                 )}
                                             />
-                                            <Select>
-                                                <SelectTrigger className="w-full">
-                                                    <SelectValue placeholder="Select a Course" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Select course</SelectLabel>
-                                                        <SelectItem value="course1">course1</SelectItem>
-                                                        <SelectItem value="course2">course2</SelectItem>
+                                            <FormField
+                                                control={form.control}
+                                                name="course"
+                                                render={({ field }) => (
+                                                    <Select onValueChange={field.onChange} value={field.value}>
+                                                        <SelectTrigger className="w-full">
+                                                            <SelectValue placeholder="Select a Course" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectGroup>
+                                                                <SelectLabel>Select course</SelectLabel>
+                                                                <SelectItem value="course1">course1</SelectItem>
+                                                                <SelectItem value="course2">course2</SelectItem>
+                                                            </SelectGroup>
+                                                        </SelectContent>
+                                                    </Select>
+                                                )}
+                                            />
 
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
+
                                             <Button type="submit" className="bg-blue-600 text-white hover:bg-blue-500">Confirm</Button>
                                         </form>
                                     </Form>
@@ -136,6 +166,32 @@ const Batches = () => {
                                 className="ml-2 w-full outline-none bg-transparent text-sm"
                             />
                         </div>
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {
+                            card.map((pass, index) => {
+                                return (
+                                    <>
+                                        <Card
+                                            key={index}
+                                            className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden mt-8">
+                                            <CardHeader>
+                                                <CardTitle className="text-lg font-bold bg-gradient-to-r from-blue-600 purple-600 to-pink-600 bg-clip-text text-transparent">{pass.batchname}</CardTitle>
+                                                <CardDescription>{pass.course}</CardDescription>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <p>Card Content</p>
+                                            </CardContent>
+                                            <CardFooter>
+                                                <p>Card Footer</p>
+                                            </CardFooter>
+                                        </Card>
+                                    </>
+                                )
+                            })
+                        }
+
+
                     </div>
                 </main>
             </SidebarInset>
