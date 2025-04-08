@@ -8,13 +8,28 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../src/c
 import { Form, FormControl, FormField, FormItem, FormLabel } from '../../../src/components/ui/form'
 import { Input } from '../../../src/components/ui/input'
 import { useNavigate } from 'react-router'
-
+import { useForm } from 'react-hook-form' // ✅ ADD THIS IMPORT
+import { FormMessage } from '../../../src/components/ui/form' // ✅ You forgot to import t
 const Courses = () => {
     const [AddCourses,setAddCourses] = useState()
     // const [navigate,setnavigate] = useNavigate()
     const goBack = () => {
         window.history.back();
     };
+
+    
+    // ✅ Define the form using useForm
+    const form = useForm({
+        defaultValues: {
+            Course: '',
+        }
+    });
+
+    // ✅ Example submit handler
+    const handleAdddepartment = (data) => {
+        console.log("Submitted data:", data);
+        setAddCourses(false); // Close dialog on submit
+    }
     return (
         <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
             <AppSidebar />
@@ -45,16 +60,16 @@ const Courses = () => {
                                     <DialogHeader>
                                         <DialogTitle className="text-center">Add Courses</DialogTitle>
                                     </DialogHeader>
-                                    {/* <Form {...form}>
+                                    <Form {...form}>
                                         <form onSubmit={form.handleSubmit(handleAdddepartment)} className="space-y-8">
                                             <FormField
                                                 control={form.control}
-                                                name="Department"
+                                                name="Course"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Enter name of department</FormLabel>
+                                                        <FormLabel>Enter name of Course</FormLabel>
                                                         <FormControl>
-                                                            <Input placeholder="Department" {...field} />
+                                                            <Input placeholder="Type Course Name" {...field} />
                                                         </FormControl>
                                                         <FormMessage />
                                                     </FormItem>
@@ -62,7 +77,7 @@ const Courses = () => {
                                             />
                                             <Button type="submit">Confirm</Button>
                                         </form>
-                                    </Form> */}
+                                    </Form>
                                 </DialogContent>
                             </Dialog>
                         </div>
