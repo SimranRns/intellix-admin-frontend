@@ -44,6 +44,7 @@ import Sessions from "./component/Admin/Academics/Academics_data/Sessions";
 import Subjects from "./component/Admin/Academics/Academics_data/Subjects";
 import ThankYouCard from "./component/Admin/Dashboard/ThankYouCard";
 import ExStudentsData from "./component/Admin/Student/Ex-Students/ExStudentsData";
+import Stu_Attendance from "./component/Admin/Student/Action/Stu_Attendance";
 // import { Route } from "lucide-react";
 const App = () => {
   const [loading, setLoading] = useState(true);
@@ -105,6 +106,7 @@ const App = () => {
           <Route path="/StudentUploadModal" element={<StudentUploadModal/>} />
           <Route path="/Marksheet" element={<MarksheetForm/>} />
           <Route path="/ExStudents" element={<ExStudentsData/>} />
+          <Route path="/student_attendance" element={<Stu_Attendance/>} />
 
           <Route path="/View-Profile" element={<ViewProfile />} />
           <Route path="/View_User" element={<View_User />} />
