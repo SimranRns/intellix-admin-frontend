@@ -45,7 +45,7 @@ const AppSidebar = ({ ...props }) => {
       <SidebarContent className="flex-grow overflow-auto bg-white dark:bg-gray-900">
         <SidebarMenu>
           {/* Sidebar Logo & Close Button */}
-          <div className="flex items-center justify-between gap-4 ps-2">
+          <div className="flex items-center justify-between gap-4 mb-3 ps-2">
             <div className="flex items-center gap-4">
               <img className="w-10 h-10" src={intellix_icon} alt="Intellix Logo" />
               {!isOpen && <h5 className="text-xl font-semibold">Intellix</h5>}
@@ -72,7 +72,7 @@ const AppSidebar = ({ ...props }) => {
                   className="flex items-center gap-4 p-3 rounded-lg hover:bg-blue-600 hover:text-white w-full"
                 >
                   <Icon className="min-w-[25px]" size={25} />
-                  {!isOpen && <h5 className="text-xl font-semibold">{title}</h5>}
+                  {!isOpen && <h5 className="text-lg font-semibold">{title}</h5>}
                 </button>
               </SidebarMenuButton>
             </SidebarMenuItem>
