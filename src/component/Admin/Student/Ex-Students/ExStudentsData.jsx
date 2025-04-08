@@ -162,11 +162,11 @@ const ExStudentsData = () => {
             <div className="flex items-center border border-gray-300 rounded-lg px-3 py-2 w-full max-w-md">
               <Search size={18} />
               <input
-                type="text"
-                style={{ backgroundColor: "transparent " }}
-                placeholder="Search here..."
-                className="ml-2"
-              />
+  type="text"
+  style={{ backgroundColor: "transparent" }}
+  placeholder="Search here..."
+  className="ml-2 w-full focus:outline-none focus:ring-0"
+/>
             </div>  
           </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import './Student.css';
 import {
   Search,
@@ -154,7 +154,32 @@ const studentGroups = [
 
 const PAGE_SIZE = 5;
 
+// Zod Schema
+const baseSchema = {
+  grandTotal: z.string().min(1, "Grand Total is required"),
+  discount: z.string().optional(),
+};
+
+const emiSchema = z.object({
+  ...baseSchema,
+  paymentType: z.literal("Pay in EMIs"),
+  emiCount: z.string().min(1, "EMI Count is required"),
+  startDate: z.string().min(1, "Start Date is required"),
+  endDate: z.string().min(1, "End Date is required"),
+});
+
+const oneShotSchema = z.object({
+  ...baseSchema,
+  paymentType: z.literal("Pay in One Shot"),
+  endDate: z.string().min(1, "Due Date is required"),
+  remark: z.string().optional(),
+});
+
+const PaymentSchema = z.discriminatedUnion("paymentType", [emiSchema, oneShotSchema]);
+
+
 const StudentHeader = () => {
+
   const dueInputRef = useRef(null);
   const startInputRef = useRef(null);
   const endInputRef = useRef(null);
@@ -176,7 +201,7 @@ const StudentHeader = () => {
   );
 
   const handleCheckboxChange = (type) => {
-    setSelected(type);
+    setSelected((prev) => (prev === type ? "" : type));
     // setError(false);
   };
 
@@ -193,6 +218,44 @@ const StudentHeader = () => {
     },
   });
 
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(PaymentSchema),
+    defaultValues: {
+      grandTotal: "",
+      discount: "",
+      paymentType: "Pay in EMIs",
+      emiCount: "",
+      startDate: "",
+      endDate: "",
+      // remark: "",
+    },
+  });
+
+  useEffect(() => {
+    setValue("paymentType", selected);
+  }, [selected]);
+
+  useEffect(() => {
+    setValue("startDate", startDate);
+    setValue("endDate", endDate);
+  }, [startDate, endDate]);
+
+  // const handleCheckboxChange = (type) => {
+  //   setSelected(type);
+  // };
+
+  const onSubmit = (data) => {
+    console.log("Validated Data:", data);
+  };
+
+
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       <AppSidebar />
@@ -206,9 +269,9 @@ const StudentHeader = () => {
                 <Search size={18} />
                 <input
                   type="text"
-                  style={{ backgroundColor: "transparent " }}
+                  style={{ backgroundColor: "transparent" }}
                   placeholder="Search here..."
-                  className="ml-2"
+                  className="ml-2 w-full focus:outline-none focus:ring-0"
                 />
               </div>
 
@@ -230,13 +293,13 @@ const StudentHeader = () => {
                rounded-lg hover:bg-[#3d3690] hover:opacity-90">
                   + Add Student</Button>
 
-                  <Checkbox id="terms" />
-      <label
-        htmlFor="terms"
-        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-      >
-       RT
-      </label>
+                <Checkbox id="terms" />
+                <label
+                  htmlFor="terms"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  RT
+                </label>
 
               </div>
             </div>
@@ -277,7 +340,10 @@ const StudentHeader = () => {
                       <TableCell>
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="outline" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-base font-medium">
+                            <Button
+                              variant="outline"
+                              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-base font-medium"
+                            >
                               + Add Payment
                             </Button>
                           </DialogTrigger>
@@ -287,157 +353,164 @@ const StudentHeader = () => {
                             onPointerDownOutside={(e) => e.preventDefault()}
                             onEscapeKeyDown={(e) => e.preventDefault()}
                           >
-                            <DialogHeader>
-                              <DialogTitle className="text-2xl sm:text-3xl font-semibold text-center mb-4">
-                                Setup Payment
-                              </DialogTitle>
-                            </DialogHeader>
+                            <form onSubmit={handleSubmit(onSubmit)}>
+                              <DialogHeader>
+                                <DialogTitle className="text-2xl sm:text-3xl font-semibold text-center mb-4">
+                                  Setup Payment
+                                </DialogTitle>
+                              </DialogHeader>
 
-                            <div className="space-y-6">
-                              {/* Grand Total */}
-                              <div>
-                                <label className="block text-xl font-medium mb-2">Grand Total:</label>
-                                <Input type="text" placeholder="₹" className="w-full h-14 text-lg" />
-                              </div>
+                              <div className="space-y-6">
+                                {/* Grand Total */}
+                                <div>
+                                  <label className="block text-xl font-medium mb-2">Grand Total:</label>
+                                  <Input type="text" placeholder="₹" className="w-full h-14 text-lg" {...register("grandTotal")} />
+                                  <p className="text-red-500 text-sm mt-1">{errors.grandTotal?.message}</p>
+                                </div>
 
-                              {/* Payment Option Selector */}
-                              <div className="flex gap-4">
-                                {["Pay in EMIs", "Pay in One Shot"].map((type) => (
-                                  <div
-                                    key={type}
-                                    className={`flex items-center gap-2 px-4 py-3 border rounded-md cursor-pointer ${selected === type ? "border-blue-500" : ""
-                                      }`}
-                                    onClick={() => handleCheckboxChange(type)}
-                                  >
-                                    <Checkbox
-                                      id={type}
-                                      checked={selected === type}
-                                      onCheckedChange={() => handleCheckboxChange(type)}
-                                    />
-                                    <label htmlFor={type} className="text-base font-medium cursor-pointer">
-                                      {type}
-                                    </label>
-                                  </div>
-                                ))}
-                              </div>
-
-                              {/* Conditional Sections */}
-                              {selected === "Pay in EMIs" ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                  {/* Discount */}
-                                  <div>
-                                    <label className="block text-lg font-medium mb-1">Discount Amount</label>
-                                    <Input type="number" placeholder="Enter Amount" className="w-full" />
-                                  </div>
-
-                                  {/* EMI Count */}
-                                  <div>
-                                    <label className="block text-lg font-medium mb-1">EMI Count *</label>
-                                    <Input type="number" placeholder="Number of EMIs" className="w-full" />
-                                  </div>
-
-                                  {/* Start and End Date */}
-                                  <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-  {/* Start Date */}
-  <div className="w-full sm:w-auto flex-1">
-    <label className="block text-lg font-medium mb-1">Start Date *</label>
-
-    <Button
-      variant="outline"
-      className="w-full flex items-center text-left justify-between shadow-sm border border-blue-400 rounded-xl px-4 py-2 shadow-blue-500/50 font-normal mb-5"
-      onClick={(e) => {
-        e.preventDefault();
-        startInputRef.current?.showPicker();
-      }}
+                                {/* Payment Option Selector */}
+                                <div className="flex gap-4">
+  {["Pay in EMIs", "Pay in One Shot"].map((type) => (
+    <div
+      key={type}
+      className={`flex items-center gap-2 px-4 py-3 border rounded-md cursor-pointer ${
+        selected === type ? "border-blue-500" : ""
+      }`}
+      onClick={() => setSelected(type)}
     >
-      {startDate ? format(new Date(startDate), "dd/MM/yyyy") : "Pick a date"}
-      <CalendarIcon className="h-5 w-5 ml-2" />
-    </Button>
-
-    <Input
-      ref={startInputRef}
-      type="date"
-      className="opacity-0 absolute -z-10"
-      value={startDate || ""}
-      onChange={(e) => setStartDate(e.target.value)}
-    />
-  </div>
-
-  {/* End Date */}
-  <div className="w-full sm:w-auto flex-1">
-    <label className="block text-lg font-medium mb-1">End Date *</label>
-
-    <Button
-      variant="outline"
-      className="w-full flex items-center text-left justify-between shadow-sm border border-blue-400 rounded-xl px-4 py-2 shadow-blue-500/50 font-normal mb-5"
-      onClick={(e) => {
-        e.preventDefault();
-        endInputRef.current?.showPicker();
-      }}
-    >
-      {endDate ? format(new Date(endDate), "dd/MM/yyyy") : "Pick a date"}
-      <CalendarIcon className="h-5 w-5 ml-2" />
-    </Button>
-
-    <Input
-      ref={endInputRef}
-      type="date"
-      className="opacity-0 absolute -z-10"
-      value={endDate || ""}
-      onChange={(e) => setEndDate(e.target.value)}
-    />
-  </div>
+      <Checkbox
+        id={type}
+        checked={selected === type}
+        onCheckedChange={(checked) => {
+          if (checked) setSelected(type);
+        }}
+      />
+      <label htmlFor={type} className="text-base font-medium cursor-pointer">
+        {type}
+      </label>
+    </div>
+  ))}
 </div>
 
-                                </div>
-                              ) : (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                  {/* Discount */}
-                                  <div>
-                                    <label className="block text-lg font-medium mb-1">Discount Amount</label>
-                                    <Input type="number" placeholder="Amount" className="w-full" />
+
+                                {/* Conditional Sections */}
+                                {selected === "Pay in EMIs" ? (
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {/* Discount */}
+                                    <div>
+                                      <label className="block text-lg font-medium mb-1">Discount Amount</label>
+                                      <Input type="number" placeholder="Enter Amount" {...register("discount")} />
+                                    </div>
+
+                                    {/* EMI Count */}
+                                    <div>
+                                      <label className="block text-lg font-medium mb-1">EMI Count *</label>
+                                      <Input type="number" placeholder="Number of EMIs" {...register("emiCount")} />
+                                      <p className="text-red-500 text-sm mt-1">{errors.emiCount?.message}</p>
+                                    </div>
+
+                                    {/* Start and End Date */}
+                                    <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                      <div className="w-full sm:w-auto flex-1">
+                                        <label className="block text-lg font-medium mb-1">Start Date *</label>
+
+                                        <Button
+                                          variant="outline"
+                                          className="w-full flex items-center text-left justify-between shadow-sm border border-blue-400 rounded-xl px-4 py-2 shadow-blue-500/50 font-normal mb-5"
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                            startInputRef.current?.showPicker();
+                                          }}
+                                        >
+                                          {startDate ? format(new Date(startDate), "dd/MM/yyyy") : "Pick a date"}
+                                          <CalendarIcon className="h-5 w-5 ml-2" />
+                                        </Button>
+
+                                        <Input
+                                          ref={startInputRef}
+                                          type="date"
+                                          className="opacity-0 absolute -z-10"
+                                          value={startDate || ""}
+                                          onChange={(e) => setStartDate(e.target.value)}
+                                        />
+                                        <p className="text-red-500 text-sm mt-1">{errors.startDate?.message}</p>
+                                      </div>
+
+                                      <div className="w-full sm:w-auto flex-1">
+                                        <label className="block text-lg font-medium mb-1">End Date *</label>
+
+                                        <Button
+                                          variant="outline"
+                                          className="w-full flex items-center text-left justify-between shadow-sm border border-blue-400 rounded-xl px-4 py-2 shadow-blue-500/50 font-normal mb-5"
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                            endInputRef.current?.showPicker();
+                                          }}
+                                        >
+                                          {endDate ? format(new Date(endDate), "dd/MM/yyyy") : "Pick a date"}
+                                          <CalendarIcon className="h-5 w-5 ml-2" />
+                                        </Button>
+
+                                        <Input
+                                          ref={endInputRef}
+                                          type="date"
+                                          className="opacity-0 absolute -z-10"
+                                          value={endDate || ""}
+                                          onChange={(e) => setEndDate(e.target.value)}
+                                        />
+                                        <p className="text-red-500 text-sm mt-1">{errors.endDate?.message}</p>
+                                      </div>
+                                    </div>
                                   </div>
+                                ) : (
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {/* Discount */}
+                                    <div>
+                                      <label className="block text-lg font-medium mb-1">Discount Amount</label>
+                                      <Input type="number" placeholder="Amount" {...register("discount")} />
+                                    </div>
 
-                                  {/* End Date */}
-                                  <div className="w-full sm:w-auto flex-1">
-      <label className="block text-lg font-medium mb-1">Due Date</label>
+                                    {/* Due Date */}
+                                    <div className="w-full sm:w-auto flex-1">
+                                      <label className="block text-lg font-medium mb-1">Due Date</label>
 
-      <Button
-        variant="outline"
-        className="w-full flex items-center text-left justify-between shadow-sm border border-blue-400 rounded-xl px-4 py-2 shadow-blue-500/50 font-normal mb-5"
-        onClick={(e) => {
-          e.preventDefault();
-          dueInputRef.current?.showPicker();
-        }}
-      >
-        {endDate ? format(new Date(endDate), "dd/MM/yyyy") : "Pick a date"}
-        <CalendarIcon className="h-5 w-5 ml-2" />
-      </Button>
+                                      <Button
+                                        variant="outline"
+                                        className="w-full flex items-center text-left justify-between shadow-sm border border-blue-400 rounded-xl px-4 py-2 shadow-blue-500/50 font-normal mb-5"
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          dueInputRef.current?.showPicker();
+                                        }}
+                                      >
+                                        {endDate ? format(new Date(endDate), "dd/MM/yyyy") : "Pick a date"}
+                                        <CalendarIcon className="h-5 w-5 ml-2" />
+                                      </Button>
 
-      <Input
-        ref={dueInputRef}
-        type="date"
-        className="opacity-0 absolute -z-10"
-        value={endDate || ""}
-        onChange={(e) => setEndDate(e.target.value)}
-      />
-    </div>
+                                      <Input
+                                        ref={dueInputRef}
+                                        type="date"
+                                        className="opacity-0 absolute -z-10"
+                                        value={endDate || ""}
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                      />
+                                      <p className="text-red-500 text-sm mt-1">{errors.endDate?.message}</p>
+                                    </div>
 
-                                  {/* Remark */}
-                                  <div className="md:col-span-2">
-                                    <label className="block text-lg font-medium mb-1">Remark</label>
-                                    <Input type="text" placeholder="Course Fee" className="w-full" />
+                                    {/* Remark */}
+                                    <div className="md:col-span-2">
+                                      <label className="block text-lg font-medium mb-1">Remark</label>
+                                      <Input type="text" placeholder="Course Fee" {...register("remark")} />
+                                    </div>
                                   </div>
-                                </div>
-                              )}
-                            </div>
+                                )}
+                              </div>
 
-                            <DialogFooter >
-                              
-                              <Button className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold py-3 rounded-xl">
-                                Proceed To Payment
-                              </Button>
-                            </DialogFooter>
+                              <DialogFooter>
+                                <Button type="submit" className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold py-3 rounded-xl">
+                                  Proceed To Payment
+                                </Button>
+                              </DialogFooter>
+                            </form>
                           </DialogContent>
                         </Dialog>
 
@@ -456,7 +529,7 @@ const StudentHeader = () => {
                               <DropdownMenuItem onClick={() => navigate("/student-payment-history")}>
                                 Payment_History
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={()=>navigate("/student_attendance")}>
+                              <DropdownMenuItem onClick={() => navigate("/student_attendance")}>
                                 Attendance
                               </DropdownMenuItem>
                               <DropdownMenuItem>

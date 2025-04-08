@@ -12,6 +12,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import "./Student.css";
 import { set } from "date-fns";
 
+
+
+
 const addSchema = z.object({
   name: z
     .string()
@@ -78,6 +81,7 @@ const AddStudentModal = () => {
   const onSubmit = (data) => {
     console.log("Validation successful:", data);
     navigate('/ProceedModal');
+    form.reset();
   };
 
   return (
