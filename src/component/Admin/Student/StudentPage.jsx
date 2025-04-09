@@ -66,6 +66,7 @@ import { Checkbox } from "../../src/components/ui/checkbox";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../src/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Add_Payment from "./Add_Payment";
 
 
 
@@ -154,28 +155,8 @@ const studentGroups = [
 
 const PAGE_SIZE = 5;
 
-// Zod Schema
-const baseSchema = {
-  grandTotal: z.string().min(1, "Grand Total is required"),
-  discount: z.string().optional(),
-};
 
-const emiSchema = z.object({
-  ...baseSchema,
-  paymentType: z.literal("Pay in EMIs"),
-  emiCount: z.string().min(1, "EMI Count is required"),
-  startDate: z.string().min(1, "Start Date is required"),
-  endDate: z.string().min(1, "End Date is required"),
-});
 
-const oneShotSchema = z.object({
-  ...baseSchema,
-  paymentType: z.literal("Pay in One Shot"),
-  endDate: z.string().min(1, "Due Date is required"),
-  remark: z.string().optional(),
-});
-
-const PaymentSchema = z.discriminatedUnion("paymentType", [emiSchema, oneShotSchema]);
 
 
 const StudentHeader = () => {
@@ -183,6 +164,7 @@ const StudentHeader = () => {
   const dueInputRef = useRef(null);
   const startInputRef = useRef(null);
   const endInputRef = useRef(null);
+  
   const [date, setDate] = useState(null); // Define date state
   const [startDate, setStartDate] = useState(new Date("2025-03-04"));
   const [endDate, setEndDate] = useState(new Date("2025-03-04"));
@@ -219,41 +201,10 @@ const StudentHeader = () => {
   });
 
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(PaymentSchema),
-    defaultValues: {
-      grandTotal: "",
-      discount: "",
-      paymentType: "Pay in EMIs",
-      emiCount: "",
-      startDate: "",
-      endDate: "",
-      // remark: "",
-    },
-  });
 
-  useEffect(() => {
-    setValue("paymentType", selected);
-  }, [selected]);
 
-  useEffect(() => {
-    setValue("startDate", startDate);
-    setValue("endDate", endDate);
-  }, [startDate, endDate]);
 
-  // const handleCheckboxChange = (type) => {
-  //   setSelected(type);
-  // };
 
-  const onSubmit = (data) => {
-    console.log("Validated Data:", data);
-  };
 
 
   return (
@@ -337,183 +288,11 @@ const StudentHeader = () => {
                       </TableCell>
 
                       <TableCell>{student.batch}</TableCell>
+
+
                       <TableCell>
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button
-                              variant="outline"
-                              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-base font-medium"
-                            >
-                              + Add Payment
-                            </Button>
-                          </DialogTrigger>
-
-                          <DialogContent
-                            className="sm:max-w-[600px] p-6 rounded-xl"
-                            onPointerDownOutside={(e) => e.preventDefault()}
-                            onEscapeKeyDown={(e) => e.preventDefault()}
-                          >
-                            <form onSubmit={handleSubmit(onSubmit)}>
-                              <DialogHeader>
-                                <DialogTitle className="text-2xl sm:text-3xl font-semibold text-center mb-4">
-                                  Setup Payment
-                                </DialogTitle>
-                              </DialogHeader>
-
-                              <div className="space-y-6">
-                                {/* Grand Total */}
-                                <div>
-                                  <label className="block text-xl font-medium mb-2">Grand Total:</label>
-                                  <Input type="text" placeholder="₹" className="w-full h-14 text-lg" {...register("grandTotal")} />
-                                  <p className="text-red-500 text-sm mt-1">{errors.grandTotal?.message}</p>
-                                </div>
-
-                                {/* Payment Option Selector */}
-                                <div className="flex gap-4">
-  {["Pay in EMIs", "Pay in One Shot"].map((type) => (
-    <div
-      key={type}
-      className={`flex items-center gap-2 px-4 py-3 border rounded-md cursor-pointer ${
-        selected === type ? "border-blue-500" : ""
-      }`}
-      onClick={() => setSelected(type)}
-    >
-      <Checkbox
-        id={type}
-        checked={selected === type}
-        onCheckedChange={(checked) => {
-          if (checked) setSelected(type);
-        }}
-      />
-      <label htmlFor={type} className="text-base font-medium cursor-pointer">
-        {type}
-      </label>
-    </div>
-  ))}
-</div>
-
-
-                                {/* Conditional Sections */}
-                                {selected === "Pay in EMIs" ? (
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {/* Discount */}
-                                    <div>
-                                      <label className="block text-lg font-medium mb-1">Discount Amount</label>
-                                      <Input type="number" placeholder="Enter Amount" {...register("discount")} />
-                                    </div>
-
-                                    {/* EMI Count */}
-                                    <div>
-                                      <label className="block text-lg font-medium mb-1">EMI Count *</label>
-                                      <Input type="number" placeholder="Number of EMIs" {...register("emiCount")} />
-                                      <p className="text-red-500 text-sm mt-1">{errors.emiCount?.message}</p>
-                                    </div>
-
-                                    {/* Start and End Date */}
-                                    <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-                                      <div className="w-full sm:w-auto flex-1">
-                                        <label className="block text-lg font-medium mb-1">Start Date *</label>
-
-                                        <Button
-                                          variant="outline"
-                                          className="w-full flex items-center text-left justify-between shadow-sm border border-blue-400 rounded-xl px-4 py-2 shadow-blue-500/50 font-normal mb-5"
-                                          onClick={(e) => {
-                                            e.preventDefault();
-                                            startInputRef.current?.showPicker();
-                                          }}
-                                        >
-                                          {startDate ? format(new Date(startDate), "dd/MM/yyyy") : "Pick a date"}
-                                          <CalendarIcon className="h-5 w-5 ml-2" />
-                                        </Button>
-
-                                        <Input
-                                          ref={startInputRef}
-                                          type="date"
-                                          className="opacity-0 absolute -z-10"
-                                          value={startDate || ""}
-                                          onChange={(e) => setStartDate(e.target.value)}
-                                        />
-                                        <p className="text-red-500 text-sm mt-1">{errors.startDate?.message}</p>
-                                      </div>
-
-                                      <div className="w-full sm:w-auto flex-1">
-                                        <label className="block text-lg font-medium mb-1">End Date *</label>
-
-                                        <Button
-                                          variant="outline"
-                                          className="w-full flex items-center text-left justify-between shadow-sm border border-blue-400 rounded-xl px-4 py-2 shadow-blue-500/50 font-normal mb-5"
-                                          onClick={(e) => {
-                                            e.preventDefault();
-                                            endInputRef.current?.showPicker();
-                                          }}
-                                        >
-                                          {endDate ? format(new Date(endDate), "dd/MM/yyyy") : "Pick a date"}
-                                          <CalendarIcon className="h-5 w-5 ml-2" />
-                                        </Button>
-
-                                        <Input
-                                          ref={endInputRef}
-                                          type="date"
-                                          className="opacity-0 absolute -z-10"
-                                          value={endDate || ""}
-                                          onChange={(e) => setEndDate(e.target.value)}
-                                        />
-                                        <p className="text-red-500 text-sm mt-1">{errors.endDate?.message}</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {/* Discount */}
-                                    <div>
-                                      <label className="block text-lg font-medium mb-1">Discount Amount</label>
-                                      <Input type="number" placeholder="Amount" {...register("discount")} />
-                                    </div>
-
-                                    {/* Due Date */}
-                                    <div className="w-full sm:w-auto flex-1">
-                                      <label className="block text-lg font-medium mb-1">Due Date</label>
-
-                                      <Button
-                                        variant="outline"
-                                        className="w-full flex items-center text-left justify-between shadow-sm border border-blue-400 rounded-xl px-4 py-2 shadow-blue-500/50 font-normal mb-5"
-                                        onClick={(e) => {
-                                          e.preventDefault();
-                                          dueInputRef.current?.showPicker();
-                                        }}
-                                      >
-                                        {endDate ? format(new Date(endDate), "dd/MM/yyyy") : "Pick a date"}
-                                        <CalendarIcon className="h-5 w-5 ml-2" />
-                                      </Button>
-
-                                      <Input
-                                        ref={dueInputRef}
-                                        type="date"
-                                        className="opacity-0 absolute -z-10"
-                                        value={endDate || ""}
-                                        onChange={(e) => setEndDate(e.target.value)}
-                                      />
-                                      <p className="text-red-500 text-sm mt-1">{errors.endDate?.message}</p>
-                                    </div>
-
-                                    {/* Remark */}
-                                    <div className="md:col-span-2">
-                                      <label className="block text-lg font-medium mb-1">Remark</label>
-                                      <Input type="text" placeholder="Course Fee" {...register("remark")} />
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-
-                              <DialogFooter>
-                                <Button type="submit" className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold py-3 rounded-xl">
-                                  Proceed To Payment
-                                </Button>
-                              </DialogFooter>
-                            </form>
-                          </DialogContent>
-                        </Dialog>
-
+                       
+<Add_Payment/>
                       </TableCell>
                       <TableCell>
                         <DropdownMenu>
