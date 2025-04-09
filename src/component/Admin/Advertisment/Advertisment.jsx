@@ -70,11 +70,9 @@ const Advertisment = () => {
     setImages(images.filter((_, i) => i !== deleteDialog.index));
     setDeleteDialog({ open: false, index: null });
   };
-  const handleDialogClose = () => {
-    setDialogOpen(true);
-    setTempImages([]); // ✅ Clear images
-    setErrors({}); // ✅ Clear errors
-  };
+  const onsumbit = () => {
+    form.reset();
+  }
   return (
     <div className="w-full min-h-screen flex flex-col">
       <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
@@ -95,7 +93,7 @@ const Advertisment = () => {
               {/* Tab for Adding Banner Images */}
               <TabsContent value="tab1" className="p-4 text-left">
                 <div className="flex justify-end">
-                  <Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
+                  <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                     <DialogTrigger asChild>
                       <Button onClick={() => setDialogOpen(true)}>
                         Add Banner
@@ -129,7 +127,7 @@ const Advertisment = () => {
                         </div>
                       )}
                       <div className="flex justify-end gap-3 mt-4">
-                        <Button onClick={() => setDialogOpen(false)}>
+                        <Button onClick={() => { setDialogOpen(false); onsumbit() }}>
                           Cancel
                         </Button>
                         <Button onClick={handleSubmit}>Confirm</Button>
@@ -163,9 +161,31 @@ const Advertisment = () => {
                         </CardContent>
                       </Card>
                     ))}
+
                   </div>
                 )}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
+                  <Card
 
+                    className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden border border-gray-100/50 "
+                  >
+                    <CardHeader>
+                      <img
+                        src="https://t3.ftcdn.net/jpg/03/16/91/28/360_F_316912806_RCeHVmUx5LuBMi7MKYTY5arkE4I0DcpU.jpg"
+                        className="w-full h-40 object-cover rounded-lg"
+                      />
+                    </CardHeader>
+                    <CardContent className="flex justify-end">
+                      {/* Button to Open Delete Dialog */}
+                      <Button
+                        className="mt-4 w-full bg-gradient-to-r from-red-500 to-pink-600 text-white py-2 rounded-xl hover:from-red-600 hover:to-pink-700 transition-all"
+
+                      >
+                        <Trash2 size={20} className="mr-2" /> Delete
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
                 {/* Delete Confirmation Dialog */}
                 <Dialog
                   open={deleteDialog.open}

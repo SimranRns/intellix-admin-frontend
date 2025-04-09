@@ -209,7 +209,7 @@ const AddPopularCourse = () => {
                 />
               )}
             </CardContent>
-            <ScrollArea className="h-[150px] w-full rounded-lg border border-gray-200 p-4 shadow-sm">
+            <ScrollArea className="h-[150px] w-full rounded-lg   p-4 shadow-sm">
               <p className="text-sm sm:text-base leading-relaxed bg-gray-100/50 p-4 rounded-xl text-gray-800">
                 {card.desc}
               </p>
@@ -224,6 +224,29 @@ const AddPopularCourse = () => {
             </CardFooter>
           </Card>
         ))}
+        <Card className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden border border-gray-100/50">
+          <CardHeader>
+            <CardTitle className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              BCA
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="w-full h-40 object-cover rounded-md">
+            <img src="https://t3.ftcdn.net/jpg/03/16/91/28/360_F_316912806_RCeHVmUx5LuBMi7MKYTY5arkE4I0DcpU.jpg" />
+          </CardContent>
+          <ScrollArea className="h-[150px] w-full rounded-lg  p-4 shadow-sm">
+            <p className="text-sm sm:text-base leading-relaxed bg-gray-100/50 p-4 rounded-xl text-gray-800">
+              BCA stands for Bachelor of Computer Applications, a three-year undergraduate degree program focusing on computer applications and software development, equipping students with IT skills for careers in the technology industry
+            </p>
+          </ScrollArea>
+          <CardFooter className="mt-5 flex justify-center">
+            <Button
+              onClick={() => handleDeleteClick(index)}
+              className="mt-4 w-full bg-gradient-to-r from-red-500 to-pink-600 text-white py-2 rounded-xl hover:from-red-600 hover:to-pink-700 transition-all"
+            >
+              <Trash2 size={20} className="mr-2" /> Delete
+            </Button>
+          </CardFooter>
+        </Card>
       </div>
 
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

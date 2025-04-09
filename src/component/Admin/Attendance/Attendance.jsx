@@ -44,6 +44,20 @@ import {
   PopoverTrigger,
 } from "../../src/components/ui/popover";
 import { cn } from "../../src/lib/utils";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+const exportSchema = z
+  .object({
+    fromDate: z.date({ required_error: "From date is required" }),
+    toDate: z.date({ required_error: "To date is required" }),
+    course: z.string().min(1, "Course is required"),
+    batch: z.string().min(1, "Batch is required"),
+  })
+  .refine((data) => data.toDate >= data.fromDate, {
+    message: "To date must be after From date",
+    path: ["toDate"],
+  });
 const Attendance = () => {
   const [date, setDate] = React.useState();
   // Top counters
@@ -141,6 +155,28 @@ const Attendance = () => {
     setOpenFirstModal(false); // Close first modal
     setTimeout(() => setOpenSecondModal(true), 300); // Open second modal with slight delay for smooth transition
   };
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(exportSchema),
+    defaultValues: {
+      fromDate: new Date(),
+      toDate: new Date(),
+      course: "",
+      batch: "",
+    },
+  });
+
+  const onSubmit = (data) => {
+    console.log("Exporting report with:", data);
+    setOpenFirstModal(false);
+  };
+
+
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       {/* Pass setActivePage to Sidebar */}
@@ -266,25 +302,22 @@ const Attendance = () => {
                   </Button>
                 </DialogTrigger>
 
-                {/* First Modal - Export Report */}
-                <DialogContent className="sm:max-w-[450px]">
+                <DialogContent className="sm:max-w-[450px]" onPointerDownOutside={(e) => e.preventDefault()}
+                  onEscapeKeyDown={(e) => e.preventDefault()}>
                   <DialogHeader>
                     <DialogTitle className="text-center text-lg font-semibold">
                       Export Report
                     </DialogTitle>
                   </DialogHeader>
 
-                  <div className="grid gap-4">
+                  <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
                     {/* Date Pickers */}
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <Label>From</Label>
                         <Popover>
                           <PopoverTrigger asChild>
-                            <Button
-                              variant="outline"
-                              className="w-full justify-start"
-                            >
+                            <Button variant="outline" className="w-full justify-start">
                               <CalendarIcon className="mr-2 h-4 w-4" />
                               {fromDate.toLocaleDateString()}
                             </Button>
@@ -293,19 +326,22 @@ const Attendance = () => {
                             <Calendar
                               mode="single"
                               selected={fromDate}
-                              onSelect={setFromDate}
+                              onSelect={(date) => setValue("fromDate", date)}
                             />
                           </PopoverContent>
                         </Popover>
+                        {errors.fromDate && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.fromDate.message}
+                          </p>
+                        )}
                       </div>
+
                       <div>
                         <Label>To</Label>
                         <Popover>
                           <PopoverTrigger asChild>
-                            <Button
-                              variant="outline"
-                              className="w-full justify-start"
-                            >
+                            <Button variant="outline" className="w-full justify-start">
                               <CalendarIcon className="mr-2 h-4 w-4" />
                               {toDate.toLocaleDateString()}
                             </Button>
@@ -314,17 +350,22 @@ const Attendance = () => {
                             <Calendar
                               mode="single"
                               selected={toDate}
-                              onSelect={setToDate}
+                              onSelect={(date) => setValue("toDate", date)}
                             />
                           </PopoverContent>
                         </Popover>
+                        {errors.toDate && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.toDate.message}
+                          </p>
+                        )}
                       </div>
                     </div>
 
-                    {/* Select Course */}
+                    {/* Course */}
                     <div>
                       <Label>Select Course*</Label>
-                      <Select>
+                      <Select onValueChange={(value) => setValue("course", value)}>
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="--Select Course--" />
                         </SelectTrigger>
@@ -333,12 +374,17 @@ const Attendance = () => {
                           <SelectItem value="course2">Course 2</SelectItem>
                         </SelectContent>
                       </Select>
+                      {errors.course && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.course.message}
+                        </p>
+                      )}
                     </div>
 
-                    {/* Select Batch */}
+                    {/* Batch */}
                     <div>
                       <Label>Select Batch*</Label>
-                      <Select>
+                      <Select onValueChange={(value) => setValue("batch", value)}>
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="--Select Batch--" />
                         </SelectTrigger>
@@ -347,24 +393,31 @@ const Attendance = () => {
                           <SelectItem value="batchB">Batch B</SelectItem>
                         </SelectContent>
                       </Select>
+                      {errors.batch && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.batch.message}
+                        </p>
+                      )}
                     </div>
-                  </div>
 
-                  {/* Proceed Button */}
-                  <DialogFooter>
-                    <Button
-                      onClick={handleProceed}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg"
-                    >
-                      Proceed
-                    </Button>
-                  </DialogFooter>
+                    {/* Submit */}
+                    <DialogFooter>
+                      <Button
+                        type="submit"
+                        onClick={handleProceed}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg"
+                      >
+                        Proceed
+                      </Button>
+                    </DialogFooter>
+                  </form>
                 </DialogContent>
               </Dialog>
 
               {/* Second Modal - Confirmation */}
               <Dialog open={openSecondModal} onOpenChange={setOpenSecondModal}>
-                <DialogContent className="sm:max-w-[400px]">
+                <DialogContent className="sm:max-w-[400px]" onPointerDownOutside={(e) => e.preventDefault()}
+                  onEscapeKeyDown={(e) => e.preventDefault()}>
                   <DialogHeader>
                     <DialogTitle className="text-center text-lg font-semibold">
                       Confirm Export
@@ -384,7 +437,7 @@ const Attendance = () => {
                     >
                       Cancel
                     </Button>
-                    <Button className="bg-green-600 hover:bg-green-700 text-white">
+                    <Button onClick={() => setOpenSecondModal(false)} className="bg-green-600 hover:bg-green-700 text-white">
                       Confirm
                     </Button>
                   </DialogFooter>

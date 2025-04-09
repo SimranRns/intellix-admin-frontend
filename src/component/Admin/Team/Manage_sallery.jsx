@@ -186,18 +186,15 @@ const ManageSalary = () => {
           Salary History
         </Button>
 
-        <div className="w-full border-t p-6  shadow-md mt-8 border-blue-400 border rounded">
-          <h3 className="text-lg font-semibold mb-1">Select Date Range</h3>
-
-        <div className="w-full border-t p-6 shadow-md">
-
-          <Label className="mb-2 block text-gray-500">From</Label>
+        <div className="w-full border-t p-6 border border-blue-200 shadow-md mt-8">
+          <h3 className="text-lg font-semibold mb-4">Select Date Range</h3>
+          <Label className="mb-2 block ">From</Label>
           <Input
             type="date"
             className="w-full"
             onChange={(e) => setFromDate(e.target.value)}
           />
-          <Label className="mt-4 mb-2 block text-gray-500">To</Label>
+          <Label className="mt-4 mb-2 block ">To</Label>
           <Input
             type="date"
             className="w-full"
@@ -210,14 +207,12 @@ const ManageSalary = () => {
             View Attendance
           </Button>
         </div>
-        </div>
 
       </aside>
 
 
-      <main  className={`flex-1 p-6  ${
-        darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-black"
-      }`}>
+      <main className={`flex-1 p-6  ${darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-black"
+        }`}>
         {tab === "tab1" && (
           <>
             <div className="flex gap-6 border-b pb-2 ">
@@ -225,8 +220,8 @@ const ManageSalary = () => {
                 <button
                   key={status}
                   className={`px-4 py-2 ${selectedTab === status
-                      ? "border-b-2 border-blue-600"
-                      : "text-gray-500"
+                    ? "border-b-2 border-blue-600"
+                    : "text-gray-500"
                     }`}
                   onClick={() => setSelectedTab(status)}
                 >
@@ -384,10 +379,10 @@ const ManageSalary = () => {
                       <td className="p-3">{item.date}</td>
                       <td
                         className={`p-3 ${item.status === "Present"
-                            ? "text-green-600 font-semibold"
-                            : item.status === "Half Day"
-                              ? "text-orange-400 font-semibold"
-                              : "text-red-600 font-semibold"
+                          ? "text-green-600 font-semibold"
+                          : item.status === "Half Day"
+                            ? "text-orange-400 font-semibold"
+                            : "text-red-600 font-semibold"
                           }`}
                       >
                         {item.status}
@@ -405,7 +400,7 @@ const ManageSalary = () => {
               <h2 className="text-2xl font-bold mb-4">Salary History</h2>
               <table className="w-full mt-4 border-collapse">
                 <thead>
-                  <tr className="bg-gray-100">
+                  <tr className="border">
                     <th className="p-3">ID</th>
                     <th className="p-3">Name</th>
                     <th className="p-3">Department</th>
