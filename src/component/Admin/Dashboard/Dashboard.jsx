@@ -123,6 +123,20 @@ const Dashboard = ({ children }) => {
       fee: "$210.70",
       performance: "Good",
     },
+    {
+      name: "Jordan Nico",
+      subject: "English",
+      qualification: "B.A",
+      fee: "$210.70",
+      performance: "Good",
+    },
+    {
+      name: "Jordan Nico",
+      subject: "English",
+      qualification: "B.A",
+      fee: "$210.70",
+      performance: "Good",
+    },
     
    
   ];
@@ -324,31 +338,31 @@ const Dashboard = ({ children }) => {
                     </TableBody>
                   </Table>
                   <div className="flex justify-between items-center mt-4">
-                    <Button
-                      onClick={handlePrev}
-                      disabled={page === 1}
-                      variant="ghost"
-                    >
-                      <ChevronLeft className="h-4 w-4" />
-                    </Button>
-                    <span>
-                      Page {page} of {totalPages}
-                    </span>
-                    <Button
-                      onClick={handleNext}
-                      disabled={page === totalPages}
-                      variant="ghost"
-                    >
-                      <ChevronRight className="h-4 w-4" />
-                    </Button>
-                  </div>
+                        <p className="text-sm text-gray-500">
+                          Showing 1 to 5 of 10 entries
+                        </p>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm">
+                            <ChevronLeft size={16} />
+                          </Button>
+                          <Button variant="default" size="sm">
+                            1
+                          </Button>
+                          <Button variant="outline" size="sm">
+                            2
+                          </Button>
+                          <Button variant="outline" size="sm">
+                            <ChevronRight size={16} />
+                          </Button>
+                        </div>
+                      </div>
                 </div>
 
                 <div className="h-[20vh]">
                   <Card className="p-4">
                     <CardContent>
                       <h2 className="text-lg font-semibold mb-4">
-                        Unpaid Student Intuition
+                        Unpaid Student 
                       </h2>
 
                       <div className="overflow-y-auto h-[35vh]  rounded-md">
