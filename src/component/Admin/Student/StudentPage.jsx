@@ -228,20 +228,20 @@ const StudentHeader = () => {
 
               <div className="flex items-center space-x-1 sm:space-x-3 mt-3 md:mt-0">
                 <Button onClick={() => navigate("/ExStudents")}
-                  className="bg-[#2563eb] text-white font-semibold px-1 sm:px-5 py-2
-               rounded-lg hover:bg-[#3d3690] hover:opacity-90">
+                  className="bg-blue-500 text-white font-semibold px-1 sm:px-5 py-2
+               rounded-lg hover:bg-blue-700 hover:opacity-90">
                   Ex-Student</Button>
                 <Button onClick={() => navigate("/Marksheet")}
-                  className="bg-[#2563eb] text-white font-semibold px-1 sm:px-5 py-2
-               rounded-lg hover:bg-[#3d3690] hover:opacity-90">
+                  className="bg-blue-500 text-white font-semibold px-1 sm:px-5 py-2
+               rounded-lg  hover:bg-blue-700  hover:opacity-90">
                   Marksheet</Button>
                 <Button onClick={() => navigate("/StudentUploadModal")}
-                  className="bg-[#2563eb] text-white font-semibold px-1 sm:px-5 py-2
-               rounded-lg hover:bg-[#3d3690] hover:opacity-90">
+                  className="bg-blue-500 text-white font-semibold px-1 sm:px-5 py-2
+               rounded-lg  hover:bg-blue-700  hover:opacity-90">
                   + Add Excel</Button>
                 <Button onClick={() => navigate("/add_student_model")}
-                  className="bg-[#2563eb] text-white font-semibold px-1 sm:px-5 py-2
-               rounded-lg hover:bg-[#3d3690] hover:opacity-90">
+                  className="bg-blue-500 text-white font-semibold px-1 sm:px-5 py-2
+               rounded-lg  hover:bg-blue-700 hover:opacity-90">
                   + Add Student</Button>
 
                 <Checkbox id="terms" />
