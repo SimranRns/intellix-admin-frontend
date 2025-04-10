@@ -1,15 +1,10 @@
 import React, { useState } from "react";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "../../src/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "../../src/components/ui/sidebar";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import Header from "../Dashboard/Header";
-
 import { Button } from "../../src/components/ui/button";
 import { Input } from "../../src/components/ui/input";
-import { CalendarIcon, DownloadIcon, PlusIcon } from "lucide-react";
+import { DownloadIcon, PlusIcon } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -17,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../src/components/ui/select";
-
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 import {
   Card,
@@ -33,7 +27,6 @@ import {
   TableBody,
   TableCell,
 } from "../../src/components/ui/table";
-
 import {
   Dialog,
   DialogContent,
@@ -43,7 +36,6 @@ import {
   DialogTrigger,
 } from "../../src/components/ui/dialog";
 import { Label } from "../../src/components/ui/label";
-
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -53,27 +45,16 @@ import {
 import { ChevronRight } from "lucide-react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { ScrollArea } from "../../src/components/ui/scroll-area";
-
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ThankYouCard from "../Dashboard/ThankYouCard";
-
 const Leads = () => {
-  const rowsPerPage = 5; // Number of rows per page
+  const rowsPerPage = 5;
   const Navigate = useNavigate();
-  const [categoryName, setCategoryName] = useState("");
-  const stats = [
-    { title: "Views", value: "7,265", change: "+11.07%", up: true },
-    { title: "Visits", value: "3,671", change: "-0.03%", up: false },
-    { title: "New Users", value: "156", change: "+13.57%", up: true },
-    { title: "Active Users", value: "2,318", change: "+6.08%", up: true },
-  ];
   const [date, setDate] = useState(null);
-  // const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All Categories");
   const [status, setStatus] = useState("All Status");
-
   const data = [
     { name: "JavaScript", value: 30, color: "#E91E63" }, // Pink
     { name: "HTML/CSS", value: 20, color: "#FF9800" }, // Orange
@@ -81,31 +62,6 @@ const Leads = () => {
     { name: "SQL", value: 20, color: "#4CAF50" }, // Green
     { name: "TypeScript", value: 5, color: "#673AB7" }, // Purple
   ];
-
-  const [leads, setLeads] = useState([
-    {
-      id: 1,
-      name: "Ellie Edgington",
-      company: "Micheldev Tyre Services Ltd",
-      status: "New",
-      category: "Automobile",
-    },
-    {
-      id: 2,
-      name: "Sunnie Browne",
-      company: "PrintsPro / Printing",
-      status: "In Progress",
-      category: "Marketing",
-    },
-    {
-      id: 3,
-      name: "P Vivek",
-      company: "Tesla Media",
-      status: "Completed",
-      category: "Technology",
-    },
-  ]);
-
   const data1 = [
     {
       name: "dvsn",
@@ -138,55 +94,54 @@ const Leads = () => {
       time: "24-02-2024",
     },
   ];
-
   const [department, setDepartment] = useState("Please Select");
   const [Employee, setEmployee] = useState("Please Select");
   const [AddConfrom, setAddConfrom] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [open, setOpen] = useState(false);
+  const [leadModalStatus, setLeadModalStatus] = useState(false);
+  const [categoryModalStatus, setCategoryModalStatus] = useState(false);
   const totalPages = Math.ceil(data1.length / rowsPerPage);
   const currentData = data1.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
-
-  const leadSchema = z.object({
-    name: z.string().min(1, "Name is required"),
-    email: z.string().email("Invalid email"),
-    address: z.string().min(1, "Address is required"),
-    contact: z.string().min(10, "Contact must be at least 10 digits"),
-    category: z.string().min(1, "Category is required"),
+  const categoryOnlySchema = z.object({
+    name: z.string().min(4, "Category name is required"),
   });
-
   const form = useForm({
     defaultValues: {},
+    resolver: zodResolver(categoryOnlySchema),
   });
   const categorySchema = z.object({
     name: z.string().min(1, "Category name is required"),
+    email: z.string().min(1, "Category email is required"),
+    address: z.string().min(1, "Category address is required"),
+    contact: z.string().min(1, "Category contact is required"),
   });
-
   const {
     register: categoryRegister,
     handleSubmit: handleCategorySubmit,
     reset: categoryReset,
+    setValue,
     formState: { errors: categoryErrors },
   } = useForm({
     resolver: zodResolver(categorySchema),
   });
+  const onValidCategorySubmit = (data) => {
+    console.log("Lead Data:", data);
+    setLeadModalStatus(false); // close Add Lead modal
+    categoryReset();
+    setAddConfrom(true);
+  };
   const handlecategory = (data) => {
-    console.log("Category Form Data:", data);
-    setAddConfrom(true); // show confirmation dialog
-    categoryReset(); // reset this specific form
-    setOpen(false);
+    console.log("Category Data:", data);
+    setCategoryModalStatus(false); // close Add Category modal
+    setAddConfrom(true);
+    categoryReset();
   };
-
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    // ✅ only happens after validation passes
-    form.reset();
-    setOpen(false);
+  const onInvalidCategorySubmit = (errors) => {
+    console.log("Validation Errors:", errors);
   };
-
   const handleConfirm = async () => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -198,7 +153,6 @@ const Leads = () => {
       console.error("Submission failed:", error);
     }
   };
-
   return (
     <>
       <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
@@ -323,72 +277,130 @@ const Leads = () => {
                 <DownloadIcon className="h-4 w-4 mr-2" /> Export to Excel
               </Button>
               <Input type="date" className="w-60 md:col-span-2 lg:col-span-2" />
-
-              <Dialog>
+              {/* add Leads */}
+              <Dialog open={leadModalStatus} onOpenChange={setLeadModalStatus}>
                 <DialogTrigger asChild>
                   <Button className="bg-blue-600 text-white">
                     <PlusIcon className="mr-1" /> Add Leads
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[525px]">
+                <DialogContent
+                  onPointerDownOutside={(e) => e.preventDefault()}
+                  onEscapeKeyDown={(e) => e.preventDefault()}
+                  className="sm:max-w-[525px]"
+                >
                   <DialogHeader>
                     <DialogTitle>Add Leads</DialogTitle>
                   </DialogHeader>
-                  <form onSubmit={handleCategorySubmit(handlecategory)}>
-                    <div className="grid gap-4 py-4">
-                      <Label htmlFor="name" className="text-left">
-                        Enter Category Name
-                      </Label>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Input
-                          id="name"
-                          {...categoryRegister("name")}
-                          placeholder="Enter category name"
-                          className="col-span-4"
-                        />
-                        {categoryErrors.name && (
-                          <p className="text-red-500 text-sm">
-                            {categoryErrors.name.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
+                  <form
+                    onSubmit={handleCategorySubmit(
+                      onValidCategorySubmit,
+                      onInvalidCategorySubmit
+                    )}
+                    className="grid gap-4 py-4"
+                  >
+                    {/* Inputs */}
+                    <Input
+                      {...categoryRegister("name")}
+                      placeholder="Enter Name"
+                      className="col-span-4"
+                    />
+                    {categoryErrors.name && (
+                      <p className="text-red-500 text-sm">
+                        {categoryErrors.name.message}
+                      </p>
+                    )}
+
+                    <Input
+                      {...categoryRegister("email")}
+                      placeholder="Enter Email"
+                      className="col-span-4"
+                    />
+                    {categoryErrors.email && (
+                      <p className="text-red-500 text-sm">
+                        {categoryErrors.email.message}
+                      </p>
+                    )}
+
+                    <Input
+                      {...categoryRegister("address")}
+                      placeholder="Enter Address"
+                      className="col-span-4"
+                    />
+                    {categoryErrors.address && (
+                      <p className="text-red-500 text-sm">
+                        {categoryErrors.address.message}
+                      </p>
+                    )}
+
+                    <Input
+                      {...categoryRegister("contact")}
+                      placeholder="Enter Contact"
+                      className="col-span-4"
+                    />
+                    {categoryErrors.contact && (
+                      <p className="text-red-500 text-sm">
+                        {categoryErrors.contact.message}
+                      </p>
+                    )}
+
+                    <Select
+                      onValueChange={(value) => setValue("category", value)}
+                    >
+                      <SelectTrigger className="col-span-4">
+                        <SelectValue placeholder="Select Categories" />
+                      </SelectTrigger>
+                      <SelectContent position="popper">
+                        <SelectItem value="next">Nextjs</SelectItem>
+                        <SelectItem value="sveltekit">SvelteKit</SelectItem>
+                        <SelectItem value="astro">Astro</SelectItem>
+                        <SelectItem value="nuxt">Nuxtjs</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <DialogFooter>
-                      <Button type="submit">Add Category</Button>
+                      <Button type="submit">Submit</Button>
                     </DialogFooter>
                   </form>
                 </DialogContent>
               </Dialog>
+
               {/* add Category */}
-              <Dialog open={open} onOpenChange={setOpen}>
+              <Dialog
+                open={categoryModalStatus}
+                onOpenChange={setCategoryModalStatus}
+              >
                 <DialogTrigger asChild>
                   <Button className="bg-blue-600 text-white">
                     <PlusIcon className="mr-0" /> Add Category
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[525px]">
+                <DialogContent
+                  onPointerDownOutside={(e) => e.preventDefault()}
+                  onEscapeKeyDown={(e) => e.preventDefault()}
+                  className="sm:max-w-[525px]"
+                >
                   <DialogHeader>
                     <DialogTitle>Add Category</DialogTitle>
                   </DialogHeader>
-                  <form onSubmit={form.handleSubmit(handlecategory)}>
-                    <div className="grid gap-4 py-4">
-                      <Label htmlFor="name" className="text-left">
-                        Enter Category Name
-                      </Label>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Input
-                          id="name"
-                          // {...register("name")}
-                          placeholder="Enter category name"
-                          className="col-span-4"
-                        />
-                        {/* {errors.name && (
-                          <p className="text-red-500 text-sm">
-                            {errors.name.message}
-                          </p>
-                        )} */}
-                      </div>
-                    </div>
+                  <form
+                    onSubmit={form.handleSubmit(handlecategory)}
+                    className="grid gap-4 py-4"
+                  >
+                    <Label htmlFor="name">Enter Category Name</Label>
+                    <Input
+  id="name"
+  placeholder="Enter category name"
+  className="col-span-4"
+  {...form.register("name")}
+/>
+
+{form.formState.errors.name && (
+  <p className="text-red-500 text-sm">
+    {form.formState.errors.name.message}
+  </p>
+)}
+
+
                     <DialogFooter>
                       <Button type="submit">Add Category</Button>
                     </DialogFooter>
@@ -442,11 +454,12 @@ const Leads = () => {
                               <ChevronRight size={16} />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="">
+                          <DropdownMenuContent align="end">
                             <DropdownMenuItem asChild>
                               <Dialog>
                                 <DialogTrigger asChild>
                                   <Button variant="outline">
+                                    {" "}
                                     Change Status
                                   </Button>
                                 </DialogTrigger>
@@ -490,7 +503,6 @@ const Leads = () => {
                                       Assign Lead
                                     </DialogTitle>
                                   </DialogHeader>
-
                                   <div className="flex flex-col gap-3">
                                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                       Select Department
@@ -522,12 +534,11 @@ const Leads = () => {
                                       <option value="Select"> Select</option>
                                       <option value="Sales">Sales</option>
                                       <option value="Marketing">
-                                        Marketing
+                                        Marketing{" "}
                                       </option>
                                       <option value="Support">Support</option>
                                     </select>
                                   </div>
-
                                   <DialogFooter>
                                     <Button
                                       onClick={() => setAddConfrom(true)}
@@ -547,25 +558,26 @@ const Leads = () => {
                   ))}
                 </TableBody>
               </Table>
-            </div>
-            <div className="flex justify-center items-center gap-2 mt-4">
-              <button
-                className="px-3 py-1 rounded-md"
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage(currentPage - 1)}
-              >
-                -
-              </button>
-              <span className="text-sm font-semibold">
-                Page {currentPage} of {totalPages}
-              </span>
-              <button
-                className="px-3 py-1 rounded-md"
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage(currentPage + 1)}
-              >
-                +
-              </button>
+              <div className="flex justify-center items-center gap-2 mt-4">
+                <button
+                  className="px-3 py-1 rounded-md"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(currentPage - 1)}
+                >
+                  -
+                </button>
+                <span className="text-sm font-semibold">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  className="px-3 py-1 rounded-md"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(currentPage + 1)}
+                >
+                  {" "}
+                  +{" "}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -586,7 +598,7 @@ const Leads = () => {
                   Cancel
                 </Button>
                 <Button
-                  onClick={handleConfirm} // Handle form submission & dialog close
+                  onClick={handleConfirm}
                   className="w-full sm:w-auto mt-4 bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md flex items-center shadow-md transition-all"
                 >
                   Confirm
