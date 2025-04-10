@@ -53,7 +53,7 @@ const ViewProfile = () => {
   };
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
-      {/* Pass setActivePage to Sidebar */}
+    
       <AppSidebar />
       <SidebarInset>
         <Header />
