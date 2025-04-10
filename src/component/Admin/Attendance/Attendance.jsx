@@ -47,6 +47,7 @@ import { cn } from "../../src/lib/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../../src/components/ui/pagination";
 const exportSchema = z
   .object({
     fromDate: z.date({ required_error: "From date is required" }),
@@ -81,6 +82,12 @@ const Attendance = () => {
   const [openFirstModal, setOpenFirstModal] = useState(false);
   const [openSecondModal, setOpenSecondModal] = useState(false);
   const inputRef = useRef(null);
+
+
+
+
+
+
   // For the date/time display at the bottom
   // const currentDateTime = new Date().toLocaleString();
 
@@ -90,6 +97,62 @@ const Attendance = () => {
     setTimeout(() => {
       // Example data
       const data = [
+        {
+          id: 1,
+          enrollmentId: "E001",
+          name: "John Doe",
+          batchName: "Batch A",
+          status: "In",
+        },
+        {
+          id: 2,
+          enrollmentId: "E002",
+          name: "Jane Smith",
+          batchName: "Batch B",
+          status: "Out",
+        },
+        {
+          id: 1,
+          enrollmentId: "E001",
+          name: "John Doe",
+          batchName: "Batch A",
+          status: "In",
+        },
+        {
+          id: 2,
+          enrollmentId: "E002",
+          name: "Jane Smith",
+          batchName: "Batch B",
+          status: "Out",
+        },
+        {
+          id: 1,
+          enrollmentId: "E001",
+          name: "John Doe",
+          batchName: "Batch A",
+          status: "In",
+        },
+        {
+          id: 2,
+          enrollmentId: "E002",
+          name: "Jane Smith",
+          batchName: "Batch B",
+          status: "Out",
+        },
+        {
+          id: 1,
+          enrollmentId: "E001",
+          name: "John Doe",
+          batchName: "Batch A",
+          status: "In",
+        },
+        {
+          id: 2,
+          enrollmentId: "E002",
+          name: "Jane Smith",
+          batchName: "Batch B",
+          status: "Out",
+        },
         {
           id: 1,
           enrollmentId: "E001",
@@ -125,6 +188,8 @@ const Attendance = () => {
     if (selectedTab === "Absent") return student.status === "Absent";
     return true;
   });
+
+
 
   // Handlers
   const handleSearch = () => {
@@ -175,6 +240,13 @@ const Attendance = () => {
     console.log("Exporting report with:", data);
     setOpenFirstModal(false);
   };
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const attendancePerPage = 8; // You can change to 5 or 8 as needed
+  const totalPages = Math.ceil(filteredData.length / attendancePerPage);
+  const startIndex = (currentPage - 1) * attendancePerPage;
+  const selectedAttendance = filteredData.slice(startIndex, startIndex + attendancePerPage);
+  
 
 
   return (
@@ -213,9 +285,9 @@ const Attendance = () => {
                 <button
                   key={tab}
                   onClick={() => setSelectedTab(tab)}
-                  className={`px-4 py-2 rounded-lg border shadow-md ${selectedTab === tab
+                  className={`rounded-md px-4 py-2 text-[12px] font-medium ${selectedTab === tab
                     ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-700"
+                    : "bg-gray-200 text-gray-800 hover:bg-blue-500 hover:text-white"
                     }`}
                 >
                   {tab}
@@ -230,31 +302,32 @@ const Attendance = () => {
                 placeholder="Search By Enrollment Id"
                 value={searchEnrollmentId}
                 onChange={(e) => setSearchEnrollmentId(e.target.value)}
-                className="border border-blue-500 p-3 rounded-lg text-gray-700 focus:ring focus:ring-blue-200 shadow-md"
+                className="border border-blue-500 rounded-md text-sm text-gray-700 px-2 py-2 h-10 focus:ring focus:ring-blue-200 shadow-sm"
               />
+
               <input
                 type="text"
                 placeholder="Search By Name"
                 value={searchName}
                 onChange={(e) => setSearchName(e.target.value)}
-                className="border border-blue-500 p-3 rounded-lg text-gray-700 focus:ring focus:ring-blue-200 shadow-md"
+                className="border border-blue-500 px-2 py-2 h-10 rounded-lg text-gray-700 focus:ring focus:ring-blue-200 shadow-md"
               />
               <input
                 type="text"
                 placeholder="Search By Batch Name"
                 value={searchBatchName}
                 onChange={(e) => setSearchBatchName(e.target.value)}
-                className="border border-blue-500 p-3 rounded-lg text-gray-700 focus:ring focus:ring-blue-200 shadow-md"
+                className="border border-blue-500 px-2 py-2 h-10 rounded-lg text-gray-700 focus:ring focus:ring-blue-200 shadow-md"
               />
               <button
                 onClick={handleSearch}
-                className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg border border-blue-500 shadow-md shadow-blue-500/50"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-2 h-10 rounded-lg border border-blue-500 shadow-md shadow-blue-500/50"
               >
                 Search
               </button>
               <button
                 onClick={handleExportData}
-                className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg border border-blue-500 shadow-md shadow-blue-500/50"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-2 h-10 rounded-lg border border-blue-500 shadow-md shadow-blue-500/50"
               >
                 Export Data
               </button>
@@ -451,7 +524,7 @@ const Attendance = () => {
                 <p className="text-center">Loading...</p>
               ) : filteredData.length > 0 ? (
                 <table className="w-full border-collapse border">
-                  <thead>
+                  <thead className="bg-gray-200 text-gray-800">
                     <tr>
                       <th className="border px-4 py-2">Enrollment ID</th>
                       <th className="border px-4 py-2">Name</th>
@@ -460,26 +533,62 @@ const Attendance = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredData.map((student) => (
+                    {selectedAttendance.map((student) => (
                       <tr key={student.id}>
-                        <td className="border px-4 py-2">
+                        <td className="border text-md px-4 py-2">
                           {student.enrollmentId}
                         </td>
-                        <td className="border px-4 py-2">{student.name}</td>
-                        <td className="border px-4 py-2">
+                        <td className="border text-md px-4 py-2">{student.name}</td>
+                        <td className="border text-md px-4 py-2">
                           {student.batchName}
                         </td>
-                        <td className="border px-4 py-2">{student.status}</td>
+                        <td className="border px-4 text-md py-2">{student.status}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+
               ) : (
                 <p className="text-center text-red-600 font-semibold font-mono4">
                   No Data Available
                 </p>
               )}
             </div>
+            <Pagination className="mt-4 justify-center">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  />
+                </PaginationItem>
+
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <PaginationItem key={i}>
+                    <PaginationLink
+                      href="#"
+                      onClick={() => setCurrentPage(i + 1)}
+                      className={`px-4 py-2 rounded-md ${currentPage === i + 1
+                          ? "bg-blue-600 text-white"
+                          : "hover:bg-blue-500 hover:text-white"
+                        }`}
+                    >
+                      {i + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={() =>
+                      setCurrentPage(Math.min(totalPages, currentPage + 1))
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+
           </div>
         </main>
       </SidebarInset>
