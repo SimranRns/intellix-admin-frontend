@@ -265,13 +265,14 @@ const Team = ({ teacherData }) => {
     window.addEventListener("resize", updateTeachersPerPage);
     return () => window.removeEventListener("resize", updateTeachersPerPage);
   }, []);
+  
   const totalPages = Math.ceil(Teachers.length / teachersPerPage);
   const startIndex = (currentPage - 1) * teachersPerPage;
   const selectedTeachers = Teachers.slice(
     startIndex,
     startIndex + teachersPerPage
   );
-  // Initialize useForm
+
   // Form instances
   const basicForm = useForm({
     resolver: zodResolver(basicDetailsSchema),
