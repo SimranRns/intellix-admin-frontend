@@ -108,7 +108,7 @@ const Department_list_Employee = () => {
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
                         {selectedEmployees.map((employee) => (
-                            <Card key={employee.id} className="w-full max-w-sm shadow-md rounded-2xl ps-6 relative mx-auto ">
+                            <Card key={employee.id} className="w-full max-w-sm shadow-md rounded-2xl ps-6 relative mx-auto shadow-blue-500/50 ">
                                 <CardHeader className="flex flex-col items-center text-center">
                                     <Avatar className="shadow-md w-24 h-24 rounded-full">
                                         <AvatarImage className="rounded-full border-4 border-blue-600" src={employee.image} alt={employee.name} />
