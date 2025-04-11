@@ -169,7 +169,7 @@ const Departments = () => {
                 onClick={() => navigate(-1)}
               >
                 <ArrowLeft size={18} />
-                <span className="hidden md:inline">Back to Department</span>
+                <span className="hidden lg:inline">Back to Department</span>
               </Button>
               <Button
                 onClick={() => setAddDepartment(true)}
@@ -227,7 +227,7 @@ const Departments = () => {
           </div>
 
           {/* Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 gap-6 p-6">
             {selectedDepartments.map((department) => (
               <Card
                 key={department.id}
