@@ -48,16 +48,26 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../../src/components/ui/pagination";
-const exportSchema = z
+export const exportSchema = z
   .object({
-    fromDate: z.date({ required_error: "From date is required" }),
-    toDate: z.date({ required_error: "To date is required" }),
+    startDate: z
+      .string()
+      .min(1, "Start date is required")
+      .refine((val) => !isNaN(Date.parse(val)), {
+        message: "Invalid start date",
+      }),
+    endDate: z
+      .string()
+      .min(1, "End date is required")
+      .refine((val) => !isNaN(Date.parse(val)), {
+        message: "Invalid end date",
+      }),
     course: z.string().min(1, "Course is required"),
     batch: z.string().min(1, "Batch is required"),
   })
-  .refine((data) => data.toDate >= data.fromDate, {
-    message: "To date must be after From date",
-    path: ["toDate"],
+  .refine((data) => new Date(data.endDate) > new Date(data.startDate), {
+    message: "End date must be after start date (not the same)",
+    path: ["endDate"],
   });
 const Attendance = () => {
   const [date, setDate] = React.useState();
@@ -83,11 +93,6 @@ const Attendance = () => {
   const [openSecondModal, setOpenSecondModal] = useState(false);
   const inputRef = useRef(null);
 
-
-
-
-
-
   // For the date/time display at the bottom
   // const currentDateTime = new Date().toLocaleString();
 
@@ -99,75 +104,74 @@ const Attendance = () => {
       const data = [
         {
           id: 1,
-          enrollmentId: "E001",
+          enrollmentId: "E101",
           name: "John Doe",
           batchName: "Batch A",
           status: "In",
         },
         {
           id: 2,
-          enrollmentId: "E002",
+          enrollmentId: "E102",
           name: "Jane Smith",
           batchName: "Batch B",
           status: "Out",
         },
         {
-          id: 1,
-          enrollmentId: "E001",
-          name: "John Doe",
+          id: 3,
+          enrollmentId: "E103",
+          name: "Alice Johnson",
+          batchName: "Batch C",
+          status: "Absent",
+        },
+        {
+          id: 4,
+          enrollmentId: "E104",
+          name: "Michael Brown",
           batchName: "Batch A",
           status: "In",
         },
         {
-          id: 2,
-          enrollmentId: "E002",
-          name: "Jane Smith",
+          id: 5,
+          enrollmentId: "E105",
+          name: "Emily Davis",
           batchName: "Batch B",
           status: "Out",
         },
         {
-          id: 1,
-          enrollmentId: "E001",
-          name: "John Doe",
-          batchName: "Batch A",
+          id: 6,
+          enrollmentId: "E106",
+          name: "Daniel Wilson",
+          batchName: "Batch C",
           status: "In",
         },
         {
-          id: 2,
-          enrollmentId: "E002",
-          name: "Jane Smith",
+          id: 7,
+          enrollmentId: "E107",
+          name: "Sophia Martinez",
+          batchName: "Batch A",
+          status: "On Leave",
+        },
+        {
+          id: 8,
+          enrollmentId: "E108",
+          name: "James Anderson",
           batchName: "Batch B",
           status: "Out",
         },
         {
-          id: 1,
-          enrollmentId: "E001",
-          name: "John Doe",
+          id: 9,
+          enrollmentId: "E109",
+          name: "Olivia Thomas",
+          batchName: "Batch C",
+          status: "Absent",
+        },
+        {
+          id: 10,
+          enrollmentId: "E110",
+          name: "William Taylor",
           batchName: "Batch A",
           status: "In",
         },
-        {
-          id: 2,
-          enrollmentId: "E002",
-          name: "Jane Smith",
-          batchName: "Batch B",
-          status: "Out",
-        },
-        {
-          id: 1,
-          enrollmentId: "E001",
-          name: "John Doe",
-          batchName: "Batch A",
-          status: "In",
-        },
-        {
-          id: 2,
-          enrollmentId: "E002",
-          name: "Jane Smith",
-          batchName: "Batch B",
-          status: "Out",
-        },
-        // Add more data as needed
       ];
 
       // Update states based on fetched data
@@ -194,7 +198,6 @@ const Attendance = () => {
   // Handlers
   const handleSearch = () => {
     // Implement filtering logic based on search fields if needed
-    // (e.g., re-fetch from server or filter in-memory)
     console.log("Searching:", {
       searchEnrollmentId,
       searchName,
@@ -217,9 +220,26 @@ const Attendance = () => {
     console.log("Exporting report...");
   };
   const handleProceed = () => {
-    setOpenFirstModal(false); // Close first modal
-    setTimeout(() => setOpenSecondModal(true), 300); // Open second modal with slight delay for smooth transition
+    const values = getValues();
+
+    const result = exportSchema.safeParse(values);
+
+    if (!result.success) {
+      // Show Zod validation errors manually
+      Object.entries(result.error.flatten().fieldErrors).forEach(([key, val]) => {
+        if (val?.[0]) {
+          // Set error manually if needed, or rely on react-hook-form's built-in error handling
+          console.warn(`${key}: ${val[0]}`);
+        }
+      });
+      return; // Stop here, don't proceed
+    }
+
+    // If validation passed
+    setOpenFirstModal(false);
+    setTimeout(() => setOpenSecondModal(true), 300);
   };
+
   const {
     register,
     handleSubmit,
@@ -239,6 +259,7 @@ const Attendance = () => {
   const onSubmit = (data) => {
     console.log("Exporting report with:", data);
     setOpenFirstModal(false);
+    setTimeout(() => setOpenSecondModal(true), 300);
   };
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -246,7 +267,7 @@ const Attendance = () => {
   const totalPages = Math.ceil(filteredData.length / attendancePerPage);
   const startIndex = (currentPage - 1) * attendancePerPage;
   const selectedAttendance = filteredData.slice(startIndex, startIndex + attendancePerPage);
-  
+
 
 
   return (
@@ -258,7 +279,7 @@ const Attendance = () => {
 
         {/* Main container */}
         <main className="flex-1 overflow-auto">
-          <div className="m-6 p-6 rounded-lg shadow-sm shadow-blue-500/50">
+          <div className="m-6 p-6  rounded-lg shadow-sm shadow-blue-500/50">
             {/* Top counters */}
             <div className="grid grid-cols-4 gap-4 mb-6">
               <div className="text-center border p-3 rounded-lg shadow-md shadow-blue-500/50">
@@ -302,7 +323,7 @@ const Attendance = () => {
                 placeholder="Search By Enrollment Id"
                 value={searchEnrollmentId}
                 onChange={(e) => setSearchEnrollmentId(e.target.value)}
-                className="border border-blue-500 rounded-md text-sm text-gray-700 px-2 py-2 h-10 focus:ring focus:ring-blue-200 shadow-sm"
+                className="border border-blue-500 rounded-md text-sm text-gray-700 px-2 py-2 h-10 shadow-sm"
               />
 
               <input
@@ -310,14 +331,14 @@ const Attendance = () => {
                 placeholder="Search By Name"
                 value={searchName}
                 onChange={(e) => setSearchName(e.target.value)}
-                className="border border-blue-500 px-2 py-2 h-10 rounded-lg text-gray-700 focus:ring focus:ring-blue-200 shadow-md"
+                className="border border-blue-500 px-2 py-2 h-10 text-sm rounded-lg text-gray-700  shadow-md"
               />
               <input
                 type="text"
                 placeholder="Search By Batch Name"
                 value={searchBatchName}
                 onChange={(e) => setSearchBatchName(e.target.value)}
-                className="border border-blue-500 px-2 py-2 h-10 rounded-lg text-gray-700 focus:ring focus:ring-blue-200 shadow-md"
+                className="border border-blue-500 px-2 py-2 h-10 text-sm rounded-lg text-gray-700  shadow-md"
               />
               <button
                 onClick={handleSearch}
@@ -386,35 +407,44 @@ const Attendance = () => {
                   <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
                     {/* Date Pickers */}
                     <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
-                          <Label className="md:text-right text-left font-medium">From:</Label>
-                          <Input
-                            type="date"
-                            // value={batchDetails.startDate}
-                            onChange={(e) => handleChange("startDate", e.target.value)}
-                            className="col-span-3"
-                          />
-                        </div>
-
-
-                      </div>
-
+                      {/* From Date */}
                       <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
-                        <Label className="md:text-right text-left font-medium">To :</Label>
+                        <Label className="md:text-right text-left font-medium">From:</Label>
                         <Input
                           type="date"
-                          // value={batchDetails.endDate}
-                          onChange={(e) => handleChange("endDate", e.target.value)}
+                          {...register("startDate")}
                           className="col-span-3"
                         />
+                        {errors.startDate && (
+                          <p className="col-span-4 text-red-500 text-sm">
+                            {errors.startDate.message}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* To Date */}
+                      <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+                        <Label className="md:text-right text-left font-medium">To:</Label>
+                        <Input
+                          type="date"
+                          {...register("endDate")}
+                          className="col-span-3"
+                        />
+                        {errors.endDate && (
+                          <p className="col-span-4 text-red-500 text-sm">
+                            {errors.endDate.message}
+                          </p>
+                        )}
                       </div>
                     </div>
+
 
                     {/* Course */}
                     <div>
                       <Label>Select Course*</Label>
-                      <Select onValueChange={(value) => setValue("course", value)}>
+                      <Select
+                        onValueChange={(value) => setValue("course", value, { shouldValidate: true })}
+                      >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="--Select Course--" />
                         </SelectTrigger>
@@ -433,7 +463,9 @@ const Attendance = () => {
                     {/* Batch */}
                     <div>
                       <Label>Select Batch*</Label>
-                      <Select onValueChange={(value) => setValue("batch", value)}>
+                      <Select
+                        onValueChange={(value) => setValue("batch", value, { shouldValidate: true })}
+                      >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="--Select Batch--" />
                         </SelectTrigger>
@@ -448,12 +480,11 @@ const Attendance = () => {
                         </p>
                       )}
                     </div>
-
                     {/* Submit */}
                     <DialogFooter>
                       <Button
                         type="submit"
-                        // onClick={handleProceed}
+                        onClick={handleProceed}
                         className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg"
                       >
                         Proceed
@@ -495,12 +526,12 @@ const Attendance = () => {
             </div>
 
             {/* Table or "No Data Available" */}
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto max-h-[300px] overflow-y-auto border rounded-md">
               {loading ? (
                 <p className="text-center">Loading...</p>
               ) : filteredData.length > 0 ? (
                 <table className="w-full border-collapse border">
-                  <thead className="bg-gray-200 text-gray-800">
+                  <thead className="bg-gray-200 text-gray-800 sticky top-0 z-10">
                     <tr>
                       <th className="border px-4 py-2">Enrollment ID</th>
                       <th className="border px-4 py-2">Name</th>
@@ -509,27 +540,23 @@ const Attendance = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {selectedAttendance.map((student) => (
+                    {selectedAttendance.slice(0, 5).map((student) => (
                       <tr key={student.id}>
-                        <td className="border text-md px-4 py-2">
-                          {student.enrollmentId}
-                        </td>
+                        <td className="border text-md px-4 py-2">{student.enrollmentId}</td>
                         <td className="border text-md px-4 py-2">{student.name}</td>
-                        <td className="border text-md px-4 py-2">
-                          {student.batchName}
-                        </td>
-                        <td className="border px-4 text-md py-2">{student.status}</td>
+                        <td className="border text-md px-4 py-2">{student.batchName}</td>
+                        <td className="border text-md px-4 py-2">{student.status}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-
               ) : (
-                <p className="text-center text-red-600 font-semibold font-mono4">
+                <p className="text-center text-red-600 font-semibold font-mono">
                   No Data Available
                 </p>
               )}
             </div>
+
             <Pagination className="mt-4 justify-center">
               <PaginationContent>
                 <PaginationItem>
@@ -545,8 +572,8 @@ const Attendance = () => {
                       href="#"
                       onClick={() => setCurrentPage(i + 1)}
                       className={`px-4 py-2 rounded-md ${currentPage === i + 1
-                          ? "bg-blue-600 text-white"
-                          : "hover:bg-blue-500 hover:text-white"
+                        ? "bg-blue-600 text-white"
+                        : "hover:bg-blue-500 hover:text-white"
                         }`}
                     >
                       {i + 1}

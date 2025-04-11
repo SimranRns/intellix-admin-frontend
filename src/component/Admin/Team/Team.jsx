@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import Header from "../Dashboard/Header";
+
 import "./Team.css";
 import TimePicker from "../../src/components/ui/time-picker";
 import { format } from "date-fns";
@@ -214,8 +214,10 @@ import {
   PopoverTrigger,
 } from "../../src/components/ui/popover";
 import { Navigate, useNavigate } from "react-router-dom";
-import AppSidebar from "../../src/components/ui/app-sidebar";
+
 import ThankYouCard from "../Dashboard/ThankYouCard";
+import AppSidebar from "../../src/components/ui/app-sidebar";
+import Header from "../Dashboard/Header";
 
 const Team = ({ teacherData }) => {
   const navigate = useNavigate();
@@ -265,7 +267,7 @@ const Team = ({ teacherData }) => {
     window.addEventListener("resize", updateTeachersPerPage);
     return () => window.removeEventListener("resize", updateTeachersPerPage);
   }, []);
-  
+
   const totalPages = Math.ceil(Teachers.length / teachersPerPage);
   const startIndex = (currentPage - 1) * teachersPerPage;
   const selectedTeachers = Teachers.slice(
@@ -428,11 +430,12 @@ const Team = ({ teacherData }) => {
 
     // Open the confirmation dialog
     setAddConfrom(true);
-};
+  };
 
 
   const handleChange = (e) => {
     setInputName(e.target.value);
+
     console.log(InputName);
   };
 
@@ -455,7 +458,7 @@ const Team = ({ teacherData }) => {
     // Close the dialog
     setOpen(false);
     setAddConfrom(true)
-};
+  };
 
 
   const handleAdditionalFormSubmit = (data) => {
@@ -505,73 +508,76 @@ const Team = ({ teacherData }) => {
       <SidebarInset>
         <Header />
         <main className="flex-1 overflow-auto">
-          <div className="w-full  shadow-md shadow-blue-300/30 rounded-lg flex flex-col sm:flex-row items-center justify-between px-4 sm:px-8 py-4 space-y-4 sm:space-y-0">
-            <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full sm:max-w-md">
-              <Search size={18} className="text-gray-500" />
-              <input
-                type="text"
-                placeholder="By Employee Name..."
-                className="ml-2 w-full outline-none bg-transparent"
-              />
-            </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:flex gap-3">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button className="rounded-md border border-blue-300 px-6 sm:px-8 md:ms-5  hover:bg-blue-500 hover:text-white py-2 text-sm font-medium flex items-center">
-                    <span>{selectedOption}</span>
-                    <ChevronDown size={16} className="ml-2" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  side="left"
-                  align="start"
-                  className="bg-white z-[50] text-black w-40 shadow-md rounded-md mt-2  border border-blue-300 "
+          <div className="w-full shadow-md shadow-blue-300/30 rounded-lg px-4 sm:px-6 md:px-8 py-4">
+            {/* Container flexes on lg+ screens */}
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+
+              {/* Search Bar */}
+              <div className="w-full lg:max-w-md">
+                <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full">
+                  <Search size={18} className="text-gray-500" />
+                  <input
+                    type="text"
+                    placeholder="By Employee Name..."
+                    className="ml-2 w-full outline-none bg-transparent text-sm"
+                  />
+                </div>
+              </div>
+
+              {/* Buttons Grid - 3 cols on sm & md, flex on lg+ */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full lg:flex lg:items-center lg:justify-end lg:gap-4">
+
+                {/* Dropdown Menu */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button className="w-full lg:w-auto border border-blue-300 hover:bg-blue-500 hover:text-white flex justify-between items-center px-4 py-2 text-sm font-medium rounded-md">
+                      <span>{selectedOption}</span>
+                      <ChevronDown size={16} className="ml-2" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                   
+                    align="start"
+                    className="bg-white z-[50] dark:bg-gray-800 text-gray-900 dark:text-white w-40 shadow-md rounded-md mt-2 border border-blue-300"
+                  >
+                    {["Newest", "Oldest", "Recent"].map((item) => (
+                      <DropdownMenuItem
+                        key={item}
+                        onClick={() => setSelectedOption(item)}
+                        className="cursor-pointer hover:bg-blue-600 hover:text-white px-4 py-2 text-center"
+                      >
+                        {item}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Departments Button */}
+                <Button
+                  onClick={() => Navigate("/Departments")}
+                  className="w-full lg:w-auto bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm"
                 >
-                  <DropdownMenuItem
-                    onClick={() => setSelectedOption("Newest")}
-                    className="cursor-pointer hover:bg-blue-600 hover:text-white  px-4 py-2 text-center"
-                  >
-                    Newest
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => setSelectedOption("Oldest")}
-                    className="cursor-pointer hover:bg-blue-600 hover:text-white px-4 py-2 text-center"
-                  >
-                    Oldest
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => setSelectedOption("Recent")}
-                    className="cursor-pointer hover:bg-blue-600 hover:text-white px-4 py-2 text-center"
-                  >
-                    Recent
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  Departments
+                </Button>
 
-              {/* Department Button */}
-              <Button
-                onClick={() => { Navigate("/Departments") }}
+                {/* Ex-Employee Button */}
+                <Button
+                  onClick={() => Navigate("/Ex-Employee")}
+                  className="w-full lg:w-auto bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm"
+                >
+                  Ex-Employee
+                </Button>
 
-                className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm">
+                {/* Add Employee Button */}
+                <Button
+                  onClick={() => setTeacher(true)}
+                  className="w-full lg:w-auto bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm"
+                >
+                  + Add Employee
+                </Button>
+              </div>
 
-                Departments
-              </Button>
-              {/* Department Button */}
-              <Button
-                onClick={() => Navigate("/Ex-Employee")}
-
-                className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm">
-                Ex-Employee
-              </Button>
-
-              {/* Add Teacher Button */}
-              <Button
-                onClick={() => setTeacher(true)}
-                className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm"
-              >
-                + Add Employee
-              </Button>
 
               {/* //First dilog */}
               <Dialog open={Addteacher} onOpenChange={setTeacher}>
@@ -640,7 +646,7 @@ const Team = ({ teacherData }) => {
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                   />
 
-                                  {/* <input type="text"  onChange={handleChange} /> */}
+
                                   <span className="absolute right-4 text-gray-500">
                                     <User size={21} />
                                   </span>
@@ -1388,7 +1394,7 @@ const Team = ({ teacherData }) => {
                           </div>
                         </div>
                         <Button
-                        onClick={() => setChangeTime(false)}
+                          onClick={() => setChangeTime(false)}
                           type="submit"
                           className="bg-indigo-500 text-white px-5 w-full py-2 rounded-lg hover:bg-indigo-600"
                         >
@@ -1417,7 +1423,7 @@ const Team = ({ teacherData }) => {
                     <hr className="mt-5"></hr>
                     <div className="flex justify-center">
                       <Button
-                      onClick={() => {setDelete(false),setAddConfrom(true)}}
+                        onClick={() => { setDelete(false), setAddConfrom(true) }}
                         type="submit"
                         className="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700"
                       >
@@ -1502,7 +1508,7 @@ const Team = ({ teacherData }) => {
                         {/* Buttons */}
                         <div className="flex justify-between">
                           <Button
-                          
+
                             type="submit"
                             className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700"
                           >
