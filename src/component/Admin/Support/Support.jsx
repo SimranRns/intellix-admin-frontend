@@ -191,7 +191,7 @@ const Support = () => {
                     // </Card>
                     <Card
                       key={ticket.id}
-                      className="shadow-lg rounded-xl p-4 md:p-6 flex flex-col gap-4 items-center transition-transform hover:scale-105 w-full"
+                      className="shadow-md shadow-blue-500/50 rounded-xl p-4 md:p-6 flex flex-col gap-4 items-center transition-transform hover:scale-105 w-full"
                     >
                       <img
                         src={ticket.image}
