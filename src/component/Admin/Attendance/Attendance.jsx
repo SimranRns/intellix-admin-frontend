@@ -387,51 +387,27 @@ const Attendance = () => {
                     {/* Date Pickers */}
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label>From</Label>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button variant="outline" className="w-full justify-start">
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {fromDate.toLocaleDateString()}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar
-                              mode="single"
-                              selected={fromDate}
-                              onSelect={(date) => setValue("fromDate", date)}
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        {errors.fromDate && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.fromDate.message}
-                          </p>
-                        )}
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+                          <Label className="md:text-right text-left font-medium">From:</Label>
+                          <Input
+                            type="date"
+                            // value={batchDetails.startDate}
+                            onChange={(e) => handleChange("startDate", e.target.value)}
+                            className="col-span-3"
+                          />
+                        </div>
+
+
                       </div>
 
-                      <div>
-                        <Label>To</Label>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button variant="outline" className="w-full justify-start">
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {toDate.toLocaleDateString()}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar
-                              mode="single"
-                              selected={toDate}
-                              onSelect={(date) => setValue("toDate", date)}
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        {errors.toDate && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.toDate.message}
-                          </p>
-                        )}
+                      <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+                        <Label className="md:text-right text-left font-medium">To :</Label>
+                        <Input
+                          type="date"
+                          // value={batchDetails.endDate}
+                          onChange={(e) => handleChange("endDate", e.target.value)}
+                          className="col-span-3"
+                        />
                       </div>
                     </div>
 
@@ -477,7 +453,7 @@ const Attendance = () => {
                     <DialogFooter>
                       <Button
                         type="submit"
-                        onClick={handleProceed}
+                        // onClick={handleProceed}
                         className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg"
                       >
                         Proceed
@@ -511,7 +487,7 @@ const Attendance = () => {
                       Cancel
                     </Button>
                     <Button onClick={() => setOpenSecondModal(false)} className="bg-green-600 hover:bg-green-700 text-white">
-                      Confirm
+                      Export Report
                     </Button>
                   </DialogFooter>
                 </DialogContent>
