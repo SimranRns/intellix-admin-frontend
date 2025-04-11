@@ -28,6 +28,8 @@ import { Printer, MoreVertical } from "lucide-react";
 import { SidebarInset, SidebarProvider } from "../../src/components/ui/sidebar";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 
+              import { Users, UserX, CalendarCheck, Timer } from "lucide-react";
+
 const Dashboard = ({ children }) => {
   const [page, setPage] = useState(1);
   const [isOpen, setIsOpen] = useState(true);
@@ -164,7 +166,7 @@ const Dashboard = ({ children }) => {
             {/* Main Content */}
             <div className="flex-1 p-4">
               {/* Stats Cards */}
-              <Card className="shadow-md rounded-lg p-6 mt-6">
+              <Card className="shadow-md rounded-lg p-6 mt-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                   {[
                     {
@@ -176,19 +178,19 @@ const Dashboard = ({ children }) => {
                     {
                       label: "Total Absent",
                       count: "74K",
-                      icon: "👨‍🏫",
+                      icon: <UserX className="w-6 h-6" />,
                       color: "bg-red-500",
                     },
                     {
                       label: " Total Present",
                       count: "40K",
-                      icon: "📅",
+                      icon: <CalendarCheck className="w-6 h-6" />,
                       color: "bg-yellow-500",
                     },
                     {
                       label: "Total Half-Day",
                       count: "32K",
-                      icon: "🍽",
+                      icon: <Timer className="w-6 h-6" />,
                       color: "bg-blue-900",
                     },
                   ].map((item, index) => (
