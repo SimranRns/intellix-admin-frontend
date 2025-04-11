@@ -70,6 +70,7 @@ const Viewdetail = () => {
 
     const handleAddPayment = () => {
         navigate(`/student-payment-history`);
+        navigate(`/add-payment`);
     };
 
     return (
@@ -129,7 +130,9 @@ const Viewdetail = () => {
                                             <TableCell>{student.id}</TableCell>
                                             <TableCell>{student.name}</TableCell>
                                             <TableCell>
-                                                <button className="text-blue-600 hover:underline">
+                                                <button 
+                                                onClick={()=>{handleAddPayment(student.id)}}
+                                                className="text-blue-600 hover:underline">
                                                     Add Payment
                                                 </button>
                                             </TableCell>

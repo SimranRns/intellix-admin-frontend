@@ -45,6 +45,7 @@ import Subjects from "./component/Admin/Academics/Academics_data/Subjects";
 import ThankYouCard from "./component/Admin/Dashboard/ThankYouCard";
 import ExStudentsData from "./component/Admin/Student/Ex-Students/ExStudentsData";
 import Stu_Attendance from "./component/Admin/Student/Action/Stu_Attendance";
+import Add_Payment from "./component/Admin/Student/Add_Payment";
 // import { Route } from "lucide-react";
 const App = () => {
   const [loading, setLoading] = useState(true);
@@ -123,6 +124,7 @@ const App = () => {
           <Route path="/Sessions" element={<Sessions/>} />
           <Route path="/Subjects" element={<Subjects/>} />
           <Route path="/ThankYouCard" element={<ThankYouCard/>} />
+          <Route path="/add-payment" element={<Add_Payment/>} />
 
 
         </Routes>
