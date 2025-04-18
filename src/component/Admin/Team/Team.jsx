@@ -43,8 +43,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  Separator,
-} from "@radix-ui/react-dropdown-menu";
+} from "../../src/components/ui/dropdown-menu";
 import {
   Card,
   CardContent,
@@ -218,6 +217,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import ThankYouCard from "../Dashboard/ThankYouCard";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import Header from "../Dashboard/Header";
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "../../src/components/ui/sheet";
 
 const Team = ({ teacherData }) => {
   const navigate = useNavigate();
@@ -238,6 +238,7 @@ const Team = ({ teacherData }) => {
   const [outTime, setOutTime] = useState("");
   const [InputName, setInputName] = useState("");
   const fileInputRef = useRef(null);
+
   const [date, setDate] = useState("");
   const [activePage, setActivePage] = useState("Team");
 
@@ -439,6 +440,8 @@ const Team = ({ teacherData }) => {
     console.log(InputName);
   };
 
+ 
+
   // const handleImageChange = (event) => {
   //   const file = event.target.files[0];
   //   if (file) {
@@ -537,7 +540,7 @@ const Team = ({ teacherData }) => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
-                   
+
                     align="start"
                     className="bg-white z-[50] dark:bg-gray-800 text-gray-900 dark:text-white w-40 shadow-md rounded-md mt-2 border border-blue-300"
                   >
@@ -1342,9 +1345,16 @@ const Team = ({ teacherData }) => {
                     <DropdownMenuItem className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center">
                       Assigns
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center">
-                      +Assign Task
-                    </DropdownMenuItem>
+                        <DropdownMenuItem
+                        
+                        className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center">
+                          +Assign Task
+                        </DropdownMenuItem>
+                    
+
+
+
+
                     <DropdownMenuItem
                       className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center"
                       onClick={() => setChangeTime(true)}

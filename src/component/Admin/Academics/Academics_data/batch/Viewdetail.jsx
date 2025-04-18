@@ -78,7 +78,7 @@ const Viewdetail = () => {
             {/* First Dialog */}
             <Dialog open={openFirst} onOpenChange={setOpenFirst}>
                 <DialogTrigger asChild>
-                    <Button className="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-500 text-white py-2 px-6 rounded-xl flex items-center gap-2 hover:from-blue-500 hover:to-indigo-600 transition-all">
+                    <Button className="mt-4 w-full bg-blue-500 hover-bg-blue-600 text-white py-2 px-6 rounded-md flex items-center gap-2  transition-all">
                         <Pencil className="w-4 h-4" />
                         View Detail
                     </Button>

@@ -55,7 +55,7 @@ const UpdateTime = () => {
         <div>
             <Dialog open={open} onOpenChange={setopen}>
                 <DialogTrigger asChild>
-                    <Button onClick={() => { setopen(true) }} className="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-400 text-white py-2 px-8 flex items-center rounded-xl hover:from-blue-400 hover:to-indigo-700 transition-all whitespace-nowrap">
+                    <Button onClick={() => { setopen(true) }} className="mt-4 w-full bg-blue-500 text-white py-2 px-8 flex items-center rounded-md hover:bg-blue-600  transition-all whitespace-nowrap">
                         Update Time
                     </Button>
                 </DialogTrigger>
@@ -73,7 +73,7 @@ const UpdateTime = () => {
                             <h3 className="text-lg font-semibold mb-4">Select Time Range</h3>
 
                             <Label className="mb-2 flex items-center gap-2">
-                                <Clock className="w-4 h-4" />
+                                <Clock className="w-4 h-4 " />
                                 From Time
                             </Label>
                             <Input

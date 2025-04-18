@@ -31,12 +31,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../../../src/components/ui/select"
-
-const batchSchema = z.object({
-    batchName: z.string().min(1, 'Batch name is required'),
-    course: z.string().min(1, { message: "Course is required" }),
-})
-
 import {
     Card,
     CardContent,
@@ -48,11 +42,17 @@ import {
 import Viewdetail from './batch/Viewdetail'
 import Update_time from './batch/Update_time'
 import Migrate from './batch/Migrate'
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../../../src/components/ui/pagination'
+
+const batchSchema = z.object({
+    batchName: z.string().min(1, 'Batch name is required'),
+    course: z.string().min(1, { message: "Course is required" }),
+})
 
 const Batches = () => {
     const [AddBatches, setAddBatches] = useState(false)
-    const [showSuccess, setShowSuccess] = useState(false)
-
+    const [currentPage, setCurrentPage] = useState(1)
+    
     const form = useForm({
         resolver: zodResolver(batchSchema),
         defaultValues: {
@@ -61,28 +61,23 @@ const Batches = () => {
         }
     })
 
-    const [card, setcard] = useState([
-        {
-            batchname: "BCA",
-            course: "English"
-        },
-        {
-            batchname: "BCA",
-            course: "English"
-        },
-        {
-            batchname: "BCA",
-            course: "English"
-        },
-        {
-            batchname: "BCA",
-            course: "English"
-        },
+    const [card, setCard] = useState([
+        { batchname: "BCA", course: "English" },
+        { batchname: "MCA", course: "Math" },
+        { batchname: "BBA", course: "Business" },
+        { batchname: "MBA", course: "Management" },
+        { batchname: "BSc", course: "Biology" },
+        { batchname: "MSc", course: "Physics" },
+        { batchname: "B.Com", course: "Commerce" },
+        { batchname: "M.Com", course: "Accounting" },
     ])
+    
+    const itemsPerPage = 8
+    const totalPages = Math.ceil(card.length / itemsPerPage)
+    const paginatedData = card.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
     const onSubmit = (data) => {
-        setcard(prev => [...prev, { batchname: data.batchName, course: data.course }])
-        setShowSuccess(true)
+        setCard(prev => [...prev, { batchname: data.batchName, course: data.course }])
         setAddBatches(false)
         form.reset()
 
@@ -94,6 +89,7 @@ const Batches = () => {
     const goBack = () => {
         window.history.back()
     }
+
 
     return (
         <SidebarProvider style={{ '--sidebar-width': '15rem' }}>
@@ -182,18 +178,10 @@ const Batches = () => {
                         </div>
                     </div>
 
-                    {/* Success Message */}
-                    {showSuccess && (
-                        <div className="flex items-center gap-3 bg-green-100 text-green-800 px-4 py-3 rounded-xl shadow-md w-fit mx-auto my-6">
-                            <CheckCircle className="text-green-600" size={24} />
-                            <span>Batch added successfully!</span>
-                        </div>
-                    )}
-
                     {/* Cards */}
-                    <div className="grid gap-6 mt-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <div className="grid gap-6 p-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {
-                            card.map((pass, index) => (
+                            paginatedData.map((pass, index) => (
                                 <Card
                                     key={index}
                                     className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden mt-8"
@@ -204,7 +192,7 @@ const Batches = () => {
                                         </CardTitle>
                                         <CardDescription className="text-lg">{pass.course}</CardDescription>
                                     </CardHeader>
-                                    <CardContent className='grid gap-2 sm:grid-cols-1 lg:grid-cols-2'>
+                                    <CardContent className='grid gap-2 grid-cols-2 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2'>
                                         <Viewdetail />
                                         <Update_time />
                                         <Migrate />
@@ -212,6 +200,40 @@ const Batches = () => {
                                 </Card>
                             ))
                         }
+                    </div>
+
+                    {/* Pagination */}
+                    <div className="p-6">
+                        <Pagination>
+                            <PaginationContent>
+                                <PaginationItem>
+                                    <PaginationPrevious
+                                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                        disabled={currentPage === 1}
+                                    />
+                                </PaginationItem>
+                                {Array.from({ length: totalPages }, (_, i) => (
+                                    <PaginationItem key={i}>
+                                        <PaginationLink
+                                            as="button"
+                                            onClick={() => setCurrentPage(i + 1)}
+                                            className={`px-4 py-2 rounded-md ${currentPage === i + 1
+                                                ? "bg-blue-600 text-white"
+                                                : "hover:bg-blue-500 hover:text-white"
+                                                }`}
+                                        >
+                                            {i + 1}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                ))}
+                                <PaginationItem>
+                                    <PaginationNext
+                                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                        disabled={currentPage === totalPages}
+                                    />
+                                </PaginationItem>
+                            </PaginationContent>
+                        </Pagination>
                     </div>
                 </main>
             </SidebarInset>

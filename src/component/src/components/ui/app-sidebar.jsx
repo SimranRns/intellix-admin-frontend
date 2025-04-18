@@ -6,18 +6,17 @@ import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
   SidebarFooter,
   useSidebar,
+  SidebarRail,
 } from "../ui/sidebar";
+import { NavMain } from "./nav-main";
 
 const AppSidebar = ({ ...props }) => {
   const navigate = useNavigate();
   const { isOpen, toggleSidebar } = useSidebar();
 
-  const items = [
+  const data = [
     { title: "Dashboard", url: "/dashboard", icon: Home },
     { title: "Academics", url: "/Academics", icon: FileBadge },
     { title: "Students", url: "/students", icon: Users },
@@ -31,59 +30,36 @@ const AppSidebar = ({ ...props }) => {
   ];
 
   return (
-    <Sidebar
-      collapsible="icon"
-      className={`transition-all duration-300 flex flex-col h-screen ${
-        !isOpen ? "w-[240px]" : "w-[90px]"
-      } overflow-hidden`}
-      {...props}
-    >
-      {/* Sidebar Header */}
-      <SidebarHeader className="bg-white dark:bg-gray-900" />
 
-      {/* Sidebar Content */}
-      <SidebarContent className="flex-grow overflow-auto bg-white dark:bg-gray-900">
-        <SidebarMenu>
-          {/* Sidebar Logo & Close Button */}
-          <div className="flex items-center justify-between gap-4 mb-3 ps-2">
-            <div className="flex items-center gap-4">
-              <img className="w-10 h-10" src={intellix_icon} alt="Intellix Logo" />
-              {!isOpen && <h5 className="text-xl font-semibold">Intellix</h5>}
-            </div>
+    <Sidebar collapsible="icon" {...props}>
+      <SidebarHeader className="  bg-white dark:bg-gray-900">
 
-            {/* Close Button (Only for Small Screens) */}
-            <button
-              onClick={() => toggleSidebar(false)}
-              className="block sm:hidden p-2 z-50 h-10 w-10 rounded-lg"
-            >
-              <X className="w-6 h-6" />
-            </button>
+        {/* Sidebar Logo & Close Button */}
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4" 
+          
+          >
+            <img className="w-10 h-10 " src={intellix_icon} alt="Intellix Logo" />
+            {!isOpen && <h5 className="text-xl font-semibold">Intellix</h5>}
           </div>
+          <button
+            onClick={() => toggleSidebar(false)}
+            className="block sm:hidden p-2 z-50 h-10 w-10 rounded-lg"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+      </SidebarHeader>
 
-          {/* Sidebar Menu Items */}
-          {items.map(({ title, url, icon: Icon }) => (
-            <SidebarMenuItem key={title}>
-              <SidebarMenuButton asChild>
-                <button
-                  onClick={() => {
-                    // setActivePage(title);
-                    navigate(url);
-                  }}
-                  className="flex items-center gap-4 p-3 rounded-lg hover:bg-blue-600 hover:text-white w-full"
-                >
-                  <Icon className="min-w-[25px]" size={25} />
-                  {!isOpen && <h5 className="text-lg font-semibold">{title}</h5>}
-                </button>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
+      <SidebarContent>
+        <NavMain items={data} />
       </SidebarContent>
-
-      {/* Sidebar Footer */}
-      <SidebarFooter className="text-center text-[11px] bg-white dark:bg-gray-900">
+      <SidebarFooter>
         © 2024 Intellix
       </SidebarFooter>
+      <SidebarRail />
+
+
     </Sidebar>
   );
 };
