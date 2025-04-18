@@ -28,7 +28,8 @@ import { Printer, MoreVertical } from "lucide-react";
 import { SidebarInset, SidebarProvider } from "../../src/components/ui/sidebar";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 
-              import { Users, UserX, CalendarCheck, Timer } from "lucide-react";
+import { Users, UserX, CalendarCheck, Timer, Book } from "lucide-react";
+import { useNavigate } from "react-router";
 
 const Dashboard = ({ children }) => {
   const [page, setPage] = useState(1);
@@ -65,95 +66,37 @@ const Dashboard = ({ children }) => {
     { month: "June", desktop: 241, mobile: 10 },
     { month: "June", desktop: 248, mobile: 170 },
   ];
-  const teachers = [
-    {
-      name: "Yatin Xarma",
-      subject: "Programming",
-      qualification: "B.Tech",
-      fee: "$117.00",
-      performance: "Good",
-    },
-    {
-      name: "Hanu Chang",
-      subject: "Basic Algorithm",
-      qualification: "B.E",
-      fee: "$215.50",
-      performance: "Good",
-    },
-    {
-      name: "Jordan Nico",
-      subject: "English",
-      qualification: "B.A",
-      fee: "$210.70",
-      performance: "Good",
-    },
-    {
-      name: "Nadila Adja",
-      subject: "History",
-      qualification: "B.A",
-      fee: "$204.50",
-      performance: "Bad",
-    },
-    {
-      name: "James Brown",
-      subject: "Commerce",
-      qualification: "B.Com",
-      fee: "$217.70",
-      performance: "Good",
-    },
-  ];
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+const navigate = useNavigate()
   const students = [
-    {
-      name: "Yatin Xarma",
-      subject: "Programming",
-      qualification: "B.Tech",
-      fee: "$117.00",
-      performance: "Good",
-    },
-    {
-      name: "Hanu Chang",
-      subject: "Basic Algorithm",
-      qualification: "B.E",
-      fee: "$215.50",
-      performance: "Good",
-    },
-    {
-      name: "Jordan Nico",
-      subject: "English",
-      qualification: "B.A",
-      fee: "$210.70",
-      performance: "Good",
-    },
-    {
-      name: "Jordan Nico",
-      subject: "English",
-      qualification: "B.A",
-      fee: "$210.70",
-      performance: "Good",
-    },
-    {
-      name: "Jordan Nico",
-      subject: "English",
-      qualification: "B.A",
-      fee: "$210.70",
-      performance: "Good",
-    },
-    
-   
+    { number: "1", name: "Jordan Nico", TotalUser: "18" },
+    { number: "2", name: "Maria Jones", TotalUser: "6" },
+    { number: "3", name: "Alan Smith", TotalUser: "98" },
+    { number: "4", name: "Sara Lee", TotalUser: "76" },
+    { number: "5", name: "Tom Hardy", TotalUser: "4" },
+    { number: "6", name: "Lily Brown", TotalUser: "35" },
+    { number: "7", name: "John Carter", TotalUser: "15" },
+    { number: "8", name: "Emma Wilson", TotalUser: "10" },
+    { number: "9", name: "Oliver Stone", TotalUser: "6"},
+    { number: "10", name: "Sophia Green", TotalUser: "70" },
   ];
-  const PAGE_SIZE = 8;
-  const totalPages = Math.ceil(teachers.length / PAGE_SIZE);
+  const startEntry = (currentPage - 1) * itemsPerPage + 1;
+  const endEntry = Math.min(currentPage * itemsPerPage, students.length);
+
+  const totalPages = Math.ceil(students.length / itemsPerPage);
+  const paginatedTeachers = students.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   const handleNext = () => {
     if (page < totalPages) setPage(page + 1);
   };
   const handlePrev = () => {
     if (page > 1) setPage(page - 1);
   };
-  const paginatedTeachers = teachers.slice(
-    (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE
-  );
 
   return (
     <>
@@ -303,142 +246,154 @@ const Dashboard = ({ children }) => {
                   </CardContent>
                 </Card>
 
-                <div className="p-6  shadow-lg rounded-lg overflow-y-scroll h-[60vh] border border-gray-1000">
-                  <h2 className="text-xl font-semibold mb-4">
-                    Teacher Details
-                  </h2>
+                <div className="p-4 shadow-lg rounded-lg overflow-y-scroll  border border-gray-1000">
+                  <h2 className="text-xl font-semibold mb-4">Department</h2>
                   <Table>
                     <TableHeader>
                       <TableRow>
+                        <TableHead>S.NO.</TableHead>
                         <TableHead>Name</TableHead>
-                        <TableHead>Subject</TableHead>
-                        <TableHead>Qualification</TableHead>
-                        <TableHead>Fee</TableHead>
-                        <TableHead>Performance</TableHead>
+                        <TableHead>Total User</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {paginatedTeachers.map((teacher, index) => (
                         <TableRow key={index}>
+                          <TableCell>{teacher.number}</TableCell>
                           <TableCell>{teacher.name}</TableCell>
-                          <TableCell>{teacher.subject}</TableCell>
-                          <TableCell>{teacher.qualification}</TableCell>
-                          <TableCell>{teacher.fee}</TableCell>
-                          <TableCell>
-                            <Badge
-                              className={
-                                teacher.performance === "Good"
-                                  ? "bg-green-300  text-green-800"
-                                  : "bg-red-300 text-red-800"
-                              }
-                            >
-                              {teacher.performance}
-                            </Badge>
-                          </TableCell>
+                          <TableCell>{teacher.TotalUser}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
                   </Table>
+
                   <div className="flex justify-between items-center mt-4">
-                        <p className="text-sm text-gray-500">
-                          Showing 1 to 5 of 10 entries
-                        </p>
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm">
-                            <ChevronLeft size={16} />
-                          </Button>
-                          <Button variant="default" size="sm">
-                            1
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            2
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            <ChevronRight size={16} />
-                          </Button>
-                        </div>
-                      </div>
+                    <p className="text-sm text-gray-500">
+                      Showing {startEntry} to {endEntry} of {students.length}{" "}
+                      entries
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          setCurrentPage((prev) => Math.max(prev - 1, 1))
+                        }
+                        disabled={currentPage === 1}
+                      >
+                        <ChevronLeft size={16} />
+                      </Button>
+
+                      {[...Array(totalPages)].map((_, i) => (
+                        <Button
+                          key={i}
+                          variant={
+                            currentPage === i + 1 ? "default" : "outline"
+                          }
+                          size="sm"
+                          onClick={() => setCurrentPage(i + 1)}
+                        >
+                          {i + 1}
+                        </Button>
+                      ))}
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          setCurrentPage((prev) =>
+                            prev < totalPages ? prev + 1 : prev
+                          )
+                        }
+                        disabled={currentPage === totalPages}
+                      >
+                        <ChevronRight size={16} />
+                      </Button>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="h-[20vh]">
-                  <Card className="p-4">
-                    <CardContent>
-                      <h2 className="text-lg font-semibold mb-4">
-                        Unpaid Student 
-                      </h2>
-
-                      <div className="overflow-y-auto h-[35vh]  rounded-md">
-                        <Table className="w-full border-collapse">
-                          {/* Fixed Header */}
-                          <TableHeader className="sticky top-0 z-10 shadow">
-                            <TableRow>
-                              <TableHead>Name</TableHead>
-                              <TableHead>ID</TableHead>
-                              <TableHead>Class</TableHead>
-                              <TableHead>Fees</TableHead>
-                              <TableHead>Rank</TableHead>
-                              <TableHead>Action</TableHead>
-                            </TableRow>
-                          </TableHeader>
-
-                          {/* Scrollable Table Body */}
-                          <TableBody>
-                            {students.map((student, index) => (
-                              <TableRow key={index}>
-                                <TableCell className="flex items-center gap-3">
-                                  <img
-                                    src={student.image}
-                                    alt={student.name}
-                                    className="w-8 h-8 rounded-full"
-                                  />
-                                  {student.name}
-                                </TableCell>
-                                <TableCell className="text-blue-600 font-medium">
-                                  ID {student.id}
-                                </TableCell>
-                                <TableCell className="flex items-center gap-2">
-                                  <span className="bg-orange-500 text-white px-3 py-1 rounded-full">
-                                    {student.class}
-                                  </span>
-                                </TableCell>
-                                <TableCell>{student.fees}</TableCell>
-                                <TableCell>{student.rank}</TableCell>
-                                <TableCell className="flex gap-2">
-                                  <Button variant="ghost" size="icon">
-                                    <Printer size={18} />
-                                  </Button>
-                                  <Button variant="ghost" size="icon">
-                                    <MoreVertical size={18} />
-                                  </Button>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Total Students */}
+                  <Card className="flex items-center justify-between  border p-4 w-full">
+                    <div className="flex items-center gap-3 font-bold">
+                      <div className="bg-red-100 text-red-500 p-6 rounded-full">
+                        <Book size={20}/>
                       </div>
+                      <div>
+                        <p className="text-xl font-semibold text-red-500">0</p>
+                        <p className="text-sm text-gray-600">Total Students</p>
+                      </div>
+                    </div>
+                    <ChevronRight className="text-gray-500 cursor-pointer" size={18} 
+                    onClick={()=>navigate("/students")}
+                   
+                    />
+                  </Card>
 
-                      {/* Pagination */}
-                      <div className="flex justify-between items-center mt-4">
-                        <p className="text-sm text-gray-500">
-                          Showing 1 to 5 of 10 entries
+                  {/* Total Employees */}
+                  <Card className="flex items-center justify-between border p-4 w-full">
+                    <div className="flex items-center gap-3 font-bold">
+                      <div className="bg-pink-100 text-pink-500 p-6 rounded-full">
+                        <Users size={20} />
+                      </div>
+                      <div>
+                        <p className="text-xl font-semibold text-emerald-500">
+                          28
                         </p>
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm">
-                            <ChevronLeft size={16} />
-                          </Button>
-                          <Button variant="default" size="sm">
-                            1
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            2
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            <ChevronRight size={16} />
-                          </Button>
+                        <p className="text-sm text-gray-600">Total Employees</p>
+                      </div>
+                    </div>
+                    <ChevronRight className="text-gray-500 cursor-pointer" size={18}
+                     onClick={()=>navigate("/team")}
+                    
+                    />
+                  </Card>
+
+                  {/* Complaints */}
+                  <Card className="flex items-center justify-between border p-6 ">
+                    <div className="flex flex-col gap-2">
+                      <p className="text-base font-semibold">Complaints</p>
+                      <div className="flex gap-6">
+                        <div className="flex flex-col items-center">
+                          <p className="text-sm font-semibold text-emerald-600">
+                            3
+                          </p>
+                          <span className="text-xs text-gray-500">Closed</span>
+                        </div>
+                        <div className="flex flex-col items-center">
+                          <p className="text-sm font-semibold text-red-500">
+                            11
+                          </p>
+                          <span className="text-xs text-gray-500">New</span>
                         </div>
                       </div>
-                    </CardContent>
+                    </div>
+                    <ChevronRight className="text-gray-500 cursor-pointer" size={18} 
+                     onClick={()=>navigate("/support")}
+                    />
                   </Card>
+                  <div className="space-y-3 pt-4  ">
+                    {/* Total Debit Amount */}
+                    <Card className="flex items-center justify-between border p-4 mt-4">
+                      <p className="text-sm text-gray-500">
+                        Total Debit Amount
+                      </p>
+                      <p className="text-lg font-semibold text-emerald-500">
+                        ₹ 303498
+                      </p>
+                    </Card>
+
+                    {/* Total Credit Amount */}
+                    <Card className="flex items-center justify-between border p-4 ">
+                      <p className="text-sm text-gray-500">
+                        Total Credit Amount
+                      </p>
+                      <p className="text-lg font-semibold text-yellow-500">
+                        ₹ 0
+                      </p>
+                    </Card>
+                  </div>
                 </div>
               </div>
             </div>
