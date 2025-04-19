@@ -1,1 +1,0 @@
-export const Baseurl = 'https://adminv2-api-dev.intellix360.in'
