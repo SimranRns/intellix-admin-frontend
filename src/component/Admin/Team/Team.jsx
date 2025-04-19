@@ -218,6 +218,9 @@ import ThankYouCard from "../Dashboard/ThankYouCard";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import Header from "../Dashboard/Header";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "../../src/components/ui/sheet";
+import GetTeam from "../../../Redux_store/Api/TeamApi";
+import { useDispatch } from "react-redux";
+
 
 const Team = ({ teacherData }) => {
   const navigate = useNavigate();
@@ -238,6 +241,7 @@ const Team = ({ teacherData }) => {
   const [outTime, setOutTime] = useState("");
   const [InputName, setInputName] = useState("");
   const fileInputRef = useRef(null);
+  const dispatch = useDispatch();
 
   const [date, setDate] = useState("");
   const [activePage, setActivePage] = useState("Team");
@@ -440,7 +444,7 @@ const Team = ({ teacherData }) => {
     console.log(InputName);
   };
 
- 
+
 
   // const handleImageChange = (event) => {
   //   const file = event.target.files[0];
@@ -502,6 +506,13 @@ const Team = ({ teacherData }) => {
     }
   }, [isSameAddress, residentialAddress, district, state, pincode, setValue]);
 
+
+  useEffect(() => {
+    dispatch(GetTeam())
+    console.log(GetTeam());
+    
+
+  })
   return (
 
 
@@ -1345,12 +1356,12 @@ const Team = ({ teacherData }) => {
                     <DropdownMenuItem className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center">
                       Assigns
                     </DropdownMenuItem>
-                        <DropdownMenuItem
-                        
-                        className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center">
-                          +Assign Task
-                        </DropdownMenuItem>
-                    
+                    <DropdownMenuItem
+
+                      className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center">
+                      +Assign Task
+                    </DropdownMenuItem>
+
 
 
 

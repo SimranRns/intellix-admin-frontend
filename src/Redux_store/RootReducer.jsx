@@ -1,9 +1,8 @@
-// src/redux/rootReducer.js
 import { combineReducers } from '@reduxjs/toolkit'
-// import otherSlice from './slices/otherSlice'
+import teamReducer from './slices/Team'
 
 const RootReducer = combineReducers({
-  // other: otherSlice,
+team: teamReducer
 })
 
 export default RootReducer
