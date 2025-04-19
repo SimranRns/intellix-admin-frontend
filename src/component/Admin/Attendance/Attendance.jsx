@@ -279,7 +279,7 @@ const Attendance = () => {
 
         {/* Main container */}
         <main className="flex-1 overflow-auto">
-          <div className="m-6 p-6  rounded-lg shadow-sm shadow-blue-500/50">
+          <div className=" container    rounded-lg shadow-sm shadow-blue-500/50" >
             {/* Top counters */}
             <div className="grid grid-cols-4 gap-4 mb-6">
               <div className="text-center border p-3 rounded-lg shadow-md shadow-blue-500/50">
@@ -600,3 +600,5 @@ const Attendance = () => {
 };
 
 export default Attendance;
+
+
