@@ -388,18 +388,17 @@ const Leads = () => {
                   >
                     <Label htmlFor="name">Enter Category Name</Label>
                     <Input
-  id="name"
-  placeholder="Enter category name"
-  className="col-span-4"
-  {...form.register("name")}
-/>
+                      id="name"
+                      placeholder="Enter category name"
+                      className="col-span-4"
+                      {...form.register("name")}
+                    />
 
-{form.formState.errors.name && (
-  <p className="text-red-500 text-sm">
-    {form.formState.errors.name.message}
-  </p>
-)}
-
+                    {form.formState.errors.name && (
+                      <p className="text-red-500 text-sm">
+                        {form.formState.errors.name.message}
+                      </p>
+                    )}
 
                     <DialogFooter>
                       <Button type="submit">Add Category</Button>
