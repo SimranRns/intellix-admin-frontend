@@ -12,13 +12,13 @@ import { ArrowLeft, FileUp, Hash, IdCard, Landmark } from "lucide-react";
 const schema = z.object({
   address: z.string().min(5, "Address is required"),
   aadhaarNumber: z.string().length(12, "Aadhaar must be 12 digits").regex(/\d+$/, "Only numbers allowed"),
-  panNumber: z.string().length(10, "PAN must be 10 characters").regex(/^[A-Z]{5}[0-9]{4}[A-Z]$/, "Invalid PAN format"),
-  aadhaarDocument: z.any().refine((file) => file && file.type === "application/pdf", {
-    message: "Only PDF files are allowed",
-  }),
-  panDocument: z.any().refine((file) => file && file.type === "application/pdf", {
-    message: "Only PDF files are allowed",
-  }),
+  // panNumber: z.string().length(10, "PAN must be 10 characters").regex(/^[A-Z]{5}[0-9]{4}[A-Z]$/, "Invalid PAN format"),
+  // aadhaarDocument: z.any().refine((file) => file && file.type === "application/pdf", {
+  //   message: "Only PDF files are allowed",
+  // }),
+  // panDocument: z.any().refine((file) => file && file.type === "application/pdf", {
+  //   message: "Only PDF files are allowed",
+  // }),
 });
 
 const ProceedModal = () => {
@@ -78,64 +78,66 @@ const ProceedModal = () => {
         </Button>
 
       </div>
-      <div className="max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-md mt-10">
+      <div className=" mx-auto border rounded-2xl  h-auto min-h-[320px] max-w-4xl shadow-md shadow-blue-500/50 p-8 mt-5">
         <h2 className="text-center text-2xl sm:text-3xl font-semibold mb-6">Enter Your Details</h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Address Field */}
           <div>
-            <label className="block font-semibold text-lg mb-2 flex items-center gap-2">
-              <Hash size={18} /> Enter Address
-            </label>
-            <input
-              type="text"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              className={`w-full border rounded-xl p-3 ${errors.address ? 'border-red-500' : 'border-gray-300'}`}
-              placeholder="Enter your address"
-            />
-            {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
-          </div>
+  <label className=" font-semibold text-lg mb-2 flex items-center gap-2">
+    <Hash size={18} /> Enter Address
+  </label>
+  <input
+    type="text"
+    name="address"
+    value={formData.address}
+    onChange={handleChange}
+    className={`w-full border rounded-xl p-3 bg-transparent ${errors.address ? 'border-red-500' : 'border-gray-300'}`}
+    placeholder="Enter your address"
+  />
+  {errors.address && (
+    <p className="text-red-500 text-sm mt-1">{errors.address}</p>
+  )}
+</div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {/* Aadhaar Number */}
-            <div>
-              <label className="block font-semibold text-lg mb-2 flex items-center gap-2">
-                <IdCard size={18} /> Enter Aadhaar Number
-              </label>
-              <input
-                type="text"
-                name="aadhaarNumber"
-                value={formData.aadhaarNumber}
-                onChange={handleChange}
-                className={`w-full border rounded-xl p-3 ${errors.aadhaarNumber ? 'border-red-500' : 'border-gray-300'}`}
-                placeholder="Aadhaar number (12 digits)"
-              />
-              {errors.aadhaarNumber && <p className="text-red-500 text-sm mt-1">{errors.aadhaarNumber}</p>}
-            </div>
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+  {/* Aadhaar Number */}
+  <div>
+    <label className=" font-semibold text-lg mb-2 flex items-center gap-2">
+      <IdCard size={18} /> Enter Aadhaar Number
+    </label>
+    <input
+      type="text"
+      name="aadhaarNumber"
+      value={formData.aadhaarNumber}
+      onChange={handleChange}
+      className={`w-full border rounded-xl p-3 bg-transparent ${errors.aadhaarNumber ? 'border-red-500' : 'border-gray-300'}`}
+      placeholder="Aadhaar number (12 digits)"
+    />
+    {errors.aadhaarNumber && <p className="text-red-500 text-sm mt-1">{errors.aadhaarNumber}</p>}
+  </div>
 
-            {/* PAN Number */}
-            <div>
-              <label className="block font-semibold text-lg mb-2 flex items-center gap-2">
-                <Landmark size={18} /> Enter PAN No.
-              </label>
-              <input
-                type="text"
-                name="panNumber"
-                value={formData.panNumber}
-                onChange={handleChange}
-                className={`w-full border rounded-xl p-3 ${errors.panNumber ? 'border-red-500' : 'border-gray-300'}`}
-                placeholder="PAN number (10 characters)"
-              />
-              {errors.panNumber && <p className="text-red-500 text-sm mt-1">{errors.panNumber}</p>}
-            </div>
-          </div>
+  {/* PAN Number */}
+  {/* <div>
+    <label className=" font-semibold text-lg mb-2 flex items-center gap-2">
+      <Landmark size={18} /> Enter PAN No.
+    </label>
+    <input
+      type="text"
+      name="panNumber"
+      value={formData.panNumber}
+      onChange={handleChange}
+      className={`w-full border rounded-xl p-3 bg-transparent ${errors.panNumber ? 'border-red-500' : 'border-gray-300'}`}
+      placeholder="PAN number (10 characters)"
+    />
+    {errors.panNumber && <p className="text-red-500 text-sm mt-1">{errors.panNumber}</p>}
+  </div> */}
+</div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* Aadhaar Document */}
-            <div>
-              <label className="block font-semibold text-lg mb-1 flex items-center gap-2">
+            {/* <div>
+              <label className="font-semibold text-lg mb-1 flex items-center gap-2">
                 <FileUp size={18} /> Upload Aadhaar Document
               </label>
               <p className="text-sm mb-2 ml-7">(Upload front and back in PDF)</p>
@@ -147,11 +149,11 @@ const ProceedModal = () => {
                 className={`w-full border rounded-xl p-3 ${errors.aadhaarDocument ? 'border-red-500' : 'border-gray-300'}`}
               />
               {errors.aadhaarDocument && <p className="text-red-500 text-sm mt-1">{errors.aadhaarDocument}</p>}
-            </div>
+            </div> */}
 
             {/* PAN Document */}
-            <div>
-              <label className="block font-semibold text-lg mb-1 flex items-center gap-2">
+            {/* <div>
+              <label className=" font-semibold text-lg mb-1 flex items-center gap-2">
                 <FileUp size={18} /> Upload PAN Document
               </label>
               <p className="text-sm mb-2 ml-7">(Upload front and back in PDF)</p>
@@ -163,7 +165,7 @@ const ProceedModal = () => {
                 className={`w-full border rounded-xl p-3 ${errors.panDocument ? 'border-red-500' : 'border-gray-300'}`}
               />
               {errors.panDocument && <p className="text-red-500 text-sm mt-1">{errors.panDocument}</p>}
-            </div>
+            </div> */}
           </div>
 
           <div className="flex justify-center">

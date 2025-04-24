@@ -2,15 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 import './Student.css';
 import {
   Search,
-  ChevronDown,
   MoreVertical,
   ChevronRight,
   ChevronLeft,
-  Delete,
-  CalendarIcon,
 
-  Calendar1Icon,
-  Calendar,
 
 } from "lucide-react";
 import {
@@ -23,24 +18,18 @@ import {
 } from "../../src/components/ui/table";
 
 import { DropdownMenuContent, DropdownMenuTrigger } from "../../src/components/ui/dropdown-menu";
-import { format } from "date-fns";
+
 
 import {
   DropdownMenu,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
 
 } from "../../src/components/ui/dropdown-menu"
 
 
 import { Button } from "../../src/components/ui/Button";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "../../src/components/ui/sidebar";
-import { cn } from "../../src/lib/utils";
-import { Separator } from "@radix-ui/react-separator";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../../src/components/ui/breadcrumb";
+import { SidebarInset, SidebarProvider } from "../../src/components/ui/sidebar";
 
 
 
@@ -56,17 +45,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../src/components/ui/dialog"
-import { Input } from "../../src/components/ui/input"
-import { Label } from "../../src/components/ui/label"
 import Header from "../Dashboard/Header";
 import AppSidebar from "../../src/components/ui/app-sidebar";
-import { RadioGroup, RadioGroupItem } from "../../src/components/ui/radio-group";
-import { Popover, PopoverContent, PopoverTrigger } from "../../src/components/ui/popover";
 import { Checkbox } from "../../src/components/ui/checkbox";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../src/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Add_Payment from "./Add_Payment";
+import { useDispatch, useSelector } from "react-redux";
+import logo from '../../../assets/Image/intellix.png'
+import GetStudent from "../../../Redux_store/Api/Student";
 
 
 
@@ -86,72 +73,7 @@ const additionalDetailsSchema = z.object({
     message: "Invalid date format",
   }),
 });
-const studentGroups = [
-  {
-    id: "123456789",
-    name: "Emily Clarke",
-    fatherName: "Mana William",
-    batch: "Batch A",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnEnd4A1YCCdwNwZf_O6cyreyiAruR0UMWPw&s",
-  },
-  {
-    id: "678912345",
-    name: "Emily Clarke",
-    fatherName: "John Clarke",
-    batch: "Batch E",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnEnd4A1YCCdwNwZf_O6cyreyiAruR0UMWPw&s",
-  },
-  {
-    id: "678912345",
-    name: "Emily Clarke",
-    fatherName: "John Clarke",
-    batch: "Batch E",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnEnd4A1YCCdwNwZf_O6cyreyiAruR0UMWPw&s",
-  },
-  {
-    id: "678912345",
-    name: "Emily Clarke",
-    fatherName: "John Clarke",
-    batch: "Batch E",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnEnd4A1YCCdwNwZf_O6cyreyiAruR0UMWPw&s",
-  },
-  {
-    id: "678912345",
-    name: "Emily Clarke",
-    fatherName: "John Clarke",
-    batch: "Batch E",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnEnd4A1YCCdwNwZf_O6cyreyiAruR0UMWPw&s",
-  },
-  {
-    id: "678912345",
-    name: "Emily Clarke",
-    fatherName: "John Clarke",
-    batch: "Batch E",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnEnd4A1YCCdwNwZf_O6cyreyiAruR0UMWPw&s",
-  },
-  {
-    id: "678912345",
-    name: "Emily Clarke",
-    fatherName: "John Clarke",
-    batch: "Batch E",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnEnd4A1YCCdwNwZf_O6cyreyiAruR0UMWPw&s",
-  },
-  {
-    id: "678912345",
-    name: "Emily Clarke",
-    fatherName: "John Clarke",
-    batch: "Batch E",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnEnd4A1YCCdwNwZf_O6cyreyiAruR0UMWPw&s",
-  },
-];
+
 
 const PAGE_SIZE = 5;
 
@@ -164,8 +86,8 @@ const StudentHeader = () => {
   const dueInputRef = useRef(null);
   const startInputRef = useRef(null);
   const endInputRef = useRef(null);
-  
-  const [date, setDate] = useState(null); // Define date state
+
+  const [date, setDate] = useState(null);
   const [startDate, setStartDate] = useState(new Date("2025-03-04"));
   const [endDate, setEndDate] = useState(new Date("2025-03-04"));
   const [paymentType, setPaymentType] = useState("emi");
@@ -174,18 +96,19 @@ const StudentHeader = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [deletedialog, setdeletedialog] = useState(false);
   const inputRef = useRef(null)
+  const [searchText, setSearchText] = useState("");
 
-  let totalPages = Math.ceil(studentGroups.length / PAGE_SIZE);
 
-  const displayedStudents = studentGroups.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE
-  );
+
 
   const handleCheckboxChange = (type) => {
     setSelected((prev) => (prev === type ? "" : type));
-    // setError(false);
   };
+
+
+  const { get_student, loading, error } = useSelector((state) => state.student)
+  const displayedStudents = get_student?.students?.data || [];
+  const totalPages = Math.ceil((get_student?.students?.pagination?.totalItems || 0) / PAGE_SIZE);
 
 
   const additionalForm = useForm({
@@ -199,21 +122,60 @@ const StudentHeader = () => {
       emergencyContact: "",
     },
   });
+  const dispatch = useDispatch()
 
 
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      dispatch(GetStudent({
+        page: currentPage,
+        limit: PAGE_SIZE,
+        status: searchText,
+        enrollment_id: searchText,
+        serial_no: searchText,
+        name: searchText,
+        father_name: searchText,
+        // session_id: searchText,
+      }));
 
+    }, 500);
 
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchText, currentPage, dispatch]);
 
-
-
+  if (loading) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
+        <div className="relative flex  justify-center items-center">
+          <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+          <img
+            src={logo}
+            alt="Loading"
+            className="rounded-full h-28 w-28"
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
+
+
+
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
+      {
+        !loading && displayedStudents.length === 0 && (
+          <div className="text-center py-4 text-gray-500">No students found.</div>
+        )
+      }
       <AppSidebar />
       <SidebarInset>
         <Header />
         <main className="flex-1 overflow-auto">
           <div className=" min-h-screen flex flex-col">
+            {error && (
+              <p className="text-red-500">{error}</p>
+            )}
 
             <div className="w-full  shadow-md rounded-lg flex flex-col md:flex-row items-center justify-between px-4 md:px-8 py-4 mt-5">
               <div className="flex items-center border border-gray-300 rounded-lg px-3 py-2 w-full max-w-md">
@@ -223,6 +185,8 @@ const StudentHeader = () => {
                   style={{ backgroundColor: "transparent" }}
                   placeholder="Search here..."
                   className="ml-2 w-full focus:outline-none focus:ring-0"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
                 />
               </div>
 
@@ -279,20 +243,21 @@ const StudentHeader = () => {
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-col md:flex-row md:items-center md:gap-3">
-                          <img src={student.image} alt={student.name} className="w-10 h-10 object-cover rounded-full border-2 border-gray-300 shadow-sm" />
+
                           <span className="font-medium">{student.name}</span>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="block md:inline">{student.fatherName}</span>
+                        <span className="block md:inline">{student.father_name}</span>
                       </TableCell>
 
-                      <TableCell>{student.batch}</TableCell>
+
+                      <TableCell>{student.Batch?.BatchesName}</TableCell>
 
 
                       <TableCell>
-                       
-<Add_Payment/>
+
+                        <Add_Payment />
                       </TableCell>
                       <TableCell>
                         <DropdownMenu>
@@ -372,12 +337,12 @@ const StudentHeader = () => {
                 <ChevronLeft className="w-5 h-5" />
               </Button>
 
-              {[1, 2].map((page) => (
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                 <Button
                   key={page}
                   variant={currentPage === page ? "default" : "ghost"}
                   onClick={() => setCurrentPage(page)}
-                  className={`px-4 py-2 ${currentPage === page ? "bg-[#3d3690] text-white" : "bg-gray-100 text-gray-700"} rounded-lg hover:bg-transparent hover:text-inherit`}
+                  className={`px-4 py-2 ${currentPage === page ? "bg-blue-500 text-white" : "hover:bg-gray-100"}`}
                 >
                   {page}
                 </Button>
@@ -385,12 +350,13 @@ const StudentHeader = () => {
 
               <Button
                 variant="ghost"
-                disabled={currentPage === 2}
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, 2))}
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                 className="hover:bg-transparent hover:text-inherit"
               >
                 <ChevronRight className="w-5 h-5" />
               </Button>
+
             </div>
 
           </div>
@@ -401,9 +367,6 @@ const StudentHeader = () => {
 };
 
 export default StudentHeader;
-
-
-
 
 
 

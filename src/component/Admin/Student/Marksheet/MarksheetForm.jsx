@@ -100,7 +100,7 @@ const MarksheetForm = () => {
                   className={`${inputClass} text-black ${errors.marksheetName ? 'border-red-500' : ''}`}
                   placeholder="e.g., Semester 1 Results"
                 />
-                <FileText size={18} className={iconClass} />
+               
                 {errors.marksheetName && <p className={errorClass}>{errors.marksheetName}</p>}
               </div>
 
@@ -124,7 +124,7 @@ const MarksheetForm = () => {
                   <option value="course2" className='text-black'>Course 2</option>
                   <option value="course3" className='text-black'>Course 3</option>
                 </select>
-                <Book size={18} className={iconClass} />
+               
                 {errors.course && <p className={errorClass}>{errors.course}</p>}
               </div>
 
@@ -147,7 +147,7 @@ const MarksheetForm = () => {
                   <option className='text-black' value="batch2">Batch 2</option>
                   <option className='text-black' value="batch3">Batch 3</option>
                 </select>
-                <Users size={18} className={iconClass} />
+                
                 {errors.batch && <p className={errorClass}>{errors.batch}</p>}
               </div>
 
@@ -170,7 +170,7 @@ const MarksheetForm = () => {
                   <option className='text-black' value="student2">Student 2</option>
                   <option className='text-black' value="student3">Student 3</option>
                 </select>
-                <GraduationCap size={18} className={iconClass} />
+                
                 {errors.student && <p className={errorClass}>{errors.student}</p>}
               </div>
 
@@ -193,7 +193,7 @@ const MarksheetForm = () => {
                   <option className='text-black' value="exam2">Exam 2</option>
                   <option className='text-black' value="exam3">Exam 3</option>
                 </select>
-                <Book size={18} className={iconClass} />
+               
                 {errors.exam && <p className={errorClass}>{errors.exam}</p>}
               </div>
 

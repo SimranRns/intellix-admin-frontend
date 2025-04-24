@@ -1428,6 +1428,9 @@ const Team = ({ teacherData }) => {
             {paginatedTeachers?.map((teacher) => (
               <Card
                 key={teacher.id}
+
+
+
                 className="w-full max-w-[350px] shadow-sm shadow-blue-500/50 rounded-xl p-6 relative mx-auto"
               >
                 {/* Options Menu */}

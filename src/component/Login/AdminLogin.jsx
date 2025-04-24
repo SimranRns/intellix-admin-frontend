@@ -18,6 +18,8 @@ import { Label } from '../../component/src/components/ui/label';
 import { Checkbox } from '../../component/src/components/ui/checkbox';
 import { Button } from '../src/components/ui/Button';
 import { useNavigate } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import loginAdmin from '../../Redux_store/Api/Login_admin';
 const FormSchema = z.object({
     email: z.string().email('Invalid email address').min(1, 'Email is required'),
     password: z.string().min(6, 'Password must be at least 6 characters long'),
@@ -25,6 +27,13 @@ const FormSchema = z.object({
 });
 
 const AdminLogin = () => {
+
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const dispatch = useDispatch();
+    const { token, loading, error } = useSelector((state) => state.login);
+
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const form = useForm({
@@ -36,13 +45,15 @@ const AdminLogin = () => {
         },
     });
 
+
     const onSubmit = (data, event) => {
-        event.preventDefault(); // Prevent page refresh
+        event.preventDefault(); 
+        dispatch(loginAdmin({ email: data.email, password: data.password }));
         console.log('Form data:', data);
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-600 to-purple-100 px-4 sm:px-6">
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-600 to-blue-400 px-4 sm:px-6">
             <div className="bg-white shadow-2xl rounded-3xl p-8 sm:p-16 w-full max-w-md sm:max-w-4xl flex flex-col sm:flex-row overflow-hidden transform transition-all duration-500 hover:scale-105 h-auto sm:h-[600px]">
 
                 <div className="hidden sm:flex flex-col justify-center  w-1/2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white p-8 sm:p-16 rounded-l-3xl">
@@ -64,7 +75,7 @@ const AdminLogin = () => {
                                         <FormLabel className="block margin text-gray-700 font-semibold text-lg sm:text-xl">Email </FormLabel>
                                         <FormControl>
                                             <div className="relative flex items-center">
-                                                <Input className="w-full border-gray-300 rounded-xl pl-12 p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg " placeholder="Enter Your Email" type="email" {...field} />
+                                                <Input className="w-full text-black border-gray-300 rounded-xl pl-12 p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg " value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter Your Email" type="email" {...field} />
                                                 <span className="absolute right-4 text-gray-500">
                                                     <Mail size={21} />
                                                 </span>
@@ -83,8 +94,9 @@ const AdminLogin = () => {
                                         <FormControl>
                                             <div className="relative flex items-center">
                                                 <Input
-                                                    className="w-full border-gray-300 rounded-xl p-3 sm:p-5 pr-12 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                                    className="w-full border-gray-300 text-black rounded-xl p-3 sm:p-5 pr-12 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                                     placeholder="Enter Your Password"
+                                                    value={password} onChange={(e) => setPassword(e.target.value)}
                                                     type={showPassword ? "text" : "password"}
                                                     {...field}
                                                 />
@@ -114,8 +126,9 @@ const AdminLogin = () => {
                                 )}
                             />
                             <Button
-                            onClick={()=>{navigate("/Dashboard")}}
-                            className='w-full margin bg-gradient-to-r from-blue-500 to-blue-700 text-white py-3 sm:py-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-xl text-lg sm:text-xl font-bold' type="submit">Login</Button>
+                                disabled={loading}
+                                className='w-full margin bg-gradient-to-r from-blue-500 to-blue-700 text-white py-3 sm:py-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-xl text-lg sm:text-xl font-bold' type="submit">Login</Button>
+                            {error && <p>{error}</p>}
                         </form>
                     </Form>
                 </div>

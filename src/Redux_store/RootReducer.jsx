@@ -9,6 +9,7 @@ import banner_sliceReducer from './slices/Banner_slice'
 import school_sliceReducer from './slices/addschool_slice'
 import notify_sliceReducer from './slices/Notification.jsx'
 import attendance_sliceReducer from './slices/Attendance.jsx'
+import loginSliceReducer from './slices/Login_Admin'
 const RootReducer = combineReducers({
     team: teamReducer,
     Department: DepartmentReducer,
@@ -19,9 +20,7 @@ const RootReducer = combineReducers({
     schools: school_sliceReducer,
     courses: course_sliceReducer,
     notify: notify_sliceReducer,
-    attend: attendance_sliceReducer
+    attend: attendance_sliceReducer,
+    login: loginSliceReducer,
 })
-
-
-
 export default RootReducer;
