@@ -568,47 +568,6 @@ const Leads = () => {
               </Dialog>
 
               {/* add Category */}
-              {/* <Dialog
-                open={categoryModalStatus}
-                onOpenChange={setCategoryModalStatus}
-              >
-                <DialogTrigger asChild>
-                  <Button className="bg-blue-600 text-white">
-                    <PlusIcon className="mr-0" /> Add Category
-                  </Button>
-                </DialogTrigger>
-                <DialogContent
-                  onPointerDownOutside={(e) => e.preventDefault()}
-                  onEscapeKeyDown={(e) => e.preventDefault()}
-                  className="sm:max-w-[525px]"
-                >
-                  <DialogHeader>
-                    <DialogTitle>Add Category</DialogTitle>
-                  </DialogHeader>
-                  <form
-                    onSubmit={form.handleSubmit(handlecategory)}
-                    className="grid gap-4 py-4"
-                  >
-                    <Label htmlFor="name">Enter Category Name</Label>
-                    <Input
-                      id="name"
-                      placeholder="Enter category name"
-                      className="col-span-4"
-                      {...form.register("name")}
-                    />
-
-                    {form.formState.errors.name && (
-                      <p className="text-red-500 text-sm">
-                        {form.formState.errors.name.message}
-                      </p>
-                    )}
-
-                    <DialogFooter>
-                      <Button type="submit">Add Category</Button>
-                    </DialogFooter>
-                  </form>
-                </DialogContent>
-              </Dialog> */}
               <Dialog
                 open={categoryModalStatus}
                 onOpenChange={setCategoryModalStatus}

@@ -51,3 +51,34 @@ export const getAllCategory = createAsyncThunk(
     }
   );
   
+
+
+  
+  export const updatecategory = createAsyncThunk(
+    "Category/updateCategory",
+    async (updatedData, { rejectWithValue }) => {
+      try {
+        const BASE_URL = import.meta.env.VITE_BASE_URL;
+        const response = await fetch(`${BASE_URL}/api/v1/categoryrouter/updatecategorycontroller`, {
+          method: "PUT", // or "PATCH" depending on your backend
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedData),
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          return rejectWithValue(errorData);
+        }
+  
+        const result = await response.json();
+        return result.data;
+      } catch (error) {
+        return rejectWithValue(error.message || "Failed to update category");
+      }
+    }
+  );
+  
+
+
