@@ -2,10 +2,10 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 
 const BASE_URL = import.meta.env.VITE_BASE_URL
 
-// get subject
-export const get_subject_api = createAsyncThunk('get_subject', async (_, { rejectWithValue }) => {
+// get banner 
+export const seession_year = createAsyncThunk('year', async (_, { rejectWithValue }) => {
     try {
-        const response = await fetch(`${BASE_URL}/api/v1/subjectrouter/getallsubjectcontroller`, {
+        const response = await fetch(`${BASE_URL}/api/v1/session/get`, {
             method: 'GET',
         })
 
@@ -15,7 +15,6 @@ export const get_subject_api = createAsyncThunk('get_subject', async (_, { rejec
         }
 
         const result = await response.json()
-        // console.log("ff", result);
 
         return result
     } catch (error) {
@@ -23,3 +22,4 @@ export const get_subject_api = createAsyncThunk('get_subject', async (_, { rejec
     }
 }
 )
+export default seession_year

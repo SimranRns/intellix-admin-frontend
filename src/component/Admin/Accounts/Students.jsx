@@ -1,51 +1,52 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Use useNavigate instead of useRouter
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../src/components/ui/card";
-import { Button } from "../../src/components/ui/button";
-import { CreditCard, CheckCircle, Clock, XCircle } from "lucide-react";
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../../src/components/ui/card';
+import { Button } from '../../src/components/ui/button';
+import { CreditCard, CheckCircle, Clock, XCircle, Loader2 } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getEmis } from '../../../Redux_store/api/EmisApiStore';
 
 const Students = () => {
-  const navigate = useNavigate(); // Use navigate for routing
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { data, loading, error } = useSelector((state) => state.emis);
 
-  const [amounts, setAmounts] = useState({
-    total: 0,
-    received: 0,
-    upcoming: 0,
-    missed: 0
-  });
+  // Calculate grand total
+  const grandTotal =
+    (data.summary.totalMissedFees || 0) +
+    (data.summary.totalCollectedFees || 0) +
+    (data.summary.totalUpcomingFees || 0);
 
+  // Fetch EMI data for all filters
   useEffect(() => {
-    const finalValues = {
-      total: 5000,
-      received: 3000,
-      upcoming: 1500,
-      missed: 500
-    };
-
-    const duration = 2000;
-
-    Object.keys(finalValues).forEach((key) => {
-      let start = 0;
-      const end = finalValues[key];
-      const stepTime = Math.abs(Math.floor(duration / (end - start)));
-
-      const timer = setInterval(() => {
-        start += 50;
-        if (start >= end) {
-          start = end;
-          clearInterval(timer);
-        }
-        setAmounts((prev) => ({ ...prev, [key]: start }));
-      }, stepTime);
-
-      return () => clearInterval(timer);
+    // Fetch data for missed, paid, and upcoming to populate summary
+    ['missed', 'paid', 'upcoming'].forEach((filter) => {
+      dispatch(getEmis({ filter, month: 3, year: 2025 })); // Adjust month/year as needed
     });
-  }, []);
+  }, [dispatch]);
 
   const cardData = [
-    { title: "Received", value: amounts.received, color: "text-green-600", icon: <CheckCircle className="w-6 h-6 text-green-600" />, link: "/received" },
-    { title: "Upcoming", value: amounts.upcoming, color: "text-yellow-600", icon: <Clock className="w-6 h-6 text-yellow-600" />, link: "/upcoming" },
-    { title: "Missed", value: amounts.missed, color: "text-red-600", icon: <XCircle className="w-6 h-6 text-red-600" />, link: "/missed" }
+    {
+      title: 'Received',
+      value: data.summary.totalCollectedFees || 0,
+      color: 'text-green-600',
+      icon: <CheckCircle className="w-6 h-6 text-green-600" />,
+      link: '/student-payment-history/paid', // Aligned with StudentHeader
+    },
+    {
+      title: 'Upcoming',
+      value: data.summary.totalUpcomingFees || 0,
+      color: 'text-yellow-600',
+      icon: <Clock className="w-6 h-6 text-yellow-600" />,
+      link: '/student-payment-history/upcoming',
+    },
+    {
+      title: 'Missed',
+      value: data.summary.totalMissedFees || 0,
+      color: 'text-red-600',
+      icon: <XCircle className="w-6 h-6 text-red-600" />,
+      link: '/student-payment-history/missed',
+    },
   ];
 
   return (
@@ -58,12 +59,20 @@ const Students = () => {
             <CreditCard className="w-8 h-8 text-blue-600" />
           </CardHeader>
           <CardContent className="flex items-center justify-center">
-            <span className="text-3xl font-bold text-blue-600">
-              ₹ {amounts.total.toLocaleString()}
-            </span>
+            {loading ? (
+              <Loader2 className="animate-spin w-8 h-8 text-blue-600" />
+            ) : error ? (
+              <span className="text-red-500">Error: {error}</span>
+            ) : (
+              <span className="text-3xl font-bold text-blue-600">
+                ₹ {grandTotal.toLocaleString()}
+              </span>
+            )}
           </CardContent>
           <CardFooter className="flex justify-center">
-            <CardDescription className="text-gray-700 font-bold dark:text-gray-500">Updated Amount</CardDescription>
+            <CardDescription className="text-gray-700 font-bold dark:text-gray-500">
+              Updated Amount
+            </CardDescription>
           </CardFooter>
         </Card>
       </div>
@@ -78,15 +87,24 @@ const Students = () => {
                 {card.icon}
               </CardHeader>
               <CardContent className="flex items-center justify-center">
-                <span className={`text-3xl font-bold ${card.color}`}>
-                  ₹ {card.value.toLocaleString()}
-                </span>
+                {loading ? (
+                  <Loader2 className="animate-spin w-8 h-8" style={{ color: card.color }} />
+                ) : error ? (
+                  <span className="text-red-500">Error: {error}</span>
+                ) : (
+                  <span className={`text-3xl font-bold ${card.color}`}>
+                    ₹ {card.value.toLocaleString()}
+                  </span>
+                )}
               </CardContent>
               <CardFooter className="flex flex-col items-center space-y-2">
-                <CardDescription className="text-gray-700 font-bold dark:text-gray-500">Updated Amount</CardDescription>
-                <Button 
-                  className="w-full  bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition"
-                  onClick={() => navigate(card.link)} // Navigate to the respective page
+                <CardDescription className="text-gray-700 font-bold dark:text-gray-500">
+                  Updated Amount
+                </CardDescription>
+                <Button
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition"
+                  onClick={() => navigate("/Missed")}
+                  disabled={loading}
                 >
                   More Details
                 </Button>

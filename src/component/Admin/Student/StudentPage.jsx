@@ -106,7 +106,8 @@ const StudentHeader = () => {
   };
 
 
-  const { get_student, loading, error } = useSelector((state) => state.student)
+  const { get_student, loading, error } = useSelector((state) => state.students);
+
   const displayedStudents = get_student?.students?.data || [];
   const totalPages = Math.ceil((get_student?.students?.pagination?.totalItems || 0) / PAGE_SIZE);
 
@@ -143,31 +144,27 @@ const StudentHeader = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [searchText, currentPage, dispatch]);
 
-  if (loading) {
-    return (
-      <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
-        <div className="relative flex  justify-center items-center">
-          <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
-          <img
-            src={logo}
-            alt="Loading"
-            className="rounded-full h-28 w-28"
-          />
-        </div>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
+  //       <div className="relative flex  justify-center items-center">
+  //         <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+  //         <img
+  //           src={logo}
+  //           alt="Loading"
+  //           className="rounded-full h-28 w-28"
+  //         />
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
 
 
 
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
-      {
-        !loading && displayedStudents.length === 0 && (
-          <div className="text-center py-4 text-gray-500">No students found.</div>
-        )
-      }
+
       <AppSidebar />
       <SidebarInset>
         <Header />

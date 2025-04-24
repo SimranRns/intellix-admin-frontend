@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./Header";
 import {
   Card,
@@ -27,14 +27,24 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Printer, MoreVertical } from "lucide-react";
 import { SidebarInset, SidebarProvider } from "../../src/components/ui/sidebar";
 import AppSidebar from "../../src/components/ui/app-sidebar";
-
+import { Employesss } from "../../../Redux_store/Api/Dashboard.Api";
 import { Users, UserX, CalendarCheck, Timer, Book } from "lucide-react";
 import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
 
 const Dashboard = ({ children }) => {
   const [page, setPage] = useState(1);
   const [isOpen, setIsOpen] = useState(true);
-
+  const dispaatch = useDispatch()
+  const { Employes, loading, error } = useSelector((state) => state.employees || {})
+  useEffect(() => {
+    dispaatch(Employesss())
+    console.log(Employesss());
+    console.log("Total Students:", Employes?.data?.data?.Students);
+    console.log("Total Employees:", Employes?.data?.data?.allemploye);
+    
+    
+  }, [])
   const influencers = [
     { name: "Malik Wiwoho", projects: 23, followers: "1,620,201" },
     { name: "Nancy Auta", projects: 34, followers: "1,224,620" },
