@@ -45,11 +45,25 @@ const AdminLogin = () => {
         },
     });
 
+    const onSubmit = async (data, event) => {
+        event.preventDefault();
 
-    const onSubmit = (data, event) => {
-        event.preventDefault(); 
-        dispatch(loginAdmin({ email: data.email, password: data.password }));
-        console.log('Form data:', data);
+        try {
+            const response = await dispatch(loginAdmin({
+                email: data.email,
+                password: data.password,
+            })).unwrap();
+
+            if (response.status == '001') {
+                navigate('/Dashboard');
+            }
+
+            // Do nothing if response.ok is false
+        } catch (err) {
+            // Also do nothing on error
+            console.log(err);
+
+        }
     };
 
     return (
