@@ -11,6 +11,7 @@ import notify_sliceReducer from './slices/Notification.jsx'
 import attendance_sliceReducer from './slices/Attendance.jsx'
 import loginSliceReducer from './slices/Login_Admin'
 import { StatusSliceReducer } from './slices/FitterStatusSlice';
+import head_yaer_sliceReducer from './slices/Header_session_slice'
 const RootReducer = combineReducers({
     team: teamReducer,
     Department: DepartmentReducer,
@@ -23,6 +24,7 @@ const RootReducer = combineReducers({
     notify: notify_sliceReducer,
     attend: attendance_sliceReducer,
     login: loginSliceReducer,
-    Status:StatusSliceReducer
+    Status:StatusSliceReducer,
+    year: head_yaer_sliceReducer
 })
 export default RootReducer;
