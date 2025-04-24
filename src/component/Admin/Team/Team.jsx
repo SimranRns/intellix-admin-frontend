@@ -219,7 +219,7 @@ import AppSidebar from "../../src/components/ui/app-sidebar";
 import Header from "../Dashboard/Header";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "../../src/components/ui/sheet";
 import GetTeam from "../../../Redux_store/Api/TeamApi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 
 const Team = ({ teacherData }) => {
@@ -243,6 +243,8 @@ const Team = ({ teacherData }) => {
   const fileInputRef = useRef(null);
   const dispatch = useDispatch();
 
+
+  // const { users } = useSelector((s) => { s.team })
   const [date, setDate] = useState("");
   const [activePage, setActivePage] = useState("Team");
 
@@ -507,12 +509,12 @@ const Team = ({ teacherData }) => {
   }, [isSameAddress, residentialAddress, district, state, pincode, setValue]);
 
 
-  useEffect(() => {
-    dispatch(GetTeam())
-    console.log(GetTeam());
-    
+  // useEffect(() => {
+  //   dispatch(GetTeam())
+  //   console.log(GetTeam());
 
-  })
+
+  // })
   return (
 
 
@@ -1574,7 +1576,7 @@ const Team = ({ teacherData }) => {
                 <CardFooter className="flex justify-center gap-3 mt-5">
                   <Button
                     className="bg-indigo-600 text-xs text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-indigo-700 transition-all"
-                    onClick={() => Navigate("/View-Profile")}
+                    onClick={() => Navigate(`/View-Profile/${teacher.id}`)}
                   >
                     <User size={18} /> Profile
                   </Button>

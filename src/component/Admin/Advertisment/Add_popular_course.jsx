@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "../../src/components/ui/button";
 import {
   Dialog,
@@ -29,6 +29,8 @@ import {
 } from "../../src/components/ui/card";
 import { ScrollArea } from "../../src/components/ui/scroll-area";
 import { Trash2 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import {get_course} from "../../../Redux_store/Api/Add_popular_course";
 
 const FormSchema = z.object({
   title: z.string().min(1, { message: "Title is required!" }),
@@ -44,7 +46,12 @@ const AddPopularCourse = () => {
   const [open, setOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [cardToDelete, setCardToDelete] = useState(null);
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(get_course())
+  }, [])
 
+  const { course, loading, error } = useSelector((state) => state.courses)
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -193,15 +200,15 @@ const AddPopularCourse = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-3 gap-6 w-full max-w-7xl">
-        {cards.map((card, index) => (
-          <Card key={index} className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden border border-gray-100/50">
+        {course?.data?.map((card, index) => (
+          <Card key={index} className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden ">
             <CardHeader>
               <CardTitle className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                 {card.title}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {card.image && (
+              {course.image && (
                 <img
                   src={card.image}
                   alt="Course"
@@ -210,8 +217,8 @@ const AddPopularCourse = () => {
               )}
             </CardContent>
             <ScrollArea className="h-[150px] w-full rounded-lg   p-4 shadow-sm">
-              <p className="text-sm sm:text-base leading-relaxed bg-gray-100/50 p-4 rounded-xl text-gray-800">
-                {card.desc}
+              <p className="text-sm sm:text-base leading-relaxed border p-4 rounded-xl">
+                {card.description}
               </p>
             </ScrollArea>
             <CardFooter className="mt-5 flex justify-center">
@@ -224,29 +231,7 @@ const AddPopularCourse = () => {
             </CardFooter>
           </Card>
         ))}
-        <Card className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden border border-gray-100/50">
-          <CardHeader>
-            <CardTitle className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-              BCA
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="w-full h-40 object-cover rounded-md">
-            <img src="https://t3.ftcdn.net/jpg/03/16/91/28/360_F_316912806_RCeHVmUx5LuBMi7MKYTY5arkE4I0DcpU.jpg" />
-          </CardContent>
-          <ScrollArea className="h-[150px] w-full rounded-lg  p-4 shadow-sm">
-            <p className="text-sm sm:text-base leading-relaxed bg-gray-100/50 p-4 rounded-xl text-gray-800">
-              BCA stands for Bachelor of Computer Applications, a three-year undergraduate degree program focusing on computer applications and software development, equipping students with IT skills for careers in the technology industry
-            </p>
-          </ScrollArea>
-          <CardFooter className="mt-5 flex justify-center">
-            <Button
-              onClick={() => handleDeleteClick(index)}
-              className="mt-4 w-full bg-gradient-to-r from-red-500 to-pink-600 text-white py-2 rounded-xl hover:from-red-600 hover:to-pink-700 transition-all"
-            >
-              <Trash2 size={20} className="mr-2" /> Delete
-            </Button>
-          </CardFooter>
-        </Card>
+        
       </div>
 
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

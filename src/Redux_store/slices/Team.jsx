@@ -1,11 +1,12 @@
 // src/redux/slices/counterSlice.js
 import { createSlice } from '@reduxjs/toolkit'
-import GetTeam from '../Api/TeamApi';
+import { GetTeam, add_employee, getoneemployee } from '../Api/TeamApi';
 
 const teamSlice = createSlice({
   name: "team",
   initialState: {
     users: [],
+    profile: {},
     loading: false,
     error: null,
     searchData: [],
@@ -26,6 +27,32 @@ const teamSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      // see profile of employee by single emp id 
+
+      .addCase(getoneemployee.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(getoneemployee.fulfilled, (state, action) => {
+        state.loading = false,
+          state.profile = action.payload
+      })
+      .addCase(getoneemployee.rejected, (state, action) => {
+        state.loading = false,
+          state.error = action.payload
+      })
+      // add employee
+      .addCase(add_employee.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(add_employee.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users.push(action.payload); 
+      })
+      .addCase(add_employee.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   }
 
 })

@@ -235,7 +235,7 @@ const SidebarTrigger = React.forwardRef(
 
     const [isOpen, setIsOpen] = React.useState(true);
 
-    console.log('isOpenwww', isOpen)
+    // console.log('isOpenwww', isOpen)
 
     return (
       <Button

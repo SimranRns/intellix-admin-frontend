@@ -48,6 +48,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../../src/components/ui/pagination";
+import { useDispatch, useSelector } from "react-redux";
+import get_stu_attendance from "../../../Redux_store/Api/Attendance";
+import { useParams } from "react-router";
 export const exportSchema = z
   .object({
     startDate: z
@@ -92,97 +95,42 @@ const Attendance = () => {
   const [openFirstModal, setOpenFirstModal] = useState(false);
   const [openSecondModal, setOpenSecondModal] = useState(false);
   const inputRef = useRef(null);
+  const dispatch = useDispatch()
+  const { id } = useParams()
+  // useEffect(() => {
+  //   dispatch(get_stu_attendance())
+  // }, [])
+  const {att} = useSelector((state) => state.attend);
 
   // For the date/time display at the bottom
   // const currentDateTime = new Date().toLocaleString();
 
   // Mock fetching data (replace with real API if needed)
   useEffect(() => {
+    if (att && Array.isArray(att)) {
+      setAttendanceData(att);
+      setTotalStudents(att.length);
+      setOutsideCampus(att.filter((d) => d.status === "Out").length);
+      setInsideCampus(att.filter((d) => d.status === "In").length);
+      setOnLeave(att.filter((d) => d.status === "On Leave").length);
+    }
+  }, [att]);
+
+  useEffect(() => {
     setLoading(true);
     setTimeout(() => {
-      // Example data
-      const data = [
-        {
-          id: 1,
-          enrollmentId: "E101",
-          name: "John Doe",
-          batchName: "Batch A",
-          status: "In",
-        },
-        {
-          id: 2,
-          enrollmentId: "E102",
-          name: "Jane Smith",
-          batchName: "Batch B",
-          status: "Out",
-        },
-        {
-          id: 3,
-          enrollmentId: "E103",
-          name: "Alice Johnson",
-          batchName: "Batch C",
-          status: "Absent",
-        },
-        {
-          id: 4,
-          enrollmentId: "E104",
-          name: "Michael Brown",
-          batchName: "Batch A",
-          status: "In",
-        },
-        {
-          id: 5,
-          enrollmentId: "E105",
-          name: "Emily Davis",
-          batchName: "Batch B",
-          status: "Out",
-        },
-        {
-          id: 6,
-          enrollmentId: "E106",
-          name: "Daniel Wilson",
-          batchName: "Batch C",
-          status: "In",
-        },
-        {
-          id: 7,
-          enrollmentId: "E107",
-          name: "Sophia Martinez",
-          batchName: "Batch A",
-          status: "On Leave",
-        },
-        {
-          id: 8,
-          enrollmentId: "E108",
-          name: "James Anderson",
-          batchName: "Batch B",
-          status: "Out",
-        },
-        {
-          id: 9,
-          enrollmentId: "E109",
-          name: "Olivia Thomas",
-          batchName: "Batch C",
-          status: "Absent",
-        },
-        {
-          id: 10,
-          enrollmentId: "E110",
-          name: "William Taylor",
-          batchName: "Batch A",
-          status: "In",
-        },
-      ];
+      setAttendanceData(data); // <-- This line and mock data are no longer needed
 
-      // Update states based on fetched data
-      setAttendanceData(data);
-      setTotalStudents(data.length);
-      setOutsideCampus(data.filter((d) => d.status === "Out").length);
-      setInsideCampus(data.filter((d) => d.status === "In").length);
-      setOnLeave(data.filter((d) => d.status === "On Leave").length);
       setLoading(false);
     }, 1000);
   }, []);
+
+
+  useEffect(() => {
+    if (id) {
+      dispatch(get_stu_attendance({ course_id: parseInt(id) }));
+    }
+  }, [dispatch, id]);
 
   // Filter data by selected tab
   const filteredData = attendanceData.filter((student) => {
@@ -302,7 +250,7 @@ const Attendance = () => {
 
             {/* Tab buttons */}
             <div className="flex gap-4 mb-6">
-              {["All", "In", "Out", "Absent"].map((tab) => (
+              {["All", "In", "Out", "Absent"].att?.map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setSelectedTab(tab)}
