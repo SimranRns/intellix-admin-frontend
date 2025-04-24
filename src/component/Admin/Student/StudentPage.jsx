@@ -106,7 +106,8 @@ const StudentHeader = () => {
   };
 
 
-  const { get_student, loading, error } = useSelector((state) => state.student)
+  const { get_student, loading, error } = useSelector((state) => state.student);
+
   const displayedStudents = get_student?.students?.data || [];
   const totalPages = Math.ceil((get_student?.students?.pagination?.totalItems || 0) / PAGE_SIZE);
 
