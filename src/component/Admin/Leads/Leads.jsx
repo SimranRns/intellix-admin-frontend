@@ -251,17 +251,17 @@ const Leads = () => {
 
   const { successMessage } = useSelector((state) => state.Category);
 
-  useEffect(() => {
-    if (successMessage) {
-      toast.success(successMessage);
-      setCategoryModalStatus(false); 
-      form.reset();
-    }
+  // useEffect(() => {
+  //   if (successMessage) {
+  //     toast.success(successMessage);
+  //     setCategoryModalStatus(false); 
+  //     form.reset();
+  //   }
 
-    if (error) {
-      toast.error(typeof error === "string" ? error : "Failed to add category");
-    }
-  }, [successMessage, error]);
+  //   if (error) {
+  //     toast.error(typeof error === "string" ? error : "Failed to add category");
+  //   }
+  // }, [successMessage, error]);
 
   return (
     <>
