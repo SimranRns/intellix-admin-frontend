@@ -47,7 +47,7 @@ const AdminLogin = () => {
 
 
     const onSubmit = (data, event) => {
-        event.preventDefault(); // Prevent page refresh
+        event.preventDefault(); 
         dispatch(loginAdmin({ email: data.email, password: data.password }));
         console.log('Form data:', data);
     };
