@@ -96,7 +96,7 @@ const additionalDetailsSchema = z.object({
   emergencyContact: z
     .string()
     .regex(/^\d{10}$/, "Enter a valid 10-digit emergency number"),
-  Salary: z.string().min(4, "Enter a valid amount"),
+  Salary: z.number().min(4, "Enter a valid amount"),
   JoiningDate: z.coerce.date().refine((date) => !isNaN(date.getTime()), {
     message: "Invalid date format",
   }),
@@ -203,7 +203,7 @@ const Team = ({ teacherData }) => {
   const [deleteemployee, setdeleteemployee] = useState(null)
   const [first_name, setEmployeeName] = useState("");
   // const [joining_date, setJoiningDate] = useState("");
-  const [addemployee, setemployee] = useState({ first_name: "", highest_qualification: "", institution_name: "", contact_number: "", emergency_number: "", email: "", date_of_birth: "", residential_address: "", district: "", state: "", status: "", start_time: "", end_time: "", pincode: "", permanent_address: "", permanent_district: "", permanent_state: "", permanent_pincode: "", department: "", salary: "", joining_date: "", account_number: "", ifsc_code: "", account_holder_name: "" })
+  const [addemployee, setemployee] = useState({ first_name: "", highest_qualification: "", institution_name: "", contact_number: "", emergency_number: "", email: "", date_of_birth: "", residential_address: "", district: "", state: "", status: "", start_time: "", end_time: "", pincode: "", permanent_address: "", permanent_district: "", permanent_state: "", permanent_pincode: "", department: [], salary: "", joining_date: "", account_number: "", ifsc_code: "", account_holder_name: "" })
 
   const departmentList = [
     "Science",
@@ -828,7 +828,7 @@ const Team = ({ teacherData }) => {
                               <FormControl>
                                 <div className="relative flex items-center">
                                   <Input
-                                    type="number"
+                                    type=""
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                     placeholder="In Hand Salary"
                                     {...field}
@@ -1249,7 +1249,7 @@ const Team = ({ teacherData }) => {
                                             key={index}
                                             onClick={(e) => {
                                               field.onChange(dept);
-                                              setemployee({...addemployee,department:dept})
+                                              setemployee({...addemployee,department:department.push(dept)})
                                               setSelectedDepartment(
                                                 dept
                                               );
@@ -1405,7 +1405,7 @@ const Team = ({ teacherData }) => {
                       {/* Submit Button */}
                       <div className="flex justify-end">
                         <Button
-                          onClick={(e) => {mainthird(e),dispatch(create_employee())}}
+                          onClick={(e) => {mainthird(e),dispatch(create_employee(addemployee))}}
 
                           type="submit" className="bg-indigo-600 text-white px-9 py-2 rounded-lg hover:bg-indigo-700">
                           Save
