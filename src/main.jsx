@@ -7,6 +7,8 @@ import { ThemeProvider } from './component/Admin/Dashboard/ThemeContext';
 import { store } from './Redux_store/Store';
 import { Provider } from 'react-redux';
 
+// import { Provider } from 'react-redux';
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>
