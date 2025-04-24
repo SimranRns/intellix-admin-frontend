@@ -57,7 +57,6 @@ import {
   searchingleads,
 } from "../../../Redux_store/Api/LeadsApi";
 
-import { toast } from "react-hot-toast";
 import MyLeads from "./MyLeads/MyLeads";
 import { values } from "regenerator-runtime";
 import { createCategory, getAllCategory } from "../../../Redux_store/Api/CategoryApi";
