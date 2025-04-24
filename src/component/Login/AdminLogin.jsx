@@ -55,6 +55,7 @@ const AdminLogin = () => {
             })).unwrap();
 
             if (response.status == '001') {
+                localStorage.setItem("token", response.token)
                 navigate('/Dashboard');
             }
 
