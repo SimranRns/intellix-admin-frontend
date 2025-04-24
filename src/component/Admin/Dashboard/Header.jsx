@@ -14,15 +14,22 @@ import { Button } from "../../src/components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import ThemeContext from "./ThemeContext";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../src/components/ui/select";
+import { useDispatch, useSelector } from "react-redux";
+import seession_year from "../../../Redux_store/Api/Header_session";
 
 const Header = () => {
-   
+
     const [logout, setLogout] = useState(false);
     // const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
-   
-    const [selectedOption, setSelectedOption] = useState("2025");
+
+    const [selectedOption, setSelectedOption] = useState([]);
 
     const { darkMode, setDarkMode } = useContext(ThemeContext);
+    const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch(seession_year())
+    }, [])
+    const { years = [], loading, error } = useSelector((s) => s.year);
 
     const navigate = useNavigate();
 
@@ -73,16 +80,21 @@ const Header = () => {
                                     align="start"
                                     className="w-full font-medium max-w-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white mt-2 border border-blue-400 dark:border-blue-300 rounded-lg shadow-md"
                                 >
-                                    {["2025", "2024", "2023", "2021"].map((year) => (
-                                        <DropdownMenuItem
-                                        key={year}
-                                        onClick={() => setSelectedOption(year)}
-                                        className="cursor-pointer hover:bg-blue-600 hover:text-white px-4 py-2 text-center"
-                                    >
-                                        {year}
-                                    </DropdownMenuItem>
-                                    
-                                    ))}
+                                    {loading ? (
+                                        <div className="px-4 py-2 text-center text-gray-500">Loading...</div>
+                                    ) : error ? (
+                                        <div className="px-4 py-2 text-center text-red-500">Failed to load</div>
+                                    ) : (
+                                        years?.sessions?.map((year) => (
+                                            <DropdownMenuItem
+                                                key={year}
+                                                onClick={() => setSelectedOption(year.session_year)}
+                                                className="cursor-pointer hover:bg-blue-600 hover:text-white px-4 py-2 text-center"
+                                            >
+                                                {year.session_year}
+                                            </DropdownMenuItem>
+                                        ))
+                                    )}
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </div>
@@ -145,7 +157,7 @@ const Header = () => {
                                         Cancel
                                     </Button>
                                     <Button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
-                                        onClick={() => {setLogout(false),navigate("/")}}>
+                                        onClick={() => { setLogout(false), navigate("/") }}>
                                         Logout
                                     </Button>
                                 </div>
