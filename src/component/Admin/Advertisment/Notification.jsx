@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "../../src/components/ui/button";
 import { format } from "date-fns";
 import { CalendarIcon, Plus, Trash2 } from "lucide-react";
@@ -32,6 +32,8 @@ import {
   FormLabel,
   FormMessage,
 } from "../../src/components/ui/form";
+import { useDispatch, useSelector } from "react-redux";
+import { add_notification, delete_notify, get_notification } from "../../../Redux_store/Api/Notification";
 
 const FormSchema = z.object({
   title: z.string().min(1, "Title is required!"),
@@ -49,13 +51,12 @@ const Notification = () => {
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const [error, setError] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm({
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(get_notification())
+  }, [])
+  const { notii, loading } = useSelector((s) => s.notify)
+  const { register, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: zodResolver(FormSchema),
   });
 
@@ -74,15 +75,23 @@ const Notification = () => {
   };
 
   const onSubmit = (data) => {
-    setNotifications((prev) => [
-      ...prev,
-      { ...data, date, time, type: selected },
-    ]);
-    setEditProfileOpen(false);
-    setSelected(null);
-    setDate(null);
-    setTime("");
-    reset();
+    const payload = {
+      head: data.head,
+      description: data.description,
+      // date,
+      // time,
+      // type: selected || "public",
+    };
+
+    dispatch(add_notification(payload)).then((res) => {
+      if (!res.error) {
+        reset();
+        setEditProfileOpen(false);
+        setSelected(null);
+        setDate(null);
+        setTime("");
+      }
+    });
   };
 
   const handleDeleteClick = (index) => {
@@ -125,13 +134,14 @@ const Notification = () => {
           </div>
 
           {/* Add Notification Button */}
-          <Dialog open={open} onOpenChange={setOpen}>
+          {/* <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button className="w-full sm:w-auto bg-blue-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-600 flex items-center gap-2">
                 <Plus size={20} /> Add Notification
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-sm w-full">
+            <DialogContent onPointerDownOutside={(e) => e.preventDefault()}
+              onEscapeKeyDown={(e) => e.preventDefault()} className="max-w-sm w-full">
               <DialogHeader>
                 <DialogTitle>Select Notification Type</DialogTitle>
               </DialogHeader>
@@ -165,61 +175,68 @@ const Notification = () => {
                 Proceed
               </Button>
             </DialogContent>
+          </Dialog> */}
+          <Dialog open={editProfileOpen} onOpenChange={setEditProfileOpen}>
+            <DialogTrigger asChild>
+              <Button className="w-full sm:w-auto bg-blue-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-600 flex items-center gap-2">
+                <Plus size={20} /> Add Notification
+              </Button>
+            </DialogTrigger>
+            <DialogContent onPointerDownOutside={(e) => e.preventDefault()}
+              onEscapeKeyDown={(e) => e.preventDefault()} className="max-w-sm w-full">
+              <DialogHeader>
+                <DialogTitle>Create Notification</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <div>
+                  <Label htmlFor="title">Title</Label>
+                  <Input
+                    id="title"
+                    placeholder="Enter Title"
+                    {...register("title")}
+                  />
+                  {errors.head && (
+                    <p className="text-red-500 text-sm">{errors.head.message}</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="desc">Description</Label>
+                  <Textarea
+                    id="desc"
+                    placeholder="Enter Description"
+                    {...register("desc")}
+                  />
+                  {errors.description && (
+                    <p className="text-red-500 text-sm">{errors.description.message}</p>
+                  )}
+                </div>
+                <DialogFooter>
+                  <Button
+                    type="submit"
+                    className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
+                  >
+                    Submit
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
           </Dialog>
         </div>
 
-        {/* Create Notification Modal */}
-        <Dialog open={editProfileOpen} onOpenChange={setEditProfileOpen}>
-          <DialogContent className="max-w-sm w-full">
-            <DialogHeader>
-              <DialogTitle>Create Notification</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div>
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  placeholder="Enter Title"
-                  {...register("title")}
-                />
-                {errors.title && (
-                  <p className="text-red-500 text-sm">{errors.title.message}</p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="desc">Description</Label>
-                <Textarea
-                  id="desc"
-                  placeholder="Enter Description"
-                  {...register("desc")}
-                />
-                {errors.desc && (
-                  <p className="text-red-500 text-sm">{errors.desc.message}</p>
-                )}
-              </div>
-              <DialogFooter>
-                <Button
-                  type="submit"
-                  className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
-                >
-                  Submit
-                </Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
+      
+       
 
         {/* Notifications List */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {notifications.map((notif, index) => (
+          {notii?.data?.map((notif, index) => (
             <Card
               key={index}
-              className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden border border-gray-100/50"
+              className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden "
             >
               <div className="p-4 sm:p-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                    {notif.title}
+                  <h3 className="text-lg font-bold text-blue-500">
+                    {notif.head}
                   </h3>
                   <span
                     className={`mt-2 sm:mt-0 px-2 py-1 rounded-full text-xs font-semibold uppercase ${notif.type === "urgent"
@@ -227,12 +244,12 @@ const Notification = () => {
                       : "bg-blue-500/10 text-blue-600 border border-blue-500/20"
                       }`}
                   >
-                    {notif.type}
+                    {notif.type ? '' : 'Public'}
                   </span>
                 </div>
                 <ScrollArea className="h-[150px] w-full rounded-lg border border-gray-200 p-4 shadow-sm">
-                  <p className="text-sm sm:text-base leading-relaxed bg-gray-100/50 p-4 rounded-xl text-gray-800">
-                    {notif.desc}
+                  <p className="text-sm sm:text-base leading-relaxed  p-4 rounded-xl ">
+                    {notif.description}
                   </p>
                 </ScrollArea>
                 <div className="mt-4 flex items-center justify-between text-xs text-gray-500 border-2 border-gray-100 p-2 rounded-xl">
@@ -241,60 +258,22 @@ const Notification = () => {
                     <span>
                       {notif.date
                         ? format(new Date(notif.date), "MMM dd, yyyy")
-                        : "N/A"}
+                        : "02/04/2025"}
                     </span>
                   </div>
                   <div className="h-2 w-2 rounded-full bg-blue-400" />
                 </div>
                 <Button
-                  onClick={() => handleDeleteClick(index)}
-                  className="mt-4 w-full bg-gradient-to-r from-red-500 to-pink-600 text-white py-2 rounded-xl hover:from-red-600 hover:to-pink-700 transition-all"
-                >
-                  <Trash2 size={20} className="mr-2" /> Delete
+                  onClick={() => dispatch(delete_notify(notif.id))}
+                  disabled={loading}
+                  className="mt-4 w-full bg-red-500 text-white py-2 rounded-xl hover:bg-red-600 transition-all"
+                >Delete
                 </Button>
               </div>
             </Card>
           ))}
 
-          {/* dummy card */}
 
-          <Card
-
-            className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden border border-gray-100/50"
-          >
-            <div className="p-4 sm:p-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
-                <h3 className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  About Advertisment
-                </h3>
-                <span
-                  className={`mt-2 sm:mt-0 px-2 py-1 rounded-full text-xs font-semibold uppercase bg-blue-500/10 text-blue-600 border border-blue-500/20 `}
-                >
-                  Public
-                </span>
-              </div>
-              <ScrollArea className="h-[150px] w-full rounded-lg border border-gray-200 p-4 shadow-sm">
-                <p className="text-sm sm:text-base leading-relaxed bg-gray-100/50 p-4 rounded-xl text-gray-800">
-                 Advertisment
-                </p>
-              </ScrollArea>
-              <div className="mt-4 flex items-center justify-between text-xs text-gray-500 border-2 border-gray-100 p-2 rounded-xl">
-                <div className="flex items-center">
-                  <CalendarIcon className="h-4$w-4 mr-2" />
-                  <span>
-                   date
-                  </span>
-                </div>
-                <div className="h-2 w-2 rounded-full bg-blue-400" />
-              </div>
-              <Button
-             
-                className="mt-4 w-full bg-gradient-to-r from-red-500 to-pink-600 text-white py-2 rounded-xl hover:from-red-600 hover:to-pink-700 transition-all"
-              >
-                <Trash2 size={20} className="mr-2" /> Delete
-              </Button>
-            </div>
-          </Card>
 
         </div>
 
@@ -329,7 +308,7 @@ const Notification = () => {
           </DialogContent>
         </Dialog>
       </div>
-    </div>
+    </div >
   );
 };
 

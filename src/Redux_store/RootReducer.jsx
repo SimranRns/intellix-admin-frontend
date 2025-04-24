@@ -9,4 +9,4 @@ const RootReducer = combineReducers({
     ExEmployee : ExEmployeeReducer
 })
 
-export default RootReducer
+export default RootReducer 

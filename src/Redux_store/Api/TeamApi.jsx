@@ -54,6 +54,24 @@ export const GetTeam = createAsyncThunk(
     }
   }
 )
+// employee  profile by id
+export const getoneemployee = createAsyncThunk(
+  'profile', async (id, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${BASE_URL}/api/v1/employee/getOne/${id}`, {
+        method: 'GET'
+      })
+      if (!response.ok) {
+        const errordata = await response.json()
+        return rejectWithValue(errordata)
+      }
+      const result = await response.json()
+      return result
+    } catch (error) {
+      return rejectWithValue(error)
+    }
+  }
+)
 
 //DeleteEmployee
 

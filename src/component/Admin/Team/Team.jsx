@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
-
 import "./Team.css";
 import TimePicker from "../../src/components/ui/time-picker";
 import { format } from "date-fns";
@@ -1647,7 +1645,7 @@ const Team = ({ teacherData }) => {
                 <CardFooter className="flex justify-center gap-3 mt-5">
                   <Button
                     className="bg-indigo-600 text-xs text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-indigo-700 transition-all"
-                    onClick={() => Navigate("/View-Profile")}
+                    onClick={() => Navigate(`/View-Profile/${teacher.id}`)}
                   >
                     <User size={18} /> Profile
                   </Button>

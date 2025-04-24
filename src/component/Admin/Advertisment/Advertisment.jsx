@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import {
   Tabs,
@@ -23,6 +23,9 @@ import Add_school_img from "./Add_school_img";
 import Add_popular_course from "./Add_popular_course";
 import Notification from "./Notification";
 import { Trash2 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { get_banner_api, delete_banner, add_banner } from "../../../Redux_store/Api/Baner";
+import logo from "../../../assets/Image/intellix.png"
 
 const Advertisment = () => {
   const [images, setImages] = useState([]);
@@ -33,6 +36,8 @@ const Advertisment = () => {
     index: null,
   });
   const [errors, setErrors] = useState({});
+  const dispatch = useDispatch()
+  const { banners, loading, error } = useSelector((state) => (state.banner))
 
   // Handle Image Upload (Temporary)
   const handleTempImageChange = (event) => {
@@ -49,30 +54,48 @@ const Advertisment = () => {
   };
 
   // Add Selected Images
-  const handleSubmit = () => {
+  // Add Selected Images (with API call)
+  const handleSubmit = async () => {
     if (tempImages.length === 0) {
       setErrors({ images: "At least one image is required." });
       return;
     }
-    setImages([...images, ...tempImages]);
+
+    setErrors({});
+    for (const image of tempImages) {
+      const resultAction = await dispatch(add_banner(image.file));
+
+      if (add_banner.rejected.match(resultAction)) {
+        console.error("Upload failed:", resultAction.payload);
+        // Optional: show an error toast or message here
+      }
+      dispatch(get_banner_api());
+    }
+
     setTempImages([]);
     setDialogOpen(false);
-    setErrors({});
   };
 
-  // Open Delete Dialog
-  const confirmDelete = (index) => {
-    setDeleteDialog({ open: true, index });
-  };
 
-  // Delete Image
-  const handleDeleteImage = () => {
-    setImages(images.filter((_, i) => i !== deleteDialog.index));
-    setDeleteDialog({ open: false, index: null });
-  };
-  const onsumbit = () => {
-    form.reset();
-  }
+  // api 
+
+  useEffect(() => {
+    dispatch(get_banner_api())
+  }, [dispatch])
+  // if (loading) {
+  //   return (
+  //     <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
+  //       <div className="relative flex  justify-center items-center">
+  //         <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+  //         <img
+  //           src={logo}
+  //           alt="Loading"
+  //           className="rounded-full h-28 w-28"
+  //         />
+  //       </div>
+  //     </div>
+  //   )
+  // }
   return (
     <div className="w-full min-h-screen flex flex-col">
       <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
@@ -80,7 +103,7 @@ const Advertisment = () => {
         <SidebarInset>
           <Header />
           <div className="w-full">
-            <Tabs defaultValue="tab1" className="m-5">
+            <Tabs  className="m-5">
               <div className="overflow-x-auto md:overflow-hidden shadow-sm shadow-blue-300/50">
                 <TabsList className="flex bg-white-500 md:grid md:grid-cols-4 gap-8">
                   <TabsTrigger value="tab1">Add Banner</TabsTrigger>
@@ -130,62 +153,47 @@ const Advertisment = () => {
                         <Button onClick={() => { setDialogOpen(false); onsumbit() }}>
                           Cancel
                         </Button>
-                        <Button onClick={handleSubmit}>Confirm</Button>
+                        <Button onClick={handleSubmit}>
+                          confirm
+                        </Button>
+
                       </div>
                     </DialogContent>
                   </Dialog>
                 </div>
 
                 {/* Display Uploaded Images */}
-                {images.length > 0 && (
+                {banners?.banners?.length > 0 && (
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
-                    {images.map((img, index) => (
+                    {banners.banners.map((img, index) => (
                       <Card
                         key={img.id}
-                        className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden border border-gray-100/50 "
+                        className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden "
                       >
                         <CardHeader>
                           <img
-                            src={img.url}
+                            src={img.image_path}
                             className="w-full h-40 object-cover rounded-lg"
                           />
                         </CardHeader>
                         <CardContent className="flex justify-end">
                           {/* Button to Open Delete Dialog */}
                           <Button
-                            className="mt-4 w-full bg-gradient-to-r from-red-500 to-pink-600 text-white py-2 rounded-xl hover:from-red-600 hover:to-pink-700 transition-all"
-                            onClick={() => confirmDelete(index)}
+                            className="mt-4 w-full bg-red-500 text-white py-2 rounded-xl hover:bg-red-600 transition-all"
+                            onClick={() => setDeleteDialog({ open: true, bannerId: img.id })}
                           >
                             <Trash2 size={20} className="mr-2" /> Delete
                           </Button>
+
+
                         </CardContent>
                       </Card>
                     ))}
 
                   </div>
                 )}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
-                  <Card
 
-                    className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden border border-gray-100/50 "
-                  >
-                    <CardHeader>
-                      <img
-                        src="https://t3.ftcdn.net/jpg/03/16/91/28/360_F_316912806_RCeHVmUx5LuBMi7MKYTY5arkE4I0DcpU.jpg"
-                        className="w-full h-40 object-cover rounded-lg"
-                      />
-                    </CardHeader>
-                    <CardContent className="flex justify-end">
-                      {/* Button to Open Delete Dialog */}
-                      <Button
-                        className="mt-4 w-full bg-gradient-to-r from-red-500 to-pink-600 text-white py-2 rounded-xl hover:from-red-600 hover:to-pink-700 transition-all"
 
-                      >
-                        <Trash2 size={20} className="mr-2" /> Delete
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </div>
                 {/* Delete Confirmation Dialog */}
                 <Dialog
                   open={deleteDialog.open}
@@ -214,11 +222,15 @@ const Advertisment = () => {
                         Cancel
                       </Button>
                       <Button
-                        className="bg-red-600 text-white hover:bg-red-700 "
-                        onClick={handleDeleteImage}
+                        className="bg-red-600 text-white hover:bg-red-700"
+                        onClick={() => {
+                          dispatch(delete_banner(deleteDialog.bannerId));
+                          setDeleteDialog({ open: false, bannerId: null });
+                        }}
                       >
                         Confirm
                       </Button>
+
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
