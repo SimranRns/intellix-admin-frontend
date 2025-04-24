@@ -12,13 +12,13 @@ import { ArrowLeft, FileUp, Hash, IdCard, Landmark } from "lucide-react";
 const schema = z.object({
   address: z.string().min(5, "Address is required"),
   aadhaarNumber: z.string().length(12, "Aadhaar must be 12 digits").regex(/\d+$/, "Only numbers allowed"),
-  panNumber: z.string().length(10, "PAN must be 10 characters").regex(/^[A-Z]{5}[0-9]{4}[A-Z]$/, "Invalid PAN format"),
-  aadhaarDocument: z.any().refine((file) => file && file.type === "application/pdf", {
-    message: "Only PDF files are allowed",
-  }),
-  panDocument: z.any().refine((file) => file && file.type === "application/pdf", {
-    message: "Only PDF files are allowed",
-  }),
+  // panNumber: z.string().length(10, "PAN must be 10 characters").regex(/^[A-Z]{5}[0-9]{4}[A-Z]$/, "Invalid PAN format"),
+  // aadhaarDocument: z.any().refine((file) => file && file.type === "application/pdf", {
+  //   message: "Only PDF files are allowed",
+  // }),
+  // panDocument: z.any().refine((file) => file && file.type === "application/pdf", {
+  //   message: "Only PDF files are allowed",
+  // }),
 });
 
 const ProceedModal = () => {
@@ -118,7 +118,7 @@ const ProceedModal = () => {
   </div>
 
   {/* PAN Number */}
-  <div>
+  {/* <div>
     <label className=" font-semibold text-lg mb-2 flex items-center gap-2">
       <Landmark size={18} /> Enter PAN No.
     </label>
@@ -131,12 +131,12 @@ const ProceedModal = () => {
       placeholder="PAN number (10 characters)"
     />
     {errors.panNumber && <p className="text-red-500 text-sm mt-1">{errors.panNumber}</p>}
-  </div>
+  </div> */}
 </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* Aadhaar Document */}
-            <div>
+            {/* <div>
               <label className="font-semibold text-lg mb-1 flex items-center gap-2">
                 <FileUp size={18} /> Upload Aadhaar Document
               </label>
@@ -149,10 +149,10 @@ const ProceedModal = () => {
                 className={`w-full border rounded-xl p-3 ${errors.aadhaarDocument ? 'border-red-500' : 'border-gray-300'}`}
               />
               {errors.aadhaarDocument && <p className="text-red-500 text-sm mt-1">{errors.aadhaarDocument}</p>}
-            </div>
+            </div> */}
 
             {/* PAN Document */}
-            <div>
+            {/* <div>
               <label className=" font-semibold text-lg mb-1 flex items-center gap-2">
                 <FileUp size={18} /> Upload PAN Document
               </label>
@@ -165,7 +165,7 @@ const ProceedModal = () => {
                 className={`w-full border rounded-xl p-3 ${errors.panDocument ? 'border-red-500' : 'border-gray-300'}`}
               />
               {errors.panDocument && <p className="text-red-500 text-sm mt-1">{errors.panDocument}</p>}
-            </div>
+            </div> */}
           </div>
 
           <div className="flex justify-center">

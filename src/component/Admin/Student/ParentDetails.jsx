@@ -14,12 +14,12 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 const zodSchema = z.object({
   fatherName: z.string().min(1, { message: "Father's name is required" }),
   motherName: z.string().min(1, { message: "Mother's name is required" }),
-  guardianAadhaar: z.string().length(12, { message: "Enter a valid 12-digit Aadhaar number" }),
-  guardianPan: z
-    .instanceof(File, { message: "PAN photo (PDF) is required" })
-    .refine((file) => file.type === "application/pdf", { message: "Only PDF format is allowed" }),
-  guardianBankAccount: z.string().min(10, { message: "Enter valid Bank Account number" }),
-  ifscCode: z.string().regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, { message: "Enter valid IFSC Code" }),
+  // guardianAadhaar: z.string().length(12, { message: "Enter a valid 12-digit Aadhaar number" }),
+  // guardianPan: z
+  //   .instanceof(File, { message: "PAN photo (PDF) is required" })
+  //   .refine((file) => file.type === "application/pdf", { message: "Only PDF format is allowed" }),
+  // guardianBankAccount: z.string().min(10, { message: "Enter valid Bank Account number" }),
+  // ifscCode: z.string().regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, { message: "Enter valid IFSC Code" }),
 });
 
 
@@ -82,7 +82,7 @@ const ParentDetails = () => {
 
               {/* Father's Name */}
               <div className="relative ">
-                <Label className="block font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
+                <Label className="font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
                   <User size={20} /> Enter Father's Name
                 </Label>
                 <Input
@@ -90,13 +90,13 @@ const ParentDetails = () => {
                   className={`w-full pl-10 border ${errors.fatherName ? "border-red-500" : "border-gray-300"} rounded-xl p-3 sm:p-5`}
                   placeholder="Enter Father's Name"
                 />
-                <User size={18} className="absolute left-3 top-[62%] transform -translate-y-1/2 text-gray-500" />
+               
                 {errors.fatherName && <p className="text-red-500">{errors.fatherName.message}</p>}
               </div>
 
               {/* Mother's Name */}
               <div className="relative">
-                <Label className="block font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
+                <Label className="font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
                   <User size={20} /> Enter Mother's Name
                 </Label>
                 <Input
@@ -104,14 +104,14 @@ const ParentDetails = () => {
                   className={`w-full pl-10 border ${errors.motherName ? "border-red-500" : "border-gray-300"} rounded-xl p-3 sm:p-5`}
                   placeholder="Enter Mother's Name"
                 />
-                <User size={18} className="absolute left-3 top-[62%] transform -translate-y-1/2 text-gray-500" />
+               
                 {errors.motherName && <p className="text-red-500">{errors.motherName.message}</p>}
               </div>
 
               {/* Aadhaar & PAN Upload */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="relative">
-                  <Label className="block font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
+                {/* <div className="relative">
+                  <Label className=" font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
                     <CreditCard size={20} /> Guardian's Aadhaar No.
                   </Label>
                   <Input
@@ -119,19 +119,19 @@ const ParentDetails = () => {
                     className={`w-full pl-10 border ${errors.guardianAadhaar ? "border-red-500" : "border-gray-300"} rounded-xl p-3 sm:p-5`}
                     placeholder="Enter Guardian’s Aadhaar No."
                   />
-                  <CreditCard size={18} className="absolute left-3 top-[62%] transform -translate-y-1/2 text-gray-500" />
+         
                   {errors.guardianAadhaar && <p className="text-red-500">{errors.guardianAadhaar.message}</p>}
-                </div>
+                </div> */}
 
-                <div>
-                  <Label className="block font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
+                {/* <div>
+                  <Label className="font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
                     <FileText size={20} /> Upload PAN Photo <span className="text-red-500">(PDF)</span>
                   </Label>
                   <label
                     htmlFor="pan-upload"
-                    className="flex items-center gap-2 w-full border border-gray-300 rounded-xl p-3 cursor-pointer hover:bg-gray-50 transition"
+                    className="flex items-center gap-2 w-full border border-gray-300 rounded-xl p-3 cursor-pointertransition"
                   >
-                    <UploadCloud size={20} />
+                
                     <span>{fileName || "Upload PDF"}</span>
                   </label>
                   <Input
@@ -142,13 +142,13 @@ const ParentDetails = () => {
                     accept=".pdf"
                   />
                   {errors.guardianPan && <p className="text-red-500">{errors.guardianPan.message}</p>}
-                </div>
+                </div> */}
               </div>
 
               {/* Bank Details */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="relative">
-                  <Label className="block font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
+                  <Label className=" font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
                     <Landmark size={20} /> Guardian Bank Account No.
                   </Label>
                   <Input
@@ -156,12 +156,12 @@ const ParentDetails = () => {
                     className={`w-full pl-10 border ${errors.guardianBankAccount ? "border-red-500" : "border-gray-300"} rounded-xl p-3 sm:p-5`}
                     placeholder="Enter Guardian Bank Account No."
                   />
-                  <Landmark size={18} className="absolute left-3 top-[62%] transform -translate-y-1/2 text-gray-500" />
+            
                   {errors.guardianBankAccount && <p className="text-red-500">{errors.guardianBankAccount.message}</p>}
                 </div>
 
                 <div className="relative">
-                  <Label className="block font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
+                  <Label className=" font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
                     <Landmark size={20} /> IFSC Code
                   </Label>
                   <Input
@@ -169,10 +169,10 @@ const ParentDetails = () => {
                     className={`w-full pl-10 border ${errors.ifscCode ? "border-red-500" : "border-gray-300"} rounded-xl p-3 sm:p-5`}
                     placeholder="Enter IFSC Code"
                   />
-                  <Landmark size={18} className="absolute left-3 top-[62%] transform -translate-y-1/2 text-gray-500" />
+                  
                   {errors.ifscCode && <p className="text-red-500">{errors.ifscCode.message}</p>}
                 </div>
-              </div>
+              </div> */}
 
               {/* Submit Button */}
               <div className="flex justify-center mt-4">

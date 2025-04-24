@@ -34,7 +34,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-600 to-purple-100 px-4 sm:px-6">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-600 to-blue-400 px-4 sm:px-6">
       <div className="bg-white shadow-2xl rounded-3xl p-8 sm:p-16 w-full max-w-md sm:max-w-4xl flex flex-col sm:flex-row overflow-hidden transform transition-all duration-500 hover:scale-105">
 
         {/* Left Side - Welcome Message (Hidden on small screens) */}
@@ -57,7 +57,7 @@ const Login = () => {
                   <FormItem>
                     <FormLabel className="block pb-5 text-gray-700 font-semibold text-lg sm:text-xl">School Code</FormLabel>
                     <FormControl>
-                      <Input className="w-full border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Enter Your Code" type="number" {...field} />
+                      <Input className="w-full text-black border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Enter Your Code" type="number" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
