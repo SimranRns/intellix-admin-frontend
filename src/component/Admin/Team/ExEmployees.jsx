@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Team.css";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import { SidebarInset, SidebarProvider } from "../../src/components/ui/sidebar";
 import Header from "../Dashboard/Header";
+import logo from "../../../assets/Image/intellix.png"
 import {
   ArrowLeft,
   Ellipsis,
@@ -13,7 +14,7 @@ import {
   Logs,
 } from "lucide-react";
 import { Button } from "../../src/components/ui/Button";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import {
   Pagination,
   PaginationContent,
@@ -50,6 +51,8 @@ import {
   DialogTitle,
 } from "../../src/components/ui/dialog";
 import ThankYouCard from "../Dashboard/ThankYouCard";
+import { useDispatch, useSelector } from "react-redux";
+import { get_ExEmployee, UpdateEmployee } from "../../../Redux_store/Api/ExEmployee";
 
 const ExEmployees = () => {
   const navigate = useNavigate();
@@ -58,50 +61,52 @@ const ExEmployees = () => {
   const [ActiveEmployee, setActive] = useState(false);
   const [AddConfrom, setAddConfrom] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const Employees = [
-    {
-      id: 1,
-      name: "Munaroh Steffani",
-      post: "Math Employee",
-      subjects: [
-        { subject: "Joined 01-01-2024", icon: Clock },
-        { subject: "Assigned 13", icon: Logs },
-        { subject: "Completed 3", icon: Logs },
-      ],
-      image: "https://github.com/shadcn.png",
-    },
-    {
-      id: 2,
-      name: "John Doe",
-      post: "Physics Employee",
-      subjects: [
-        { subject: "Joined 02-01-2024", icon: Clock },
-        { subject: "Assigned 15", icon: Logs },
-        { subject: "Completed 5", icon: Logs },
-      ],
-      image: "https://github.com/shadcn.png",
-    },
-  ];
-
-  const handleConfirm = async () => {
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+  const { id } = useParams();
+  const dispatch = useDispatch()
+  const { ExEmployees, loading, error } = useSelector((state) => state.ExEmployee)
+  const [first_name, setEmployeeName] = useState("");
+  const handleDelete = async () => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      if (selectedEmployeeId) {
 
-      console.log("Data Submitted Successfully!");
+        await dispatch(UpdateEmployee({ id: selectedEmployeeId }));
+        console.log("Employee deleted successfully:", selectedEmployeeId);
+        // setAddConfrom(true);
+        setSelectedEmployeeId(null);
+        await dispatch(get_ExEmployee())
 
-      setAddConfrom(false);
+      } else {
+        console.warn("No employee ID selected for deletion");
+      }
     } catch (error) {
-      console.error("Submission failed:", error);
+      console.error("Delete failed:", error);
     }
   };
 
-  const [employeesPerPage, setEmployeesPerPage] = useState(6);
-  const totalPages = Math.ceil(Employees.length / employeesPerPage);
+
+
+  const employeesPerPage = 10;
+  const EmployeeData = ExEmployees?.result?.employees || [];
+  const totalPages = Math.ceil(EmployeeData.length / employeesPerPage);
   const startIndex = (currentPage - 1) * employeesPerPage;
-  const selectedEmployees = Employees.slice(
-    startIndex,
-    startIndex + employeesPerPage
-  );
+  const selectedEmployees = EmployeeData.slice(startIndex, startIndex + employeesPerPage);
+  useEffect(() => {
+    dispatch(get_ExEmployee({ first_name: first_name }))
+  }, [first_name])
+
+  if (loading) {
+    <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
+      <div className="relative flex  justify-center items-center">
+        <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+        <img
+          src={logo}
+          alt="Loading"
+          className="rounded-full h-28 w-28"
+        />
+      </div>
+    </div>
+  }
 
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
@@ -128,13 +133,15 @@ const ExEmployees = () => {
                 type="text"
                 placeholder="By Employee Name..."
                 className="ml-2 w-full outline-none bg-transparent"
+                value={first_name}
+                onChange={(e) => setEmployeeName(e.target.value)}
               />
             </div>
           </div>
 
           {/* Cards Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
-            {selectedEmployees.map((employee) => (
+            {selectedEmployees?.map((employee) => (
               <Card
                 key={employee.id}
                 className="w-full max-w-[350px] shadow-sm shadow-blue-500/50 rounded-xl p-6 relative mx-auto"
@@ -152,7 +159,10 @@ const ExEmployees = () => {
                     className="w-30 bg-gray-100 mt-1 shadow-md rounded-md"
                   >
                     <DropdownMenuItem
-                      onClick={() => setActive(true)}
+                      onClick={() => {
+                        setSelectedEmployeeId(employee.id); // store this ID
+                        setActive(true);
+                      }}
                       className="cursor-pointer text-green-500 hover:bg-gray-200 px-4 py-2 text-md text-center"
                     >
                       Activate Employee
@@ -179,7 +189,10 @@ const ExEmployees = () => {
                     <hr className="mt-5"></hr>
                     <div className="flex justify-center">
                       <Button
-                      onClick={()=>{setActive(false),setAddConfrom(true)}}
+                        onClick={
+                          handleDelete
+                        }
+
                         type="submit"
                         className="bg-red-600 text-white px-5 py-5 rounded-lg hover:bg-red-700"
                       >
@@ -194,28 +207,30 @@ const ExEmployees = () => {
                   <Avatar className="shadow-md w-24 h-24 rounded-full">
                     <AvatarImage
                       className="rounded-full  border-4 border-blue-600"
-                      src={employee.image}
-                      alt={employee.name}
+                      src={employee.image || "https://github.com/shadcn.png"}
+                      alt={employee.first_name || "teacher"}
                     />
-                    <AvatarFallback>{employee.name.charAt(0)}</AvatarFallback>
+                    <AvatarFallback>{employee.first_name.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <CardTitle className="mt-4 text-xl font-bold Employee_name">
-                    {employee.name}
+                    {employee.first_name}
                   </CardTitle>
-                  <CardDescription>Employee</CardDescription>
+                  <CardDescription>{employee.department}</CardDescription>
                 </CardHeader>
 
                 <CardContent className="text-center">
                   <div className="flex flex-wrap justify-center gap-2">
-                    {employee.subjects.map((item, i) => (
-                      <span
-                        key={i}
-                        className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1"
-                      >
-                        <item.icon size={16} />
-                        {item.subject}
-                      </span>
-                    ))}
+                    <span
+                      className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1"
+                    >
+                      <Clock className="w-4 h-4" />
+                      {new Date(employee.joining_date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
+                      })}
+                    </span>
+
                   </div>
                 </CardContent>
 
@@ -254,11 +269,10 @@ const ExEmployees = () => {
                   <PaginationLink
                     as="button"
                     onClick={() => setCurrentPage(i + 1)}
-                    className={`px-4 py-2 rounded-md ${
-                      currentPage === i + 1
-                        ? "bg-blue-600 text-white"
-                        : "hover:bg-blue-500  hover:text-white"
-                    }`}
+                    className={`px-4 py-2 rounded-md ${currentPage === i + 1
+                      ? "bg-blue-600 text-white"
+                      : "hover:bg-blue-500  hover:text-white"
+                      }`}
                   >
                     {i + 1}
                   </PaginationLink>
@@ -278,14 +292,14 @@ const ExEmployees = () => {
         </main>
 
         {/* Confrom dilog */}
-        <Dialog open={AddConfrom} onOpenChange={setAddConfrom}>
+        {/* <Dialog open={AddConfrom} onOpenChange={setAddConfrom}>
           <DialogContent
             onPointerDownOutside={(e) => e.preventDefault()}
             onEscapeKeyDown={(e) => e.preventDefault()}
             className="w-full max-w-[90vw] sm:max-w-[400px] p-6 rounded-lg"
           >
             <ThankYouCard />
-            {/* Dialog Footer */}
+          
             <DialogFooter className="flex justify-end gap-3">
               <Button
                 onClick={() => setAddConfrom(false)}
@@ -295,14 +309,18 @@ const ExEmployees = () => {
                 Cancel
               </Button>
               <Button
-                onClick={handleConfirm} // Handle form submission & dialog close
+                onClick={async () => {
+                  setAddConfrom(false);
+                  await dispatch(get_ExEmployee());
+                  setActive(false);
+                }}
                 className="w-full sm:w-auto mt-4 bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md flex items-center shadow-md transition-all"
               >
                 Confirm
               </Button>
             </DialogFooter>
           </DialogContent>
-        </Dialog>
+        </Dialog> */}
       </SidebarInset>
     </SidebarProvider>
   );

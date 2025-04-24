@@ -153,52 +153,7 @@ const bankDetailsSchema = z.object({
 //   image: "https://github.com/shadcn.png",
 //   // icon: [Clock, Logs, Logs],
 // }));
-const Teachers = [
-  {
-    id: 1,
-    name: "Munaroh Steffani",
-    post: "Math Teacher",
-    subjects: [
-      { subject: "Joined 01-01-2024", icon: Clock },
-      { subject: "Assigned 13", icon: Logs },
-      { subject: "Completed 3", icon: Logs },
-    ],
-    image: "https://github.com/shadcn.png",
-  },
-  {
-    id: 1,
-    name: "Munaroh Steffani",
-    post: "Math Teacher",
-    subjects: [
-      { subject: "Joined 01-01-2024", icon: Clock },
-      { subject: "Assigned 13", icon: Logs },
-      { subject: "Completed 3", icon: Logs },
-    ],
-    image: "https://github.com/shadcn.png",
-  },
-  {
-    id: 1,
-    name: "Munaroh Steffani",
-    post: "Math Teacher",
-    subjects: [
-      { subject: "Joined 01-01-2024", icon: Clock },
-      { subject: "Assigned 13", icon: Logs },
-      { subject: "Completed 3", icon: Logs },
-    ],
-    image: "https://github.com/shadcn.png",
-  },
-  {
-    id: 1,
-    name: "Munaroh Steffani",
-    post: "Math Teacher",
-    subjects: [
-      { subject: "Joined 01-01-2024", icon: Clock },
-      { subject: "Assigned 13", icon: Logs },
-      { subject: "Completed 3", icon: Logs },
-    ],
-    image: "https://github.com/shadcn.png",
-  },
-];
+
 
 import {
   Form,
@@ -212,15 +167,15 @@ import {
   Popover,
   PopoverTrigger,
 } from "../../src/components/ui/popover";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 
 import ThankYouCard from "../Dashboard/ThankYouCard";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import Header from "../Dashboard/Header";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "../../src/components/ui/sheet";
-import GetTeam from "../../../Redux_store/Api/TeamApi";
-import { useDispatch } from "react-redux";
-
+import { DeleteEmployee, GetTeam, create_employee } from "../../../Redux_store/Api/TeamApi";
+import { useDispatch, useSelector } from "react-redux";
+import logo from '../../../assets/Image/intellix.png'
 
 const Team = ({ teacherData }) => {
   const navigate = useNavigate();
@@ -242,10 +197,14 @@ const Team = ({ teacherData }) => {
   const [InputName, setInputName] = useState("");
   const fileInputRef = useRef(null);
   const dispatch = useDispatch();
-
+  const { Teachers, loading, error } = useSelector((state) => state.team || {});
   const [date, setDate] = useState("");
   const [activePage, setActivePage] = useState("Team");
-
+  const { id } = useParams()
+  const [deleteemployee, setdeleteemployee] = useState(null)
+  const [first_name, setEmployeeName] = useState("");
+  // const [joining_date, setJoiningDate] = useState("");
+  const [addemployee, setemployee] = useState({ first_name: "", highest_qualification: "", institution_name: "", contact_number: "", emergency_number: "", email: "", date_of_birth: "", residential_address: "", district: "", state: "", status: "", start_time: "", end_time: "", pincode: "", permanent_address: "", permanent_district: "", permanent_state: "", permanent_pincode: "", department: "", salary: "", joining_date: "", account_number: "", ifsc_code: "", account_holder_name: "" })
 
   const departmentList = [
     "Science",
@@ -266,19 +225,7 @@ const Team = ({ teacherData }) => {
     }
   };
 
-  // Update on window resize
-  useEffect(() => {
-    updateTeachersPerPage();
-    window.addEventListener("resize", updateTeachersPerPage);
-    return () => window.removeEventListener("resize", updateTeachersPerPage);
-  }, []);
 
-  const totalPages = Math.ceil(Teachers.length / teachersPerPage);
-  const startIndex = (currentPage - 1) * teachersPerPage;
-  const selectedTeachers = Teachers.slice(
-    startIndex,
-    startIndex + teachersPerPage
-  );
 
   // Form instances
   const basicForm = useForm({
@@ -444,18 +391,6 @@ const Team = ({ teacherData }) => {
     console.log(InputName);
   };
 
-
-
-  // const handleImageChange = (event) => {
-  //   const file = event.target.files[0];
-  //   if (file) {
-  //     const imageUrl = URL.createObjectURL(file);
-  //     setProfileImg(imageUrl);
-  //   }
-  // };
-  // const onSubmit = (data) => {
-  //   console.log("Form Submitted:", data);
-  // };
   const handleBasicFormSubmit = (data) => {
     console.log("Basic Form Data:", data);
 
@@ -468,8 +403,11 @@ const Team = ({ teacherData }) => {
   };
 
 
-  const handleAdditionalFormSubmit = (data) => {
-    console.log("Additional Form Data:", data);
+  const handleAdditionalFormSubmit = (e) => {
+
+    e.preventDefault()
+    dispatch(create_employee())
+    // console.log("Additional Form Data:", data);
 
   };
   const handleAdditionalFormSubmit2 = (data) => {
@@ -478,17 +416,18 @@ const Team = ({ teacherData }) => {
   const handleAdditionalFormSubmit3 = (data) => {
     console.log("Submitted Data:", data);
   };
-  const handleConfirm = async () => {
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
 
-      console.log("Data Submitted Successfully!");
+  // const handleConfirm = async () => {
+  //   try {
+  //     await new Promise((resolve) => setTimeout(resolve, 500));
 
-      setAddConfrom(false);
-    } catch (error) {
-      console.error("Submission failed:", error);
-    }
-  };
+  //     console.log("Data Submitted Successfully!");
+  //     setAddConfrom(false);
+  //     await dispatch(GetTeam());
+  //   } catch (error) {
+  //     console.error("Submission failed:", error);
+  //   }
+  // };
 
   const { watch, setValue } = additionalForm2;
   const isSameAddress = watch("terms");
@@ -507,12 +446,61 @@ const Team = ({ teacherData }) => {
   }, [isSameAddress, residentialAddress, district, state, pincode, setValue]);
 
 
-  useEffect(() => {
-    dispatch(GetTeam())
-    console.log(GetTeam());
-    
+  //DeleteEmployee
+  const handleDelete = async () => {
+    try {
+      if (deleteemployee) {
+        await dispatch(DeleteEmployee({ id: deleteemployee }));
+        console.log("Employee deleted successfully:", deleteemployee);
 
-  })
+        setdeleteemployee(null);
+        await dispatch(GetTeam());
+
+        // ✅ Reload the page after successful delete and refresh
+        window.location.reload();
+      } else {
+        console.warn("No employee ID selected");
+      }
+    } catch (error) {
+      console.error("Submission failed:", error);
+    }
+  };
+
+  console.log(addemployee)
+
+  //GetEmployee
+  useEffect(() => {
+    dispatch(GetTeam({ first_name: first_name }))
+  }, [first_name])
+
+  // if (loading) {
+  //   return (
+  //     <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
+  //       <div className="relative flex  justify-center items-center">
+  //         <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+  //         <img
+  //           src={logo}
+  //           alt="Loading"
+  //           className="rounded-full h-28 w-28"
+  //         />
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
+  // if (error) {
+
+  //   return <div>
+  //     Error: = {error}
+  //   </div>
+  // }
+
+  const TeachersPerPage = 9;
+  const teachersData = Teachers?.result?.employees || [];
+  const totalPages = Math.ceil(teachersData.length / TeachersPerPage);
+  const startIndex = (currentPage - 1) * TeachersPerPage;
+  const paginatedTeachers = teachersData.slice(startIndex, startIndex + TeachersPerPage);
+
   return (
 
 
@@ -535,6 +523,10 @@ const Team = ({ teacherData }) => {
                     type="text"
                     placeholder="By Employee Name..."
                     className="ml-2 w-full outline-none bg-transparent text-sm"
+                    value={first_name}
+                    onChange={(e) => setEmployeeName(e.target.value)}
+
+
                   />
                 </div>
               </div>
@@ -653,10 +645,15 @@ const Team = ({ teacherData }) => {
                               <FormControl>
                                 <div className="relative flex items-center">
                                   <Input
-                                    value={InputName}
-                                    onChange={handleChange}
+                                    // value={InputName}
+                                    {...field} 
+                                   onChange={(e)=>{
+                                  
+                                    setemployee({...addemployee,first_name:e.target.value})
+                                    field.onChange(e)
+                                  }}
                                     placeholder="John Doe"
-                                    {...field} // Agar ye issue create kar raha hai to hata kar dekho
+                                   // Agar ye issue create kar raha hai to hata kar dekho
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                   />
 
@@ -683,6 +680,11 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Bachelor's / Master's"
                                     {...field}
+                                    onChange={(e)=>{
+                                  
+                                      setemployee({...addemployee,highest_qualification:e.target.value})
+                                      field.onChange(e)
+                                    }}
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                   />
                                   <span className="absolute right-4 text-gray-500">
@@ -708,6 +710,11 @@ const Team = ({ teacherData }) => {
                                     placeholder="Enter Institution Name"
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                     {...field}
+                                    onChange={(e)=>{
+                                  
+                                      setemployee({...addemployee,institution_name:e.target.value})
+                                      field.onChange(e)
+                                    }}
                                   />
                                   <span className="absolute right-4 text-gray-500">
                                     <GraduationCap size={21} />
@@ -733,6 +740,11 @@ const Team = ({ teacherData }) => {
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                     placeholder="Enter Contact Number"
                                     {...field}
+                                    onChange={(e)=>{
+                                  
+                                      setemployee({...addemployee,contact_number:e.target.value})
+                                      field.onChange(e)
+                                    }}
                                   />
                                   <span className="absolute right-4 text-gray-500">
                                     <Phone size={21} />
@@ -758,6 +770,11 @@ const Team = ({ teacherData }) => {
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                     placeholder="Enter Emergency Number"
                                     {...field}
+                                    onChange={(e)=>{
+                                  
+                                      setemployee({...addemployee,emergency_number:e.target.value})
+                                      field.onChange(e)
+                                    }}
                                   />
                                   <span className="absolute right-4 text-gray-500">
                                     <Phone size={21} />
@@ -780,9 +797,15 @@ const Team = ({ teacherData }) => {
                                 <div className="relative flex items-center">
                                   <Input
                                     type="email"
+                                   
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                     placeholder="Enter Email"
                                     {...field}
+                                    onChange={(e)=>{
+
+                                      setemployee({...addemployee,email:e.target.value})
+                                      field.onChange(e)
+                                    }}
                                   />
                                   <span className="absolute right-4 text-gray-500">
                                     <Mail size={21} />
@@ -810,6 +833,11 @@ const Team = ({ teacherData }) => {
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                     placeholder="In Hand Salary"
                                     {...field}
+                                    onChange={(e)=>{
+                                  
+                                      setemployee({...addemployee,salary:e.target.value})
+                                      field.onChange(e)
+                                    }}
                                   />
                                   <span className="absolute right-4 text-gray-500">
                                     <HandCoins size={21} />
@@ -856,9 +884,14 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     ref={inputRef}
                                     type="date"
+                                    onChange={(e)=>{
+                                  
+                                      setemployee({...addemployee,joining_date:e.target.value})
+                                      field.onChange(e)
+                                    }}
                                     className="opacity-0 cursor-pointer"
                                     value={field.value ? format(new Date(field.value), "yyyy-MM-dd") : ""}
-                                    onChange={(e) => field.onChange(e.target.value)}
+                                    // onChange={(e) => field.onChange(e.target.value)}
                                   />
                                 </Popover>
 
@@ -930,6 +963,11 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter Residential Address"
                                     {...field}
+                                    onChange={(e)=>{
+                                  
+                                      setemployee({...addemployee,residential_address:e.target.value})
+                                      field.onChange(e)
+                                    }}
                                     type="String"
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                   />
@@ -954,6 +992,11 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter District Name"
                                     {...field}
+                                    onChange={(e)=>{
+                                  
+                                      setemployee({...addemployee,district:e.target.value})
+                                      field.onChange(e)
+                                    }}
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                   />
                                   <span className="absolute right-4 text-gray-500">
@@ -977,6 +1020,11 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter State Name"
                                     {...field}
+                                    onChange={(e)=>{
+                                  
+                                      setemployee({...addemployee,state:e.target.value})
+                                      field.onChange(e)
+                                    }}
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                   />
                                   <span className="absolute right-4 text-gray-500">
@@ -1000,6 +1048,11 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter Pincode "
                                     {...field}
+                                    onChange={(e)=>{
+                                  
+                                      setemployee({...addemployee,pincode:e.target.value})
+                                      field.onChange(e)
+                                    }}
                                     type="number"
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                   />
@@ -1054,6 +1107,11 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter Permanent Address"
                                     {...field}
+                                    onChange={(e)=>{
+                                  
+                                      setemployee({...addemployee,permanent_address:e.target.value})
+                                      field.onChange(e)
+                                    }}
                                     disabled={isSameAddress} // Disable if checkbox is checked
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                   />
@@ -1077,6 +1135,11 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter District Name"
                                     {...field}
+                                    onChange={(e)=>{
+                                  
+                                      setemployee({...addemployee,permanent_district:e.target.value})
+                                      field.onChange(e)
+                                    }}
                                     disabled={isSameAddress}
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                   />
@@ -1100,6 +1163,11 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter State Name"
                                     {...field}
+                                    onChange={(e)=>{
+                                  
+                                      setemployee({...addemployee,permanent_state:e.target.value})
+                                      field.onChange(e)
+                                    }}
                                     disabled={isSameAddress}
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                   />
@@ -1123,6 +1191,11 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter Pincode"
                                     {...field}
+                                    onChange={(e)=>{
+                                  
+                                      setemployee({...addemployee,permanent_pincode:e.target.value})
+                                      field.onChange(e)
+                                    }}
                                     disabled={isSameAddress}
                                     type="number"
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
@@ -1149,6 +1222,11 @@ const Team = ({ teacherData }) => {
                                     <DropdownMenuTrigger asChild>
                                       <Button
                                         type="button"
+                                        // onChange={(e)=>{
+                                  
+                                        //   setemployee({...addemployee,department:e.target.value})
+                                        //   field.onChange(e)
+                                        // }}
                                         className="w-full border border-blue-300 rounded-xl p-5 shadow-lg py-2 focus:ring-1 focus:ring-blue-500 font-sm flex items-center justify-between"
                                       >
                                         <span className="text-gray-500">
@@ -1170,8 +1248,9 @@ const Team = ({ teacherData }) => {
                                         (dept, index) => (
                                           <DropdownMenuItem
                                             key={index}
-                                            onClick={() => {
+                                            onClick={(e) => {
                                               field.onChange(dept);
+                                              setemployee({...addemployee,department:dept})
                                               setSelectedDepartment(
                                                 dept
                                               );
@@ -1271,7 +1350,13 @@ const Team = ({ teacherData }) => {
                             <FormLabel>Enter Bank Account Number</FormLabel>
                             <FormControl>
                               <div className="relative flex items-center">
-                                <Input placeholder="Enter Account Number" {...field} type="text" className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
+                                <Input placeholder="Enter Account Number" {...field} 
+                                    onChange={(e)=>{
+                                  
+                                      setemployee({...addemployee,account_number:e.target.value})
+                                      field.onChange(e)
+                                    }}
+                                type="text" className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -1284,7 +1369,13 @@ const Team = ({ teacherData }) => {
                             <FormLabel>Enter IFSC Code</FormLabel>
                             <FormControl>
                               <div className="relative flex items-center">
-                                <Input placeholder="Enter Bank IFSC Code" {...field} className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
+                                <Input placeholder="Enter Bank IFSC Code" {...field}
+                                    onChange={(e)=>{
+                                  
+                                      setemployee({...addemployee,ifsc_code:e.target.value})
+                                      field.onChange(e)
+                                    }}
+                                className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -1297,7 +1388,13 @@ const Team = ({ teacherData }) => {
                             <FormLabel>Enter Account Holder Name</FormLabel>
                             <FormControl>
                               <div className="relative flex items-center">
-                                <Input placeholder="Enter Bank Account Holder Name" {...field} className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
+                                <Input placeholder="Enter Bank Account Holder Name" {...field}
+                                    onChange={(e)=>{
+                                  
+                                      setemployee({...addemployee,account_holder_name:e.target.value})
+                                      field.onChange(e)
+                                    }}
+                                className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -1309,7 +1406,7 @@ const Team = ({ teacherData }) => {
                       {/* Submit Button */}
                       <div className="flex justify-end">
                         <Button
-                          onClick={(e) => mainthird(e)}
+                          onClick={(e) => {mainthird(e),dispatch(create_employee())}}
 
                           type="submit" className="bg-indigo-600 text-white px-9 py-2 rounded-lg hover:bg-indigo-700">
                           Save
@@ -1329,7 +1426,7 @@ const Team = ({ teacherData }) => {
 
           {/* Teacher Cards Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
-            {selectedTeachers.map((teacher) => (
+            {paginatedTeachers?.map((teacher) => (
               <Card
                 key={teacher.id}
                 className="w-full max-w-[350px] shadow-sm shadow-blue-500/50 rounded-xl p-6 relative mx-auto"
@@ -1348,7 +1445,7 @@ const Team = ({ teacherData }) => {
                   >
                     <DropdownMenuItem
                       className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center"
-                      onClick={() => setOpen(true)} // Open dialog on click
+                      onClick={() => setOpen(true)}
                     >
                       Edit
                     </DropdownMenuItem>
@@ -1356,15 +1453,9 @@ const Team = ({ teacherData }) => {
                     <DropdownMenuItem className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center">
                       Assigns
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-
-                      className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center">
+                    <DropdownMenuItem className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center">
                       +Assign Task
                     </DropdownMenuItem>
-
-
-
-
 
                     <DropdownMenuItem
                       className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center"
@@ -1373,7 +1464,7 @@ const Team = ({ teacherData }) => {
                       Change Timing
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => setDelete(true)}
+                      onClick={() => { setdeleteemployee(teacher.id), setDelete(true) }}
                       className="cursor-pointer text-red-500 hover:bg-gray-200 px-4 py-2 text-center"
                     >
                       Delete
@@ -1381,37 +1472,28 @@ const Team = ({ teacherData }) => {
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                {/* dialog box change Time */}
+                {/* Change Timing Dialog */}
                 <Dialog open={ChangeTime} onOpenChange={setChangeTime}>
                   <DialogContent
                     onPointerDownOutside={(e) => e.preventDefault()}
                     onEscapeKeyDown={(e) => e.preventDefault()}
-                    className="sm:max-w-[425px]  shadow-lg p-6 rounded-lg">
+                    className="sm:max-w-[425px] shadow-lg p-6 rounded-lg"
+                  >
                     <DialogHeader>
-                      <DialogTitle className="text-center text-[29px]">
-                        Change Time
-                      </DialogTitle>
+                      <DialogTitle className="text-center text-[29px]">Change Time</DialogTitle>
                       <DialogDescription className="text-center text-md">
                         Are you sure you want to change this employee's timing?
                       </DialogDescription>
                     </DialogHeader>
-                    <hr className="mt-5"></hr>
+                    <hr className="mt-5" />
                     <div className="flex justify-center">
-                      <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="flex justify-between items-center w-full text-center">
+                      <form onSubmit={handleSubmit} className="space-y-4 w-full">
+                        <div className="flex justify-between items-center w-full">
                           <div className="w-1/2">
-                            <TimePicker
-                              label="In Time"
-                              selectedTime={inTime}
-                              setSelectedTime={setInTime}
-                            />
+                            <TimePicker label="In Time" selectedTime={inTime} setSelectedTime={setInTime} />
                           </div>
                           <div className="w-1/2">
-                            <TimePicker
-                              label="Out Time"
-                              selectedTime={outTime}
-                              setSelectedTime={setOutTime}
-                            />
+                            <TimePicker label="Out Time" selectedTime={outTime} setSelectedTime={setOutTime} />
                           </div>
                         </div>
                         <Button
@@ -1426,25 +1508,23 @@ const Team = ({ teacherData }) => {
                   </DialogContent>
                 </Dialog>
 
-                {/* dialog box Delete */}
+                {/* Delete Dialog */}
                 <Dialog open={Deleteteacher} onOpenChange={setDelete}>
                   <DialogContent
                     onPointerDownOutside={(e) => e.preventDefault()}
                     onEscapeKeyDown={(e) => e.preventDefault()}
-                    className="sm:max-w-[425px]  shadow-lg p-6 rounded-lg">
+                    className="sm:max-w-[425px] shadow-lg p-6 rounded-lg"
+                  >
                     <DialogHeader>
-                      <DialogTitle className="text-center text-[29px]">
-                        Deactivate Employee
-                      </DialogTitle>
+                      <DialogTitle className="text-center text-[29px]">Deactivate Employee</DialogTitle>
                       <DialogDescription className="text-center text-md">
-                        Are you sure you want to deactivate this employee ?
+                        Are you sure you want to deactivate this employee?
                       </DialogDescription>
                     </DialogHeader>
-
-                    <hr className="mt-5"></hr>
+                    <hr className="mt-5" />
                     <div className="flex justify-center">
                       <Button
-                        onClick={() => { setDelete(false), setAddConfrom(true) }}
+                        onClick={handleDelete}
                         type="submit"
                         className="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700"
                       >
@@ -1454,22 +1534,22 @@ const Team = ({ teacherData }) => {
                   </DialogContent>
                 </Dialog>
 
-                {/* dialog box edit */}
+                {/* Edit Dialog */}
                 <Dialog open={open} onOpenChange={setOpen}>
                   <DialogContent
                     onPointerDownOutside={(e) => e.preventDefault()}
                     onEscapeKeyDown={(e) => e.preventDefault()}
-                    className="sm:max-w-[425px]  shadow-lg p-6 rounded-lg">
+                    className="sm:max-w-[425px] shadow-lg p-6 rounded-lg"
+                  >
                     <DialogHeader>
-                      <DialogTitle className="text-">Edit Task</DialogTitle>
+                      <DialogTitle>Edit Task</DialogTitle>
                     </DialogHeader>
-                    <hr></hr>
+                    <hr />
                     <Form {...basicForm}>
                       <form
                         onSubmit={basicForm.handleSubmit(handleBasicFormSubmit)}
                         className="space-y-6"
                       >
-                        {/* Post Field */}
                         <FormField
                           control={basicForm.control}
                           name="post"
@@ -1477,18 +1557,13 @@ const Team = ({ teacherData }) => {
                             <FormItem>
                               <FormLabel>Post</FormLabel>
                               <FormControl>
-                                <Input
-                                  placeholder="Teacher"
-                                  {...field}
-                                  className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                />
+                                <Input placeholder="Teacher" {...field} className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg" />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
 
-                        {/* Name Field */}
                         <FormField
                           control={basicForm.control}
                           name="name"
@@ -1496,18 +1571,13 @@ const Team = ({ teacherData }) => {
                             <FormItem>
                               <FormLabel>Name</FormLabel>
                               <FormControl>
-                                <Input
-                                  placeholder="Munaroh Steffani"
-                                  {...field}
-                                  className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                />
+                                <Input placeholder="Munaroh Steffani" {...field} className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg" />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
 
-                        {/* Subject Field */}
                         <FormField
                           control={basicForm.control}
                           name="subject"
@@ -1515,24 +1585,15 @@ const Team = ({ teacherData }) => {
                             <FormItem>
                               <FormLabel>Subject</FormLabel>
                               <FormControl>
-                                <Input
-                                  placeholder="Mathematics"
-                                  {...field}
-                                  className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                />
+                                <Input placeholder="Mathematics" {...field} className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg" />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
 
-                        {/* Buttons */}
                         <div className="flex justify-between">
-                          <Button
-
-                            type="submit"
-                            className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700"
-                          >
+                          <Button type="submit" className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700">
                             Save
                           </Button>
                         </div>
@@ -1545,29 +1606,41 @@ const Team = ({ teacherData }) => {
                 <CardHeader className="flex flex-col items-center text-center">
                   <Avatar className="shadow-md w-24 h-24 rounded-full">
                     <AvatarImage
-                      className="rounded-full  border-4 border-blue-600"
-                      src={teacher.image}
-                      alt={teacher.name}
+                      className="rounded-full border-4 border-blue-600"
+                      src={teacher.image || "https://github.com/shadcn.png"}
+                      alt={teacher.first_name || "teacher"}
                     />
-                    <AvatarFallback>{teacher.name.charAt(0)}</AvatarFallback>
                   </Avatar>
-                  <CardTitle className="mt-4 text-xl font-bold Teacher_name">
-                    {teacher.name}
-                  </CardTitle>
-                  <CardDescription>Teacher</CardDescription>
+                  <CardTitle className="mt-4 text-xl font-bold">{teacher.first_name}</CardTitle>
+                  <CardDescription>{teacher.department}</CardDescription>
                 </CardHeader>
 
                 <CardContent className="text-center">
                   <div className="flex flex-wrap justify-center gap-2">
-                    {teacher.subjects.map((item, i) => (
-                      <span
-                        key={i}
-                        className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1"
-                      >
-                        <item.icon size={16} />
-                        {item.subject}
-                      </span>
-                    ))}
+                    <span className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1">
+                      <Clock className="w-4 h-4" />
+                      {new Date(teacher?.joining_date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
+                      })}
+                    </span>
+                    <span className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1">
+                      <Clock className="w-4 h-4" />
+                      {new Date(teacher?.joining_date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
+                      })}
+                    </span>
+                    <span className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1">
+                      <Clock className="w-4 h-4" />
+                      {new Date(teacher?.joining_date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
+                      })}
+                    </span>
                   </div>
                 </CardContent>
 
@@ -1580,7 +1653,8 @@ const Team = ({ teacherData }) => {
                   </Button>
                   <Button
                     onClick={() => Navigate("/manage_salary")}
-                    className="bg-orange-500 text-xs text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-orange-600 transition-all">
+                    className="bg-orange-500 text-xs text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-orange-600 transition-all"
+                  >
                     <HandCoins size={18} /> Manage Salary
                   </Button>
                 </CardFooter>
@@ -1606,7 +1680,7 @@ const Team = ({ teacherData }) => {
                   Cancel
                 </Button>
                 <Button
-                  onClick={handleConfirm} // Handle form submission & dialog close
+                  onClick={async () => { setAddConfrom(false), setDelete(false) }} // Handle form submission & dialog close
                   className="w-full sm:w-auto mt-4 bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md flex items-center shadow-md transition-all"
                 >
                   Confirm

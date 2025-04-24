@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Team.css";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import {
@@ -61,11 +61,14 @@ import {
   FormItem,
   FormLabel,
 } from "../../src/components/ui/form";
+import { useDispatch, useSelector } from "react-redux";
 import { Input } from "../../src/components/ui/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ThankYouCard from "../Dashboard/ThankYouCard";
+import { get_Deparment, create_department, delete_department } from "../../../Redux_store/Api/Department";
+import logo from '../../../assets/Image/intellix.png'
 const formSchema = z.object({
   Department: z.string().min(2, {
     message: "Department must be at least 2 characters.",
@@ -100,21 +103,31 @@ const Departments = () => {
   const [addDepartment, setAddDepartment] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [AddConfrom, setAddConfrom] = useState(false);
+  const [departments, setDepartments] = useState({})
 
-  const departmentsList = [
-    {
-      id: 1,
-      departmentName: "Teaching",
-      departmentUser: "10,000",
-      departmentemployee: "Employee",
-    },
-    {
-      id: 2,
-      departmentName: "Finance",
-      departmentUser: "20,000",
-      departmentemployee: "Employee",
-    },
-  ];
+  const [id,setid] = useState(null)
+  const dispatch = useDispatch()
+  const { Department, loading, error } = useSelector((state) => state.Department || {});
+  const adddepartments = (e) => {
+    setDepartments({ ...departments, [e.target.name]: e.target.value })
+  }
+  const Onedepartment = Department?.data?.find((ele) => ele.id === id);
+
+
+  // const departmentsList = [
+  //   {
+  //     id: 1,
+  //     departmentName: "Teaching",
+  //     departmentUser: "10,000",
+  //     departmentemployee: "Employee",
+  //   },
+  //   {
+  //     id: 2,
+  //     departmentName: "Finance",
+  //     departmentUser: "20,000",
+  //     departmentemployee: "Employee",
+  //   },
+  // ];
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -136,24 +149,52 @@ const Departments = () => {
   };
   const handleAddDepartment = (data) => {
     console.log("Form Submitted:", data);
-
+    
     // Reset the form fields
     form.reset();
-
+    
     // Close the "Add Department" dialog
     setAddDepartment(false);
-
+    
     // Open the confirmation dialog
     setAddConfrom(true);
+    //Api
+    dispatch(create_department(departments));
   };
 
-  const departmentsPerPage = 6;
-  const totalPages = Math.ceil(departmentsList.length / departmentsPerPage);
-  const startIndex = (currentPage - 1) * departmentsPerPage;
-  const selectedDepartments = departmentsList.slice(
-    startIndex,
-    startIndex + departmentsPerPage
-  );
+  useEffect(() => {
+    dispatch(get_Deparment());
+  }, [dispatch]);
+
+
+
+  // const departmentsPerPage = 6;
+  // const totalPages = Math.ceil(departmentsList.length / departmentsPerPage);
+  // const startIndex = (currentPage - 1) * departmentsPerPage;
+  // const selectedDepartments = departmentsList.slice(
+  //   startIndex,
+  //   startIndex + departmentsPerPage
+  // );
+
+
+  if (loading) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
+        <div className="relative flex  justify-center items-center">
+          <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+          <img
+            src={logo}
+            alt="Loading"
+            className="rounded-full h-28 w-28"
+          />
+        </div>
+      </div>
+    );
+  }
+  if (error) {
+    return
+    <h1>{error}</h1>
+  }
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       {/* Pass setActivePage to Sidebar */}
@@ -201,7 +242,9 @@ const Departments = () => {
                           <FormItem>
                             <FormLabel>Enter name of department</FormLabel>
                             <FormControl>
-                              <Input placeholder="Department" {...field} />
+                              <Input
+                                onChange={adddepartments}
+                                placeholder="Department" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -228,7 +271,7 @@ const Departments = () => {
 
           {/* Cards Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 gap-6 p-6">
-            {selectedDepartments.map((department) => (
+            {Department?.data?.map((department) => (
               <Card
                 key={department.id}
                 className="w-full max-w-[320px]  shadow-md shadow-blue-500/50 rounded-xl p-6 relative mx-auto"
@@ -275,7 +318,7 @@ const Departments = () => {
                     <div className="flex justify-center">
                       <Button
                         onClick={() => {
-                          setDeleteDepartments(false), setAddConfrom(true);
+                          setDeleteDepartments(false), setAddConfrom(true),dispatch(delete_department(department.id))
                         }}
                         className="bg-red-600 text-white px-5 py-3 rounded-lg hover:bg-red-700"
                       >
@@ -290,10 +333,10 @@ const Departments = () => {
                     <div className="flex items-center gap-2">
                       <Users size={24} className="text-blue-500" />
                       <span className="text-lg font-bold">
-                        {department.departmentUser}
+                        {department.name}
                       </span>
                       <span className="text-sm text-gray-400">
-                        {department.departmentemployee}
+                        {department.access_control}
                       </span>
                     </div>
                   </div>
@@ -331,7 +374,7 @@ const Departments = () => {
                 {/* Card Footer Buttons */}
                 <CardFooter className="flex justify-center gap-4 mt-1">
                   <Button
-                    onClick={() => navigate("/View_User")}
+                    onClick={() => {navigate("/View_User") , setid(department.id)}}
                     className="bg-blue-600 text-xs text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-blue-500 transition-all"
                   >
                     <User size={18} /> View User
@@ -377,7 +420,7 @@ const Departments = () => {
           </DialogContent>
         </Dialog>
 
-        <Pagination>
+        {/* <Pagination>
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious
@@ -391,11 +434,10 @@ const Departments = () => {
                 <PaginationLink
                   as="button"
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`px-4 py-2 rounded-md ${
-                    currentPage === i + 1
-                      ? "bg-blue-600 text-white"
-                      : "hover:bg-blue-500  hover:text-white"
-                  }`}
+                  className={`px-4 py-2 rounded-md ${currentPage === i + 1
+                    ? "bg-blue-600 text-white"
+                    : "hover:bg-blue-500  hover:text-white"
+                    }`}
                 >
                   {i + 1}
                 </PaginationLink>
@@ -411,7 +453,7 @@ const Departments = () => {
               />
             </PaginationItem>
           </PaginationContent>
-        </Pagination>
+        </Pagination> */}
       </SidebarInset>
     </SidebarProvider>
   );
