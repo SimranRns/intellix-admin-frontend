@@ -4,12 +4,22 @@ import DepartmentReducer from './slices/Department'
 import ExEmployeeReducer from './slices/ExEmployee'
 import { LeadsSliceReducer } from './slices/Leads';
 import { CategorySliceReducer } from './slices/CategorySlice';
+import course_sliceReducer from './slices/Add_course'
+import banner_sliceReducer from './slices/Banner_slice'
+import school_sliceReducer from './slices/addschool_slice'
+import notify_sliceReducer from './slices/Notification.jsx'
+import attendance_sliceReducer from './slices/Attendance.jsx'
 const RootReducer = combineReducers({
     team: teamReducer,
-    Department : DepartmentReducer,
-    ExEmployee : ExEmployeeReducer,
+    Department: DepartmentReducer,
+    ExEmployee: ExEmployeeReducer,
     Leads: LeadsSliceReducer,
-  Category: CategorySliceReducer,
+    Category: CategorySliceReducer,
+    banner: banner_sliceReducer,
+    schools: school_sliceReducer,
+    courses: course_sliceReducer,
+    notify: notify_sliceReducer,
+    attend: attendance_sliceReducer
 })
 
 

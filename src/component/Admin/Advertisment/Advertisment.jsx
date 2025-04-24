@@ -37,7 +37,7 @@ const Advertisment = () => {
   });
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch()
-  const { banners, loading, error } = useSelector((state) => (state.banner))
+  const { banners, loading, error } = useSelector((state) => state.banner || {})
 
   // Handle Image Upload (Temporary)
   const handleTempImageChange = (event) => {
