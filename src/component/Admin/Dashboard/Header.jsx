@@ -16,10 +16,10 @@ import ThemeContext from "./ThemeContext";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../src/components/ui/select";
 
 const Header = () => {
-   
+
     const [logout, setLogout] = useState(false);
     // const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
-   
+
     const [selectedOption, setSelectedOption] = useState("2025");
 
     const { darkMode, setDarkMode } = useContext(ThemeContext);
@@ -75,13 +75,13 @@ const Header = () => {
                                 >
                                     {["2025", "2024", "2023", "2021"].map((year) => (
                                         <DropdownMenuItem
-                                        key={year}
-                                        onClick={() => setSelectedOption(year)}
-                                        className="cursor-pointer hover:bg-blue-600 hover:text-white px-4 py-2 text-center"
-                                    >
-                                        {year}
-                                    </DropdownMenuItem>
-                                    
+                                            key={year}
+                                            onClick={() => setSelectedOption(year)}
+                                            className="cursor-pointer hover:bg-blue-600 hover:text-white px-4 py-2 text-center"
+                                        >
+                                            {year}
+                                        </DropdownMenuItem>
+
                                     ))}
                                 </DropdownMenuContent>
                             </DropdownMenu>
@@ -145,7 +145,7 @@ const Header = () => {
                                         Cancel
                                     </Button>
                                     <Button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
-                                        onClick={() => {setLogout(false),navigate("/")}}>
+                                        onClick={() => { setLogout(false) }}>
                                         Logout
                                     </Button>
                                 </div>

@@ -55,6 +55,7 @@ const AdminLogin = () => {
             })).unwrap();
 
             if (response.status == '001') {
+                localStorage.setItem("token", response.token)
                 navigate('/Dashboard');
             }
 
@@ -114,18 +115,24 @@ const AdminLogin = () => {
                                                     type={showPassword ? "text" : "password"}
                                                     {...field}
                                                 />
+
                                                 <span
                                                     className="absolute right-4 text-gray-500 cursor-pointer"
                                                     onClick={() => setShowPassword(!showPassword)}
                                                 >
                                                     {showPassword ? <Eye size={21} /> : <EyeOff size={21} />}
                                                 </span>
+
                                             </div>
+
                                         </FormControl>
+                                        {error && <p className='text-xs text-red-600 font-semibold'>{error}</p>}
                                         <FormMessage />
                                     </FormItem>
                                 )}
+
                             />
+
                             <FormField
                                 control={form.control}
                                 name="terms"
@@ -142,7 +149,7 @@ const AdminLogin = () => {
                             <Button
                                 disabled={loading}
                                 className='w-full margin bg-gradient-to-r from-blue-500 to-blue-700 text-white py-3 sm:py-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-xl text-lg sm:text-xl font-bold' type="submit">Login</Button>
-                            {error && <p>{error}</p>}
+
                         </form>
                     </Form>
                 </div>
