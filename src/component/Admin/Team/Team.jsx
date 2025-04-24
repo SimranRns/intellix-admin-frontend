@@ -175,6 +175,7 @@ import { DeleteEmployee, GetTeam, create_employee } from "../../../Redux_store/A
 import { useDispatch, useSelector } from "react-redux";
 import logo from '../../../assets/Image/intellix.png'
 
+
 const Team = ({ teacherData }) => {
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState("Newest");
