@@ -14,6 +14,8 @@ import { StatusSliceReducer } from './slices/FitterStatusSlice';
 import head_yaer_sliceReducer from './slices/Header_session_slice'
 import EmiReducers from './slices/EmisSlice'
 import studentReducer from './slices/Student'
+import adminProfileSliceReducer from "./slices/adminProfileSlice";
+
 const RootReducer = combineReducers({
     team: teamReducer,
     Department: DepartmentReducer,
@@ -30,5 +32,9 @@ const RootReducer = combineReducers({
     year: head_yaer_sliceReducer,
     emis: EmiReducers,
     students: studentReducer,
+    adminProfile: adminProfileSliceReducer,
 })
+
+
+
 export default RootReducer;
