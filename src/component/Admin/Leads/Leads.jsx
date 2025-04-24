@@ -262,7 +262,7 @@ const Leads = () => {
   //     toast.error(typeof error === "string" ? error : "Failed to add category");
   //   }
   // }, [successMessage, error]);
-
+  
   return (
     <>
       <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
