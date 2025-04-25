@@ -1,0 +1,30 @@
+.avatar{
+    width:130px;
+    border-radius: 100%;
+    
+}
+.profile_list{
+    display: flex;
+    align-items: center;
+    /* justify-content: space-around   ; */
+    font-size: 15px;
+    border-top: 1px solid #2e2828;
+    padding: 18px 30px;
+    color: #303972;
+    font-family: inherit;
+
+}
+.profile_list_number{
+/* color: #a098ae; */
+font-weight: 500;
+padding-left: 100px;
+}
+.profile_portfolio{
+    /* height: 45px; */
+    border-color: white;
+    overflow: hidden;
+    border: 1px solid rgb(167, 166, 166);
+    padding:  10px 70px;
+    text-align: center;
+    border-radius: 10px;
+}
