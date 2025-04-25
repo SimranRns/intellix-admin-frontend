@@ -57,7 +57,7 @@ import {
   searchingleads,
 } from "../../../Redux_store/Api/LeadsApi";
 
-import { toast } from "react-hot-toast";
+
 import MyLeads from "./MyLeads/MyLeads";
 import { values } from "regenerator-runtime";
 import {
@@ -204,19 +204,19 @@ const Leads = () => {
     console.log("hello");
   };
 
-  const onValidCategorySubmit = async () => {
-    try {
-      const resultAction = await dispatch(AddLeads(MYaddLeads));
-      if (AddLeads.fulfilled.match(resultAction)) {
-        toast.success("Lead added successfully!");
-        setLeadModalStatus(false); // close the modal
-      } else {
-        toast.error(resultAction.payload?.message || "Failed to add lead");
-      }
-    } catch (error) {
-      toast.error("An unexpected error occurred");
-    }
-  };
+  // const onValidCategorySubmit = async () => {
+  //   try {
+  //     const resultAction = await dispatch(AddLeads(MYaddLeads));
+  //     if (AddLeads.fulfilled.match(resultAction)) {
+  //       toast.success("Lead added successfully!");
+  //       setLeadModalStatus(false); // close the modal
+  //     } else {
+  //       toast.error(resultAction.payload?.message || "Failed to add lead");
+  //     }
+  //   } catch (error) {
+  //     toast.error("An unexpected error occurred");
+  //   }
+  // };
 
   // ********************************************
   const {
@@ -259,17 +259,17 @@ const Leads = () => {
   const { categories } = useSelector((state) => state.Category);
   console.log("AAAAAAAAAAAAAAAAAAAAAAAAA", categories);
 
-  useEffect(() => {
-    if (categories) {
-      toast.success(categories);
-      setCategoryModalStatus(false); // Close modal
-      form.reset(); // Reset form fields
-    }
+  // useEffect(() => {
+  //   if (categories) {
+  //     toast.success(categories);
+  //     setCategoryModalStatus(false); // Close modal
+  //     form.reset(); // Reset form fields
+  //   }
 
-    if (error) {
-      toast.error(typeof error === "string" ? error : "Failed to add category");
-    }
-  }, [categories, error]);
+  //   if (error) {
+  //     toast.error(typeof error === "string" ? error : "Failed to add category");
+  //   }
+  // }, [categories, error]);
 
   return (
     <>
