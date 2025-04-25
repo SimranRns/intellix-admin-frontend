@@ -16,6 +16,8 @@ import ThemeContext from "./ThemeContext";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../src/components/ui/select";
 import { useDispatch, useSelector } from "react-redux";
 import seession_year from "../../../Redux_store/Api/Header_session";
+import { logoutAdmin } from "../../../Redux_store/Api/Logout_admin";
+import { clearToken } from "../../../Redux_store/slices/Logout_Admin";
 
 const Header = () => {
 
@@ -49,6 +51,24 @@ const Header = () => {
             return () => clearTimeout(timer);
         }
     }, [logout]);
+
+
+    const token = useSelector((state) => state.logout.token);
+    console.log(token);
+
+    const handleLogout = async () => {
+        const response = await dispatch(logoutAdmin(token)).unwrap();
+
+        if (response.status == '001') {
+            setLogout(false);
+            dispatch(clearToken());
+            localStorage.removeItem("token");
+            navigate('/');
+        }
+
+    };
+
+
 
     return (
         <>
@@ -157,7 +177,7 @@ const Header = () => {
                                         Cancel
                                     </Button>
                                     <Button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
-                                        onClick={() => { setLogout(false) }}>
+                                        onClick={() => handleLogout()}>
                                         Logout
                                     </Button>
                                 </div>
@@ -166,6 +186,7 @@ const Header = () => {
                     </div>
                 </div>
             </header>
+
 
 
 

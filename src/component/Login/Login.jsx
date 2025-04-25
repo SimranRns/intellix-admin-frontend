@@ -15,10 +15,17 @@ import { Input } from '../../component/src/components/ui/input';
 import { Label } from '../../component/src/components/ui/label';
 import { Checkbox } from '../../component/src/components/ui/checkbox';
 import { Button } from '../src/components/ui/Button';
-import {  useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
+
 const FormSchema = z.object({
-  Code: z.string().min(1, "Code is required"),
+  Code: z
+    .string()
+    .min(1, "School code is required")
+    .refine((val) => val === "19", {
+      message: "School code is wrong",
+    }),
 });
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -31,6 +38,7 @@ const Login = () => {
 
   const onSubmit = (data) => {
     console.log('Form data:', data);
+    navigate("/Adminlogin")
   };
 
   return (
@@ -57,7 +65,7 @@ const Login = () => {
                   <FormItem>
                     <FormLabel className="block pb-5 text-gray-700 font-semibold text-lg sm:text-xl">School Code</FormLabel>
                     <FormControl>
-                      <Input className="w-full text-black border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Enter Your Code" type="number" {...field} />
+                      <Input className="w-full text-black border-gray-300 rounded-xl p-3 sm:p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" placeholder="Enter Your Code" type="text" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -65,8 +73,7 @@ const Login = () => {
               />
 
               <Button
-              onClick={()=>{navigate("/Adminlogin")}}
-              className='w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white py-3 sm:py-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-xl text-lg sm:text-xl font-bold' type="submit">Login</Button>
+                className='w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white py-3 sm:py-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-xl text-lg sm:text-xl font-bold' type="submit">Login</Button>
             </form>
           </Form>
         </div>
