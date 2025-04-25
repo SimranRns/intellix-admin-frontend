@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { DeleteEmployee, GetTeam, create_employee } from '../Api/TeamApi';
+import {  GetTeam, Update_Employee, Update_Time, create_employee, update_Employee_Status } from '../Api/TeamApi';
 
 const initialState = {
   Teachers: [],
@@ -25,17 +25,16 @@ const teamSlice = createSlice({
       })
       .addCase(create_employee.fulfilled, (state, action) => {
         state.loading = false;
-      
-        // ✅ If action.payload is a single new employee
         state.Teachers.push(action.payload);
-        console.log(payload,"*********************************************************************");
+        console.log(action.payload, "*********************************************************************");
       })
-      
+
+
       .addCase(create_employee.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        
-        
+
+
       })
 
       //////Get
@@ -53,24 +52,52 @@ const teamSlice = createSlice({
       })
 
       //DeleteEmployee
-      .addCase(DeleteEmployee.pending, (state) => {
+      .addCase(update_Employee_Status.pending, (state) => {
         state.loading = true;
         state.error = null;
         state.successMessage = null;
       })
-      .addCase(DeleteEmployee.fulfilled, (state, action) => {
+      .addCase(update_Employee_Status.fulfilled, (state, action) => {
         state.loading = false;
-        state.ExEmployees = Array.isArray(action.payload) ? action.payload : [];
+        state.Teachers = Array.isArray(action.payload) ? action.payload : [];
       })
-
-
-
-      .addCase(DeleteEmployee.rejected, (state, action) => {
+      .addCase(update_Employee_Status.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || 'Something went wrong';
+      })
+
+      //Update_time
+      .addCase(Update_Time.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(Update_Time.fulfilled, (state, action) => {
+        state.loading = false;
+        state.Teachers = state.Teachers.map((ele) =>
+          ele.id === action.payload.id ? action.payload : ele
+        );
+      })
+      .addCase(Update_Time.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+
+      //Update_Employee
+      .addCase(Update_Employee.pending, (state) => {
+        state.loading = true;
+        state.error = null; // clear previous errors
+      })
+
+      .addCase(Update_Employee.fulfilled, (state, action) => {
+        state.loading = false;
+        const updated = action.payload;
+        state.Teachers = state.Teachers.map((emp) =>
+          emp.id === updated.id ? updated : emp
+        );
+      })
+      .addCase(Update_Employee.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
       });
-
-
   },
 });
 
