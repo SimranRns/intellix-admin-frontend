@@ -4,7 +4,7 @@ import { createCategory, getAllCategory, updatecategory } from "../Api/CategoryA
 const CategorySlice = createSlice({
   name: "CategorySlice",
   initialState: {
-    categories: [],
+    categories: {},
     loading: false,
     error: null,
     successMessage: null,
@@ -19,8 +19,7 @@ const CategorySlice = createSlice({
         state.successMessage = null;
       })
       .addCase(createCategory.fulfilled, (state, action) => {
-        state.loading = false;
-        state.categories.push(action.payload);
+        state.loading = false; 
         state.successMessage = "Category created successfully!";
       })
       .addCase(createCategory.rejected, (state, action) => {
@@ -33,6 +32,8 @@ const CategorySlice = createSlice({
         state.loading = true;
       })
       .addCase(getAllCategory.fulfilled, (state, action) => {
+        console.log("fdjfcycfkdccxkytxckltoolyxdt",action.payload);
+        
         state.loading = false;
         state.categories = action.payload;
       })
@@ -53,7 +54,7 @@ const CategorySlice = createSlice({
         // Optional: update specific category in state.categories
         const updated = action.payload;
         state.categories = state.categories.map((cat) =>
-          cat._id === updated._id ? updated : cat
+          cat._id === updated.id ? updated : cat
         );
       })
       .addCase(updatecategory.rejected, (state, action) => {

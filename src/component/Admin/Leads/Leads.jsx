@@ -57,9 +57,13 @@ import {
   searchingleads,
 } from "../../../Redux_store/Api/LeadsApi";
 
+import { toast } from "react-hot-toast";
 import MyLeads from "./MyLeads/MyLeads";
 import { values } from "regenerator-runtime";
-import { createCategory, getAllCategory } from "../../../Redux_store/Api/CategoryApi";
+import {
+  createCategory,
+  getAllCategory,
+} from "../../../Redux_store/Api/CategoryApi";
 
 const Leads = () => {
   const rowsPerPage = 5;
@@ -179,9 +183,11 @@ const Leads = () => {
 
     dispatch(createCategory(data));
   };
+
   const onInvalidCategorySubmit = (errors) => {
     console.log("Validation Errors:", errors);
   };
+
   const handleConfirm = async () => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -218,6 +224,7 @@ const Leads = () => {
     loading,
     error,
   } = useSelector((state) => state.Leads || {});
+  // console.log("*************************************************************************************************",leads);
 
   useEffect(() => {
     dispatch(changestatusLeads());
@@ -227,42 +234,43 @@ const Leads = () => {
     dispatch(AddLeads());
     // console.log(AddLeads());
     dispatch(createCategory());
-    console.log(createCategory());
+    // console.log(createCategory());
     dispatch(getAllCategory());
-    console.log(getAllCategory());
-
+    // console.log(getAllCategory());
   }, [dispatch]);
 
   // **********
+
   console.log(MYaddLeads);
 
   const [searchInput, setSearchInput] = useState("");
 
   const handleSearch = () => {
     const payload = {
-      name: searchInput, 
+      name: searchInput,
       email: "",
       phone_number: "",
-      assign_to: "", 
+      assign_to: " ",
     };
 
     dispatch(searchingleads(payload));
   };
 
-  const { successMessage } = useSelector((state) => state.Category);
+  const { categories } = useSelector((state) => state.Category);
+  console.log("AAAAAAAAAAAAAAAAAAAAAAAAA", categories);
 
-  // useEffect(() => {
-  //   if (successMessage) {
-  //     toast.success(successMessage);
-  //     setCategoryModalStatus(false); 
-  //     form.reset();
-  //   }
+  useEffect(() => {
+    if (categories) {
+      toast.success(categories);
+      setCategoryModalStatus(false); // Close modal
+      form.reset(); // Reset form fields
+    }
 
-  //   if (error) {
-  //     toast.error(typeof error === "string" ? error : "Failed to add category");
-  //   }
-  // }, [successMessage, error]);
-  
+    if (error) {
+      toast.error(typeof error === "string" ? error : "Failed to add category");
+    }
+  }, [categories, error]);
+
   return (
     <>
       <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
@@ -343,9 +351,6 @@ const Leads = () => {
 
           <div className="p-6 rounded-lg shadow-md max-w-8xl mx-auto w-full ">
             <div className="flex flex-wrap justify-between gap-2 mb-4 w-full">
-              {/* <Input placeholder="Search Leads..." className="w-1/4" />
-              <Button className="bg-blue-600 text-white ">Search</Button> */}
-
               <Input
                 placeholder="Search Leads..."
                 className="w-1/4"
@@ -366,12 +371,15 @@ const Leads = () => {
                   >
                     All Categories
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setCategory("Automobile")}>
-                    Automobile
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setCategory("Marketing")}>
-                    Marketing
-                  </DropdownMenuItem>
+                  {Array.isArray(categories) &&
+                    categories.map((item) => (
+                      <DropdownMenuItem
+                        key={item.id}
+                        onClick={() => setCategory(item.name)}
+                      >
+                        {item.name}
+                      </DropdownMenuItem>
+                    ))}
                 </DropdownMenuContent>
               </DropdownMenu>
 
@@ -567,7 +575,7 @@ const Leads = () => {
                 </DialogContent>
               </Dialog>
 
-              {/* add Category */}
+              {/* Add Category */}
               <Dialog
                 open={categoryModalStatus}
                 onOpenChange={setCategoryModalStatus}
@@ -592,14 +600,6 @@ const Leads = () => {
                     className="grid gap-4 py-4"
                   >
                     <Label htmlFor="name">Enter Category Name</Label>
-                    {/* <Input
-                      id="name"
-                      placeholder="Enter category name"
-                      className="col-span-4"
-                      {...form.register("name", {
-                        required: "Category name is required",
-                      })}
-                    /> */}
                     <Input
                       id="name"
                       placeholder="Enter category name"

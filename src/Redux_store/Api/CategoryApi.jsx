@@ -54,12 +54,12 @@ export const getAllCategory = createAsyncThunk(
 
 
   
-  export const updatecategory = createAsyncThunk(
+export const  updatecategory = createAsyncThunk(
     "Category/updateCategory",
     async (updatedData, { rejectWithValue }) => {
       try {
         const BASE_URL = import.meta.env.VITE_BASE_URL;
-        const response = await fetch(`${BASE_URL}/api/v1/categoryrouter/updatecategorycontroller`, {
+        const response = await fetch(`${BASE_URL}/api/v1/categoryrouter/updatecategorycontroller/2`, {
           method: "PUT", // or "PATCH" depending on your backend
           headers: {
             "Content-Type": "application/json",
@@ -79,6 +79,3 @@ export const getAllCategory = createAsyncThunk(
       }
     }
   );
-  
-
-
