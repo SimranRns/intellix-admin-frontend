@@ -22,14 +22,18 @@ const Header = () => {
     const [logout, setLogout] = useState(false);
     // const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
 
-    const [selectedOption, setSelectedOption] = useState([]);
+    const [selectedOption, setSelectedOption] = useState();
 
     const { darkMode, setDarkMode } = useContext(ThemeContext);
     const dispatch = useDispatch()
+
+    const { years, loading, error } = useSelector((s) => s.year);
     useEffect(() => {
         dispatch(seession_year())
+        console.log('gggg', years);
     }, [])
-    const { years = [], loading, error } = useSelector((s) => s.year);
+    
+
 
     const navigate = useNavigate();
 
@@ -85,7 +89,7 @@ const Header = () => {
                                     ) : error ? (
                                         <div className="px-4 py-2 text-center text-red-500">Failed to load</div>
                                     ) : (
-                                        years?.sessions?.map((year) => (
+                                        Array.isArray(years?.sessions) && years.sessions.map((year) => (
                                             <DropdownMenuItem
                                                 key={year}
                                                 onClick={() => setSelectedOption(year.session_year)}

@@ -1,101 +1,296 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AppSidebar from '../../../src/components/ui/app-sidebar'
 import { SidebarInset, SidebarProvider } from '../../../src/components/ui/sidebar'
 import Header from '../../Dashboard/Header'
 import { Button } from '../../../src/components/ui/Button'
-import { ArrowLeft, Search } from 'lucide-react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../src/components/ui/dialog'
+import { ArrowLeft, Pencil, Search } from 'lucide-react'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '../../../src/components/ui/form'
 import { Input } from '../../../src/components/ui/input'
 import { useNavigate } from 'react-router'
-import { useForm } from 'react-hook-form' // ✅ ADD THIS IMPORT
-import { FormMessage } from '../../../src/components/ui/form' // ✅ You forgot to import t
+import { FormMessage } from '../../../src/components/ui/form'
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "../../../src/components/ui/card"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "../../../src/components/ui/dialog"
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from 'react-redux'
+import { get_course, add_course } from '../../../../Redux_store/Api/Academic_course'
+import { ScrollArea } from '../../../src/components/ui/scroll-area'
+
+
+
 const Courses = () => {
-    const [AddCourses,setAddCourses] = useState()
-    // const [navigate,setnavigate] = useNavigate()
-    const goBack = () => {
-        window.history.back();
+    const [AddCourses, setAddCourses] = useState(false);
+    const [selectedSubjects, setSelectedSubjects] = useState([]);
+    const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch(get_course())
+    }, [])
+    const { acad_courses, loading, error } = useSelector((s) => s.acad_course)
+    // handle adding a new course
+    const handleAddCourse = async (data) => {
+        const newCourse = {
+            course_name: data.course_name,
+            subject: data.course_type,
+            fees: data.course_price,
+            duration: data.course_duration,
+        };
+
+        // Dispatch the action to add course
+        try {
+            await dispatch(add_course(newCourse)).unwrap();  // Dispatch action and wait for the result
+            setAddCourses(false);
+            form.reset()  // Close the modal after success
+        } catch (error) {
+            console.error("Error adding course:", error);
+        }
     };
 
-    
-    // ✅ Define the form using useForm
-    const form = useForm({
-        defaultValues: {
-            Course: '',
-        }
+    // validation schema
+    const courseSchema = z.object({
+        Course: z.string().min(1, "Course name is required"),
+        subject: z.string().min(1, "Subject is required"),
+        Fees: z.coerce.number().min(0, "Fees must be a positive number"),
+        Time: z.string().min(1, "Duration is required"),
     });
 
-    // ✅ Example submit handler
-    const handleAdddepartment = (data) => {
-        console.log("Submitted data:", data);
-        setAddCourses(false); // Close dialog on submit
-    }
+    const form = useForm({
+        resolver: zodResolver(courseSchema),
+        defaultValues: {
+            Course: "",
+            subject: "",
+            Fees: 0,
+            Time: "",
+        },
+    });
+
+    const goBack = () => window.history.back();
+
     return (
         <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
             <AppSidebar />
             <SidebarInset>
                 <Header />
-                <main className="flex-1 overflow-auto">
-                    <div className="w-full shadow-md shadow-blue-300/30 rounded-lg flex flex-wrap sm:flex-nowrap items-center justify-between px-4 sm:px-8 py-4 gap-3">
-                        <div className="flex items-center gap-3">
-                            <Button
-                                className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm flex items-center gap-2"
-                                onClick={goBack}
-                            >
+                <main className="flex-1 overflow-auto p-4 sm:p-6 min-h-screen">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                        <div className="flex gap-3 flex-wrap">
+                            <Button onClick={goBack} className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-md text-sm flex items-center gap-2 shadow-md">
                                 <ArrowLeft size={18} />
                                 <span className="hidden md:inline">Back to Academics</span>
                             </Button>
-                            <Button
-                                onClick={() => setAddCourses(true)}
-                                className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm flex items-center gap-2"
-                            >
+                            <Button onClick={() => setAddCourses(true)} className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-md text-sm flex items-center gap-2 shadow-md">
                                 <span className="text-lg">+</span>
-                                <span>Add Courses</span>
+                                <span>Add Course</span>
                             </Button>
-                            <Dialog open={AddCourses} onOpenChange={setAddCourses}>
-                                <DialogContent
-                                    onPointerDownOutside={(e) => e.preventDefault()}
-                                    onEscapeKeyDown={(e) => e.preventDefault()}
-                                    className=" sm:max-w-[600px] shadow-lg p-6 rounded-lg">
-                                    <DialogHeader>
-                                        <DialogTitle className="text-center">Add Courses</DialogTitle>
-                                    </DialogHeader>
-                                    <Form {...form}>
-                                        <form onSubmit={form.handleSubmit(handleAdddepartment)} className="space-y-8">
-                                            <FormField
-                                                control={form.control}
-                                                name="Course"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormLabel>Enter name of Course</FormLabel>
-                                                        <FormControl>
-                                                            <Input placeholder="Type Course Name" {...field} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                            <Button type="submit">Confirm</Button>
-                                        </form>
-                                    </Form>
-                                </DialogContent>
-                            </Dialog>
                         </div>
-
-                        {/* Search Bar */}
-                        <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full sm:max-w-md">
+                        <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full sm:w-auto sm:max-w-md shadow-sm">
                             <Search size={18} className="text-gray-500" />
                             <input
                                 name="search"
-                                type="text" placeholder="By Courses Name..." className="ml-2 w-full outline-none bg-transparent text-sm" />
+                                type="text"
+                                placeholder="Search Course..."
+                                className="ml-2 w-full outline-none bg-transparent text-sm"
+                            />
                         </div>
                     </div>
 
-                </main>
+                    <Dialog open={AddCourses} onOpenChange={setAddCourses}>
+                        <DialogContent onPointerDownOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()} className="sm:max-w-[500px] p-6 rounded-2xl">
+                            <DialogHeader>
+                                <DialogTitle className="text-center text-xl font-semibold">Add New Course</DialogTitle>
+                            </DialogHeader>
+                            <Form {...form}>
+                                <form onSubmit={form.handleSubmit(handleAddCourse)} className="space-y-6">
+                                    <FormField
+                                        control={form.control}
+                                        name="Course"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Course Name</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="e.g. BCA, MBA" type='text' {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="subject"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Course Subject</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="e.g. English, Hindi" type='text' {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="Fees"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Price/Fee Of Course</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="0" type='number' {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="Time"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Course Duration</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="0" type='text' {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <div className="flex justify-end">
+                                        <Button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white px-5">
+                                            Confirm
+                                        </Button>
+                                    </div>
+                                </form>
+                            </Form>
+                        </DialogContent>
+                    </Dialog>
 
+                    <div className="grid gap-6 mt-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                        {acad_courses?.data?.map((card) => (
+                            <Card key={card.id} className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden mt-8">
+                                <CardHeader>
+                                    <CardTitle className="text-blue-700 text-xl text-center">{card.course_name}</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className=" text-sm text-center text-lg">Total Subjects: {card.course_type}</p>
+                                </CardContent>
+                                <CardFooter>
+                                    <Dialog>
+                                        <DialogTrigger asChild>
+                                            <Button className="w-full bg-blue-600 hover:bg-blue-500 text-white">View Details</Button>
+                                        </DialogTrigger>
+                                        <DialogContent onPointerDownOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()} className="w-[95vw] sm:max-w-3xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 rounded-2xl">
+                                            {/* Top Buttons */}
+                                            <div className="flex flex-col sm:flex-row justify-between gap-3 mb-4">
+                                                <Dialog>
+                                                    <DialogTrigger asChild>
+                                                        <Button className="bg-blue-600 text-white hover:bg-blue-500 text-sm px-4 py-2 flex items-center gap-2 mt-5">
+                                                            <Pencil /> Course Subjects
+                                                        </Button>
+                                                    </DialogTrigger>
+                                                    <DialogContent className="sm:max-w-md p-6 rounded-2xl">
+                                                        <DialogHeader>
+                                                            <DialogTitle>Edit Subjects for {card.course_name}</DialogTitle>
+                                                            <DialogDescription>Select the subjects you'd like to assign.</DialogDescription>
+                                                        </DialogHeader>
+                                                        {/* course subject button dialog for edit subject  */}
+                                                        <div className="mt-4 space-y-3">
+                                                            {["Math", "Science", "English", "Computer", "History"].map((subject) => (
+                                                                <label key={subject} className="flex items-center space-x-2 text-sm">
+                                                                    <input
+                                                                        type="radio"
+                                                                        name={`subject-${card.id}`} // important for grouping per course
+                                                                        value={subject}
+                                                                        checked={selectedSubjects[card.id] === subject}
+                                                                        onChange={() => {
+                                                                            setSelectedSubjects((prev) => ({
+                                                                                ...prev,
+                                                                                [card.id]: subject,
+                                                                            }));
+                                                                        }}
+                                                                    />
+                                                                    <span>{subject}</span>
+                                                                </label>
+                                                            ))}
+                                                        </div>
+
+
+                                                        <div className="flex justify-end mt-6">
+                                                            <Button
+                                                                onClick={() => {
+                                                                    console.log(`Subjects for ${card.course_name}:`, selectedSubjects[card.id] || []);
+                                                                }}
+                                                                className="bg-blue-600 hover:bg-blue-500 text-white"
+                                                            >
+                                                                Save
+                                                            </Button>
+                                                        </div>
+                                                    </DialogContent>
+                                                </Dialog>
+
+                                                <Button className="bg-blue-600 text-white hover:bg-blue-500 text-sm px-4 py-2 flex items-center gap-2 mt-5">
+                                                    <Pencil /> Course Name
+                                                </Button>
+                                            </div>
+
+                                            <h2 className="text-xl font-semibold mb-4">Course: {card.course_name}</h2>
+
+                                            <div className="grid grid-cols-2 gap-4 mb-4">
+                                                <div>
+                                                    {/* subject total will come  */}
+                                                    <div className="text-gray-500">Subjects</div>
+                                                    <div className="text-2xl font-bold">{card.course_type}</div>
+                                                </div>
+                                                <div className="text-right">
+                                                    <div className="text-gray-500">Batches</div>
+                                                    {/* <div className="text-2xl font-bold">{card.totalBatches}</div> */}
+                                                </div>
+                                            </div>
+
+                                            <div className="overflow-x-auto rounded-lg border ">
+                                                <ScrollArea className="h-[350px]  rounded-md border p-4">
+                                                    <table className="min-w-full text-sm">
+                                                        <thead className="bg-blue-100 text-gray-700 ">
+                                                            <tr>
+                                                                <th className="text-left p-2">Batch ID</th>
+                                                                <th className="text-left p-2">Batch Name</th>
+                                                                <th className="text-left p-2">Start Date</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {acad_courses?.data?.map((batch) => (
+                                                                <tr key={batch.id} className="border-t">
+                                                                    <td className="p-2">{batch.id}</td>
+                                                                    <td className="p-2">{batch.course_name}</td>
+                                                                    <td className="p-2">{batch.date}</td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </ScrollArea>
+                                            </div>
+                                        </DialogContent>
+                                    </Dialog>
+                                </CardFooter>
+                            </Card>
+                        ))}
+                    </div>
+                </main>
             </SidebarInset>
         </SidebarProvider>
     )
 }
 
-export default Courses
+export default Courses;

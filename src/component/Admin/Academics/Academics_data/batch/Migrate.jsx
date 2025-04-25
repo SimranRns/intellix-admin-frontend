@@ -7,10 +7,10 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 
 const Migrate = () => {
 
-    const [openmigrate,setOpenmigrate] = useState(false)
+    const [openmigrate, setOpenmigrate] = useState(false)
     return (
         <div>
-            <Button onClick={() => setOpenmigrate(true) } className="mt-4 w-full bg-blue-500 text-white py-2 px-8 flex items-center rounded-md hover:bg-blue-600  transition-all whitespace-nowrap">
+            <Button onClick={() => setOpenmigrate(true)} className="mt-4 w-full bg-blue-500 text-white py-2 px-8 flex items-center rounded-md hover:bg-blue-600  transition-all whitespace-nowrap">
                 Migrate
             </Button>
             <Dialog open={openmigrate} onOpenChange={setOpenmigrate}>
@@ -28,13 +28,31 @@ const Migrate = () => {
 
                     <div className="grid gap-6 py-6">
                         <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
-                            <Label className="md:text-right text-left font-medium">Name :</Label>
-                            <Input
-                                // value={batchDetails.name}
-                                onChange={(e) => handleChange("name", e.target.value)}
-                                placeholder="Enter batch name"
-                                className="col-span-3"
-                            />
+                            <Label className="md:text-right text-left font-medium">Select Course  :</Label>
+                            <Select>
+                                <SelectTrigger className="col-span-3">
+                                    <SelectValue placeholder="Course" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="light">BCA</SelectItem>
+                                    <SelectItem value="dark">BCOM</SelectItem>
+                                    <SelectItem value="system">BSC</SelectItem>
+                                </SelectContent>
+                            </Select>
+
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+                            <Label className="md:text-right text-left font-medium">Select Batch  :</Label>
+                            <Select>
+                                <SelectTrigger className="col-span-3">
+                                    <SelectValue placeholder="Batch" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="light">A</SelectItem>
+                                    <SelectItem value="dark">B</SelectItem>
+                                    <SelectItem value="system">C</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
@@ -48,7 +66,7 @@ const Migrate = () => {
                             />
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+                        {/* <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
                             <Label className="md:text-right text-left font-medium">Course :</Label>
                             <div className="col-span-3">
                                 <Select
@@ -70,8 +88,8 @@ const Migrate = () => {
                                     </SelectContent>
                                 </Select>
                             </div>
-                        </div>
-
+                        </div> */}
+{/* 
                         <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
                             <Label className="md:text-right text-left font-medium">Start Date :</Label>
                             <Input
@@ -90,7 +108,7 @@ const Migrate = () => {
                                 onChange={(e) => handleChange("endDate", e.target.value)}
                                 className="col-span-3"
                             />
-                        </div>
+                        </div> */}
                     </div>
 
                     <DialogFooter className="pt-4">

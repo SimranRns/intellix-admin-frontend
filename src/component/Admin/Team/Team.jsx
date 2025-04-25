@@ -645,14 +645,14 @@ const Team = ({ teacherData }) => {
                                 <div className="relative flex items-center">
                                   <Input
                                     // value={InputName}
-                                    {...field} 
-                                   onChange={(e)=>{
-                                  
-                                    setemployee({...addemployee,first_name:e.target.value})
-                                    field.onChange(e)
-                                  }}
+                                    {...field}
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, first_name: e.target.value })
+                                      field.onChange(e)
+                                    }}
                                     placeholder="John Doe"
-                                   // Agar ye issue create kar raha hai to hata kar dekho
+                                    // Agar ye issue create kar raha hai to hata kar dekho
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                   />
 
@@ -679,9 +679,9 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Bachelor's / Master's"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,highest_qualification:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, highest_qualification: e.target.value })
                                       field.onChange(e)
                                     }}
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
@@ -709,9 +709,9 @@ const Team = ({ teacherData }) => {
                                     placeholder="Enter Institution Name"
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,institution_name:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, institution_name: e.target.value })
                                       field.onChange(e)
                                     }}
                                   />
@@ -739,9 +739,9 @@ const Team = ({ teacherData }) => {
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                     placeholder="Enter Contact Number"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,contact_number:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, contact_number: e.target.value })
                                       field.onChange(e)
                                     }}
                                   />
@@ -769,9 +769,9 @@ const Team = ({ teacherData }) => {
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                     placeholder="Enter Emergency Number"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,emergency_number:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, emergency_number: e.target.value })
                                       field.onChange(e)
                                     }}
                                   />
@@ -796,13 +796,13 @@ const Team = ({ teacherData }) => {
                                 <div className="relative flex items-center">
                                   <Input
                                     type="email"
-                                   
+
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                     placeholder="Enter Email"
                                     {...field}
-                                    onChange={(e)=>{
+                                    onChange={(e) => {
 
-                                      setemployee({...addemployee,email:e.target.value})
+                                      setemployee({ ...addemployee, email: e.target.value })
                                       field.onChange(e)
                                     }}
                                   />
@@ -832,9 +832,9 @@ const Team = ({ teacherData }) => {
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                     placeholder="In Hand Salary"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,salary:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, salary: e.target.value })
                                       field.onChange(e)
                                     }}
                                   />
@@ -883,14 +883,14 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     ref={inputRef}
                                     type="date"
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,joining_date:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, joining_date: e.target.value })
                                       field.onChange(e)
                                     }}
                                     className="opacity-0 cursor-pointer"
                                     value={field.value ? format(new Date(field.value), "yyyy-MM-dd") : ""}
-                                    // onChange={(e) => field.onChange(e.target.value)}
+                                  // onChange={(e) => field.onChange(e.target.value)}
                                   />
                                 </Popover>
 
@@ -962,9 +962,9 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter Residential Address"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,residential_address:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, residential_address: e.target.value })
                                       field.onChange(e)
                                     }}
                                     type="String"
@@ -991,9 +991,9 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter District Name"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,district:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, district: e.target.value })
                                       field.onChange(e)
                                     }}
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
@@ -1019,9 +1019,9 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter State Name"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,state:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, state: e.target.value })
                                       field.onChange(e)
                                     }}
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
@@ -1047,9 +1047,9 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter Pincode "
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,pincode:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, pincode: e.target.value })
                                       field.onChange(e)
                                     }}
                                     type="number"
@@ -1106,9 +1106,9 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter Permanent Address"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,permanent_address:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, permanent_address: e.target.value })
                                       field.onChange(e)
                                     }}
                                     disabled={isSameAddress} // Disable if checkbox is checked
@@ -1134,9 +1134,9 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter District Name"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,permanent_district:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, permanent_district: e.target.value })
                                       field.onChange(e)
                                     }}
                                     disabled={isSameAddress}
@@ -1162,9 +1162,9 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter State Name"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,permanent_state:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, permanent_state: e.target.value })
                                       field.onChange(e)
                                     }}
                                     disabled={isSameAddress}
@@ -1190,9 +1190,9 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter Pincode"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,permanent_pincode:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, permanent_pincode: e.target.value })
                                       field.onChange(e)
                                     }}
                                     disabled={isSameAddress}
@@ -1222,7 +1222,7 @@ const Team = ({ teacherData }) => {
                                       <Button
                                         type="button"
                                         // onChange={(e)=>{
-                                  
+
                                         //   setemployee({...addemployee,department:e.target.value})
                                         //   field.onChange(e)
                                         // }}
@@ -1249,7 +1249,7 @@ const Team = ({ teacherData }) => {
                                             key={index}
                                             onClick={(e) => {
                                               field.onChange(dept);
-                                              setemployee({...addemployee,department:department.push(dept)})
+                                              setemployee({ ...addemployee, department: department.push(dept) })
                                               setSelectedDepartment(
                                                 dept
                                               );
@@ -1349,13 +1349,13 @@ const Team = ({ teacherData }) => {
                             <FormLabel>Enter Bank Account Number</FormLabel>
                             <FormControl>
                               <div className="relative flex items-center">
-                                <Input placeholder="Enter Account Number" {...field} 
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,account_number:e.target.value})
-                                      field.onChange(e)
-                                    }}
-                                type="text" className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
+                                <Input placeholder="Enter Account Number" {...field}
+                                  onChange={(e) => {
+
+                                    setemployee({ ...addemployee, account_number: e.target.value })
+                                    field.onChange(e)
+                                  }}
+                                  type="text" className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -1369,12 +1369,12 @@ const Team = ({ teacherData }) => {
                             <FormControl>
                               <div className="relative flex items-center">
                                 <Input placeholder="Enter Bank IFSC Code" {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,ifsc_code:e.target.value})
-                                      field.onChange(e)
-                                    }}
-                                className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
+                                  onChange={(e) => {
+
+                                    setemployee({ ...addemployee, ifsc_code: e.target.value })
+                                    field.onChange(e)
+                                  }}
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -1388,12 +1388,12 @@ const Team = ({ teacherData }) => {
                             <FormControl>
                               <div className="relative flex items-center">
                                 <Input placeholder="Enter Bank Account Holder Name" {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,account_holder_name:e.target.value})
-                                      field.onChange(e)
-                                    }}
-                                className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
+                                  onChange={(e) => {
+
+                                    setemployee({ ...addemployee, account_holder_name: e.target.value })
+                                    field.onChange(e)
+                                  }}
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -1405,7 +1405,7 @@ const Team = ({ teacherData }) => {
                       {/* Submit Button */}
                       <div className="flex justify-end">
                         <Button
-                          onClick={(e) => {mainthird(e),dispatch(create_employee(addemployee))}}
+                          onClick={(e) => { mainthird(e), dispatch(create_employee(addemployee)) }}
 
                           type="submit" className="bg-indigo-600 text-white px-9 py-2 rounded-lg hover:bg-indigo-700">
                           Save

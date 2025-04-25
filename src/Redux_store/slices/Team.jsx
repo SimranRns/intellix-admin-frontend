@@ -1,78 +1,60 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { DeleteEmployee, GetTeam, create_employee } from '../Api/TeamApi';
-
-const initialState = {
-  Teachers: [],
-  loading: false,
-  error: null,
-  Searchemployees: [],
-};
+// src/redux/slices/counterSlice.js
+import { createSlice } from '@reduxjs/toolkit'
+import { GetTeam, create_employee, getoneemployee } from '../Api/TeamApi';
 
 const teamSlice = createSlice({
-  name: 'team',
-  initialState,
-  reducers: {
-    searchUser: (state, action) => {
-      state.Searchemployees = action.payload;
-    }
+  name: "team",
+  initialState: {
+    users: [],
+    profile: {},
+    loading: false,
+    error: null,
+    searchData: [],
   },
+
   extraReducers: (builder) => {
     builder
 
-      //////Create
-      .addCase(create_employee.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(create_employee.fulfilled, (state, action) => {
-        state.loading = false;
-      
-        // ✅ If action.payload is a single new employee
-        state.Teachers.push(action.payload);
-        console.log(payload,"*********************************************************************");
-      })
-      
-      .addCase(create_employee.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-        
-        
-      })
-
-      //////Get
+      // create Employee
       .addCase(GetTeam.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(GetTeam.fulfilled, (state, action) => {
         state.loading = false;
-        state.Teachers = action.payload;
+        state.users = action.payload;
       })
       .addCase(GetTeam.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Failed to fetch data';
+        state.error = action.payload;
       })
+      // see profile of employee by single emp id 
 
-      //DeleteEmployee
-      .addCase(DeleteEmployee.pending, (state) => {
+      .addCase(getoneemployee.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(getoneemployee.fulfilled, (state, action) => {
+        state.loading = false,
+          state.profile = action.payload
+      })
+      .addCase(getoneemployee.rejected, (state, action) => {
+        state.loading = false,
+          state.error = action.payload
+      })
+      // add employee
+      .addCase(create_employee.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.successMessage = null;
       })
-      .addCase(DeleteEmployee.fulfilled, (state, action) => {
+      .addCase(create_employee.fulfilled, (state, action) => {
         state.loading = false;
-        state.ExEmployees = Array.isArray(action.payload) ? action.payload : [];
+        state.users.push(action.payload); 
       })
-
-
-
-      .addCase(DeleteEmployee.rejected, (state, action) => {
+      .addCase(create_employee.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Something went wrong';
+        state.error = action.payload;
       });
+  }
 
-
-  },
-});
+})
 
 export default teamSlice.reducer;
-export const { searchEmployee } = teamSlice.actions;
