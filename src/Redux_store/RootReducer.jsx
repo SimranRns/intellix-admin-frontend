@@ -15,8 +15,10 @@ import head_yaer_sliceReducer from './slices/Header_session_slice'
 import EmiReducers from './slices/EmisSlice'
 import studentReducer from './slices/Student'
 import adminProfileSliceReducer from "./slices/adminProfileSlice";
-
 import EmployessSlicesReducer from './slices/Dashboard.Slices'
+import subject_sliceReducer from './slices/Subject_Slice'
+
+
 const RootReducer = combineReducers({
     team: teamReducer,
     Department: DepartmentReducer,
@@ -34,7 +36,8 @@ const RootReducer = combineReducers({
     emis: EmiReducers,
     students: studentReducer,
     adminProfile: adminProfileSliceReducer,
-    Employesss:EmployessSlicesReducer
+    Employesss:EmployessSlicesReducer,
+    subj:subject_sliceReducer
 })
 
 
