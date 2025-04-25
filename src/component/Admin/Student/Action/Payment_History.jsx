@@ -95,7 +95,7 @@ const Payment_History = () => {
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <div className="flex justify-between p-6">
                 <Button
-                  className="border-2 border-gray-300 rounded-lg flex items-center gap-2 py-2 px-6"
+                  className="bg-blue-500 text-white rounded-lg flex items-center gap-2 py-2 px-6"
                   onClick={goback}
                 >
                   <ArrowLeft />

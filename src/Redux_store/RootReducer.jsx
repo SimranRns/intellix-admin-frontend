@@ -19,6 +19,7 @@ import SessionSliceReducer from './slices/SessionSlice'
 import EmployessSlicesReducer from './slices/Dashboard.Slices'
 import subject_sliceReducer from './slices/Subject_Slice'
 import adminSliceReducer from "./slices/Logout_Admin"
+import BatchesSliceReducer from  "./slices/Batches_Slice"
 
 
 const RootReducer = combineReducers({
@@ -42,7 +43,8 @@ const RootReducer = combineReducers({
     subj:subject_sliceReducer,
     Employesss:EmployessSlicesReducer,
     logout: adminSliceReducer,
-    Session:SessionSliceReducer
+    Session:SessionSliceReducer,
+    Batch:BatchesSliceReducer
 })
 
 
