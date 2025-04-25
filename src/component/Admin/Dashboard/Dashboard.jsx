@@ -27,24 +27,26 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Printer, MoreVertical } from "lucide-react";
 import { SidebarInset, SidebarProvider } from "../../src/components/ui/sidebar";
 import AppSidebar from "../../src/components/ui/app-sidebar";
-import { Employesss } from "../../../Redux_store/Api/Dashboard.Api";
+import { Employesss, Department } from "../../../Redux_store/Api/Dashboard.Api";
 import { Users, UserX, CalendarCheck, Timer, Book } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
+// import Department from "@/Redux_store/Api/Department";
 
 const Dashboard = ({ children }) => {
   const [page, setPage] = useState(1);
   const [isOpen, setIsOpen] = useState(true);
   const dispaatch = useDispatch()
-  const { Employes, loading, error } = useSelector((state) => state.employees || {})
+  const { employees, loading, error } = useSelector((state) => state.Employesss || {})
+  const departments  = useSelector((state) => state.Employesss.departments || {});
+
+  console.log(departments);
+
   useEffect(() => {
     dispaatch(Employesss())
-    console.log(Employesss());
-    console.log("Total Students:", Employes?.data?.data?.Students);
-    console.log("Total Employees:", Employes?.data?.data?.allemploye);
-    
-    
-  }, [])
+    dispaatch(Department())
+  }, [dispaatch])
+  
   const influencers = [
     { name: "Malik Wiwoho", projects: 23, followers: "1,620,201" },
     { name: "Nancy Auta", projects: 34, followers: "1,224,620" },
@@ -79,7 +81,7 @@ const Dashboard = ({ children }) => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-const navigate = useNavigate()
+  const navigate = useNavigate()
   const students = [
     { number: "1", name: "Jordan Nico", TotalUser: "18" },
     { number: "2", name: "Maria Jones", TotalUser: "6" },
@@ -89,7 +91,7 @@ const navigate = useNavigate()
     { number: "6", name: "Lily Brown", TotalUser: "35" },
     { number: "7", name: "John Carter", TotalUser: "15" },
     { number: "8", name: "Emma Wilson", TotalUser: "10" },
-    { number: "9", name: "Oliver Stone", TotalUser: "6"},
+    { number: "9", name: "Oliver Stone", TotalUser: "6" },
     { number: "10", name: "Sophia Green", TotalUser: "70" },
   ];
   const startEntry = (currentPage - 1) * itemsPerPage + 1;
@@ -267,13 +269,17 @@ const navigate = useNavigate()
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {paginatedTeachers.map((teacher, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{teacher.number}</TableCell>
-                          <TableCell>{teacher.name}</TableCell>
-                          <TableCell>{teacher.TotalUser}</TableCell>
+                      {departments?.data?.data?.map((dept, index) => (
+                        <TableRow key={dept.id}>
+                          <TableCell>{index + 1}</TableCell>
+                          <TableCell>{dept.name}</TableCell>
+                          {/* <TableCell>{new Date(dept.updatedAt).toLocaleDateString()}</TableCell> */}
+                          <TableCell>{dept.access_control?.length || 0}</TableCell>
+
                         </TableRow>
                       ))}
+
+
                     </TableBody>
                   </Table>
 
@@ -328,16 +334,20 @@ const navigate = useNavigate()
                   <Card className="flex items-center justify-between  border p-4 w-full">
                     <div className="flex items-center gap-3 font-bold">
                       <div className="bg-red-100 text-red-500 p-6 rounded-full">
-                        <Book size={20}/>
+                        <Book size={20} />
                       </div>
                       <div>
-                        <p className="text-xl font-semibold text-red-500">0</p>
+                        <p className="text-xl font-semibold text-red-500">
+                          {
+                            employees?.data?.Students
+                          }
+                        </p>
                         <p className="text-sm text-gray-600">Total Students</p>
                       </div>
                     </div>
-                    <ChevronRight className="text-gray-500 cursor-pointer" size={18} 
-                    onClick={()=>navigate("/students")}
-                   
+                    <ChevronRight className="text-gray-500 cursor-pointer" size={18}
+                      onClick={() => navigate("/students")}
+
                     />
                   </Card>
 
@@ -349,14 +359,16 @@ const navigate = useNavigate()
                       </div>
                       <div>
                         <p className="text-xl font-semibold text-emerald-500">
-                          28
+                          {
+                            employees?.data?.allemploye
+                          }
                         </p>
                         <p className="text-sm text-gray-600">Total Employees</p>
                       </div>
                     </div>
                     <ChevronRight className="text-gray-500 cursor-pointer" size={18}
-                     onClick={()=>navigate("/team")}
-                    
+                      onClick={() => navigate("/team")}
+
                     />
                   </Card>
 
@@ -379,8 +391,8 @@ const navigate = useNavigate()
                         </div>
                       </div>
                     </div>
-                    <ChevronRight className="text-gray-500 cursor-pointer" size={18} 
-                     onClick={()=>navigate("/support")}
+                    <ChevronRight className="text-gray-500 cursor-pointer" size={18}
+                      onClick={() => navigate("/support")}
                     />
                   </Card>
                   <div className="space-y-3 pt-4  ">

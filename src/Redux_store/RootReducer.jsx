@@ -37,7 +37,8 @@ const RootReducer = combineReducers({
     students: studentReducer,
     adminProfile: adminProfileSliceReducer,
     Employesss:EmployessSlicesReducer,
-    subj:subject_sliceReducer
+    subj:subject_sliceReducer,
+    Employesss:EmployessSlicesReducer,
 })
 
 
