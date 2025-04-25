@@ -23,6 +23,6 @@ const RootReducer = combineReducers({
     notify: notify_sliceReducer,
     attend: attendance_sliceReducer,
     login: loginSliceReducer,
-    Employesss:EmployessSlicesReducer
+    Employesss:EmployessSlicesReducer,
 })
 export default RootReducer;
