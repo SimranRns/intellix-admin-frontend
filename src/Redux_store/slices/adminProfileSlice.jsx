@@ -1,7 +1,7 @@
 // src/redux/slices/adminProfileSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-import { view_admin_profile,change_admin_password } from "../Api/adminProfile";
-import { Update_Admin, view_admin_profile } from "../Api/adminProfile";
+import { view_admin_profile, change_admin_password } from "../Api/adminProfile";
+import { Update_Admin } from "../Api/adminProfile";
 
 const adminProfileSlice = createSlice({
   name: "admin",
@@ -37,7 +37,8 @@ const adminProfileSlice = createSlice({
       })
       .addCase(change_admin_password.fulfilled, (state, action) => {
         state.loading = false;
-        state.passwordChangeSuccess = action.payload.message || "Password changed successfully.";
+        state.passwordChangeSuccess =
+          action.payload.message || "Password changed successfully.";
       })
       .addCase(change_admin_password.rejected, (state, action) => {
         state.loading = false;
@@ -54,9 +55,10 @@ const adminProfileSlice = createSlice({
       .addCase(Update_Admin.rejected, (state, action) => {
         state.loading = false;
         // Ensure the error message is available
-        state.error = action.payload?.message || "An error occurred while updating the admin";
+        state.error =
+          action.payload?.message ||
+          "An error occurred while updating the admin";
       });
-
   },
 });
 

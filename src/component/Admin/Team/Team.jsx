@@ -82,9 +82,11 @@ import {
 // Schema for the first form (Basic Details)
 const basicDetailsSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email").min(1, "Email is required"),
+  email: z
+    .string()
+    .email("Please enter a valid email")
+    .min(1, "Email is required"),
   department: z.string().min(1, "Department is required"),
-
 });
 
 // Schema for the second form (Additional Details)
@@ -133,7 +135,9 @@ const additionalDetailsSchema2 = z.object({
 });
 
 const bankDetailsSchema = z.object({
-  accountNumber: z.string().min(10, "Account Number must be at least 10 digits"),
+  accountNumber: z
+    .string()
+    .min(10, "Account Number must be at least 10 digits"),
   ifscCode: z.string().regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC Code"),
   accountHolderName: z.string().min(3, "Name should be at least 3 characters"),
 });
@@ -155,7 +159,6 @@ const bankDetailsSchema = z.object({
 //   // icon: [Clock, Logs, Logs],
 // }));
 
-
 import {
   Form,
   FormControl,
@@ -164,35 +167,47 @@ import {
   FormLabel,
   FormMessage,
 } from "../../src/components/ui/form";
-import {
-  Popover,
-  PopoverTrigger,
-} from "../../src/components/ui/popover";
+import { Popover, PopoverTrigger } from "../../src/components/ui/popover";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 
 import ThankYouCard from "../Dashboard/ThankYouCard";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import Header from "../Dashboard/Header";
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "../../src/components/ui/sheet";
-import { update_Employee_Status, GetTeam, Update_Employee, Update_Time, create_employee } from "../../../Redux_store/Api/TeamApi";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../../src/components/ui/sheet";
+import {
+  update_Employee_Status,
+  GetTeam,
+  Update_Employee,
+  Update_Time,
+  create_employee,
+} from "../../../Redux_store/Api/TeamApi";
 import { useDispatch, useSelector } from "react-redux";
-import logo from '../../../assets/Image/intellix.png'
-import toast from "react-hot-toast";
-
+import logo from "../../../assets/Image/intellix.png";
+// import alert from "react-hot-alert";
 
 const Team = ({ teacherData }) => {
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState("Newest");
-  const [selectedDepartment, setSelectedDepartment] = useState("Select Department");
+  const [selectedDepartment, setSelectedDepartment] =
+    useState("Select Department");
   const [currentPage, setCurrentPage] = useState(1);
   const [teachersPerPage, setTeachersPerPage] = useState(10);
   const [profileImg, setProfileImg] = useState("https://github.com/shadcn.png");
   const Navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [Addteacher, setTeacher] = useState(false);//first
-  const [AddDetails, setAddDetails] = useState(false);//secondd
-  const [AddBankDetails, setAddBankDetails] = useState(false);//third
-  const [AddConfrom, setAddConfrom] = useState(false);//fourth
+  const [Addteacher, setTeacher] = useState(false); //first
+  const [AddDetails, setAddDetails] = useState(false); //secondd
+  const [AddBankDetails, setAddBankDetails] = useState(false); //third
+  const [AddConfrom, setAddConfrom] = useState(false); //fourth
   const [Deleteteacher, setDelete] = useState(false);
   const [ChangeTime, setChangeTime] = useState(false);
   const [inTime, setInTime] = useState("");
@@ -203,15 +218,44 @@ const Team = ({ teacherData }) => {
   const { Teachers, loading, error } = useSelector((state) => state.team || {});
   const [date, setDate] = useState("");
   const [activePage, setActivePage] = useState("Team");
-  const { id } = useParams()
-  const [deleteemployee, setdeleteemployee] = useState(null)
+  const { id } = useParams();
+  const [deleteemployee, setdeleteemployee] = useState(null);
   const [first_name, setEmployeeName] = useState("");
-  const [updatetime, setupdatetimetime] = useState({ start_time: "", end_time: "", id: null });
+  const [updatetime, setupdatetimetime] = useState({
+    start_time: "",
+    end_time: "",
+    id: null,
+  });
 
   // console.log(updatetime);
 
   // const [joining_date, setJoiningDate] = useState("");
-  const [addemployee, setemployee] = useState({ first_name: "", highest_qualification: "", institution_name: "", contact_number: "", emergency_number: "", email: "", date_of_birth: "", residential_address: "", district: "", state: "", status: "", start_time: "", end_time: "", pincode: "", permanent_address: "", permanent_district: "", permanent_state: "", permanent_pincode: "", department: [], salary: "", joining_date: "", account_number: "", ifsc_code: "", account_holder_name: "" })
+  const [addemployee, setemployee] = useState({
+    first_name: "",
+    highest_qualification: "",
+    institution_name: "",
+    contact_number: "",
+    emergency_number: "",
+    email: "",
+    date_of_birth: "",
+    residential_address: "",
+    district: "",
+    state: "",
+    status: "",
+    start_time: "",
+    end_time: "",
+    pincode: "",
+    permanent_address: "",
+    permanent_district: "",
+    permanent_state: "",
+    permanent_pincode: "",
+    department: [],
+    salary: "",
+    joining_date: "",
+    account_number: "",
+    ifsc_code: "",
+    account_holder_name: "",
+  });
 
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const departmentList = [
@@ -233,8 +277,6 @@ const Team = ({ teacherData }) => {
     }
   };
 
-
-
   // Form instances
   const basicForm = useForm({
     resolver: zodResolver(basicDetailsSchema),
@@ -245,7 +287,6 @@ const Team = ({ teacherData }) => {
     },
   });
 
-
   useEffect(() => {
     if (selectedEmployee) {
       basicForm.reset({
@@ -255,8 +296,6 @@ const Team = ({ teacherData }) => {
       });
     }
   }, [selectedEmployee, basicForm]);
-
-
 
   const additionalForm = useForm({
     resolver: zodResolver(additionalDetailsSchema),
@@ -293,7 +332,6 @@ const Team = ({ teacherData }) => {
     },
   });
 
-
   ///////dilog function
   const main = async (e) => {
     // e.preventDefault(); // Uncomment if inside a form submit handler
@@ -316,12 +354,14 @@ const Team = ({ teacherData }) => {
     } else {
       console.log("Validation errors:", validationResult.error.format());
 
-      Object.entries(validationResult.error.format()).forEach(([key, value]) => {
-        additionalForm.setError(key, {
-          type: "manual",
-          message: value._errors?.[0] || "Invalid field",
-        });
-      });
+      Object.entries(validationResult.error.format()).forEach(
+        ([key, value]) => {
+          additionalForm.setError(key, {
+            type: "manual",
+            message: value._errors?.[0] || "Invalid field",
+          });
+        }
+      );
     }
   };
 
@@ -342,18 +382,20 @@ const Team = ({ teacherData }) => {
     if (validationResult.success) {
       console.log("Data submitted:", formData);
       additionalForm2.reset();
-      setAddDetails("")
+      setAddDetails("");
       setAddDetails(false);
       setAddBankDetails(true);
     } else {
       console.log("Validation errors:", validationResult.error.format());
 
-      Object.entries(validationResult.error.format()).forEach(([key, value]) => {
-        additionalForm2.setError(key, {
-          type: "manual",
-          message: value._errors?.[0] || "Invalid field",
-        });
-      });
+      Object.entries(validationResult.error.format()).forEach(
+        ([key, value]) => {
+          additionalForm2.setError(key, {
+            type: "manual",
+            message: value._errors?.[0] || "Invalid field",
+          });
+        }
+      );
     }
   };
   ///////////third dilog
@@ -372,18 +414,20 @@ const Team = ({ teacherData }) => {
     if (validationResult.success) {
       console.log("Data submitted:", formData);
       additionalForm3.reset();
-      setAddBankDetails("")
+      setAddBankDetails("");
       setAddBankDetails(false);
       setAddConfrom(true);
     } else {
       console.log("Validation errors:", validationResult.error.format());
 
-      Object.entries(validationResult.error.format()).forEach(([key, value]) => {
-        additionalForm3.setError(key, {
-          type: "manual",
-          message: value._errors?.[0] || "Invalid field",
-        });
-      });
+      Object.entries(validationResult.error.format()).forEach(
+        ([key, value]) => {
+          additionalForm3.setError(key, {
+            type: "manual",
+            message: value._errors?.[0] || "Invalid field",
+          });
+        }
+      );
     }
   };
 
@@ -404,7 +448,6 @@ const Team = ({ teacherData }) => {
     setAddConfrom(true);
   };
 
-
   const handleChange = (e) => {
     setInputName(e.target.value);
 
@@ -413,25 +456,22 @@ const Team = ({ teacherData }) => {
 
   const handleTimeUpdate = () => {
     if (!updatetime.id || !updatetime.start_time || !updatetime.end_time) {
-      toast.error("Please select both In and Out times.");
+      alert.error("Please select both In and Out times.");
       return;
     }
 
     dispatch(Update_Time(updatetime))
       .then(() => {
-        toast.success("Timing updated successfully!");
+        alert.success("Timing updated successfully!");
         setChangeTime(false); // ✅ CLOSES the dialog
         setupdatetimetime({ id: null, start_time: "", end_time: "" }); // reset
         setInTime("");
         setOutTime("");
       })
       .catch(() => {
-        toast.error("Failed to update timing.");
+        alert.error("Failed to update timing.");
       });
   };
-
-
-
 
   const handleBasicFormSubmit = (data) => {
     if (!selectedEmployee?.id) return;
@@ -451,14 +491,10 @@ const Team = ({ teacherData }) => {
       });
   };
 
-
-
   const handleAdditionalFormSubmit = (e) => {
-
-    e.preventDefault()
-    dispatch(create_employee())
+    e.preventDefault();
+    dispatch(create_employee());
     // console.log("Additional Form Data:", data);
-
   };
   const handleAdditionalFormSubmit2 = (data) => {
     console.log("Additional Form Data:", data);
@@ -495,13 +531,10 @@ const Team = ({ teacherData }) => {
     }
   }, [isSameAddress, residentialAddress, district, state, pincode, setValue]);
 
-
-
-
   //GetEmployee
   useEffect(() => {
-    dispatch(GetTeam({ first_name: first_name }))
-  }, [first_name])
+    dispatch(GetTeam({ first_name: first_name }));
+  }, [first_name]);
 
   const handleDelete = async () => {
     try {
@@ -514,11 +547,9 @@ const Team = ({ teacherData }) => {
         // await dispatch(GetTeam({ first_name: first_name }));
         window.location.reload();
 
-
         // Close dialog and reset state
         setdeleteemployee(null);
         setActive(false); // Close the dialog if it's open
-        
       } else {
         console.warn("No employee ID selected for deletion");
       }
@@ -527,8 +558,7 @@ const Team = ({ teacherData }) => {
     }
   };
 
-
-  console.log(addemployee)
+  console.log(addemployee);
   // if (loading) {
   //   return (
   //     <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
@@ -555,22 +585,21 @@ const Team = ({ teacherData }) => {
   const teachersData = Teachers?.result?.employees || [];
   const totalPages = Math.ceil(teachersData.length / TeachersPerPage);
   const startIndex = (currentPage - 1) * TeachersPerPage;
-  const paginatedTeachers = teachersData.slice(startIndex, startIndex + TeachersPerPage);
+  const paginatedTeachers = teachersData.slice(
+    startIndex,
+    startIndex + TeachersPerPage
+  );
 
   return (
-
-
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       {/* Pass setActivePage to Sidebar */}
       <AppSidebar />
       <SidebarInset>
         <Header />
         <main className="flex-1 overflow-auto">
-
           <div className="w-full shadow-md shadow-blue-300/30 rounded-lg px-4 sm:px-6 md:px-8 py-4">
             {/* Container flexes on lg+ screens */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-
               {/* Search Bar */}
               <div className="w-full lg:max-w-md">
                 <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full">
@@ -581,15 +610,12 @@ const Team = ({ teacherData }) => {
                     className="ml-2 w-full outline-none bg-transparent text-sm"
                     value={first_name}
                     onChange={(e) => setEmployeeName(e.target.value)}
-
-
                   />
                 </div>
               </div>
 
               {/* Buttons Grid - 3 cols on sm & md, flex on lg+ */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full lg:flex lg:items-center lg:justify-end lg:gap-4">
-
                 {/* Dropdown Menu */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -599,7 +625,6 @@ const Team = ({ teacherData }) => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
-
                     align="start"
                     className="bg-white z-[50] dark:bg-gray-800 text-gray-900 dark:text-white w-40 shadow-md rounded-md mt-2 border border-blue-300"
                   >
@@ -640,16 +665,18 @@ const Team = ({ teacherData }) => {
                 </Button>
               </div>
 
-
               {/* //First dilog */}
               <Dialog open={Addteacher} onOpenChange={setTeacher}>
                 <DialogContent
                   onPointerDownOutside={(e) => e.preventDefault()}
                   onEscapeKeyDown={(e) => e.preventDefault()}
-                  className="sm:max-w-[800px] shadow-lg p-6 rounded-lg h-[90%] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
+                  className="sm:max-w-[800px] shadow-lg p-6 rounded-lg h-[90%] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200"
+                >
                   {/* Back Arrow & Title */}
                   <div className="flex items-center mb-4">
-                    <DialogTitle className="text-center flex-1">Add Employee</DialogTitle>
+                    <DialogTitle className="text-center flex-1">
+                      Add Employee
+                    </DialogTitle>
                   </div>
                   <hr />
 
@@ -704,15 +731,16 @@ const Team = ({ teacherData }) => {
                                     // value={InputName}
                                     {...field}
                                     onChange={(e) => {
-
-                                      setemployee({ ...addemployee, first_name: e.target.value })
-                                      field.onChange(e)
+                                      setemployee({
+                                        ...addemployee,
+                                        first_name: e.target.value,
+                                      });
+                                      field.onChange(e);
                                     }}
                                     placeholder="John Doe"
                                     // Agar ye issue create kar raha hai to hata kar dekho
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                   />
-
 
                                   <span className="absolute right-4 text-gray-500">
                                     <User size={21} />
@@ -737,9 +765,11 @@ const Team = ({ teacherData }) => {
                                     placeholder="Bachelor's / Master's"
                                     {...field}
                                     onChange={(e) => {
-
-                                      setemployee({ ...addemployee, highest_qualification: e.target.value })
-                                      field.onChange(e)
+                                      setemployee({
+                                        ...addemployee,
+                                        highest_qualification: e.target.value,
+                                      });
+                                      field.onChange(e);
                                     }}
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                   />
@@ -767,9 +797,11 @@ const Team = ({ teacherData }) => {
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                     {...field}
                                     onChange={(e) => {
-
-                                      setemployee({ ...addemployee, institution_name: e.target.value })
-                                      field.onChange(e)
+                                      setemployee({
+                                        ...addemployee,
+                                        institution_name: e.target.value,
+                                      });
+                                      field.onChange(e);
                                     }}
                                   />
                                   <span className="absolute right-4 text-gray-500">
@@ -797,9 +829,11 @@ const Team = ({ teacherData }) => {
                                     placeholder="Enter Contact Number"
                                     {...field}
                                     onChange={(e) => {
-
-                                      setemployee({ ...addemployee, contact_number: e.target.value })
-                                      field.onChange(e)
+                                      setemployee({
+                                        ...addemployee,
+                                        contact_number: e.target.value,
+                                      });
+                                      field.onChange(e);
                                     }}
                                   />
                                   <span className="absolute right-4 text-gray-500">
@@ -827,9 +861,11 @@ const Team = ({ teacherData }) => {
                                     placeholder="Enter Emergency Number"
                                     {...field}
                                     onChange={(e) => {
-
-                                      setemployee({ ...addemployee, emergency_number: e.target.value })
-                                      field.onChange(e)
+                                      setemployee({
+                                        ...addemployee,
+                                        emergency_number: e.target.value,
+                                      });
+                                      field.onChange(e);
                                     }}
                                   />
                                   <span className="absolute right-4 text-gray-500">
@@ -853,14 +889,15 @@ const Team = ({ teacherData }) => {
                                 <div className="relative flex items-center">
                                   <Input
                                     type="email"
-
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                     placeholder="Enter Email"
                                     {...field}
                                     onChange={(e) => {
-
-                                      setemployee({ ...addemployee, email: e.target.value })
-                                      field.onChange(e)
+                                      setemployee({
+                                        ...addemployee,
+                                        email: e.target.value,
+                                      });
+                                      field.onChange(e);
                                     }}
                                   />
                                   <span className="absolute right-4 text-gray-500">
@@ -890,9 +927,11 @@ const Team = ({ teacherData }) => {
                                     placeholder="In Hand Salary"
                                     {...field}
                                     onChange={(e) => {
-
-                                      setemployee({ ...addemployee, salary: parseInt(e.target.value) })
-                                      field.onChange(e)
+                                      setemployee({
+                                        ...addemployee,
+                                        salary: parseInt(e.target.value),
+                                      });
+                                      field.onChange(e);
                                     }}
                                   />
                                   <span className="absolute right-4 text-gray-500">
@@ -927,9 +966,14 @@ const Team = ({ teacherData }) => {
                                         }}
                                       >
                                         {field.value ? (
-                                          format(new Date(field.value), "yyyy-MM-dd")
+                                          format(
+                                            new Date(field.value),
+                                            "yyyy-MM-dd"
+                                          )
                                         ) : (
-                                          <span className="text-gray-500">Select Joining Date</span>
+                                          <span className="text-gray-500">
+                                            Select Joining Date
+                                          </span>
                                         )}
                                         <CalendarIcon className="h-5 w-5" />
                                       </Button>
@@ -941,13 +985,22 @@ const Team = ({ teacherData }) => {
                                     ref={inputRef}
                                     type="date"
                                     onChange={(e) => {
-
-                                      setemployee({ ...addemployee, joining_date: e.target.value })
-                                      field.onChange(e)
+                                      setemployee({
+                                        ...addemployee,
+                                        joining_date: e.target.value,
+                                      });
+                                      field.onChange(e);
                                     }}
                                     className="opacity-0 cursor-pointer"
-                                    value={field.value ? format(new Date(field.value), "yyyy-MM-dd") : ""}
-                                  // onChange={(e) => field.onChange(e.target.value)}
+                                    value={
+                                      field.value
+                                        ? format(
+                                            new Date(field.value),
+                                            "yyyy-MM-dd"
+                                          )
+                                        : ""
+                                    }
+                                    // onChange={(e) => field.onChange(e.target.value)}
                                   />
                                 </Popover>
 
@@ -967,7 +1020,6 @@ const Team = ({ teacherData }) => {
                         >
                           Save
                         </Button>
-
                       </div>
                     </form>
                   </Form>
@@ -979,7 +1031,8 @@ const Team = ({ teacherData }) => {
                 <DialogContent
                   onPointerDownOutside={(e) => e.preventDefault()}
                   onEscapeKeyDown={(e) => e.preventDefault()}
-                  className="sm:max-w-[800px] shadow-lg p-6 rounded-lg h-[90%] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
+                  className="sm:max-w-[800px] shadow-lg p-6 rounded-lg h-[90%] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200"
+                >
                   {/* Back Arrow & Title */}
                   <div className="flex items-center mb-4">
                     <button
@@ -987,14 +1040,15 @@ const Team = ({ teacherData }) => {
                       onClick={(e) => {
                         e.stopPropagation(); // Prevents triggering parent dialogs
                         setAddDetails(false);
-                        setTeacher(true)
-
+                        setTeacher(true);
                       }}
                       className="text-gray-600 hover:text-gray-800"
                     >
                       <ArrowLeft size={24} />
                     </button>
-                    <DialogTitle className="text-center flex-1">Access Control Details</DialogTitle>
+                    <DialogTitle className="text-center flex-1">
+                      Access Control Details
+                    </DialogTitle>
                   </div>
                   <hr />
 
@@ -1020,9 +1074,11 @@ const Team = ({ teacherData }) => {
                                     placeholder="Enter Residential Address"
                                     {...field}
                                     onChange={(e) => {
-
-                                      setemployee({ ...addemployee, residential_address: e.target.value })
-                                      field.onChange(e)
+                                      setemployee({
+                                        ...addemployee,
+                                        residential_address: e.target.value,
+                                      });
+                                      field.onChange(e);
                                     }}
                                     type="String"
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
@@ -1049,9 +1105,11 @@ const Team = ({ teacherData }) => {
                                     placeholder="Enter District Name"
                                     {...field}
                                     onChange={(e) => {
-
-                                      setemployee({ ...addemployee, district: e.target.value })
-                                      field.onChange(e)
+                                      setemployee({
+                                        ...addemployee,
+                                        district: e.target.value,
+                                      });
+                                      field.onChange(e);
                                     }}
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                   />
@@ -1077,9 +1135,11 @@ const Team = ({ teacherData }) => {
                                     placeholder="Enter State Name"
                                     {...field}
                                     onChange={(e) => {
-
-                                      setemployee({ ...addemployee, state: e.target.value })
-                                      field.onChange(e)
+                                      setemployee({
+                                        ...addemployee,
+                                        state: e.target.value,
+                                      });
+                                      field.onChange(e);
                                     }}
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                   />
@@ -1105,9 +1165,11 @@ const Team = ({ teacherData }) => {
                                     placeholder="Enter Pincode "
                                     {...field}
                                     onChange={(e) => {
-
-                                      setemployee({ ...addemployee, pincode: e.target.value })
-                                      field.onChange(e)
+                                      setemployee({
+                                        ...addemployee,
+                                        pincode: e.target.value,
+                                      });
+                                      field.onChange(e);
                                     }}
                                     type="number"
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
@@ -1164,9 +1226,11 @@ const Team = ({ teacherData }) => {
                                     placeholder="Enter Permanent Address"
                                     {...field}
                                     onChange={(e) => {
-
-                                      setemployee({ ...addemployee, permanent_address: e.target.value })
-                                      field.onChange(e)
+                                      setemployee({
+                                        ...addemployee,
+                                        permanent_address: e.target.value,
+                                      });
+                                      field.onChange(e);
                                     }}
                                     disabled={isSameAddress} // Disable if checkbox is checked
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
@@ -1192,9 +1256,11 @@ const Team = ({ teacherData }) => {
                                     placeholder="Enter District Name"
                                     {...field}
                                     onChange={(e) => {
-
-                                      setemployee({ ...addemployee, permanent_district: e.target.value })
-                                      field.onChange(e)
+                                      setemployee({
+                                        ...addemployee,
+                                        permanent_district: e.target.value,
+                                      });
+                                      field.onChange(e);
                                     }}
                                     disabled={isSameAddress}
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
@@ -1220,9 +1286,11 @@ const Team = ({ teacherData }) => {
                                     placeholder="Enter State Name"
                                     {...field}
                                     onChange={(e) => {
-
-                                      setemployee({ ...addemployee, permanent_state: e.target.value })
-                                      field.onChange(e)
+                                      setemployee({
+                                        ...addemployee,
+                                        permanent_state: e.target.value,
+                                      });
+                                      field.onChange(e);
                                     }}
                                     disabled={isSameAddress}
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
@@ -1248,9 +1316,11 @@ const Team = ({ teacherData }) => {
                                     placeholder="Enter Pincode"
                                     {...field}
                                     onChange={(e) => {
-
-                                      setemployee({ ...addemployee, permanent_pincode: e.target.value })
-                                      field.onChange(e)
+                                      setemployee({
+                                        ...addemployee,
+                                        permanent_pincode: e.target.value,
+                                      });
+                                      field.onChange(e);
                                     }}
                                     disabled={isSameAddress}
                                     type="number"
@@ -1286,8 +1356,7 @@ const Team = ({ teacherData }) => {
                                         className="w-full border border-blue-300 rounded-xl p-5 shadow-lg py-2 focus:ring-1 focus:ring-blue-500 font-sm flex items-center justify-between"
                                       >
                                         <span className="text-gray-500">
-                                          {field.value ||
-                                            "Select Department"}
+                                          {field.value || "Select Department"}
                                         </span>
                                         <ChevronDown
                                           size={16}
@@ -1300,23 +1369,22 @@ const Team = ({ teacherData }) => {
                                       align="start"
                                       className="max-h-[20vh] overflow-y-auto w-[44vh] shadow-md rounded-md mt-2 border border-gray-300 "
                                     >
-                                      {departmentList?.map(
-                                        (dept, index) => (
-                                          <DropdownMenuItem
-                                            key={index}
-                                            onClick={(e) => {
-                                              field.onChange(dept);
-                                              setemployee({ ...addemployee, department: department.push(dept) })
-                                              setSelectedDepartment(
-                                                dept
-                                              );
-                                            }}
-                                            className="cursor-pointer px-4 py-2 hover:bg-blue-600 hover:text-white bg-white text-gray-800"
-                                          >
-                                            {dept}
-                                          </DropdownMenuItem>
-                                        )
-                                      )}
+                                      {departmentList?.map((dept, index) => (
+                                        <DropdownMenuItem
+                                          key={index}
+                                          onClick={(e) => {
+                                            field.onChange(dept);
+                                            setemployee({
+                                              ...addemployee,
+                                              department: department.push(dept),
+                                            });
+                                            setSelectedDepartment(dept);
+                                          }}
+                                          className="cursor-pointer px-4 py-2 hover:bg-blue-600 hover:text-white bg-white text-gray-800"
+                                        >
+                                          {dept}
+                                        </DropdownMenuItem>
+                                      ))}
                                     </DropdownMenuContent>
                                   </DropdownMenu>
                                 </div>
@@ -1332,8 +1400,7 @@ const Team = ({ teacherData }) => {
                           render={({ field }) => (
                             <FormItem className="mt-1">
                               <FormLabel className="text-md font-semibold text-gray-800">
-                                Add as a Teacher, Professor, or Academic
-                                Staff
+                                Add as a Teacher, Professor, or Academic Staff
                               </FormLabel>
                               <div className="flex items-center space-x-3 mt-2 pt-2">
                                 <Checkbox
@@ -1348,8 +1415,7 @@ const Team = ({ teacherData }) => {
                                   htmlFor="isTeacher"
                                   className="text-gray-500 text-sm sm:text-sm"
                                 >
-                                  Add as a Teacher/Professor or Academic
-                                  Staff
+                                  Add as a Teacher/Professor or Academic Staff
                                 </Label>
                               </div>
                               <FormMessage />
@@ -1379,414 +1445,467 @@ const Team = ({ teacherData }) => {
                 <DialogContent
                   onPointerDownOutside={(e) => e.preventDefault()}
                   onEscapeKeyDown={(e) => e.preventDefault()}
-                  className="sm:max-w-[800px] shadow-lg p-6 rounded-lg overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200">
-
+                  className="sm:max-w-[800px] shadow-lg p-6 rounded-lg overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200"
+                >
                   {/* Back Arrow & Title */}
                   <div className="flex items-center mb-4">
                     <button
-                      onClick={() => { setAddBankDetails(false); setAddDetails(true) }}
+                      onClick={() => {
+                        setAddBankDetails(false);
+                        setAddDetails(true);
+                      }}
                       className="text-gray-600 hover:text-gray-800"
                     >
                       <ArrowLeft size={24} />
                     </button>
-                    <DialogTitle className="text-center flex-1">Bank Account Details</DialogTitle>
+                    <DialogTitle className="text-center flex-1">
+                      Bank Account Details
+                    </DialogTitle>
                   </div>
 
                   <hr />
 
                   <Form {...additionalForm3}>
-                    <form onSubmit={additionalForm3.handleSubmit(handleAdditionalFormSubmit3)} className="space-y-6">
-
+                    <form
+                      onSubmit={additionalForm3.handleSubmit(
+                        handleAdditionalFormSubmit3
+                      )}
+                      className="space-y-6"
+                    >
                       {/* Two-Column Grid Layout */}
                       <div className="grid grid-cols-1 sm:grid-cols-1 gap-6">
-
                         {/* Account Number */}
-                        <FormField control={additionalForm3.control} name="accountNumber" render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Enter Bank Account Number</FormLabel>
-                            <FormControl>
-                              <div className="relative flex items-center">
-                                <Input placeholder="Enter Account Number" {...field}
-                                  onChange={(e) => {
-
-                                    setemployee({ ...addemployee, account_number: e.target.value })
-                                    field.onChange(e)
-                                  }}
-                                  type="text" className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )} />
+                        <FormField
+                          control={additionalForm3.control}
+                          name="accountNumber"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Enter Bank Account Number</FormLabel>
+                              <FormControl>
+                                <div className="relative flex items-center">
+                                  <Input
+                                    placeholder="Enter Account Number"
+                                    {...field}
+                                    onChange={(e) => {
+                                      setemployee({
+                                        ...addemployee,
+                                        account_number: e.target.value,
+                                      });
+                                      field.onChange(e);
+                                    }}
+                                    type="text"
+                                    className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
                         {/* IFSC Code */}
-                        <FormField control={additionalForm3.control} name="ifscCode" render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Enter IFSC Code</FormLabel>
-                            <FormControl>
-                              <div className="relative flex items-center">
-                                <Input placeholder="Enter Bank IFSC Code" {...field}
-                                  onChange={(e) => {
-
-                                    setemployee({ ...addemployee, ifsc_code: e.target.value })
-                                    field.onChange(e)
-                                  }}
-                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )} />
+                        <FormField
+                          control={additionalForm3.control}
+                          name="ifscCode"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Enter IFSC Code</FormLabel>
+                              <FormControl>
+                                <div className="relative flex items-center">
+                                  <Input
+                                    placeholder="Enter Bank IFSC Code"
+                                    {...field}
+                                    onChange={(e) => {
+                                      setemployee({
+                                        ...addemployee,
+                                        ifsc_code: e.target.value,
+                                      });
+                                      field.onChange(e);
+                                    }}
+                                    className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
                         {/* Account Holder Name */}
-                        <FormField control={additionalForm3.control} name="accountHolderName" render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Enter Account Holder Name</FormLabel>
-                            <FormControl>
-                              <div className="relative flex items-center">
-                                <Input placeholder="Enter Bank Account Holder Name" {...field}
-                                  onChange={(e) => {
-
-                                    setemployee({ ...addemployee, account_holder_name: e.target.value })
-                                    field.onChange(e)
-                                  }}
-                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )} />
-
+                        <FormField
+                          control={additionalForm3.control}
+                          name="accountHolderName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Enter Account Holder Name</FormLabel>
+                              <FormControl>
+                                <div className="relative flex items-center">
+                                  <Input
+                                    placeholder="Enter Bank Account Holder Name"
+                                    {...field}
+                                    onChange={(e) => {
+                                      setemployee({
+                                        ...addemployee,
+                                        account_holder_name: e.target.value,
+                                      });
+                                      field.onChange(e);
+                                    }}
+                                    className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
 
                       {/* Submit Button */}
                       <div className="flex justify-end">
                         <Button
-                          onClick={(e) => { mainthird(e), dispatch(create_employee(addemployee)) }}
-
-                          type="submit" className="bg-indigo-600 text-white px-9 py-2 rounded-lg hover:bg-indigo-700">
+                          onClick={(e) => {
+                            mainthird(e),
+                              dispatch(create_employee(addemployee));
+                          }}
+                          type="submit"
+                          className="bg-indigo-600 text-white px-9 py-2 rounded-lg hover:bg-indigo-700"
+                        >
                           Save
                         </Button>
                       </div>
-
                     </form>
                   </Form>
-
                 </DialogContent>
               </Dialog>
-
-
-
             </div>
           </div>
 
           {/* Teacher Cards Grid */}
           {loading ? (
             <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
-                   <div className="relative flex justify-center items-center">
-                     <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
-                     <img
-                       src={logo}
-                       alt="Loading"
-                       className="rounded-full h-28 w-28"
-                     />
-                   </div>
-                 </div>
+              <div className="relative flex justify-center items-center">
+                <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+                <img
+                  src={logo}
+                  alt="Loading"
+                  className="rounded-full h-28 w-28"
+                />
+              </div>
+            </div>
           ) : error ? (
             <div>Error: {error}</div>
           ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
-            {paginatedTeachers?.map((teacher) => (
-              <Card
-                key={teacher.id}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
+              {paginatedTeachers?.map((teacher) => (
+                <Card
+                  key={teacher.id}
+                  className="w-full max-w-[350px] shadow-sm shadow-blue-500/50 rounded-xl p-6 relative mx-auto"
+                >
+                  {/* Options Menu */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="absolute top-4 right-4 bg-blue-100 p-2 rounded-lg shadow-sm hover:bg-gray-200">
+                        <Ellipsis className="text-gray-500" size={24} />
+                      </button>
+                    </DropdownMenuTrigger>
 
-
-
-                className="w-full max-w-[350px] shadow-sm shadow-blue-500/50 rounded-xl p-6 relative mx-auto"
-              >
-                {/* Options Menu */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button className="absolute top-4 right-4 bg-blue-100 p-2 rounded-lg shadow-sm hover:bg-gray-200">
-                      <Ellipsis className="text-gray-500" size={24} />
-                    </button>
-                  </DropdownMenuTrigger>
-
-                  <DropdownMenuContent
-                    align="end"
-                    className="w-30 bg-gray-100 mt-1 shadow-md rounded-md"
-                  >
-                    <DropdownMenuItem
-                      className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center"
-                      onClick={() => {
-                        setOpen(true);
-                        setSelectedEmployee(teacher); // full data object
-                      }}
+                    <DropdownMenuContent
+                      align="end"
+                      className="w-30 bg-gray-100 mt-1 shadow-md rounded-md"
                     >
-                      Edit
-                    </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center"
+                        onClick={() => {
+                          setOpen(true);
+                          setSelectedEmployee(teacher); // full data object
+                        }}
+                      >
+                        Edit
+                      </DropdownMenuItem>
 
-                    <DropdownMenuItem className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center">
-                      Assigns
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center">
-                      +Assign Task
-                    </DropdownMenuItem>
+                      <DropdownMenuItem className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center">
+                        Assigns
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center">
+                        +Assign Task
+                      </DropdownMenuItem>
 
-                    <DropdownMenuItem
-                      className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center"
-                      onClick={() => {
-                        setChangeTime(true);
+                      <DropdownMenuItem
+                        className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center"
+                        onClick={() => {
+                          setChangeTime(true);
 
-                        // Pre-fill the timing values from teacher data
-                        setupdatetimetime({
-                          id: teacher.id,
-                          start_time: teacher.start_time || "",
-                          end_time: teacher.end_time || "",
-                        });
+                          // Pre-fill the timing values from teacher data
+                          setupdatetimetime({
+                            id: teacher.id,
+                            start_time: teacher.start_time || "",
+                            end_time: teacher.end_time || "",
+                          });
 
-                        // Set the TimePicker values
-                        setInTime(teacher.start_time || "");
-                        setOutTime(teacher.end_time || "");
-                      }}
+                          // Set the TimePicker values
+                          setInTime(teacher.start_time || "");
+                          setOutTime(teacher.end_time || "");
+                        }}
+                      >
+                        Change Timing
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setdeleteemployee(teacher.id), setDelete(true);
+                        }}
+                        className="cursor-pointer text-red-500 hover:bg-gray-200 px-4 py-2 text-center"
+                      >
+                        Deactivated
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  {/* Change Timing Dialog */}
+                  <Dialog open={ChangeTime} onOpenChange={setChangeTime}>
+                    <DialogContent
+                      onPointerDownOutside={(e) => e.preventDefault()}
+                      onEscapeKeyDown={(e) => e.preventDefault()}
+                      className="sm:max-w-[425px] shadow-lg p-6 rounded-lg"
                     >
-                      Change Timing
-                    </DropdownMenuItem>
+                      <DialogHeader>
+                        <DialogTitle className="text-center text-[29px]">
+                          Change Time
+                        </DialogTitle>
+                        <DialogDescription className="text-center text-md">
+                          Are you sure you want to change this employee's
+                          timing?
+                        </DialogDescription>
+                      </DialogHeader>
 
-
-                    <DropdownMenuItem
-                      onClick={() => { setdeleteemployee(teacher.id), setDelete(true) }}
-                      className="cursor-pointer text-red-500 hover:bg-gray-200 px-4 py-2 text-center"
-                    >
-                      Deactivated
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                {/* Change Timing Dialog */}
-                <Dialog open={ChangeTime} onOpenChange={setChangeTime}>
-                  <DialogContent
-                    onPointerDownOutside={(e) => e.preventDefault()}
-                    onEscapeKeyDown={(e) => e.preventDefault()}
-                    className="sm:max-w-[425px] shadow-lg p-6 rounded-lg"
-                  >
-                    <DialogHeader>
-                      <DialogTitle className="text-center text-[29px]">Change Time</DialogTitle>
-                      <DialogDescription className="text-center text-md">
-                        Are you sure you want to change this employee's timing?
-                      </DialogDescription>
-                    </DialogHeader>
-
-                    <hr className="mt-5" />
-                    <div className="flex justify-center">
-                      <form onSubmit={handleTimeUpdate} className="space-y-4 w-full">
-                        <div className="flex justify-between items-center w-full">
-                          <div className="w-1/2">
-                            <TimePicker
-                              label="In Time"
-                              selectedTime={inTime}
-                              setSelectedTime={(val) => {
-                                setInTime(val);
-                                setupdatetimetime((prev) => ({ ...prev, start_time: val }));
-                              }}
-                            />
-                          </div>
-                          <div className="w-1/2">
-                            <TimePicker
-                              label="Out Time"
-                              selectedTime={outTime}
-                              setSelectedTime={(val) => {
-                                setOutTime(val);
-                                setupdatetimetime((prev) => ({ ...prev, end_time: val }));
-                              }}
-                            />
-                          </div>
-                        </div>
-
-                        {/* ✅ This button submits the form */}
-                        <Button
-                          onClick={() => {setChangeTime(false),setAddConfrom(true)}}
-                          disabled={!inTime || !outTime}
-                          className="bg-indigo-500 text-white px-5 w-full py-2 rounded-lg hover:bg-indigo-600 disabled:opacity-50"
+                      <hr className="mt-5" />
+                      <div className="flex justify-center">
+                        <form
+                          onSubmit={handleTimeUpdate}
+                          className="space-y-4 w-full"
                         >
-                          Proceed
-                        </Button>
+                          <div className="flex justify-between items-center w-full">
+                            <div className="w-1/2">
+                              <TimePicker
+                                label="In Time"
+                                selectedTime={inTime}
+                                setSelectedTime={(val) => {
+                                  setInTime(val);
+                                  setupdatetimetime((prev) => ({
+                                    ...prev,
+                                    start_time: val,
+                                  }));
+                                }}
+                              />
+                            </div>
+                            <div className="w-1/2">
+                              <TimePicker
+                                label="Out Time"
+                                selectedTime={outTime}
+                                setSelectedTime={(val) => {
+                                  setOutTime(val);
+                                  setupdatetimetime((prev) => ({
+                                    ...prev,
+                                    end_time: val,
+                                  }));
+                                }}
+                              />
+                            </div>
+                          </div>
 
-
-                      </form>
-
-                    </div>
-                  </DialogContent>
-                </Dialog>
-
-
-                {/* Delete Dialog */}
-                <Dialog open={Deleteteacher} onOpenChange={setDelete}>
-                  <DialogContent
-                    onPointerDownOutside={(e) => e.preventDefault()}
-                    onEscapeKeyDown={(e) => e.preventDefault()}
-                    className="sm:max-w-[425px] shadow-lg p-6 rounded-lg"
-                  >
-                    <DialogHeader>
-                      <DialogTitle className="text-center text-[29px]">Deactivate Employee</DialogTitle>
-                      <DialogDescription className="text-center text-md">
-                        Are you sure you want to deactivate this employee?
-                      </DialogDescription>
-                    </DialogHeader>
-                    <hr className="mt-5" />
-                    <div className="flex justify-center">
-                      <Button
-                        onClick={handleDelete}
-                        type="submit"
-                        className="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700"
-                      >
-                        Deactivate Employee
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-
-                {/* Edit Dialog */}
-                <Dialog open={open} onOpenChange={setOpen}>
-                  <DialogContent
-                    onPointerDownOutside={(e) => e.preventDefault()}
-                    onEscapeKeyDown={(e) => e.preventDefault()}
-                    className="sm:max-w-[425px] shadow-lg p-6 rounded-lg"
-                  >
-                    <DialogHeader>
-                      <DialogTitle>Edit Task</DialogTitle>
-                    </DialogHeader>
-                    <hr />
-                    <Form {...basicForm}>
-                      <form
-                        onSubmit={basicForm.handleSubmit(handleBasicFormSubmit)}
-                        className="space-y-6"
-                      >
-                        {/* Name Field */}
-                        <FormField
-                          control={basicForm.control}
-                          name="name"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Name</FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="Munaroh Steffani"
-                                  {...field}
-                                  className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        {/* Email Field */}
-                        <FormField
-                          control={basicForm.control}
-                          name="email"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Email</FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="teacher@example.com"
-                                  {...field}
-                                  className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        {/* Department Field */}
-                        <FormField
-                          control={basicForm.control}
-                          name="department"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Department</FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="Mathematics Department"
-                                  {...field}
-                                  className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <div className="flex justify-between">
+                          {/* ✅ This button submits the form */}
                           <Button
-                          onClick={()=>{setAddConfrom(true)}}
-                            type="submit"
-                            className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700"
+                            onClick={() => {
+                              setChangeTime(false), setAddConfrom(true);
+                            }}
+                            disabled={!inTime || !outTime}
+                            className="bg-indigo-500 text-white px-5 w-full py-2 rounded-lg hover:bg-indigo-600 disabled:opacity-50"
                           >
-                            Save
+                            Proceed
                           </Button>
-                        </div>
-                      </form>
-                    </Form>
-                  </DialogContent>
-                </Dialog>
+                        </form>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
 
+                  {/* Delete Dialog */}
+                  <Dialog open={Deleteteacher} onOpenChange={setDelete}>
+                    <DialogContent
+                      onPointerDownOutside={(e) => e.preventDefault()}
+                      onEscapeKeyDown={(e) => e.preventDefault()}
+                      className="sm:max-w-[425px] shadow-lg p-6 rounded-lg"
+                    >
+                      <DialogHeader>
+                        <DialogTitle className="text-center text-[29px]">
+                          Deactivate Employee
+                        </DialogTitle>
+                        <DialogDescription className="text-center text-md">
+                          Are you sure you want to deactivate this employee?
+                        </DialogDescription>
+                      </DialogHeader>
+                      <hr className="mt-5" />
+                      <div className="flex justify-center">
+                        <Button
+                          onClick={handleDelete}
+                          type="submit"
+                          className="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700"
+                        >
+                          Deactivate Employee
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
 
-                {/* Card Content */}
-                <CardHeader className="flex flex-col items-center text-center">
-                  <Avatar className="shadow-md w-24 h-24 rounded-full">
-                    <AvatarImage
-                      className="rounded-full border-4 border-blue-600"
-                      src={teacher.image || "https://github.com/shadcn.png"}
-                      alt={teacher.first_name || "teacher"}
-                    />
-                  </Avatar>
-                  <CardTitle className="mt-4 text-xl font-bold">{teacher.first_name}</CardTitle>
-                  <CardDescription>{teacher.department_names}</CardDescription>
-                </CardHeader>
+                  {/* Edit Dialog */}
+                  <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogContent
+                      onPointerDownOutside={(e) => e.preventDefault()}
+                      onEscapeKeyDown={(e) => e.preventDefault()}
+                      className="sm:max-w-[425px] shadow-lg p-6 rounded-lg"
+                    >
+                      <DialogHeader>
+                        <DialogTitle>Edit Task</DialogTitle>
+                      </DialogHeader>
+                      <hr />
+                      <Form {...basicForm}>
+                        <form
+                          onSubmit={basicForm.handleSubmit(
+                            handleBasicFormSubmit
+                          )}
+                          className="space-y-6"
+                        >
+                          {/* Name Field */}
+                          <FormField
+                            control={basicForm.control}
+                            name="name"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Name</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="Munaroh Steffani"
+                                    {...field}
+                                    className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                <CardContent className="text-center">
-                  <div className="flex flex-wrap justify-center gap-2">
-                    <span className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      {new Date(teacher?.joining_date).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric"
-                      })}
-                    </span>
-                    <span className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1">
-                      <UserPlus className="w-4 h-4" />
-                      Assigned {teacher?.assigned_count ?? "10"}
-                    </span>
+                          {/* Email Field */}
+                          <FormField
+                            control={basicForm.control}
+                            name="email"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Email</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="teacher@example.com"
+                                    {...field}
+                                    className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                    <span className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1">
-                      <CheckCircle className="w-4 h-4" />
-                      Completed {teacher?.completed_count ?? "10"}
-                    </span>
+                          {/* Department Field */}
+                          <FormField
+                            control={basicForm.control}
+                            name="department"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Department</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="Mathematics Department"
+                                    {...field}
+                                    className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                  </div>
-                </CardContent>
+                          <div className="flex justify-between">
+                            <Button
+                              onClick={() => {
+                                setAddConfrom(true);
+                              }}
+                              type="submit"
+                              className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700"
+                            >
+                              Save
+                            </Button>
+                          </div>
+                        </form>
+                      </Form>
+                    </DialogContent>
+                  </Dialog>
 
-                <CardFooter className="flex justify-center gap-3 mt-5">
-                  <Button
-                    className="bg-indigo-600 text-xs text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-indigo-700 transition-all"
-                    onClick={() => Navigate(`/View-Profile/${teacher.id}`)}
-                  >
-                    <User size={18} /> Profile
-                  </Button>
-                  <Button
-                    onClick={() => Navigate("/manage_salary")}
-                    className="bg-orange-500 text-xs text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-orange-600 transition-all"
-                  >
-                    <HandCoins size={18} /> Manage Salary
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
+                  {/* Card Content */}
+                  <CardHeader className="flex flex-col items-center text-center">
+                    <Avatar className="shadow-md w-24 h-24 rounded-full">
+                      <AvatarImage
+                        className="rounded-full border-4 border-blue-600"
+                        src={teacher.image || "https://github.com/shadcn.png"}
+                        alt={teacher.first_name || "teacher"}
+                      />
+                    </Avatar>
+                    <CardTitle className="mt-4 text-xl font-bold">
+                      {teacher.first_name}
+                    </CardTitle>
+                    <CardDescription>
+                      {teacher.department_names}
+                    </CardDescription>
+                  </CardHeader>
+
+                  <CardContent className="text-center">
+                    <div className="flex flex-wrap justify-center gap-2">
+                      <span className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1">
+                        <Clock className="w-4 h-4" />
+                        {new Date(teacher?.joining_date).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }
+                        )}
+                      </span>
+                      <span className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1">
+                        <UserPlus className="w-4 h-4" />
+                        Assigned {teacher?.assigned_count ?? "10"}
+                      </span>
+
+                      <span className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1">
+                        <CheckCircle className="w-4 h-4" />
+                        Completed {teacher?.completed_count ?? "10"}
+                      </span>
+                    </div>
+                  </CardContent>
+
+                  <CardFooter className="flex justify-center gap-3 mt-5">
+                    <Button
+                      className="bg-indigo-600 text-xs text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-indigo-700 transition-all"
+                      onClick={() => Navigate(`/View-Profile/${teacher.id}`)}
+                    >
+                      <User size={18} /> Profile
+                    </Button>
+                    <Button
+                      onClick={() => Navigate("/manage_salary")}
+                      className="bg-orange-500 text-xs text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-orange-600 transition-all"
+                    >
+                      <HandCoins size={18} /> Manage Salary
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
           )}
 
           {/* confirm dilog */}
@@ -1794,7 +1913,8 @@ const Team = ({ teacherData }) => {
             <DialogContent
               onPointerDownOutside={(e) => e.preventDefault()}
               onEscapeKeyDown={(e) => e.preventDefault()}
-              className="w-full max-w-[90vw] sm:max-w-[400px] p-6 rounded-lg">
+              className="w-full max-w-[90vw] sm:max-w-[400px] p-6 rounded-lg"
+            >
               <ThankYouCard />
               {/* Dialog Footer */}
               <DialogFooter className="flex justify-end gap-3">
@@ -1806,7 +1926,9 @@ const Team = ({ teacherData }) => {
                   Cancel
                 </Button>
                 <Button
-                  onClick={async () => { setAddConfrom(false) }} // Handle form submission & dialog close
+                  onClick={async () => {
+                    setAddConfrom(false);
+                  }} // Handle form submission & dialog close
                   className="w-full sm:w-auto mt-4 bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md flex items-center shadow-md transition-all"
                 >
                   Confirm
@@ -1830,10 +1952,11 @@ const Team = ({ teacherData }) => {
                   <PaginationLink
                     href="#"
                     onClick={() => setCurrentPage(i + 1)}
-                    className={`px-4 py-2 rounded-md ${currentPage === i + 1
-                      ? "bg-blue-600 text-white"
-                      : "hover:bg-blue-500  hover:text-white"
-                      }`}
+                    className={`px-4 py-2 rounded-md ${
+                      currentPage === i + 1
+                        ? "bg-blue-600 text-white"
+                        : "hover:bg-blue-500  hover:text-white"
+                    }`}
                   >
                     {i + 1}
                   </PaginationLink>
@@ -1850,12 +1973,9 @@ const Team = ({ teacherData }) => {
               </PaginationItem>
             </PaginationContent>
           </Pagination>
-
         </main>
-
       </SidebarInset>
     </SidebarProvider>
-
   );
 };
 
