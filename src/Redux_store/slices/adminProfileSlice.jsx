@@ -1,6 +1,6 @@
 // src/redux/slices/adminProfileSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-import { view_admin_profile } from "../Api/adminProfile";
+import { Update_Admin, view_admin_profile } from "../Api/adminProfile";
 
 const adminProfileSlice = createSlice({
   name: "adminProfile",
@@ -12,6 +12,7 @@ const adminProfileSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      //Get_Admin
       .addCase(view_admin_profile.pending, (state) => {
         state.loading = true;
       })
@@ -22,7 +23,23 @@ const adminProfileSlice = createSlice({
       .addCase(view_admin_profile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+
+      //Update_Admin
+      .addCase(Update_Admin.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(Update_Admin.fulfilled, (state, action) => {
+        state.loading = false;
+        // Assuming `state.profile` is a single profile object, replace it directly with the updated payload
+        state.profile = action.payload;
+      })
+      .addCase(Update_Admin.rejected, (state, action) => {
+        state.loading = false;
+        // Ensure the error message is available
+        state.error = action.payload?.message || "An error occurred while updating the admin";
       });
+
   },
 });
 

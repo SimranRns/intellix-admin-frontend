@@ -29,6 +29,8 @@ import {
   MapPinHouse,
   Banknote,
   ArrowLeft,
+  UserPlus,
+  CheckCircle,
 } from "lucide-react";
 import {
   SidebarInset,
@@ -80,8 +82,9 @@ import {
 // Schema for the first form (Basic Details)
 const basicDetailsSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  post: z.string().min(2, "Post must be at least 2 characters"),
-  subject: z.string().min(2, "Subject must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email").min(1, "Email is required"),
+  department: z.string().min(1, "Department is required"),
+
 });
 
 // Schema for the second form (Additional Details)
@@ -96,7 +99,7 @@ const additionalDetailsSchema = z.object({
   emergencyContact: z
     .string()
     .regex(/^\d{10}$/, "Enter a valid 10-digit emergency number"),
-  Salary: z.number().min(4, "Enter a valid amount"),
+  Salary: z.string().min(4, "Enter a valid amount"),
   JoiningDate: z.coerce.date().refine((date) => !isNaN(date.getTime()), {
     message: "Invalid date format",
   }),
@@ -171,9 +174,10 @@ import ThankYouCard from "../Dashboard/ThankYouCard";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import Header from "../Dashboard/Header";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "../../src/components/ui/sheet";
-import { DeleteEmployee, GetTeam, create_employee } from "../../../Redux_store/Api/TeamApi";
+import { update_Employee_Status, GetTeam, Update_Employee, Update_Time, create_employee } from "../../../Redux_store/Api/TeamApi";
 import { useDispatch, useSelector } from "react-redux";
 import logo from '../../../assets/Image/intellix.png'
+import toast from "react-hot-toast";
 
 
 const Team = ({ teacherData }) => {
@@ -202,9 +206,14 @@ const Team = ({ teacherData }) => {
   const { id } = useParams()
   const [deleteemployee, setdeleteemployee] = useState(null)
   const [first_name, setEmployeeName] = useState("");
+  const [updatetime, setupdatetimetime] = useState({ start_time: "", end_time: "", id: null });
+
+  // console.log(updatetime);
+
   // const [joining_date, setJoiningDate] = useState("");
   const [addemployee, setemployee] = useState({ first_name: "", highest_qualification: "", institution_name: "", contact_number: "", emergency_number: "", email: "", date_of_birth: "", residential_address: "", district: "", state: "", status: "", start_time: "", end_time: "", pincode: "", permanent_address: "", permanent_district: "", permanent_state: "", permanent_pincode: "", department: [], salary: "", joining_date: "", account_number: "", ifsc_code: "", account_holder_name: "" })
 
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
   const departmentList = [
     "Science",
     "Mathematics",
@@ -230,11 +239,23 @@ const Team = ({ teacherData }) => {
   const basicForm = useForm({
     resolver: zodResolver(basicDetailsSchema),
     defaultValues: {
-      post: teacherData?.post || "",
-      name: teacherData?.name || "",
-      subject: teacherData?.subject || "",
+      name: "",
+      email: "",
+      department: "",
     },
   });
+
+
+  useEffect(() => {
+    if (selectedEmployee) {
+      basicForm.reset({
+        name: selectedEmployee.name || "",
+        email: selectedEmployee.email || "",
+        department: selectedEmployee.department || "",
+      });
+    }
+  }, [selectedEmployee, basicForm]);
+
 
 
   const additionalForm = useForm({
@@ -390,16 +411,46 @@ const Team = ({ teacherData }) => {
     console.log(InputName);
   };
 
-  const handleBasicFormSubmit = (data) => {
-    console.log("Basic Form Data:", data);
+  const handleTimeUpdate = () => {
+    if (!updatetime.id || !updatetime.start_time || !updatetime.end_time) {
+      toast.error("Please select both In and Out times.");
+      return;
+    }
 
-    // Reset form fields after submission
-    basicForm.reset();
-
-    // Close the dialog
-    setOpen(false);
-    setAddConfrom(true)
+    dispatch(Update_Time(updatetime))
+      .then(() => {
+        toast.success("Timing updated successfully!");
+        setChangeTime(false); // ✅ CLOSES the dialog
+        setupdatetimetime({ id: null, start_time: "", end_time: "" }); // reset
+        setInTime("");
+        setOutTime("");
+      })
+      .catch(() => {
+        toast.error("Failed to update timing.");
+      });
   };
+
+
+
+
+  const handleBasicFormSubmit = (data) => {
+    if (!selectedEmployee?.id) return;
+
+    const payload = {
+      id: selectedEmployee.id,
+      ...data,
+    };
+
+    dispatch(Update_Employee(payload))
+      .then(() => {
+        setOpen(false);
+        setSelectedEmployee(null);
+      })
+      .catch((err) => {
+        console.error("Update failed:", err);
+      });
+  };
+
 
 
   const handleAdditionalFormSubmit = (e) => {
@@ -445,33 +496,39 @@ const Team = ({ teacherData }) => {
   }, [isSameAddress, residentialAddress, district, state, pincode, setValue]);
 
 
-  //DeleteEmployee
-  const handleDelete = async () => {
-    try {
-      if (deleteemployee) {
-        await dispatch(DeleteEmployee({ id: deleteemployee }));
-        console.log("Employee deleted successfully:", deleteemployee);
 
-        setdeleteemployee(null);
-        await dispatch(GetTeam());
-
-        // ✅ Reload the page after successful delete and refresh
-        window.location.reload();
-      } else {
-        console.warn("No employee ID selected");
-      }
-    } catch (error) {
-      console.error("Submission failed:", error);
-    }
-  };
-
-  console.log(addemployee)
 
   //GetEmployee
   useEffect(() => {
     dispatch(GetTeam({ first_name: first_name }))
   }, [first_name])
 
+  const handleDelete = async () => {
+    try {
+      if (deleteemployee) {
+        // Delete the employee
+        await dispatch(update_Employee_Status({ id: deleteemployee }));
+        console.log("Employee deleted successfully:", deleteemployee);
+
+        // Refresh the team list
+        // await dispatch(GetTeam({ first_name: first_name }));
+        window.location.reload();
+
+
+        // Close dialog and reset state
+        setdeleteemployee(null);
+        setActive(false); // Close the dialog if it's open
+        
+      } else {
+        console.warn("No employee ID selected for deletion");
+      }
+    } catch (error) {
+      console.error("Delete failed:", error);
+    }
+  };
+
+
+  console.log(addemployee)
   // if (loading) {
   //   return (
   //     <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
@@ -645,14 +702,14 @@ const Team = ({ teacherData }) => {
                                 <div className="relative flex items-center">
                                   <Input
                                     // value={InputName}
-                                    {...field} 
-                                   onChange={(e)=>{
-                                  
-                                    setemployee({...addemployee,first_name:e.target.value})
-                                    field.onChange(e)
-                                  }}
+                                    {...field}
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, first_name: e.target.value })
+                                      field.onChange(e)
+                                    }}
                                     placeholder="John Doe"
-                                   // Agar ye issue create kar raha hai to hata kar dekho
+                                    // Agar ye issue create kar raha hai to hata kar dekho
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                   />
 
@@ -679,9 +736,9 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Bachelor's / Master's"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,highest_qualification:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, highest_qualification: e.target.value })
                                       field.onChange(e)
                                     }}
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
@@ -709,9 +766,9 @@ const Team = ({ teacherData }) => {
                                     placeholder="Enter Institution Name"
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,institution_name:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, institution_name: e.target.value })
                                       field.onChange(e)
                                     }}
                                   />
@@ -739,9 +796,9 @@ const Team = ({ teacherData }) => {
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                     placeholder="Enter Contact Number"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,contact_number:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, contact_number: e.target.value })
                                       field.onChange(e)
                                     }}
                                   />
@@ -769,9 +826,9 @@ const Team = ({ teacherData }) => {
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                     placeholder="Enter Emergency Number"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,emergency_number:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, emergency_number: e.target.value })
                                       field.onChange(e)
                                     }}
                                   />
@@ -796,13 +853,13 @@ const Team = ({ teacherData }) => {
                                 <div className="relative flex items-center">
                                   <Input
                                     type="email"
-                                   
+
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                     placeholder="Enter Email"
                                     {...field}
-                                    onChange={(e)=>{
+                                    onChange={(e) => {
 
-                                      setemployee({...addemployee,email:e.target.value})
+                                      setemployee({ ...addemployee, email: e.target.value })
                                       field.onChange(e)
                                     }}
                                   />
@@ -828,13 +885,13 @@ const Team = ({ teacherData }) => {
                               <FormControl>
                                 <div className="relative flex items-center">
                                   <Input
-                                    type=""
+                                    type="number"
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
                                     placeholder="In Hand Salary"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,salary:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, salary: parseInt(e.target.value) })
                                       field.onChange(e)
                                     }}
                                   />
@@ -883,14 +940,14 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     ref={inputRef}
                                     type="date"
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,joining_date:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, joining_date: e.target.value })
                                       field.onChange(e)
                                     }}
                                     className="opacity-0 cursor-pointer"
                                     value={field.value ? format(new Date(field.value), "yyyy-MM-dd") : ""}
-                                    // onChange={(e) => field.onChange(e.target.value)}
+                                  // onChange={(e) => field.onChange(e.target.value)}
                                   />
                                 </Popover>
 
@@ -962,9 +1019,9 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter Residential Address"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,residential_address:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, residential_address: e.target.value })
                                       field.onChange(e)
                                     }}
                                     type="String"
@@ -991,9 +1048,9 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter District Name"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,district:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, district: e.target.value })
                                       field.onChange(e)
                                     }}
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
@@ -1019,9 +1076,9 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter State Name"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,state:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, state: e.target.value })
                                       field.onChange(e)
                                     }}
                                     className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg"
@@ -1047,9 +1104,9 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter Pincode "
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,pincode:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, pincode: e.target.value })
                                       field.onChange(e)
                                     }}
                                     type="number"
@@ -1065,7 +1122,7 @@ const Team = ({ teacherData }) => {
                           )}
                         />
                         <hr className="border-gray-300 my-4" />
-                        <FormField
+                        {/* <FormField
                           control={additionalForm2.control}
                           name="terms"
                           render={({ field }) => (
@@ -1093,7 +1150,7 @@ const Team = ({ teacherData }) => {
                               <FormMessage />
                             </FormItem>
                           )}
-                        />
+                        /> */}
                         {/*  Permanent Address Fields */}
                         <FormField
                           control={additionalForm2.control}
@@ -1106,9 +1163,9 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter Permanent Address"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,permanent_address:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, permanent_address: e.target.value })
                                       field.onChange(e)
                                     }}
                                     disabled={isSameAddress} // Disable if checkbox is checked
@@ -1134,9 +1191,9 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter District Name"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,permanent_district:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, permanent_district: e.target.value })
                                       field.onChange(e)
                                     }}
                                     disabled={isSameAddress}
@@ -1162,9 +1219,9 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter State Name"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,permanent_state:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, permanent_state: e.target.value })
                                       field.onChange(e)
                                     }}
                                     disabled={isSameAddress}
@@ -1190,9 +1247,9 @@ const Team = ({ teacherData }) => {
                                   <Input
                                     placeholder="Enter Pincode"
                                     {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,permanent_pincode:e.target.value})
+                                    onChange={(e) => {
+
+                                      setemployee({ ...addemployee, permanent_pincode: e.target.value })
                                       field.onChange(e)
                                     }}
                                     disabled={isSameAddress}
@@ -1222,7 +1279,7 @@ const Team = ({ teacherData }) => {
                                       <Button
                                         type="button"
                                         // onChange={(e)=>{
-                                  
+
                                         //   setemployee({...addemployee,department:e.target.value})
                                         //   field.onChange(e)
                                         // }}
@@ -1249,7 +1306,7 @@ const Team = ({ teacherData }) => {
                                             key={index}
                                             onClick={(e) => {
                                               field.onChange(dept);
-                                              setemployee({...addemployee,department:department.push(dept)})
+                                              setemployee({ ...addemployee, department: department.push(dept) })
                                               setSelectedDepartment(
                                                 dept
                                               );
@@ -1349,13 +1406,13 @@ const Team = ({ teacherData }) => {
                             <FormLabel>Enter Bank Account Number</FormLabel>
                             <FormControl>
                               <div className="relative flex items-center">
-                                <Input placeholder="Enter Account Number" {...field} 
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,account_number:e.target.value})
-                                      field.onChange(e)
-                                    }}
-                                type="text" className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
+                                <Input placeholder="Enter Account Number" {...field}
+                                  onChange={(e) => {
+
+                                    setemployee({ ...addemployee, account_number: e.target.value })
+                                    field.onChange(e)
+                                  }}
+                                  type="text" className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -1369,12 +1426,12 @@ const Team = ({ teacherData }) => {
                             <FormControl>
                               <div className="relative flex items-center">
                                 <Input placeholder="Enter Bank IFSC Code" {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,ifsc_code:e.target.value})
-                                      field.onChange(e)
-                                    }}
-                                className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
+                                  onChange={(e) => {
+
+                                    setemployee({ ...addemployee, ifsc_code: e.target.value })
+                                    field.onChange(e)
+                                  }}
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -1388,12 +1445,12 @@ const Team = ({ teacherData }) => {
                             <FormControl>
                               <div className="relative flex items-center">
                                 <Input placeholder="Enter Bank Account Holder Name" {...field}
-                                    onChange={(e)=>{
-                                  
-                                      setemployee({...addemployee,account_holder_name:e.target.value})
-                                      field.onChange(e)
-                                    }}
-                                className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
+                                  onChange={(e) => {
+
+                                    setemployee({ ...addemployee, account_holder_name: e.target.value })
+                                    field.onChange(e)
+                                  }}
+                                  className="w-full border border-blue-300 rounded-xl p-5 focus:ring-4 focus:ring-blue-500 shadow-lg" />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -1405,7 +1462,7 @@ const Team = ({ teacherData }) => {
                       {/* Submit Button */}
                       <div className="flex justify-end">
                         <Button
-                          onClick={(e) => {mainthird(e),dispatch(create_employee(addemployee))}}
+                          onClick={(e) => { mainthird(e), dispatch(create_employee(addemployee)) }}
 
                           type="submit" className="bg-indigo-600 text-white px-9 py-2 rounded-lg hover:bg-indigo-700">
                           Save
@@ -1424,6 +1481,20 @@ const Team = ({ teacherData }) => {
           </div>
 
           {/* Teacher Cards Grid */}
+          {loading ? (
+            <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
+                   <div className="relative flex justify-center items-center">
+                     <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+                     <img
+                       src={logo}
+                       alt="Loading"
+                       className="rounded-full h-28 w-28"
+                     />
+                   </div>
+                 </div>
+          ) : error ? (
+            <div>Error: {error}</div>
+          ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
             {paginatedTeachers?.map((teacher) => (
               <Card
@@ -1447,7 +1518,10 @@ const Team = ({ teacherData }) => {
                   >
                     <DropdownMenuItem
                       className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center"
-                      onClick={() => setOpen(true)}
+                      onClick={() => {
+                        setOpen(true);
+                        setSelectedEmployee(teacher); // full data object
+                      }}
                     >
                       Edit
                     </DropdownMenuItem>
@@ -1461,15 +1535,30 @@ const Team = ({ teacherData }) => {
 
                     <DropdownMenuItem
                       className="cursor-pointer text-black hover:bg-gray-200 px-4 py-2 text-center"
-                      onClick={() => setChangeTime(true)}
+                      onClick={() => {
+                        setChangeTime(true);
+
+                        // Pre-fill the timing values from teacher data
+                        setupdatetimetime({
+                          id: teacher.id,
+                          start_time: teacher.start_time || "",
+                          end_time: teacher.end_time || "",
+                        });
+
+                        // Set the TimePicker values
+                        setInTime(teacher.start_time || "");
+                        setOutTime(teacher.end_time || "");
+                      }}
                     >
                       Change Timing
                     </DropdownMenuItem>
+
+
                     <DropdownMenuItem
                       onClick={() => { setdeleteemployee(teacher.id), setDelete(true) }}
                       className="cursor-pointer text-red-500 hover:bg-gray-200 px-4 py-2 text-center"
                     >
-                      Delete
+                      Deactivated
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -1487,28 +1576,49 @@ const Team = ({ teacherData }) => {
                         Are you sure you want to change this employee's timing?
                       </DialogDescription>
                     </DialogHeader>
+
                     <hr className="mt-5" />
                     <div className="flex justify-center">
-                      <form onSubmit={handleSubmit} className="space-y-4 w-full">
+                      <form onSubmit={handleTimeUpdate} className="space-y-4 w-full">
                         <div className="flex justify-between items-center w-full">
                           <div className="w-1/2">
-                            <TimePicker label="In Time" selectedTime={inTime} setSelectedTime={setInTime} />
+                            <TimePicker
+                              label="In Time"
+                              selectedTime={inTime}
+                              setSelectedTime={(val) => {
+                                setInTime(val);
+                                setupdatetimetime((prev) => ({ ...prev, start_time: val }));
+                              }}
+                            />
                           </div>
                           <div className="w-1/2">
-                            <TimePicker label="Out Time" selectedTime={outTime} setSelectedTime={setOutTime} />
+                            <TimePicker
+                              label="Out Time"
+                              selectedTime={outTime}
+                              setSelectedTime={(val) => {
+                                setOutTime(val);
+                                setupdatetimetime((prev) => ({ ...prev, end_time: val }));
+                              }}
+                            />
                           </div>
                         </div>
+
+                        {/* ✅ This button submits the form */}
                         <Button
-                          onClick={() => setChangeTime(false)}
-                          type="submit"
-                          className="bg-indigo-500 text-white px-5 w-full py-2 rounded-lg hover:bg-indigo-600"
+                          onClick={() => {setChangeTime(false),setAddConfrom(true)}}
+                          disabled={!inTime || !outTime}
+                          className="bg-indigo-500 text-white px-5 w-full py-2 rounded-lg hover:bg-indigo-600 disabled:opacity-50"
                         >
                           Proceed
                         </Button>
+
+
                       </form>
+
                     </div>
                   </DialogContent>
                 </Dialog>
+
 
                 {/* Delete Dialog */}
                 <Dialog open={Deleteteacher} onOpenChange={setDelete}>
@@ -1552,20 +1662,7 @@ const Team = ({ teacherData }) => {
                         onSubmit={basicForm.handleSubmit(handleBasicFormSubmit)}
                         className="space-y-6"
                       >
-                        <FormField
-                          control={basicForm.control}
-                          name="post"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Post</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Teacher" {...field} className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
+                        {/* Name Field */}
                         <FormField
                           control={basicForm.control}
                           name="name"
@@ -1573,21 +1670,49 @@ const Team = ({ teacherData }) => {
                             <FormItem>
                               <FormLabel>Name</FormLabel>
                               <FormControl>
-                                <Input placeholder="Munaroh Steffani" {...field} className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg" />
+                                <Input
+                                  placeholder="Munaroh Steffani"
+                                  {...field}
+                                  className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
 
+                        {/* Email Field */}
                         <FormField
                           control={basicForm.control}
-                          name="subject"
+                          name="email"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Subject</FormLabel>
+                              <FormLabel>Email</FormLabel>
                               <FormControl>
-                                <Input placeholder="Mathematics" {...field} className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg" />
+                                <Input
+                                  placeholder="teacher@example.com"
+                                  {...field}
+                                  className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        {/* Department Field */}
+                        <FormField
+                          control={basicForm.control}
+                          name="department"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Department</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="Mathematics Department"
+                                  {...field}
+                                  className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -1595,7 +1720,11 @@ const Team = ({ teacherData }) => {
                         />
 
                         <div className="flex justify-between">
-                          <Button type="submit" className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700">
+                          <Button
+                          onClick={()=>{setAddConfrom(true)}}
+                            type="submit"
+                            className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700"
+                          >
                             Save
                           </Button>
                         </div>
@@ -1603,6 +1732,7 @@ const Team = ({ teacherData }) => {
                     </Form>
                   </DialogContent>
                 </Dialog>
+
 
                 {/* Card Content */}
                 <CardHeader className="flex flex-col items-center text-center">
@@ -1614,7 +1744,7 @@ const Team = ({ teacherData }) => {
                     />
                   </Avatar>
                   <CardTitle className="mt-4 text-xl font-bold">{teacher.first_name}</CardTitle>
-                  <CardDescription>{teacher.department}</CardDescription>
+                  <CardDescription>{teacher.department_names}</CardDescription>
                 </CardHeader>
 
                 <CardContent className="text-center">
@@ -1628,21 +1758,15 @@ const Team = ({ teacherData }) => {
                       })}
                     </span>
                     <span className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      {new Date(teacher?.joining_date).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric"
-                      })}
+                      <UserPlus className="w-4 h-4" />
+                      Assigned {teacher?.assigned_count ?? "10"}
                     </span>
+
                     <span className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      {new Date(teacher?.joining_date).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric"
-                      })}
+                      <CheckCircle className="w-4 h-4" />
+                      Completed {teacher?.completed_count ?? "10"}
                     </span>
+
                   </div>
                 </CardContent>
 
@@ -1663,7 +1787,7 @@ const Team = ({ teacherData }) => {
               </Card>
             ))}
           </div>
-
+          )}
 
           {/* confirm dilog */}
           <Dialog open={AddConfrom} onOpenChange={setAddConfrom}>
@@ -1682,7 +1806,7 @@ const Team = ({ teacherData }) => {
                   Cancel
                 </Button>
                 <Button
-                  onClick={async () => { setAddConfrom(false), setDelete(false) }} // Handle form submission & dialog close
+                  onClick={async () => { setAddConfrom(false) }} // Handle form submission & dialog close
                   className="w-full sm:w-auto mt-4 bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md flex items-center shadow-md transition-all"
                 >
                   Confirm

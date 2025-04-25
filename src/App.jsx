@@ -46,6 +46,8 @@ import ThankYouCard from "./component/Admin/Dashboard/ThankYouCard";
 import ExStudentsData from "./component/Admin/Student/Ex-Students/ExStudentsData";
 import Stu_Attendance from "./component/Admin/Student/Action/Stu_Attendance";
 import Add_Payment from "./component/Admin/Student/Add_Payment";
+import ProtectedRoute from "./Protect_Rotues";
+import { Toaster } from "react-hot-toast";
 // import { Route } from "lucide-react";
 const App = () => {
   // const [loading, setLoading] = useState(true);
@@ -74,59 +76,60 @@ const App = () => {
   //       </div>
   // );
   // }
+  <>
+  <Toaster position="top-right" reverseOrder={false} />
+  {/* ...rest of your app */}
+</>
   return (
     <div>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
-
           <Route path="/Adminlogin" element={<AdminLogin />} />
-          <Route path="/Dashboard" element={<Dashboard />} />
-          <Route path="/Academics" element={<Academics />} />
-          <Route path="/students" element={<StudentHeader />} />
-          <Route path="/Accounts" element={<Account />} />
-          <Route path="/Access" element={<Department_access />} />
-          <Route path="/Departments" element={<Departments />} />
-          <Route path="/attendance" element={<Attendance />} />
-          <Route path="/Advertisement" element={<Advertisment />} />
-          <Route path="/team" element={<Team />} />
-          {/* <Route path="/support" element={<div>Support </div>} /> */}
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/support" element={<Support />} />
-
-          <Route path="/add_student_model" element={<AddStudentModal />} />
-          <Route path="/ProceedModal" element={<ProceedModal />} />
-          <Route
-            path="/StudentSelectionPage"
-            element={<StudentSelectionPage />}
-          />
-          <Route path="/ParentDetails" element={<ParentDetails />} />
-          <Route path="/add" element={<SuccessMessage />} />
-          <Route path="/view/profile" element={<Profile />} />
-          <Route path="/student-payment-history" element={<Payment_History />} />
-          <Route path="/StudentUploadModal" element={<StudentUploadModal />} />
-          <Route path="/Marksheet" element={<MarksheetForm />} />
-          <Route path="/ExStudents" element={<ExStudentsData />} />
-          <Route path="/student_attendance" element={<Stu_Attendance />} />
-
-          <Route path="/View-Profile/:id" element={<ViewProfile />} />
-          <Route path="/View_User" element={<View_User />} />
-          <Route path="/Ex-Employee" element={<ExEmployees />} />
-          <Route path="/manage_salary" element={<Manage_sallery />} />
-          <Route path="/Leads" element={<Leads />} />
-          <Route path="/MyLeads" element={<MyLeads />} />
-          <Route path="/Received" element={<Received />} />
-          <Route path="/Upcoming" element={<Upcoming />} />1
-          <Route path="/Missed" element={<Missed />} />
-          <Route path="/Department_list_Employee" element={<Department_list_Employee />} />
-          <Route path="/Batches" element={<Batches />} />
-          <Route path="/Courses" element={<Courses />} />
-          <Route path="/Sessions" element={<Sessions />} />
-          <Route path="/Subjects" element={<Subjects />} />
-          <Route path="/ThankYouCard" element={<ThankYouCard />} />
-          <Route path="/add-payment" element={<Add_Payment />} />
-
-
+          <Route element={<ProtectedRoute />}>
+            <Route path="/Dashboard" element={<Dashboard />} />
+            <Route path="/Academics" element={<Academics />} />
+            <Route path="/students" element={<StudentHeader />} />
+            <Route path="/Accounts" element={<Account />} />
+            <Route path="/Access" element={<Department_access />} />
+            <Route path="/Departments" element={<Departments />} />
+            <Route path="/attendance" element={<Attendance />} />
+            <Route path="/Advertisement" element={<Advertisment />} />
+            <Route path="/team" element={<Team />} />
+            {/* <Route path="/support" element={<div>Support </div>} /> */}
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/support" element={<Support />} />
+            <Route path="/add_student_model" element={<AddStudentModal />} />
+            <Route path="/ProceedModal" element={<ProceedModal />} />
+            <Route
+              path="/StudentSelectionPage"
+              element={<StudentSelectionPage />}
+            />
+            <Route path="/ParentDetails" element={<ParentDetails />} />
+            <Route path="/add" element={<SuccessMessage />} />
+            <Route path="/view/profile" element={<Profile />} />
+            <Route path="/student-payment-history" element={<Payment_History />} />
+            <Route path="/StudentUploadModal" element={<StudentUploadModal />} />
+            <Route path="/Marksheet" element={<MarksheetForm />} />
+            <Route path="/ExStudents" element={<ExStudentsData />} />
+            <Route path="/student_attendance" element={<Stu_Attendance />} />
+            <Route path="/View-Profile/:id" element={<ViewProfile />} />
+            <Route path="/View_User" element={<View_User />} />
+            <Route path="/Ex-Employee" element={<ExEmployees />} />
+            <Route path="/manage_salary" element={<Manage_sallery />} />
+            <Route path="/Leads" element={<Leads />} />
+            <Route path="/MyLeads" element={<MyLeads />} />
+            <Route path="/Received" element={<Received />} />
+            <Route path="/Upcoming" element={<Upcoming />} />1
+            <Route path="/Missed" element={<Missed />} />
+            <Route path="/Department_list_Employee" element={<Department_list_Employee />} />
+            <Route path="/Batches" element={<Batches />} />
+            <Route path="/Courses" element={<Courses />} />
+            <Route path="/Sessions" element={<Sessions />} />
+            <Route path="/Subjects" element={<Subjects />} />
+            <Route path="/ThankYouCard" element={<ThankYouCard />} />
+            <Route path="/add-payment" element={<Add_Payment />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </div>

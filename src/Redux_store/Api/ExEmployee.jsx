@@ -7,7 +7,7 @@ export const get_ExEmployee = createAsyncThunk(
     'get_ExEmployee',
     async ({first_name}, { rejectWithValue }) => {
       try {
-        const response = await fetch(`${BASE_URL}/api/v1/employee/searchInActiveEmployee?first_name=${first_name}&page=1&limit=10`, {
+        const response = await fetch(`${BASE_URL}/api/v1/employee/searchInActiveEmployee?first_name=${first_name}&page=1&limit=200`, {
           method: 'GET',
         })
   

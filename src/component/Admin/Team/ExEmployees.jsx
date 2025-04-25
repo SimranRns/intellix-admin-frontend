@@ -66,27 +66,30 @@ const ExEmployees = () => {
   const dispatch = useDispatch()
   const { ExEmployees, loading, error } = useSelector((state) => state.ExEmployee)
   const [first_name, setEmployeeName] = useState("");
+
   const handleDelete = async () => {
     try {
       if (selectedEmployeeId) {
-
         await dispatch(UpdateEmployee({ id: selectedEmployeeId }));
-        console.log("Employee deleted successfully:", selectedEmployeeId);
-        // setAddConfrom(true);
-        setSelectedEmployeeId(null);
-        await dispatch(get_ExEmployee())
+        console.log("Employee activated successfully:", selectedEmployeeId);
+  
+        // Refresh employee list after activation
+        // await dispatch(get_ExEmployee({ first_name }));
+        window.location.reload();
 
+        // Close dialog
+        setActive(false);
+        setSelectedEmployeeId(null);
       } else {
-        console.warn("No employee ID selected for deletion");
+        console.warn("No employee ID selected for activation");
       }
     } catch (error) {
-      console.error("Delete failed:", error);
+      console.error("Activation failed:", error);
     }
   };
+  
 
-
-
-  const employeesPerPage = 10;
+  const employeesPerPage = 9;
   const EmployeeData = ExEmployees?.result?.employees || [];
   const totalPages = Math.ceil(EmployeeData.length / employeesPerPage);
   const startIndex = (currentPage - 1) * employeesPerPage;
@@ -95,18 +98,21 @@ const ExEmployees = () => {
     dispatch(get_ExEmployee({ first_name: first_name }))
   }, [first_name])
 
-  if (loading) {
-    <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
-      <div className="relative flex  justify-center items-center">
-        <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
-        <img
-          src={logo}
-          alt="Loading"
-          className="rounded-full h-28 w-28"
-        />
-      </div>
-    </div>
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
+  //       <div className="relative flex justify-center items-center">
+  //         <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+  //         <img
+  //           src={logo}
+  //           alt="Loading"
+  //           className="rounded-full h-28 w-28"
+  //         />
+  //       </div>
+  //     </div>
+  //   );
+  // }
+  
 
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
@@ -140,6 +146,20 @@ const ExEmployees = () => {
           </div>
 
           {/* Cards Grid */}
+          {loading ? (
+          <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
+                 <div className="relative flex justify-center items-center">
+                   <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+                   <img
+                     src={logo}
+                     alt="Loading"
+                     className="rounded-full h-28 w-28"
+                   />
+                 </div>
+               </div>
+          ) : error ? (
+            <div>Error: {error}</div>
+          ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
             {selectedEmployees?.map((employee) => (
               <Card
@@ -251,7 +271,7 @@ const ExEmployees = () => {
               </Card>
             ))}
           </div>
-
+          )}
           {/* Pagination */}
           <Pagination>
             <PaginationContent>

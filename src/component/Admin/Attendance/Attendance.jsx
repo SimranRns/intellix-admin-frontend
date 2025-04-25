@@ -100,7 +100,7 @@ const Attendance = () => {
   // useEffect(() => {
   //   dispatch(get_stu_attendance())
   // }, [])
-  const {att} = useSelector((state) => state.attend);
+  const { att } = useSelector((state) => state.attend);
 
   // For the date/time display at the bottom
   // const currentDateTime = new Date().toLocaleString();
@@ -227,9 +227,9 @@ const Attendance = () => {
 
         {/* Main container */}
         <main className="flex-1 overflow-auto">
-          <div className=" container    rounded-lg shadow-sm shadow-blue-500/50" >
+          <div className=" container  rounded-lg shadow-sm shadow-blue-500/50" >
             {/* Top counters */}
-            <div className="grid grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 m-5">
               <div className="text-center border p-3 rounded-lg shadow-md shadow-blue-500/50">
                 <p className="text-2xl font-bold">{totalStudents}</p>
                 <p>Total Students</p>
@@ -242,239 +242,142 @@ const Attendance = () => {
                 <p className="text-2xl font-bold">{insideCampus}</p>
                 <p>Inside Campus</p>
               </div>
-              <div className="text-center border p-3 rounded-lg shadow-md  shadow-blue-500/50">
+              <div className="text-center border p-3 rounded-lg shadow-md shadow-blue-500/50">
                 <p className="text-2xl font-bold">{onLeave}</p>
                 <p>On Leave</p>
               </div>
             </div>
 
+
             {/* Tab buttons */}
-            <div className="flex gap-4 mb-6">
-              {["All", "In", "Out", "Absent"].att?.map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setSelectedTab(tab)}
-                  className={`rounded-md px-4 py-2 text-[12px] font-medium ${selectedTab === tab
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200 text-gray-800 hover:bg-blue-500 hover:text-white"
-                    }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-
-            {/* Search fields + export button */}
-            <div className="flex flex-wrap gap-4 mb-6">
-              <input
-                type="text"
-                placeholder="Search By Enrollment Id"
-                value={searchEnrollmentId}
-                onChange={(e) => setSearchEnrollmentId(e.target.value)}
-                className="border border-blue-500 rounded-md text-sm text-gray-700 px-2 py-2 h-10 shadow-sm"
-              />
-
-              <input
-                type="text"
-                placeholder="Search By Name"
-                value={searchName}
-                onChange={(e) => setSearchName(e.target.value)}
-                className="border border-blue-500 px-2 py-2 h-10 text-sm rounded-lg text-gray-700  shadow-md"
-              />
-              <input
-                type="text"
-                placeholder="Search By Batch Name"
-                value={searchBatchName}
-                onChange={(e) => setSearchBatchName(e.target.value)}
-                className="border border-blue-500 px-2 py-2 h-10 text-sm rounded-lg text-gray-700  shadow-md"
-              />
-              <button
-                onClick={handleSearch}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-2 h-10 rounded-lg border border-blue-500 shadow-md shadow-blue-500/50"
-              >
-                Search
-              </button>
-              <button
-                onClick={handleExportData}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-2 h-10 rounded-lg border border-blue-500 shadow-md shadow-blue-500/50"
-              >
-                Export Data
-              </button>
-            </div>
-
-            {/* Date picker */}
-            <div className="w-full sm:w-auto flex-1">
-              <Button
-                variant="outline"
-
-                className="w-[250px] flex items-center text-left justify-between shadow-sm  border border-blue-400 rounded-xl px-4 py-2 shadow-blue-500/50 font-normal mb-5"
-                onClick={(e) => {
-                  e.preventDefault();
-                  inputRef.current?.showPicker();
-                }}
-              >
-                {date ? format(new Date(date), "yyy-MM-dd") : "Pick a date"}
-                <CalendarIcon className="h-5 w-5" />
-
-              </Button>
-
-              <Input
-                ref={inputRef}
-                type="date"
-                className="opacity-0 absolute -z-10"
-                value={date || ""}
-                onChange={(e) => setDate(e.target.value)}
-              />
-
-            </div>
-
-
-
-            {/* Action buttons (Apply, Set Attendance, Export Report) */}
-
-            <div className="mb-6 flex gap-4">
-              {/* Export Report Button */}
-              <Dialog open={openFirstModal} onOpenChange={setOpenFirstModal}>
-                <DialogTrigger asChild>
-                  <Button
-                    onClick={() => setOpenFirstModal(true)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg border border-blue-500 shadow-md shadow-blue-500/50"
+            <div className="flex flex-wrap gap-4 mb-6 m-2 items-center">
+              {/* Tabs */}
+              <div className="flex gap-4">
+                {["All", "In", "Out", "Absent"].map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setSelectedTab(tab)}
+                    className={`rounded-md px-4 py-2 text-[12px] font-medium ${selectedTab === tab
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 text-gray-800 hover:bg-blue-500 hover:text-white"
+                      }`}
                   >
-                    Export Report
-                  </Button>
-                </DialogTrigger>
+                    {tab}
+                  </button>
+                ))}
+              </div>
 
-                <DialogContent className="sm:max-w-[450px]" onPointerDownOutside={(e) => e.preventDefault()}
-                  onEscapeKeyDown={(e) => e.preventDefault()}>
-                  <DialogHeader>
-                    <DialogTitle className="text-center text-lg font-semibold">
+              {/* Search fields + export button */}
+              <div className="flex flex-wrap gap-4 mb-6 m-5 w-full sm:w-auto justify-between sm:justify-start items-center">
+                <input
+                  type="text"
+                  placeholder="Search By Enrollment Id"
+                  value={searchEnrollmentId}
+                  onChange={(e) => setSearchEnrollmentId(e.target.value)}
+                  className="border border-blue-500 rounded-md text-sm text-gray-700 px-2 py-2 h-10 shadow-sm w-full sm:w-auto"
+                />
+
+                <input
+                  type="text"
+                  placeholder="Search By Name"
+                  value={searchName}
+                  onChange={(e) => setSearchName(e.target.value)}
+                  className="border border-blue-500 px-2 py-2 h-10 text-sm rounded-lg text-gray-700 shadow-md w-full sm:w-auto"
+                />
+
+                <input
+                  type="text"
+                  placeholder="Search By Batch Name"
+                  value={searchBatchName}
+                  onChange={(e) => setSearchBatchName(e.target.value)}
+                  className="border border-blue-500 px-2 py-2 h-10 text-sm rounded-lg text-gray-700 shadow-md w-full sm:w-auto"
+                />
+
+                <button
+                  onClick={handleSearch}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 h-10 rounded-lg border border-blue-500 shadow-md shadow-blue-500/50"
+                >
+                  Search
+                </button>
+
+                <button
+                  onClick={handleExportData}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 h-10 rounded-lg border border-blue-500 shadow-md shadow-blue-500/50"
+                >
+                  Export Data
+                </button>
+              </div>
+
+
+            </div>
+
+            <div className="flex items-center justify-between gap-4 mb-6 w-full sm:w-auto">
+              {/* Date Picker */}
+              <div className="flex-1 sm:w-auto">
+                <Button
+                  variant="outline"
+                  className="w-[250px] flex items-center text-left justify-between shadow-sm border border-blue-400 rounded-xl px-4 py-2 shadow-blue-500/50 font-normal mb-5"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    inputRef.current?.showPicker();
+                  }}
+                >
+                  {date ? format(new Date(date), "yyyy-MM-dd") : "Pick a date"}
+                  <CalendarIcon className="h-5 w-5" />
+                </Button>
+
+                <Input
+                  ref={inputRef}
+                  type="date"
+                  className="opacity-0 absolute -z-10"
+                  value={date || ""}
+                  onChange={(e) => setDate(e.target.value)}
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-4">
+                <Dialog open={openFirstModal} onOpenChange={setOpenFirstModal}>
+                  <DialogTrigger asChild>
+                    <Button
+                      onClick={() => setOpenFirstModal(true)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg border border-blue-500 shadow-md shadow-blue-500/50"
+                    >
                       Export Report
-                    </DialogTitle>
-                  </DialogHeader>
+                    </Button>
+                  </DialogTrigger>
+                </Dialog>
 
-                  <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
-                    {/* Date Pickers */}
-                    <div className="grid grid-cols-2 gap-4">
-                      {/* From Date */}
-                      <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
-                        <Label className="md:text-right text-left font-medium">From:</Label>
-                        <Input
-                          type="date"
-                          {...register("startDate")}
-                          className="col-span-3"
-                        />
-                        {errors.startDate && (
-                          <p className="col-span-4 text-red-500 text-sm">
-                            {errors.startDate.message}
-                          </p>
-                        )}
-                      </div>
+                <Dialog open={openSecondModal} onOpenChange={setOpenSecondModal}>
+                  <DialogContent className="sm:max-w-[400px]" onPointerDownOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
+                    <DialogHeader>
+                      <DialogTitle className="text-center text-lg font-semibold">
+                        Confirm Export
+                      </DialogTitle>
+                    </DialogHeader>
 
-                      {/* To Date */}
-                      <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
-                        <Label className="md:text-right text-left font-medium">To:</Label>
-                        <Input
-                          type="date"
-                          {...register("endDate")}
-                          className="col-span-3"
-                        />
-                        {errors.endDate && (
-                          <p className="col-span-4 text-red-500 text-sm">
-                            {errors.endDate.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
+                    <p className="text-center text-gray-600">
+                      Are you sure you want to export the report from{" "}
+                      <b>{fromDate.toLocaleDateString()}</b> to{" "}
+                      <b>{toDate.toLocaleDateString()}</b>?
+                    </p>
 
-
-                    {/* Course */}
-                    <div>
-                      <Label>Select Course*</Label>
-                      <Select
-                        onValueChange={(value) => setValue("course", value, { shouldValidate: true })}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="--Select Course--" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="course1">Course 1</SelectItem>
-                          <SelectItem value="course2">Course 2</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      {errors.course && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.course.message}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Batch */}
-                    <div>
-                      <Label>Select Batch*</Label>
-                      <Select
-                        onValueChange={(value) => setValue("batch", value, { shouldValidate: true })}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="--Select Batch--" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="batchA">Batch A</SelectItem>
-                          <SelectItem value="batchB">Batch B</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      {errors.batch && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.batch.message}
-                        </p>
-                      )}
-                    </div>
-                    {/* Submit */}
-                    <DialogFooter>
-                      <Button
-                        type="submit"
-                        onClick={handleProceed}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg"
-                      >
-                        Proceed
+                    <DialogFooter className="flex justify-between">
+                      <Button onClick={() => setOpenSecondModal(false)} variant="outline">
+                        Cancel
+                      </Button>
+                      <Button onClick={() => setOpenSecondModal(false)} className="bg-green-600 hover:bg-green-700 text-white">
+                        Export Report
                       </Button>
                     </DialogFooter>
-                  </form>
-                </DialogContent>
-              </Dialog>
-
-              {/* Second Modal - Confirmation */}
-              <Dialog open={openSecondModal} onOpenChange={setOpenSecondModal}>
-                <DialogContent className="sm:max-w-[400px]" onPointerDownOutside={(e) => e.preventDefault()}
-                  onEscapeKeyDown={(e) => e.preventDefault()}>
-                  <DialogHeader>
-                    <DialogTitle className="text-center text-lg font-semibold">
-                      Confirm Export
-                    </DialogTitle>
-                  </DialogHeader>
-
-                  <p className="text-center text-gray-600">
-                    Are you sure you want to export the report from{" "}
-                    <b>{fromDate.toLocaleDateString()}</b> to{" "}
-                    <b>{toDate.toLocaleDateString()}</b>?
-                  </p>
-
-                  <DialogFooter className="flex justify-between">
-                    <Button
-                      onClick={() => setOpenSecondModal(false)}
-                      variant="outline"
-                    >
-                      Cancel
-                    </Button>
-                    <Button onClick={() => setOpenSecondModal(false)} className="bg-green-600 hover:bg-green-700 text-white">
-                      Export Report
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </div>
 
+
             {/* Table or "No Data Available" */}
-            <div className="overflow-x-auto max-h-[300px] overflow-y-auto border rounded-md">
+            <div className="overflow-x-auto max-h-[300px] overflow-y-auto border  rounded-md">
               {loading ? (
                 <p className="text-center">Loading...</p>
               ) : filteredData.length > 0 ? (
