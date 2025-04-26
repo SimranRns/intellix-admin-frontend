@@ -50,7 +50,62 @@ export const get_Batches = createAsyncThunk(
                 return rejectWithValue(result);
             }
 
-            return result.data; 
+            return result.data;
+        } catch (error) {
+            console.error("Request Failed:", error);
+            return rejectWithValue(error.message);
+        }
+    }
+);
+// update time 
+export const update_time_Batches = createAsyncThunk(
+    "update_Batches",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${BASE_URL}/api/v1/batchrouter/timeupdate`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ id: data.id }),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                console.error("API Error:", result);
+                return rejectWithValue(result);
+            }
+
+            return result.data;
+        } catch (error) {
+            console.error("Request Failed:", error);
+            return rejectWithValue(error.message);
+        }
+    }
+);
+// update batch
+
+export const update_Batches = createAsyncThunk(
+    "update_Batche",
+    async (datas, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${BASE_URL}/api/v1/batchrouter/batchupdate`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ id: datas.id }),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                console.error("API Error:", result);
+                return rejectWithValue(result);
+            }
+
+            return result.datas;
         } catch (error) {
             console.error("Request Failed:", error);
             return rejectWithValue(error.message);
@@ -60,6 +115,4 @@ export const get_Batches = createAsyncThunk(
 
 
 
-
-
-export default { Add_Batches,get_Batches };
+export default { Add_Batches, get_Batches, update_time_Batches, update_Batches };

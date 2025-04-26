@@ -12,6 +12,8 @@ import {
 import { Input } from "../../../../src/components/ui/input"
 import { Label } from "../../../../src/components/ui/label"
 import { Clock } from 'lucide-react'
+import { useDispatch } from 'react-redux'
+import { update_time_Batches } from '../../../../../Redux_store/Api/Batches'
 
 const UpdateTime = () => {
     const [fromTime, setFromTime] = useState("");
@@ -30,10 +32,7 @@ const UpdateTime = () => {
             return "Start time must be before end time.";
         }
 
-        const minHour = 9;
-        if (from.getHours() < minHour || to.getHours() < minHour) {
-            return "Times must be after 9:00 AM.";
-        }
+
 
         return "";
     };
@@ -45,11 +44,23 @@ const UpdateTime = () => {
             return;
         }
 
-        setError("");
-        console.log("Saved time range:", { fromTime, toTime });
-        // continue with save logic here...
-    };
+        setError(""); // Clear the error if no validation error
 
+        // Dispatch the Redux action to update the batch time
+        const data = {
+            id: 1, // Example batch ID; replace with dynamic ID if needed
+            start_time: fromTime,
+            end_time: toTime,
+        };
+
+        dispatch(update_time_Batches(data));
+
+        // Reset form fields and close dialog after successful save
+        setFromTime("");
+        setToTime("");
+        setopen(false);
+    };
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -100,10 +111,7 @@ const UpdateTime = () => {
 
                     <DialogFooter>
                         <Button
-                            onClick={() => {
-                                handleSave();
-                                setopen(false);
-                            }}
+                            onClick={handleSave}
                             type="button"
                         >
                             Save changes
