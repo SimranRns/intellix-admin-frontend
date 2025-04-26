@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AppSidebar from '../../../src/components/ui/app-sidebar'
 import { SidebarInset, SidebarProvider } from '../../../src/components/ui/sidebar'
 import Header from '../../Dashboard/Header'
@@ -43,6 +43,8 @@ import Viewdetail from './batch/Viewdetail'
 import Update_time from './batch/Update_time'
 import Migrate from './batch/Migrate'
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../../../src/components/ui/pagination'
+import { useDispatch, useSelector } from 'react-redux'
+import { get_Batches } from '../../../../Redux_store/Api/Batches'
 
 const batchSchema = z.object({
     batchName: z.string().min(1, 'Batch name is required'),
@@ -52,7 +54,7 @@ const batchSchema = z.object({
 const Batches = () => {
     const [AddBatches, setAddBatches] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
-    
+
     const form = useForm({
         resolver: zodResolver(batchSchema),
         defaultValues: {
@@ -60,7 +62,12 @@ const Batches = () => {
             course: ''
         }
     })
+    const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch(get_Batches())
+    }, [])
 
+    const { Batches, loading, error } = useSelector((s) => s.Batch)
     const [card, setCard] = useState([
         { batchname: "BCA", course: "English" },
         { batchname: "MCA", course: "Math" },
@@ -71,7 +78,7 @@ const Batches = () => {
         { batchname: "B.Com", course: "Commerce" },
         { batchname: "M.Com", course: "Accounting" },
     ])
-    
+
     const itemsPerPage = 8
     const totalPages = Math.ceil(card.length / itemsPerPage)
     const paginatedData = card.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
@@ -181,16 +188,16 @@ const Batches = () => {
                     {/* Cards */}
                     <div className="grid gap-6 p-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {
-                            paginatedData.map((pass, index) => (
+                            Batches?.map((pass, index) => (
                                 <Card
                                     key={index}
                                     className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden mt-8"
                                 >
                                     <CardHeader>
-                                        <CardTitle className="text-2xl font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                                            {pass.batchname}
+                                        <CardTitle className="text-2xl font-semibold  text-blue-500  ">
+                                            {pass.BatchesName}
                                         </CardTitle>
-                                        <CardDescription className="text-lg">{pass.course}</CardDescription>
+                                        <CardDescription className="text-lg">{pass.course_id}</CardDescription>
                                     </CardHeader>
                                     <CardContent className='grid gap-2 grid-cols-2 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2'>
                                         <Viewdetail />

@@ -47,6 +47,7 @@ import ExStudentsData from "./component/Admin/Student/Ex-Students/ExStudentsData
 import Stu_Attendance from "./component/Admin/Student/Action/Stu_Attendance";
 import Add_Payment from "./component/Admin/Student/Add_Payment";
 import ProtectedRoute from "./Protect_Rotues";
+import Notification from "./component/Admin/Advertisment/Notification";
 // import { Toaster } from "react-hot-toast";
 // import { Route } from "lucide-react";
 const App = () => {
@@ -77,9 +78,9 @@ const App = () => {
   // );
   // }
   <>
-  {/* <Toaster position="top-right" reverseOrder={false} /> */}
-  {/* ...rest of your app */}
-</>
+    {/* <Toaster position="top-right" reverseOrder={false} /> */}
+    {/* ...rest of your app */}
+  </>
   return (
     <div>
       <BrowserRouter>
@@ -88,6 +89,7 @@ const App = () => {
           <Route path="/Adminlogin" element={<AdminLogin />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/Dashboard" element={<Dashboard />} />
+
             <Route path="/Academics" element={<Academics />} />
             <Route path="/students" element={<StudentHeader />} />
             <Route path="/Accounts" element={<Account />} />

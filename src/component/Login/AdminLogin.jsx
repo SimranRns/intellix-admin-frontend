@@ -21,6 +21,7 @@ import { useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import loginAdmin from '../../Redux_store/Api/Login_admin';
 import { setToken } from '../../Redux_store/slices/Logout_Admin';
+import { setAdminToken } from '../../Redux_store/slices/adminProfileSlice';
 const FormSchema = z.object({
     email: z.string().email('Invalid email address').min(1, 'Email is required'),
     password: z.string().min(6, 'Password must be at least 6 characters long'),
@@ -58,6 +59,7 @@ const AdminLogin = () => {
             if (response.status == '001') {
                 localStorage.setItem("token", response.token)
                 dispatch(setToken(response.token))
+                dispatch(setAdminToken(response.token))
                 navigate('/Dashboard');
             }
 

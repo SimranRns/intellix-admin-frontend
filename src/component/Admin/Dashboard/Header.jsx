@@ -15,35 +15,28 @@ import { useNavigate } from "react-router-dom";
 import ThemeContext from "./ThemeContext";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../src/components/ui/select";
 import { useDispatch, useSelector } from "react-redux";
-import seession_year from "../../../Redux_store/Api/Header_session";
 import { logoutAdmin } from "../../../Redux_store/Api/Logout_admin";
 import { clearToken } from "../../../Redux_store/slices/Logout_Admin";
+import { fetchSessions } from "../../../Redux_store/Api/SessionApi";
 
+import { Maximize, Minimize } from "lucide-react";
 const Header = () => {
 
     const [logout, setLogout] = useState(false);
-    // const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
 
-    const [selectedOption, setSelectedOption] = useState([]);
+    const [selectedOption, setSelectedOption] = useState("");
+
 
     const { darkMode, setDarkMode } = useContext(ThemeContext);
     const dispatch = useDispatch()
+    const { Session: sessions, loading, error } = useSelector((state) => state.Session);
+
+
     useEffect(() => {
-        dispatch(seession_year())
-    }, [])
-    const { years = [], loading, error } = useSelector((s) => s.year);
+        dispatch(fetchSessions());
+    }, [dispatch]);
 
     const navigate = useNavigate();
-
-    // useEffect(() => {
-    //     if (darkMode) {
-    //         document.documentElement.classList.add("dark");
-    //         localStorage.setItem("theme", "dark");
-    //     } else {
-    //         document.documentElement.classList.remove("dark");
-    //         localStorage.setItem("theme", "light");
-    //     }
-    // }, [darkMode]);
 
     useEffect(() => {
         if (logout) {
@@ -68,7 +61,27 @@ const Header = () => {
 
     };
 
+    useEffect(() => {
+        if (sessions && sessions.length > 0) {
+            const defaultSession = sessions.find(s => s.is_default === true);
+            if (defaultSession && !selectedOption) {
+                setSelectedOption(defaultSession.session_year);
+            }
+        }
+    }, [sessions, selectedOption]);
+    
+    // for minimize screen 
+    const [isFullscreen, setIsFullscreen] = useState(false);
 
+    const toggleFullscreen = () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+            setIsFullscreen(true);
+        } else {
+            document.exitFullscreen();
+            setIsFullscreen(false);
+        }
+    };
 
     return (
         <>
@@ -90,8 +103,11 @@ const Header = () => {
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         className="w-full font-medium max-w-lg border border-blue-400 dark:border-blue-300 shadow rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-9 py-2 flex justify-between items-center hover:bg-blue-500 hover:text-white"
-                                    >
-                                        <span >{selectedOption}</span>
+                                    > <span>
+                                            {loading ? "Loading..." : error ? "Failed to load" : selectedOption || "Select Year"}
+                                        </span>
+
+
                                         <ChevronDown size={18} />
                                     </Button>
                                 </DropdownMenuTrigger>
@@ -105,20 +121,26 @@ const Header = () => {
                                     ) : error ? (
                                         <div className="px-4 py-2 text-center text-red-500">Failed to load</div>
                                     ) : (
-                                        years?.sessions?.map((year) => (
-                                            <DropdownMenuItem
-                                                key={year}
-                                                onClick={() => setSelectedOption(year.session_year)}
-                                                className="cursor-pointer hover:bg-blue-600 hover:text-white px-4 py-2 text-center"
+                                        sessions?.map((year) => (
+                                            <DropdownMenuItem key={year.session_year}
+                                                onClick={() => setSelectedOption(year.session_year)} className="cursor-pointer hover:bg-blue-600 hover:text-white px-4 py-2 text-center"
                                             >
                                                 {year.session_year}
                                             </DropdownMenuItem>
+
                                         ))
                                     )}
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </div>
 
+                        <Button
+                            variant="ghost"
+                            onClick={toggleFullscreen}
+                            className="p-2 pt-2 hover:bg-muted rounded-full"
+                        >
+                            {isFullscreen ? <Minimize size={48} /> : <Maximize size={48} />}
+                        </Button>
 
 
                         <div className="hidden lg:flex items-center space-x-4">

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,7 +13,7 @@ import {
 import { Input } from "../../src/components/ui/input";
 import { Button } from "../../src/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Form,
   FormControl,
@@ -31,7 +31,8 @@ import {
   DialogFooter,
 } from "../../src/components/ui/dialog";
 import ThankYouCard from "../Dashboard/ThankYouCard";
-// import { change_admin_password } from "../../../Redux_store/Api/adminProfile";
+import { change_admin_password } from "../../../Redux_store/Api/adminProfile";
+import { setAdminToken } from "../../../Redux_store/slices/adminProfileSlice";
 
 // ✅ Zod Validation Schema
 const formSchema = z
@@ -51,9 +52,20 @@ const PasswordChange = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showOld, setShowOld] = useState(false);
+
   const [AddConfrom, setAddConfrom] = useState(false);
 
+
   const dispatch = useDispatch();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      dispatch(setAdminToken(token));
+    }
+  }, [dispatch]); // ✅ only once on mount
+
+  const { loading, error, token, passwordChangeSuccess } = useSelector((state) => state.adminProfile);
+
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -64,22 +76,36 @@ const PasswordChange = () => {
     },
   });
 
-  // ✅ Submit handler
-  const onSubmit = (data) => {
-    console.log("Password Updated:", data);
-    form.reset();
-    setAddConfrom(true);
+  const onSubmit = async (data) => {
+    try {
+      const payload = {
+        current_password: data.oldPassword,
+        new_password: data.password,
+        confirm_password: data.confirmPassword,
+      };
+
+      await dispatch(change_admin_password({ data: payload, token })).unwrap(); // ✅ unwrap for better error handling
+
+      setAddConfrom(true);
+
+      form.reset();
+      // dispatch(resetPasswordState());
+    } catch (err) {
+      console.error("Password change failed:", err);
+    }
   };
+
+
+
 
   const handleConfirm = async () => {
     await new Promise((resolve) => setTimeout(resolve, 500));
     console.log("Password confirmed!");
     setAddConfrom(false);
+    dispatch(resetPasswordState());
+
   };
 
-  // const pass = () => {
-  //   dispatch(change_admin_password(...));
-  // };
 
   return (
     <div className="pt-6 flex justify-center">
@@ -184,16 +210,26 @@ const PasswordChange = () => {
                   </FormItem>
                 )}
               />
+              {error && (
+                <p style={{ color: "red" }}>
+                  {typeof error === "object" ? error.message : error}
+                </p>
+              )}
 
+
+              {passwordChangeSuccess && <p className="text-green-500">{passwordChangeSuccess}</p>}
               {/* Submit */}
               <CardFooter className="flex justify-center mt-5">
                 <Button
-                  type="submit"
+                  type="submit" disabled={loading}
                   className="w-full sm:w-[300px] bg-blue-500 shadow-lg hover:bg-blue-700"
                 >
-                  CHANGE PASSWORD
+                  {loading ? 'Updating...' : 'CHANGE PASSWORD'}
                 </Button>
+
+
               </CardFooter>
+
             </form>
           </Form>
         </CardContent>

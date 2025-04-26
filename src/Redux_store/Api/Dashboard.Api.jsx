@@ -43,5 +43,27 @@ export const Department = createAsyncThunk('getdepartment', async (_, { rejectWi
         return rejectWithValue(error);
     }
 });
+export const Emi = createAsyncThunk('getemi', async (_, { rejectWithValue }) => {
+    try {
+        console.log(" Calling EMI API...");
+        const response = await fetch(`https://adminv2-api-dev.intellix360.in/api/v1/Desboardservice/emicontroller`, {
+            method: 'GET'
+        }); 
+        // console.log("API Response Data:", await response.json());
+        // console.log(" Response status:", response.status);
+        if (!response.ok) {
+            const errorData = await response.json(); 
+            return rejectWithValue(errorData);
+        }
+        
+        const result = await response.json();
+        console.log("result : :",result)
+        return result;
 
-export default { Employesss, Department };
+    } catch (error) {
+        console.log("🔥 Catch Error:", error);
+        return rejectWithValue(error);
+    }
+});
+
+export default { Employesss, Department, Emi };

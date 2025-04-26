@@ -1,7 +1,5 @@
-// src/redux/slices/adminProfileSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-import { view_admin_profile, change_admin_password } from "../Api/adminProfile";
-import { Update_Admin } from "../Api/adminProfile";
+import { view_admin_profile, change_admin_password, Update_Admin } from "../Api/adminProfile";
 
 const adminProfileSlice = createSlice({
   name: "admin",
@@ -9,10 +7,19 @@ const adminProfileSlice = createSlice({
     profile: {},
     loading: false,
     error: null,
+    token: null,
     passwordChangeSuccess: null,
-    passwordChangeError: null,
   },
-  reducers: {},
+  reducers: {
+    resetPasswordState: (state) => {
+      state.loading = false;
+      state.error = null;
+      state.passwordChangeSuccess = null;
+    }
+    , setAdminToken: (state, action) => {
+      state.token = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // View profile
@@ -29,21 +36,31 @@ const adminProfileSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Change password
+
+      // chnage password 
       .addCase(change_admin_password.pending, (state) => {
         state.loading = true;
+        state.error = null;
         state.passwordChangeSuccess = null;
-        state.passwordChangeError = null;
       })
       .addCase(change_admin_password.fulfilled, (state, action) => {
         state.loading = false;
-        state.passwordChangeSuccess =
-          action.payload.message || "Password changed successfully.";
+        state.error = null;
+        state.passwordChangeSuccess = "Password updated successfully!";
       })
       .addCase(change_admin_password.rejected, (state, action) => {
+        const errorMsg = action.payload || "Password not changed";
         state.loading = false;
-        state.passwordChangeError = action.payload || "Password change failed.";
+        state.error = errorMsg;
       })
+
+
+
+
+
+
+
+
       .addCase(Update_Admin.pending, (state) => {
         state.loading = true;
       })
@@ -62,4 +79,5 @@ const adminProfileSlice = createSlice({
   },
 });
 
+export const { resetPasswordState, setAdminToken } = adminProfileSlice.actions;
 export default adminProfileSlice.reducer;

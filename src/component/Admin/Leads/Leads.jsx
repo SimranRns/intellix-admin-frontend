@@ -57,7 +57,6 @@ import {
   searchingleads,
 } from "../../../Redux_store/Api/LeadsApi";
 
-
 import MyLeads from "./MyLeads/MyLeads";
 import { values } from "regenerator-runtime";
 import {
@@ -138,11 +137,11 @@ const Leads = () => {
     time: z.string().min(1, "Category time is required"),
     status: z.string().min(1, "Category status is required"),
   });
+  
   const {
     register: categoryRegister,
     handleSubmit: handleCategorySubmit,
     reset: categoryReset,
-    setValue,
     formState: { errors: categoryErrors },
   } = useForm({
     resolver: zodResolver(categorySchema),
@@ -157,27 +156,34 @@ const Leads = () => {
     assign_to: "",
     time: "",
     status: "",
-  });
-  // const onValidCategorySubmit = async (data) => {
-  //   try {
-  //     const response = await dispatch(AddLeads(data)); // ✅ send data to thunk
+    
 
-  //     if (response.meta.requestStatus === "fulfilled") {
-  //       toast.success("Lead added successfully!");
-  //       setLeadModalStatus(false); // ✅ close modal
-  //     } else {
-  //       toast.error("Failed to add lead");
-  //     }
-  //   } catch (err) {
-  //     console.error("Error:", err);
-  //     toast.error("Something went wrong");
-  //   }
-  // };
+  });
+
+  useEffect(()=>{
+    console.log(MYaddLeads,"how are you")
+  },[MYaddLeads])
+  
+  const onValidCategorySubmit = async (data) => {
+    try {
+      const response = await dispatch(AddLeads(data));
+
+      if (response.meta.requestStatus === "fulfilled") {
+        console.log("Lead added successfully!", success);
+
+        setLeadModalStatus(false);
+      } else {
+        console.log("Failed to add lead", error);
+      }
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  };
   const dispatch = useDispatch();
 
   const handlecategory = (data) => {
     console.log("Category Data:", data);
-    setCategoryModalStatus(false); // close Add Category modal
+    setCategoryModalStatus(false); 
     setAddConfrom(true);
     categoryReset();
 
@@ -204,27 +210,12 @@ const Leads = () => {
     console.log("hello");
   };
 
-  // const onValidCategorySubmit = async () => {
-  //   try {
-  //     const resultAction = await dispatch(AddLeads(MYaddLeads));
-  //     if (AddLeads.fulfilled.match(resultAction)) {
-  //       toast.success("Lead added successfully!");
-  //       setLeadModalStatus(false); // close the modal
-  //     } else {
-  //       toast.error(resultAction.payload?.message || "Failed to add lead");
-  //     }
-  //   } catch (error) {
-  //     toast.error("An unexpected error occurred");
-  //   }
-  // };
-
-  // ********************************************
   const {
     leads = [],
     loading,
     error,
   } = useSelector((state) => state.Leads || {});
-  // console.log("*************************************************************************************************",leads);
+  // console.log("*************************************************************",leads);
 
   useEffect(() => {
     dispatch(changestatusLeads());
@@ -232,16 +223,14 @@ const Leads = () => {
     dispatch(getallLeads());
     // console.log(getallLeads());
     dispatch(AddLeads());
-    // console.log(AddLeads());
+    console.log(AddLeads());
     dispatch(createCategory());
     // console.log(createCategory());
     dispatch(getAllCategory());
     // console.log(getAllCategory());
   }, [dispatch]);
 
-  // **********
-
-  console.log(MYaddLeads);
+  // console.log(MYaddLeads);
 
   const [searchInput, setSearchInput] = useState("");
 
@@ -253,23 +242,27 @@ const Leads = () => {
       assign_to: " ",
     };
 
-    dispatch(searchingleads(payload));
+    dispatch(changestatusLeads(payload));
   };
 
   const { categories } = useSelector((state) => state.Category);
-  console.log("AAAAAAAAAAAAAAAAAAAAAAAAA", categories);
+  // console.log("AAAAAAAAAAAAAAAAAAAAAAAAA", categories);
 
-  // useEffect(() => {
-  //   if (categories) {
-  //     toast.success(categories);
-  //     setCategoryModalStatus(false); // Close modal
-  //     form.reset(); // Reset form fields
-  //   }
-
-  //   if (error) {
-  //     toast.error(typeof error === "string" ? error : "Failed to add category");
-  //   }
-  // }, [categories, error]);
+  const handleSubmit = () => {
+    const payload = {
+      name: name,
+      email: email,
+      address: address,
+      phone_number: phone_number,
+      category_id: category_id,
+      assign_to: assign_to,
+      time: time,
+      status:status,
+    };
+    
+  
+    dispatch(changestatusLeads(payload));
+  };
 
   return (
     <>
@@ -431,16 +424,11 @@ const Leads = () => {
                     )}
                     className="grid gap-4 py-4"
                   >
-                    {/* Inputs */}
                     <Input
                       {...categoryRegister("name")}
                       placeholder="Enter Name"
                       className="col-span-4"
-                      onChange={(e) =>
-                        setaddLeads({ ...MYaddLeads, name: e.target.value })
-                      }
                     />
-
                     {categoryErrors.name && (
                       <p className="text-red-500 text-sm">
                         {categoryErrors.name.message}
@@ -563,13 +551,13 @@ const Leads = () => {
                       </SelectContent>
                     </Select>
                     {categoryErrors.status && (
-                      <p className="text-red-500 text-sm">
-                        {categoryErrors.status.message}
-                      </p>
-                    )}
+                        <p className="text-red-500 text-sm">
+                          {categoryErrors.status.message}
+                        </p>
+                      )}
 
                     <DialogFooter>
-                      <Button type="submit">Submit</Button>
+                      <Button  type="submit">Submit</Button>
                     </DialogFooter>
                   </form>
                 </DialogContent>
@@ -675,8 +663,9 @@ const Leads = () => {
                               <DropdownMenuItem asChild>
                                 <Dialog>
                                   <DialogTrigger asChild>
-                                    <Button variant="outline">
+                                    <Button   onClick={handleSubmit} variant="outline">
                                       {" "}
+                                     
                                       Change Status
                                     </Button>
                                   </DialogTrigger>
