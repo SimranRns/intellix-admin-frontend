@@ -30,37 +30,63 @@ import {
 } from "../../../src/components/ui/form";
 import ThankYouCard from "../../Dashboard/ThankYouCard";
 import { useDispatch, useSelector } from "react-redux";
-import { create_Session,  } from "../../../../Redux_store/Api/SessionApi";
+import { addSession, fetchSessions, getSessions, setDefaultSession, } from "../../../../Redux_store/Api/SessionApi";
 
 // Validation schema
 const sessionSchema = z.object({
-  year: z.string().min(4, "Year must be valid").max(4, "Year must be valid"),
+  year: z
+    .string()
+    .regex(/^\d{4}$/, "Year must be exactly 4 digits"),
 });
 
 const Sessions = () => {
   const [addSessions, setAddSessions] = useState(false);
   const [AddConfrom, setAddConfrom] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [defaultSession, setDefaultSessionId] = useState(null);
 
   const dispatch = useDispatch();
-  const { Sessions, loading, error } = useSelector((state) => state.Session);
 
-  // Fetch sessions from the API
-  useEffect(() => {
-    dispatch(create_Session()); // Dispatch the action to fetch session data
-  }, [dispatch]);
+  const handleSetDefaultSession = (id) => {
+    dispatch(setDefaultSession({ id }));
+    setDefaultSessionId(id);
+
+  };
+
+
 
   const form = useForm({
     resolver: zodResolver(sessionSchema),
     defaultValues: { year: "" },
   });
 
-  const handleSessionSubmit = (data) => {
-    dispatch(create_Session(data.year)); // Dispatch API call to create a new session
-    setAddSessions(false);
-    setAddConfrom(true);
-    form.reset();
+  const handleSessionSubmit = async (data) => {
+    try {
+      await dispatch(addSession({ session_year: data.year })).unwrap();  // Ensure this returns a promise
+      await dispatch(getSessions({ page: 1, session_year: '', limit: 19 }));
+
+      setAddSessions(false);
+      setAddConfrom(true);
+      form.reset();
+    } catch (error) {
+      console.error("Error adding session:", error);
+      // Handle the error - Show a message to the user
+    }
   };
+
+
+  const { loading, error, Session } = useSelector((state) => state.Session || {});
+
+  useEffect(() => {
+    if (Session) {
+      const defaultSessionItem = Session.find((s) => s.is_default);
+      if (defaultSessionItem) {
+        setDefaultSessionId(defaultSessionItem.id);
+      }
+    }
+  }, [Session]);
+
 
   const goBack = () => window.history.back();
 
@@ -75,12 +101,26 @@ const Sessions = () => {
 
   const sessionsPerPage = 8;
 
-  // Ensure safe access to sessionsByYear to prevent errors
-  const selectedSessions = Sessions?.slice(0, sessionsPerPage) || [];
-  
-  // useEffect(() => {
-  //   dispatch(Get_Session())
-  // }, [dispatch])
+  const selectedSessions = Session || [];
+
+
+
+
+
+  const { total, } = useSelector((state) => state.Session);
+
+  useEffect(() => {
+    dispatch(getSessions({ page: currentPage, session_year: searchQuery, limit: 8 }));
+  }, [dispatch, currentPage, searchQuery]);
+
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+
+
+
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       <AppSidebar />
@@ -125,26 +165,33 @@ const Sessions = () => {
                             <FormLabel>Session Year</FormLabel>
                             <FormControl>
                               <Input
-                                type="number"
+                                type="text"
                                 {...field}
+
                                 placeholder="Enter Year"
                               />
                             </FormControl>
                             <FormMessage />
+
                           </FormItem>
                         )}
                       />
                       <Button
                         type="submit"
+                        disabled={loading}
                         className="w-full bg-blue-600 text-white"
                       >
-                        Proceed
+                        {loading ? 'Adding...' : 'Add Session'}
                       </Button>
+                      {error?.message ? (
+                        <div className="text-red-700"> {error.message}</div>
+                      ) : ""}
                     </form>
                   </Form>
                 </DialogContent>
               </Dialog>
             </div>
+
             <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full sm:max-w-md">
               <Search size={18} className="text-gray-500" />
               <input
@@ -152,45 +199,54 @@ const Sessions = () => {
                 type="text"
                 placeholder="By Sessions Name..."
                 className="ml-2 w-full outline-none bg-transparent text-sm"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
+              <Button
+                onClick={() => dispatch(getSessions({ page: 1, session_year: searchQuery, limit: 8 }))}
+                className="bg-blue-500 text-white px-3 py-1 rounded-md text-sm ml-2"
+              >
+                Search
+              </Button>
+
             </div>
           </div>
 
           {/* Session Cards */}
           {loading ? (
             <div>Loading...</div>
-          ) : error ? (
-            <div>Error: {error}</div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-4 p-6">
-              {selectedSessions.map((Session) => (
-                <Card
-                  key={Session.id}
-                  className="w-auto max-w-sm shadow-md shadow-blue-500/50 rounded-xl mx-auto"
-                >
-                  <CardHeader>
-                    <CardTitle className="text-lg font-semibold">
-                      Year : {Session.Year}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <p>
-                      <span className="font-semibold">Total No. of Batches :</span> {Session.Total}
-                    </p>
-                  </CardContent>
-                  <CardFooter className="flex items-center justify-between">
-                    <label className="flex items-center gap-2 text-sm font-medium text-gray-500">
-                      <Checkbox
-                        checked={defaultSession === Session.id}
-                        onCheckedChange={() => setDefaultSession(Session.id)}
-                      />
-                      Default Session
-                    </label>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          )}
+          ) :
+
+            (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-4 p-6">
+                {selectedSessions.map((Session) => (
+                  <Card
+                    key={Session.id}
+                    className="w-auto max-w-sm shadow-md shadow-blue-500/50 rounded-xl mx-auto"
+                  >
+                    <CardHeader>
+                      <CardTitle className="text-lg font-semibold">
+                        Year : {Session.session_year}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p>
+                        <span className="font-semibold">Total No. of Batches :</span> {Session.total}
+                      </p>
+                    </CardContent>
+                    <CardFooter className="flex items-center justify-between">
+                      <label className="flex items-center gap-2 text-sm font-medium text-gray-500">
+                        <Checkbox
+                          checked={defaultSession === Session.id}
+                          onCheckedChange={() => handleSetDefaultSession(Session.id)}
+                        />
+                        Default Session
+                      </label>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            )}
 
           {/* Confirmation Dialog */}
           <Dialog open={AddConfrom} onOpenChange={setAddConfrom}>
@@ -217,6 +273,26 @@ const Sessions = () => {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+          <div className="flex justify-center items-center gap-4 mt-6">
+            <Button
+              disabled={currentPage === 1}
+              onClick={() => handlePageChange(currentPage - 1)}
+              className="bg-blue-500 text-white px-4 py-2 rounded-md"
+            >
+              Previous
+            </Button>
+            <span className="font-semibold">{currentPage}</span>
+            <Button
+              disabled={currentPage * sessionsPerPage >= total}
+
+              onClick={() => handlePageChange(currentPage + 1)}
+              className="bg-blue-500 text-white px-4 py-2 rounded-md"
+            >
+              Next
+            </Button>
+
+          </div>
+
         </main>
       </SidebarInset>
     </SidebarProvider>

@@ -53,6 +53,7 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAttendance } from "../../../Redux_store/Api/Attendance";
 import { useParams } from "react-router";
+import { setPage, setSearchFilters } from "../../../Redux_store/slices/Attendance";
 export const exportSchema = z
   .object({
     startDate: z
@@ -139,7 +140,6 @@ const Attendance = () => {
     setCurrentPage(newPage);
     dispatch(setPage(newPage));
   };
-  // const totalPages = Math.ceil(filteredData.length / attendancePerPage);
   const totalPages = Math.ceil(total / limit);
 
 
@@ -216,7 +216,7 @@ const Attendance = () => {
   };
   const [currentPage, setCurrentPage] = useState(1);
 
-  const attendancePerPage = 8; // You can change to 5 or 8 as needed
+  const attendancePerPage = 5; // You can change to 5 or 8 as needed
 
   const startIndex = (currentPage - 1) * attendancePerPage;
   const selectedAttendance = filteredData.slice(startIndex, startIndex + attendancePerPage);
