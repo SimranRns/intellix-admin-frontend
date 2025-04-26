@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AdminLogin from "./component/Login/AdminLogin";
 import Settings from "./component/Admin/Setting/Change_pass";
 import Dashboard from "./component/Admin/Dashboard/Dashboard";
-import StudentHeader from "./component/Admin/Student/StudentPage";
+import StudentHeader from "./component/Admin/Student/StudentHeader";
 import Advertisment from "./component/Admin/Advertisment/Advertisment";
 import Attendance from "./component/Admin/Attendance/Attendance";
 import Support from "./component/Admin/Support/Support";
@@ -65,16 +65,16 @@ const App = () => {
   // Show loader while loading
   //   if (loading) {
   //     return (
-  //       <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
-  //         <div className="relative flex  justify-center items-center">
-  //           <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
-  //           <img
-  //             src={logo}
-  //             alt="Loading"
-  //             className="rounded-full h-28 w-28"
-  //           />
-  //         </div>
-  //       </div>
+        // <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
+        //   <div className="relative flex  justify-center items-center">
+        //     <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+        //     <img
+        //       src={logo}
+        //       alt="Loading"
+        //       className="rounded-full h-28 w-28"
+        //     />
+        //   </div>
+        // </div>
   // );
   // }
   <>
