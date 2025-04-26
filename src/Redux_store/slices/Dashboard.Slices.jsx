@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Employesss, Department, Emi  } from "../Api/Dashboard.Api";
+import { Employesss, Department, Emi, StudentsAttendance  } from "../Api/Dashboard.Api";
 
 const initialState = {
     employees: {},
     departments: [],
     emi: {},    
+    studentsAttendance: {},
     loading: false,
     error: null
 };
@@ -51,13 +52,27 @@ const EmployessSlices = createSlice({
             })
             .addCase(Emi.fulfilled, (state, action) => {
                 console.log("daa"); 
-                console.log("RRRAAAAAMMM : : :",action.payload)
+                // console.log("RRRAAAAAMMM : : :",action.payload)
                 state.loading = false;
                 state.emi = action.payload;
             })
             .addCase(Emi.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload || "Something went wrong";
+            })
+            .addCase(StudentsAttendance.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(StudentsAttendance.fulfilled, (state, action) => {
+                console.log(action.payload);
+                
+                state.loading = false;
+                state.studentsAttendance = action.payload;
+            })
+            .addCase(StudentsAttendance.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             });
     },
 });

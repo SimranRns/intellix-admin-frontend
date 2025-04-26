@@ -27,7 +27,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Printer, MoreVertical } from "lucide-react";
 import { SidebarInset, SidebarProvider } from "../../src/components/ui/sidebar";
 import AppSidebar from "../../src/components/ui/app-sidebar";
-import { Employesss, Department, Emi } from "../../../Redux_store/Api/Dashboard.Api";
+import { Employesss, Department, Emi, StudentsAttendance } from "../../../Redux_store/Api/Dashboard.Api";
 import { Users, UserX, CalendarCheck, Timer, Book } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,17 +38,19 @@ const Dashboard = ({ children }) => {
   const [isOpen, setIsOpen] = useState(true);
   const dispaatch = useDispatch()
   const { employees, loading, error } = useSelector((state) => state.Employesss || {})
-  const departments  = useSelector((state) => state.Employesss.departments || {});
-  const emi = useSelector((state)=>state.Employesss.emi || {})
-console.log("CCCCCCCCCCCCCCCC   :  ::",emi)
+  const departments = useSelector((state) => state.Employesss.departments || {});
+  const emi = useSelector((state) => state.Employesss.emi || "Loading")
+  const Students = useSelector((state) => state.Employesss.studentsAttendance || {})
+  console.log("CCCCCCCCCCCCCCCC   :  ::", Students.data)
   // console.log(departments);
 
   useEffect(() => {
     dispaatch(Employesss())
     dispaatch(Department())
     dispaatch(Emi())
+    dispaatch(StudentsAttendance())
   }, [dispaatch])
-  
+
   const influencers = [
     { name: "Malik Wiwoho", projects: 23, followers: "1,620,201" },
     { name: "Nancy Auta", projects: 34, followers: "1,224,620" },
@@ -67,19 +69,37 @@ console.log("CCCCCCCCCCCCCCCC   :  ::",emi)
     { week: "Week 06", thisWeek: 300, lastWeek: 309 },
   ];
 
-  const chartData = [
-    { month: "January", desktop: 124, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-    { month: "March", desktop: 237, mobile: 120 },
-    { month: "April", desktop: 73, mobile: 190 },
-    { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 214, mobile: 120 },
-    { month: "June", desktop: 220, mobile: 10 },
-    { month: "June", desktop: 227, mobile: 100 },
-    { month: "June", desktop: 242, mobile: 30 },
-    { month: "June", desktop: 241, mobile: 10 },
-    { month: "June", desktop: 248, mobile: 170 },
-  ];
+  // const chartData = [
+  //   { month: "January", totalExpectedAmount: 121, TotalAmount: 80 },
+  //   { month: "February", totalExpectedAmount: 305, TotalAmount: 200 },
+  //   { month: "March", totalExpectedAmount: 237, TotalAmount: 120 },
+  //   { month: "April", totalExpectedAmount: 73, TotalAmount: 190 },
+  //   { month: "May", totalExpectedAmount: 209, TotalAmount: 130 },
+  //   { month: "June", totalExpectedAmount: 214, TotalAmount: 120 },
+  //   { month: "June", totalExpectedAmount: 220, TotalAmount: 10 },
+  //   { month: "June", totalExpectedAmount: 227, TotalAmount: 100 },
+  //   { month: "June", totalExpectedAmount: 242, TotalAmount: 30 },
+  //   { month: "June", totalExpectedAmount: 241, TotalAmount: 10 },
+  //   { month: "June", totalExpectedAmount: 248, TotalAmount: 170 },
+  // ];
+  const chartData = emi?.data?.lastFiveMonths?.map(item => ({
+    month: item.month.split(" ")[0],
+    TotalAmount: item.totalAmount,
+    totalExpectedAmount: item.totalExpectedAmount,
+  })) || [];
+
+  console.log("Ravu : ", Students);
+
+  const chartDataa = Students?.data?.data?.map(item => ({
+    month: item.day,
+    totalAttendance: item.totalAttendance,
+    totalPresent: item.totalPresent,
+    totalHalfDay: item.totalHalfDay,
+  })) || {} ;
+
+
+
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -173,7 +193,7 @@ console.log("CCCCCCCCCCCCCCCC   :  ::",emi)
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-2xl font-bold mb-4">
-                      School Performance
+                      Fees Overview
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -187,8 +207,8 @@ console.log("CCCCCCCCCCCCCCCC   :  ::",emi)
 
                     <ChartContainer
                       config={{
-                        mobile: { color: "red" },
-                        desktop: { color: "rgb(37, 99, 235)" },
+                        totalAttendance: { color: "red" },
+                        totalExpectedAmount: { color: "rgb(37, 99, 235)" },
                       }}
                     >
                       <AreaChart width={500} height={250} data={chartData}>
@@ -198,13 +218,13 @@ console.log("CCCCCCCCCCCCCCCC   :  ::",emi)
                         <ChartLegend />
                         <Area
                           type="monotone"
-                          dataKey="mobile"
+                          dataKey="TotalAmount"
                           stroke="rgb(37, 99, 235)"
                           fill="rgb(37, 99, 235)"
                         />
                         <Area
                           type="monotone"
-                          dataKey="desktop"
+                          dataKey="totalExpectedAmount"
                           stroke="#82ca9d"
                           fill="rgb(37, 99, 235)"
                         />
@@ -220,13 +240,6 @@ console.log("CCCCCCCCCCCCCCCC   :  ::",emi)
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <ul className="list-disc pl-5">
-                      {/* {schoolPerformanceData?.map((data, index) => (
-                   <li key={index} className="mb-2">
-                     <strong>{data?.week}:</strong> This Week - {data.thisWeek}, Last Week - {data.lastWeek}
-                   </li>
-                 ))} */}
-                    </ul>
 
                     {/* Wrapped in ChartContainer to provide context */}
                     <ChartContainer
@@ -235,7 +248,7 @@ console.log("CCCCCCCCCCCCCCCC   :  ::",emi)
                         desktop: { color: "rgb(37, 99, 235)" },
                       }}
                     >
-                      <BarChart accessibilityLayer data={chartData}>
+                      <BarChart accessibilityLayer data={chartDataa}>
                         <CartesianGrid vertical={false} />
                         <XAxis
                           dataKey="month"
@@ -246,19 +259,26 @@ console.log("CCCCCCCCCCCCCCCC   :  ::",emi)
                         />
                         <ChartTooltip />
                         <Bar
-                          dataKey="desktop"
+                          dataKey="totalAttendance"
                           fill="var(--color-desktop)"
                           radius={4}
                         />
                         <Bar
-                          dataKey="mobile"
+                          dataKey="totalPresent"
+                          fill="var(--color-mobile)"
+                          radius={4}
+                        />
+                        <Bar
+                          dataKey="totalHalfDay"
                           fill="var(--color-mobile)"
                           radius={4}
                         />
                       </BarChart>
                     </ChartContainer>
+
                   </CardContent>
                 </Card>
+
 
                 <div className="p-4 shadow-lg rounded-lg overflow-y-scroll  border border-gray-1000">
                   <h2 className="text-xl font-semibold mb-4">Department</h2>

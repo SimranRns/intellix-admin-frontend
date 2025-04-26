@@ -45,7 +45,6 @@ export const Department = createAsyncThunk('getdepartment', async (_, { rejectWi
 });
 export const Emi = createAsyncThunk('getemi', async (_, { rejectWithValue }) => {
     try {
-        console.log(" Calling EMI API...");
         const response = await fetch(`https://adminv2-api-dev.intellix360.in/api/v1/Desboardservice/emicontroller`, {
             method: 'GET'
         }); 
@@ -57,13 +56,37 @@ export const Emi = createAsyncThunk('getemi', async (_, { rejectWithValue }) => 
         }
         
         const result = await response.json();
-        console.log("result : :",result)
+        // console.log("result : :",result)
         return result;
-
+        
     } catch (error) {
         console.log("🔥 Catch Error:", error);
         return rejectWithValue(error);
     }
 });
 
-export default { Employesss, Department, Emi };
+// ✅ 4. Students Attendance API
+export const StudentsAttendance = createAsyncThunk('getStudentsAttendance', async (_, { rejectWithValue }) => {
+    try {
+        console.log(" Calling EMI API...");
+        const response = await fetch(`https://adminv2-api-dev.intellix360.in/api/v1/Desboardservice/studentsAttendancecontroller`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            return rejectWithValue(errorData);
+        }
+
+        const result = await response.json();
+        console.log("DATA DATA :  :" , result);
+        
+        return result;
+
+    } catch (error) {
+        return rejectWithValue(error);
+    }
+});
+
+
+export default { Employesss, Department, Emi, StudentsAttendance };
