@@ -69,7 +69,6 @@ const Advertisment = () => {
         console.error("Upload failed:", resultAction.payload);
         // Optional: show an error toast or message here
       }
-      dispatch(get_banner_api());
     }
 
     setTempImages([]);
@@ -81,7 +80,7 @@ const Advertisment = () => {
 
   useEffect(() => {
     dispatch(get_banner_api())
-  }, [dispatch])
+  }, [                        ])
   // if (loading) {
   //   return (
   //     <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
@@ -103,7 +102,7 @@ const Advertisment = () => {
         <SidebarInset>
           <Header />
           <div className="w-full">
-            <Tabs  className="m-5">
+            <Tabs className="m-5">
               <div className="overflow-x-auto md:overflow-hidden shadow-sm shadow-blue-300/50">
                 <TabsList className="flex bg-white-500 md:grid md:grid-cols-4 gap-8">
                   <TabsTrigger value="tab1">Add Banner</TabsTrigger>
