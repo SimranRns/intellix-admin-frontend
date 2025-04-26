@@ -40,7 +40,6 @@ const RootReducer = combineReducers({
     adminProfile: adminProfileSliceReducer,
     Employesss:EmployessSlicesReducer,
     subj:subject_sliceReducer,
-    Employesss:EmployessSlicesReducer,
     logout: adminSliceReducer,
     Session:SessionSliceReducer
 })
