@@ -30,7 +30,7 @@ import {
 } from "../../../src/components/ui/form";
 import ThankYouCard from "../../Dashboard/ThankYouCard";
 import { useDispatch, useSelector } from "react-redux";
-import { create_Session, Get_Session } from "../../../../Redux_store/Api/SessionApi";
+import { create_Session,  } from "../../../../Redux_store/Api/SessionApi";
 
 // Validation schema
 const sessionSchema = z.object({

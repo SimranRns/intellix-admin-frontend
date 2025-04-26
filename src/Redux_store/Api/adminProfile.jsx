@@ -1,8 +1,8 @@
-// src/redux/Api/adminProfile.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const token = localStorage.getItem("token");
+
 
 //get_admin
 export const view_admin_profile = createAsyncThunk(
@@ -31,42 +31,33 @@ export const view_admin_profile = createAsyncThunk(
 );
 
 export const change_admin_password = createAsyncThunk(
-  "change_admin_password",
-  async (
-    { id, new_password, confirm_password, current_password },
-    { rejectWithValue }
-  ) => {
+  "admin/password/change",
+  async ({ data, token }, { rejectWithValue }) => {
     try {
       const response = await fetch(`${BASE_URL}/api/v1/admin/password/change`, {
-        method: "PUT",
+        method: 'PATCH',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          id,
-          data: {
-            new_password,
-            confirm_password,
-            current_password,
-          },
-        }),
+        body: JSON.stringify(data), // ✅ ONLY send data
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        return rejectWithValue(errorData);
+        return rejectWithValue(errorData.message || 'Password not changed');
       }
 
       const result = await response.json();
       return result;
     } catch (error) {
-      return rejectWithValue(error.message || "Something went wrong");
+      return rejectWithValue(error.message || "Password not changed");
     }
   }
 );
 
-export default { view_admin_profile, change_admin_password };
+
+
 
 //update_admin_profile
 export const Update_Admin = createAsyncThunk("Update_Admin", async (data, { rejectWithValue }) => {
