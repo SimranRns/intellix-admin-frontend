@@ -49,7 +49,7 @@ const RootReducer = combineReducers({
     acad_courses: acad_course_sliceReducer,
     Session:SessionSliceReducer,
     Batch:BatchesSliceReducer,
-    Session:SessionSliceReducer,
+    // Session:SessionSliceReducer,
 })
 
 

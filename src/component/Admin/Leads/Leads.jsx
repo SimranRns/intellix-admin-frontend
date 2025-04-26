@@ -53,6 +53,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   AddLeads,
   changestatusLeads,
+  getAllAssignto,
   getallLeads,
   searchingleads,
 } from "../../../Redux_store/Api/LeadsApi";
@@ -64,6 +65,15 @@ import {
   getAllCategory,
 } from "../../../Redux_store/Api/CategoryApi";
 
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../../src/components/ui/form";
 const Leads = () => {
   const rowsPerPage = 5;
   const Navigate = useNavigate();
@@ -128,16 +138,15 @@ const Leads = () => {
     resolver: zodResolver(categoryOnlySchema),
   });
   const categorySchema = z.object({
-    name: z.string().min(1, "Category name is required"),
-    email: z.string().min(1, "Category email is required"),
-    address: z.string().min(1, "Category address is required"),
-    contact: z.string().min(1, "Category contact is required"),
-    category_id: z.string().min(1, "Category category_id is required"),
-    assign_to: z.string().min(1, "Category assign_to is required"),
-    time: z.string().min(1, "Category time is required"),
-    status: z.string().min(1, "Category status is required"),
+    name: z.string().min(1, "Name is required"),
+    email: z.string().min(1, "Email is required"),
+    address: z.string().min(1, "Address is required"),
+    contact: z.string().min(1, "Contact is required"),
+    category_id: z.coerce.number({ message: "Category ID must be a number" }),
+    assign_to: z.coerce.number({ message: "Assign To must be a number" }),
+    time: z.string().min(1, "Time is required"),
+    status: z.string().min(1, "Status is required"),
   });
-  
   const {
     register: categoryRegister,
     handleSubmit: handleCategorySubmit,
@@ -146,7 +155,6 @@ const Leads = () => {
   } = useForm({
     resolver: zodResolver(categorySchema),
   });
-
   const [MYaddLeads, setaddLeads] = useState({
     name: "",
     address: "",
@@ -156,44 +164,43 @@ const Leads = () => {
     assign_to: "",
     time: "",
     status: "",
-    
-
   });
+  useEffect(() => {
+    console.log(MYaddLeads, "how are you");
+  }, [MYaddLeads]);
 
-  useEffect(()=>{
-    console.log(MYaddLeads,"how are you")
-  },[MYaddLeads])
-  
+  useEffect(() => {});
   const onValidCategorySubmit = async (data) => {
+    const payload = {
+      ...data,
+      phone_number: data.contact, // map contact => phone_number
+    };
+    delete payload.contact; // remove 'contact' field if unnecessary
+
     try {
-      const response = await dispatch(AddLeads(data));
+      const response = await dispatch(AddLeads(payload));
 
       if (response.meta.requestStatus === "fulfilled") {
-        console.log("Lead added successfully!", success);
-
+        console.log("Lead added successfully!");
         setLeadModalStatus(false);
       } else {
-        console.log("Failed to add lead", error);
+        console.error("Failed to add lead:", response.error);
       }
     } catch (err) {
-      console.error("Error:", err);
+      console.error("Error adding lead:", err);
     }
   };
   const dispatch = useDispatch();
-
   const handlecategory = (data) => {
     console.log("Category Data:", data);
-    setCategoryModalStatus(false); 
+    setCategoryModalStatus(false);
     setAddConfrom(true);
     categoryReset();
-
     dispatch(createCategory(data));
   };
-
   const onInvalidCategorySubmit = (errors) => {
     console.log("Validation Errors:", errors);
   };
-
   const handleConfirm = async () => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -205,32 +212,19 @@ const Leads = () => {
       console.error("Submission failed:", error);
     }
   };
-
-  const onhandleDat = async () => {
-    console.log("hello");
-  };
-
   const {
     leads = [],
     loading,
     error,
   } = useSelector((state) => state.Leads || {});
-  // console.log("*************************************************************",leads);
 
   useEffect(() => {
     dispatch(changestatusLeads());
-    // console.log(changestatusLeads());
     dispatch(getallLeads());
-    // console.log(getallLeads());
     dispatch(AddLeads());
-    console.log(AddLeads());
     dispatch(createCategory());
-    // console.log(createCategory());
     dispatch(getAllCategory());
-    // console.log(getAllCategory());
   }, [dispatch]);
-
-  // console.log(MYaddLeads);
 
   const [searchInput, setSearchInput] = useState("");
 
@@ -244,9 +238,21 @@ const Leads = () => {
 
     dispatch(changestatusLeads(payload));
   };
+  
+  const assignToList = useSelector((state) => state.Leads.assignToList);
+  console.log(assignToList,"**********************************************88",assignToList);
+
 
   const { categories } = useSelector((state) => state.Category);
-  // console.log("AAAAAAAAAAAAAAAAAAAAAAAAA", categories);
+
+  const newArray = categories.map((value)=>{
+    // console.log(value,"********************************")
+    return { label: `${value.name}`, value: `${value.id}` }
+  })
+  const newArray2 = assignToList.map((value)=>{
+    // console.log(value,"********************************")
+    return { label: `${value.first_name}`, value: `${value.id}` }
+  })
 
   const handleSubmit = () => {
     const payload = {
@@ -257,13 +263,23 @@ const Leads = () => {
       category_id: category_id,
       assign_to: assign_to,
       time: time,
-      status:status,
+      status: status,
     };
-    
-  
+
     dispatch(changestatusLeads(payload));
   };
 
+  const onSubmit = () => {
+    console.log(onSubmit);
+  };
+
+  
+
+useEffect(() => {
+  dispatch(getAllAssignto());
+  console.log(getAllAssignto,"***************************************788");
+  
+}, [dispatch]);
   return (
     <>
       <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
@@ -350,18 +366,16 @@ const Leads = () => {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
               />
-              <Button onClick={handleSearch} className="bg-blue-600 text-white">
+              {/* <Button onClick={handleSearch} className="bg-blue-600 text-white">
                 Search
-              </Button>
+              </Button> */}
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">{category}</Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem
-                    onClick={() => setCategory("All Categories")}
-                  >
+                  <DropdownMenuItem >
                     All Categories
                   </DropdownMenuItem>
                   {Array.isArray(categories) &&
@@ -381,28 +395,31 @@ const Leads = () => {
                   <Button variant="outline">{status}</Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => setStatus("All Status")}>
+                  <DropdownMenuItem >
                     All Status
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setStatus("New")}>
-                    New
+                  <DropdownMenuItem onClick={() => setStatus("Hot")}>
+                  Hot
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setStatus("In Progress")}>
-                    In Progress
+                  <DropdownMenuItem onClick={() => setStatus("Inconservation")}>
+                  Inconservation
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setStatus("Completed")}>
-                    Completed
+                  <DropdownMenuItem onClick={() => setStatus("Converted")}>
+                  Converted
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setStatus("Droped")}>
+                  Droped
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <Button variant="outline">
+              {/* <Button variant="outline">
                 <DownloadIcon className="h-4 w-4 mr-2" /> Export to Excel
-              </Button>
-              <Input type="date" className="w-60 md:col-span-2 lg:col-span-2" />
+              </Button> */}
+              {/* <Input type="date" className="w-60 md:col-span-2 lg:col-span-2" /> */}
 
               {/* add Leads */}
-              <Dialog open={leadModalStatus} onOpenChange={setLeadModalStatus}>
+                <Dialog open={leadModalStatus} onOpenChange={setLeadModalStatus}>
                 <DialogTrigger asChild>
                   <Button className="bg-blue-600 text-white">
                     <PlusIcon className="mr-1" /> Add Leads
@@ -416,150 +433,114 @@ const Leads = () => {
                   <DialogHeader>
                     <DialogTitle>Add Leads</DialogTitle>
                   </DialogHeader>
-                  <form
-                    onSubmit={handleCategorySubmit(
-                      onValidCategorySubmit,
-                      onInvalidCategorySubmit,
-                      onhandleDat
-                    )}
-                    className="grid gap-4 py-4"
-                  >
-                    <Input
-                      {...categoryRegister("name")}
-                      placeholder="Enter Name"
-                      className="col-span-4"
-                    />
-                    {categoryErrors.name && (
-                      <p className="text-red-500 text-sm">
-                        {categoryErrors.name.message}
-                      </p>
-                    )}
 
-                    <Input
-                      {...categoryRegister("email")}
-                      placeholder="Enter Email"
-                      className="col-span-4"
-                      onChange={(e) =>
-                        setaddLeads({ ...MYaddLeads, email: e.target.value })
-                      }
-                    />
-                    {categoryErrors.email && (
-                      <p className="text-red-500 text-sm">
-                        {categoryErrors.email.message}
-                      </p>
-                    )}
-
-                    <Input
-                      {...categoryRegister("address")}
-                      placeholder="Enter Address"
-                      className="col-span-4"
-                      onChange={(e) =>
-                        setaddLeads({ ...MYaddLeads, address: e.target.value })
-                      }
-                    />
-                    {categoryErrors.address && (
-                      <p className="text-red-500 text-sm">
-                        {categoryErrors.address.message}
-                      </p>
-                    )}
-
-                    <Input
-                      {...categoryRegister("contact")}
-                      placeholder="Enter Contact"
-                      className="col-span-4"
-                      onChange={(e) =>
-                        setaddLeads({
-                          ...MYaddLeads,
-                          phone_number: e.target.value,
-                        })
-                      }
-                    />
-                    {categoryErrors.contact && (
-                      <p className="text-red-500 text-sm">
-                        {categoryErrors.contact.message}
-                      </p>
-                    )}
-
-                    <Input
-                      type="number"
-                      {...categoryRegister("category_id")}
-                      placeholder="Enter Category ID"
-                      className="col-span-4"
-                      onChange={(e) =>
-                        setaddLeads({
-                          ...MYaddLeads,
-                          category_id: parseInt(e.target.value),
-                        })
-                      }
-                    />
-                    {categoryErrors.category_id && (
-                      <p className="text-red-500 text-sm">
-                        {categoryErrors.category_id.message}
-                      </p>
-                    )}
-
-                    <Input
-                      type="number"
-                      {...categoryRegister("assign_to")}
-                      placeholder="Enter assign_to ID"
-                      className="col-span-4"
-                      onChange={(e) =>
-                        setaddLeads({
-                          ...MYaddLeads,
-                          assign_to: parseInt(e.target.value),
-                        })
-                      }
-                    />
-                    {categoryErrors.assign_to && (
-                      <p className="text-red-500 text-sm">
-                        {categoryErrors.assign_to.message}
-                      </p>
-                    )}
-
-                    <Input
-                      type="text"
-                      {...categoryRegister("time")}
-                      placeholder="HH:MM:SS"
-                      pattern="^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$"
-                      className="col-span-4"
-                      onChange={(e) =>
-                        setaddLeads({ ...MYaddLeads, time: e.target.value })
-                      }
-                    />
-
-                    {categoryErrors.time && (
-                      <p className="text-red-500 text-sm">
-                        {categoryErrors.time.message}
-                      </p>
-                    )}
-
-                    <Select
-                      onValueChange={(value) =>
-                        setaddLeads({ ...MYaddLeads, status: value })
-                      }
-                    >
-                      <SelectTrigger className="col-span-4">
-                        <SelectValue placeholder="Select Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Inconservation">
-                          Inconservation
-                        </SelectItem>
-                        <SelectItem value="Droped">Droped</SelectItem>
-                        <SelectItem value="Hot">Hot</SelectItem>
-                        <SelectItem value="Converted">Converted</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {categoryErrors.status && (
-                        <p className="text-red-500 text-sm">
-                          {categoryErrors.status.message}
-                        </p>
+                  <Form {...form}>
+                    <form
+                      onSubmit={handleCategorySubmit(
+                        onValidCategorySubmit,
+                        onInvalidCategorySubmit
                       )}
+                      className="space-y-4"
+                    >
+                      {[
+                        {
+                          name: "name",
+                          label: "Name",
+                          placeholder: "Enter name",
+                          type: "text",
+                        },
+                        {
+                          name: "email",
+                          label: "Email",
+                          placeholder: "Enter email",
+                          type: "text",
+                        },
+                        {
+                          name: "address",
+                          label: "Address",
+                          placeholder: "Enter address",
+                          type: "text",
+                        },
+                        {
+                          name: "contact",
+                          label: "Contact",
+                          placeholder: "Enter contact",
+                          type: "text",
+                        },
+                        {
+                          name: "category_id",
+                          label: "Category ID",
+                          type: "select",
+                          options: newArray,
+                        },
+                        {
+                          name: "assign_to",
+                          label: "Assign To",
+                          type: "select",
+                          options: newArray2
+                        },
+                        {
+                          name: "time",
+                          label: "Time",
+                          placeholder: "HH:MM:SS",
+                          type: "text",
+                        },
+                        {
+                          name: "status",
+                          label: "Status",
+                          type: "select",
+                          options: [
+                            { label: "Select Status", value: "" },
+                            { label: "New", value: "New" },
+                            { label: "In Progress", value: "In Progress" },
+                            { label: "Completed", value: "Completed" },
+                          ],
+                        },
+                      ].map(({ name, label, placeholder, type, options }) => (
+                        <FormField
+                          key={name}
+                          control={form.control}
+                          name={name}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{label}</FormLabel>
+                              <FormControl>
+                                {type === "select" ? (
+                                  <select
+                                    {...field}
+                                    {...categoryRegister(name)}
+                                    className="w-full border rounded p-2 bg-white text-black dark:bg-black dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                  >
+                                    {options.map((option) => (
+                                      <option
+                                        key={option.value}
+                                        value={option.value}
+                                      >
+                                        {option.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                ) : (
+                                  <Input
+                                    placeholder={placeholder}
+                                    {...categoryRegister(name)}
+                                    className="w-full border rounded p-2 bg-white text-black dark:bg-black dark:text-white"
+                                  />
+                                )}
+                              </FormControl>
+                              {categoryErrors[name] && (
+                                <p className="text-sm text-red-500">
+                                  {categoryErrors[name]?.message}
+                                </p>
+                              )}
+                            </FormItem>
+                          )}
+                        />
+                      ))}
 
-                    <DialogFooter>
-                      <Button  type="submit">Submit</Button>
-                    </DialogFooter>
-                  </form>
+                      <Button type="submit">Submit</Button>
+                    </form>
+                  </Form>
                 </DialogContent>
               </Dialog>
 
@@ -663,9 +644,11 @@ const Leads = () => {
                               <DropdownMenuItem asChild>
                                 <Dialog>
                                   <DialogTrigger asChild>
-                                    <Button   onClick={handleSubmit} variant="outline">
+                                    <Button
+                                      onClick={handleSubmit}
+                                      variant="outline"
+                                    >
                                       {" "}
-                                     
                                       Change Status
                                     </Button>
                                   </DialogTrigger>
