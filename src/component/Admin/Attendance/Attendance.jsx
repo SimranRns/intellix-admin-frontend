@@ -48,8 +48,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../../src/components/ui/pagination";
+// import { setSearchFilters, setPage } from '../../../Redux_store/Slices/AttendanceSlice';
+
 import { useDispatch, useSelector } from "react-redux";
-import get_stu_attendance from "../../../Redux_store/Api/Attendance";
+import { fetchAttendance } from "../../../Redux_store/Api/Attendance";
 import { useParams } from "react-router";
 export const exportSchema = z
   .object({
@@ -91,46 +93,56 @@ const Attendance = () => {
   const [toDate, setToDate] = useState(new Date(2025, 0, 30));
   // Table data
   const [attendanceData, setAttendanceData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loadingg, setLoading] = useState(false);
   const [openFirstModal, setOpenFirstModal] = useState(false);
   const [openSecondModal, setOpenSecondModal] = useState(false);
   const inputRef = useRef(null);
   const dispatch = useDispatch()
   const { id } = useParams()
-  // useEffect(() => {
-  //   dispatch(get_stu_attendance())
-  // }, [])
-  const { att } = useSelector((state) => state.attend);
 
-  // For the date/time display at the bottom
-  // const currentDateTime = new Date().toLocaleString();
 
-  // Mock fetching data (replace with real API if needed)
+
+
+
+
+
+
+  const { data, total, page, limit, search, sessionId, loading, error } = useSelector(state => state.attendance);
   useEffect(() => {
-    if (att && Array.isArray(att)) {
-      setAttendanceData(att);
-      setTotalStudents(att.length);
-      setOutsideCampus(att.filter((d) => d.status === "Out").length);
-      setInsideCampus(att.filter((d) => d.status === "In").length);
-      setOnLeave(att.filter((d) => d.status === "On Leave").length);
+    if (data && Array.isArray(data)) {
+      setAttendanceData(data);
+      setTotalStudents(data.length);
+      setOutsideCampus(data.filter((d) => d.status === "Out").length);
+      setInsideCampus(data.filter((d) => d.status === "In").length);
+      setOnLeave(data.filter((d) => d.status === "On Leave").length);
     }
-  }, [att]);
+  }, [data]);
 
   useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setAttendanceData(data); // <-- This line and mock data are no longer needed
-
-      setLoading(false);
-    }, 1000);
-  }, []);
-
+    dispatch(fetchAttendance({ sessionId, ...search, page, limit }));
+  }, [dispatch, sessionId, search, page, limit]);
 
   useEffect(() => {
-    if (id) {
-      dispatch(get_stu_attendance({ course_id: parseInt(id) }));
-    }
-  }, [dispatch, id]);
+    setCurrentPage(page);
+  }, [page]);
+  const handleSearch = (e) => {
+    e.preventDefault();
+    dispatch(setSearchFilters({
+      name: searchName,
+      batch: searchBatchName,
+      enrollment_id: searchEnrollmentId
+    }));
+    dispatch(setPage(1));
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    dispatch(setPage(newPage));
+  };
+  // const totalPages = Math.ceil(filteredData.length / attendancePerPage);
+  const totalPages = Math.ceil(total / limit);
+
+
 
   // Filter data by selected tab
   const filteredData = attendanceData.filter((student) => {
@@ -144,14 +156,7 @@ const Attendance = () => {
 
 
   // Handlers
-  const handleSearch = () => {
-    // Implement filtering logic based on search fields if needed
-    console.log("Searching:", {
-      searchEnrollmentId,
-      searchName,
-      searchBatchName,
-    });
-  };
+
 
   const handleExportData = () => {
     // Implement export logic
@@ -212,7 +217,7 @@ const Attendance = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const attendancePerPage = 8; // You can change to 5 or 8 as needed
-  const totalPages = Math.ceil(filteredData.length / attendancePerPage);
+
   const startIndex = (currentPage - 1) * attendancePerPage;
   const selectedAttendance = filteredData.slice(startIndex, startIndex + attendancePerPage);
 
@@ -292,6 +297,8 @@ const Attendance = () => {
                   onChange={(e) => setSearchBatchName(e.target.value)}
                   className="border border-blue-500 px-2 py-2 h-10 text-sm rounded-lg text-gray-700 shadow-md w-full sm:w-auto"
                 />
+                {loading && <p>Loading...</p>}
+                {error && <p>Error: {error}</p>}
 
                 <button
                   onClick={handleSearch}
@@ -377,9 +384,11 @@ const Attendance = () => {
 
 
             {/* Table or "No Data Available" */}
-            <div className="overflow-x-auto max-h-[300px] overflow-y-auto border  rounded-md">
+            <div className="overflow-x-auto max-h-[300px] overflow-y-auto border rounded-md">
               {loading ? (
-                <p className="text-center">Loading...</p>
+                <p className="text-center py-4">Loading...</p>
+              ) : error ? (
+                <p className="text-center py-4 text-red-500">{error}</p>
               ) : filteredData.length > 0 ? (
                 <table className="w-full border-collapse border">
                   <thead className="bg-gray-200 text-gray-800 sticky top-0 z-10">
@@ -391,36 +400,35 @@ const Attendance = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {selectedAttendance.slice(0, 5).map((student) => (
+                    {data.map((student) => (
                       <tr key={student.id}>
-                        <td className="border text-md px-4 py-2">{student.enrollmentId}</td>
-                        <td className="border text-md px-4 py-2">{student.name}</td>
-                        <td className="border text-md px-4 py-2">{student.batchName}</td>
+                        <td className="border text-md px-4 py-2">{student.enrollment_id}</td>
+                        <td className="border text-md px-4 py-2">{student.Student.name}</td>
+                        <td className="border text-md px-4 py-2">{student.Student.Batch.BatchesName}</td>
                         <td className="border text-md px-4 py-2">{student.status}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               ) : (
-                <p className="text-center text-red-600 font-semibold font-mono">
-                  No Data Available
-                </p>
+                <p className="text-center py-4">No data available</p>
               )}
             </div>
+
 
             <Pagination className="mt-4 justify-center">
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
-                    href="#"
-                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+
+                    onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
                   />
                 </PaginationItem>
 
                 {Array.from({ length: totalPages }, (_, i) => (
                   <PaginationItem key={i}>
                     <PaginationLink
-                      href="#"
+
                       onClick={() => setCurrentPage(i + 1)}
                       className={`px-4 py-2 rounded-md ${currentPage === i + 1
                         ? "bg-blue-600 text-white"
@@ -434,10 +442,7 @@ const Attendance = () => {
 
                 <PaginationItem>
                   <PaginationNext
-                    href="#"
-                    onClick={() =>
-                      setCurrentPage(Math.min(totalPages, currentPage + 1))
-                    }
+                    onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
                   />
                 </PaginationItem>
               </PaginationContent>

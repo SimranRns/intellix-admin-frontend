@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { create_Session, Get_Session } from "../Api/SessionApi";
+import { create_Session, fetchSessions } from "../Api/SessionApi";
 
 const initialState = {
     Session: [],
@@ -29,14 +29,15 @@ const SessionSlice = createSlice({
             })
 
             //Get_Session
-            .addCase(Get_Session.pending, (state) => {
+            .addCase(fetchSessions.pending, (state) => {
                 state.loading = true;
+                state.error = null;
               })
-              .addCase(Get_Session.fulfilled, (state, action) => {
+              .addCase(fetchSessions.fulfilled, (state, action) => {
                 state.loading = false;
-                state.Session = action.payload;
+                state.Session = action.payload.sessions;
               })
-              .addCase(Get_Session.rejected, (state, action) => {
+              .addCase(fetchSessions.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
               })

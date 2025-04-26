@@ -1,34 +1,53 @@
 import { createSlice } from "@reduxjs/toolkit";
-import get_stu_attendance from "../Api/Attendance";
+import { fetchAttendance } from "../Api/Attendance";
 
-const attendance_slice = createSlice({
-    name: "attend",
-    initialState: {
-        att: [],
-        loading: false,
-        error: null,
-        pagination: {
-            total: 0,
-            page: 1,
-            limit: 10,
-        },
+
+const initialState = {
+    data: [],
+    total: 0,
+    page: 1,
+    limit: 5,
+    search: {
+      name: '',
+      batch: '',
+      enrollment_id: ''
+    },
+    sessionId: 1,
+    loading: false,
+    error: null,
+  };
+
+const attendanceSlice = createSlice({
+    name: 'attendance',
+    initialState,
+    reducers: {
+      setSearchFilters(state, action) {
+        state.search = action.payload;
+      },
+      setPage(state, action) {
+        state.page = action.payload;
+      },
+      setLimit(state, action) {
+        state.limit = action.payload;
+      },
     },
     extraReducers: (builder) => {
-        builder
-            .addCase(get_stu_attendance.pending, (state) => {
-                state.loading = true;
-            })
-            .addCase(get_stu_attendance.fulfilled, (state, action) => {
-                state.loading = false;
-                state.att = action.payload.data; // Assuming the response contains `data`
-                state.pagination.total = action.payload.total; // Total number of records
-                state.pagination.page = action.payload.page; // Current page
-                state.pagination.limit = action.payload.limit; // Records per page
-            })
-            .addCase(get_stu_attendance.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.error.message; // Error message from API
-            });
+      builder
+        .addCase(fetchAttendance.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(fetchAttendance.fulfilled, (state, action) => {
+          state.loading = false;
+          state.data = action.payload.data;
+          state.total = action.payload.total;
+        })
+        .addCase(fetchAttendance.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.payload || 'Failed to fetch attendance';
+        });
     },
-});
-export default attendance_slice.reducer
+  });
+  
+  export const { setSearchFilters, setPage, setLimit } = attendanceSlice.actions;
+  export default attendanceSlice.reducer;

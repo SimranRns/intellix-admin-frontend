@@ -32,18 +32,19 @@ export const create_Session = createAsyncThunk(
 
   //Get_Session
 
- export const Get_Session = createAsyncThunk('Get_Session', async (_, { rejectWithValue }) => {
+ export const fetchSessions = createAsyncThunk('session/fetch', async (_, { rejectWithValue }) => {
      try {
-         const responce = await fetch(`${BASE_URL}/api/v1/session/get`, {
-             method: 'GET'
-         })
+         const responce = await fetch(`${BASE_URL}/api/v1/session/fetch`)
          if (!responce.ok) {
-             const errordata = responce.json()
-             return rejectWithValue(errordata)
-         }
+          const errordata = await responce.json();
+          return rejectWithValue(errordata.message || "Failed to fetch sessions");
+      }
+      
          const result = await responce.json()
-         return result
+         return result;
      } catch (error) {
-         return rejectWithValue(error)
+         return rejectWithValue(error.message)
      }
  })
+
+

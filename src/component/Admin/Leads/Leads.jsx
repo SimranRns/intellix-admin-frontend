@@ -158,21 +158,21 @@ const Leads = () => {
     time: "",
     status: "",
   });
-  // const onValidCategorySubmit = async (data) => {
-  //   try {
-  //     const response = await dispatch(AddLeads(data)); // ✅ send data to thunk
+  const onValidCategorySubmit = async (data) => {
+    try {
+      const response = await dispatch(AddLeads(data)); // ✅ send data to thunk
 
-  //     if (response.meta.requestStatus === "fulfilled") {
-  //       toast.success("Lead added successfully!");
-  //       setLeadModalStatus(false); // ✅ close modal
-  //     } else {
-  //       toast.error("Failed to add lead");
-  //     }
-  //   } catch (err) {
-  //     console.error("Error:", err);
-  //     toast.error("Something went wrong");
-  //   }
-  // };
+      if (response.meta.requestStatus === "fulfilled") {
+        toast.success("Lead added successfully!");
+        setLeadModalStatus(false); // ✅ close modal
+      } else {
+        toast.error("Failed to add lead");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      toast.error("Something went wrong");
+    }
+  };
   const dispatch = useDispatch();
 
   const handlecategory = (data) => {
