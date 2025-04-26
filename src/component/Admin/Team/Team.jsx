@@ -81,13 +81,12 @@ import {
 
 // Schema for the first form (Basic Details)
 const basicDetailsSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z
-    .string()
-    .email("Please enter a valid email")
-    .min(1, "Email is required"),
-  department: z.string().min(1, "Department is required"),
+  first_name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email").min(1, "Email is required"),
+  contact_number: z.string().min(10, "Contact Number must be 10 digits"),
 });
+
+
 
 // Schema for the second form (Additional Details)
 const additionalDetailsSchema = z.object({
@@ -131,7 +130,7 @@ const additionalDetailsSchema2 = z.object({
     .regex(/^\d{6}$/, "Permanent Pincode must be exactly 6 digits.")
     .optional(),
 
-  departmentSelection: z.string().min(1, "Department selection is required."),
+  // departmentSelection: z.string().min(1, "Department selection is required."),
 });
 
 const bankDetailsSchema = z.object({
@@ -141,23 +140,6 @@ const bankDetailsSchema = z.object({
   ifscCode: z.string().regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC Code"),
   accountHolderName: z.string().min(3, "Name should be at least 3 characters"),
 });
-
-// Mock teacher data
-// const Teachers = Array.from({ length: 1 }, (_, i) => ({
-//   id: i + 1,
-//   name: "Munaroh Steffani",
-//   username: `munaroh_${i + 1}`,
-//   // subject: ["Joined 01-01-2024", "Assigned 13", "Completed 3"],
-//   subject: "Joined 01-01-2024",
-//   icon: Clock,
-//   subject: "Assigned 13",
-//   icon: Logs,
-//   subject: "Assigned 13",
-//   icon: Logs,
-
-//   image: "https://github.com/shadcn.png",
-//   // icon: [Clock, Logs, Logs],
-// }));
 
 import {
   Form,
@@ -169,7 +151,6 @@ import {
 } from "../../src/components/ui/form";
 import { Popover, PopoverTrigger } from "../../src/components/ui/popover";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-
 import ThankYouCard from "../Dashboard/ThankYouCard";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import Header from "../Dashboard/Header";
@@ -192,6 +173,7 @@ import {
 } from "../../../Redux_store/Api/TeamApi";
 import { useDispatch, useSelector } from "react-redux";
 import logo from "../../../assets/Image/intellix.png";
+import { get_Deparment } from "../../../Redux_store/Api/Department";
 // import alert from "react-hot-alert";
 
 const Team = ({ teacherData }) => {
@@ -216,6 +198,9 @@ const Team = ({ teacherData }) => {
   const fileInputRef = useRef(null);
   const dispatch = useDispatch();
   const { Teachers, loading, error } = useSelector((state) => state.team || {});
+  const { Department } = useSelector((state) => state.Department || {});
+  console.log(Department.data);
+
   const [date, setDate] = useState("");
   const [activePage, setActivePage] = useState("Team");
   const { id } = useParams();
@@ -237,13 +222,11 @@ const Team = ({ teacherData }) => {
     contact_number: "",
     emergency_number: "",
     email: "",
-    date_of_birth: "",
+    date_of_birth: "2025-05-21",
     residential_address: "",
     district: "",
     state: "",
-    status: "",
-    start_time: "",
-    end_time: "",
+    status: "Active",
     pincode: "",
     permanent_address: "",
     permanent_district: "",
@@ -258,13 +241,14 @@ const Team = ({ teacherData }) => {
   });
 
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const departmentList = [
-    "Science",
-    "Mathematics",
-    "History",
-    "English",
-    "Computer Science",
-  ];
+
+
+
+  const departmentList = Department.data
+  console.log(departmentList)
+  departmentList?.map((value) => {
+    console.log(value.name, "**********************************************")
+  })
 
   const updateTeachersPerPage = () => {
     const width = window.innerWidth;
@@ -281,21 +265,23 @@ const Team = ({ teacherData }) => {
   const basicForm = useForm({
     resolver: zodResolver(basicDetailsSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      department: "",
+      first_name: '',
+      email: '',
+      contact_number: '',
     },
   });
 
+
   useEffect(() => {
-    if (selectedEmployee) {
+    if (open && Teachers) {
       basicForm.reset({
-        name: selectedEmployee.name || "",
-        email: selectedEmployee.email || "",
-        department: selectedEmployee.department || "",
+        first_name: Teachers.first_name || '',
+        email: Teachers.email || '',
+        contact_number: Teachers.contact_number || '',
       });
     }
-  }, [selectedEmployee, basicForm]);
+  }, [open, Teachers, basicForm]);
+
 
   const additionalForm = useForm({
     resolver: zodResolver(additionalDetailsSchema),
@@ -536,6 +522,9 @@ const Team = ({ teacherData }) => {
     dispatch(GetTeam({ first_name: first_name }));
   }, [first_name]);
 
+  useEffect(() => {
+    dispatch(get_Deparment());
+  }, [dispatch]);
   const handleDelete = async () => {
     try {
       if (deleteemployee) {
@@ -995,12 +984,12 @@ const Team = ({ teacherData }) => {
                                     value={
                                       field.value
                                         ? format(
-                                            new Date(field.value),
-                                            "yyyy-MM-dd"
-                                          )
+                                          new Date(field.value),
+                                          "yyyy-MM-dd"
+                                        )
                                         : ""
                                     }
-                                    // onChange={(e) => field.onChange(e.target.value)}
+                                  // onChange={(e) => field.onChange(e.target.value)}
                                   />
                                 </Popover>
 
@@ -1348,41 +1337,36 @@ const Team = ({ teacherData }) => {
                                     <DropdownMenuTrigger asChild>
                                       <Button
                                         type="button"
-                                        // onChange={(e)=>{
-
-                                        //   setemployee({...addemployee,department:e.target.value})
-                                        //   field.onChange(e)
-                                        // }}
                                         className="w-full border border-blue-300 rounded-xl p-5 shadow-lg py-2 focus:ring-1 focus:ring-blue-500 font-sm flex items-center justify-between"
                                       >
                                         <span className="text-gray-500">
-                                          {field.value || "Select Department"}
+                                          {selectedDepartment?.name || "Select Department"}
                                         </span>
-                                        <ChevronDown
-                                          size={16}
-                                          className="ml-2"
-                                        />
+                                        <ChevronDown size={16} className="ml-2" />
                                       </Button>
                                     </DropdownMenuTrigger>
 
                                     <DropdownMenuContent
                                       align="start"
-                                      className="max-h-[20vh] overflow-y-auto w-[44vh] shadow-md rounded-md mt-2 border border-gray-300 "
+                                      className="max-h-[20vh] overflow-y-auto w-[44vh] shadow-md rounded-md mt-2 border border-gray-300"
                                     >
                                       {departmentList?.map((dept, index) => (
                                         <DropdownMenuItem
                                           key={index}
-                                          onClick={(e) => {
-                                            field.onChange(dept);
+                                          onClick={() => {
+                                            // Remove the department if already selected
                                             setemployee({
                                               ...addemployee,
-                                              department: department.push(dept),
+                                              department: addemployee.department.includes(dept.id.toString())
+                                                ? addemployee.department.filter(d => d !== dept.id.toString()) // Remove department
+                                                : [...addemployee.department, parseInt(dept.id)], // Add department
                                             });
                                             setSelectedDepartment(dept);
                                           }}
-                                          className="cursor-pointer px-4 py-2 hover:bg-blue-600 hover:text-white bg-white text-gray-800"
+
+                                          className="cursor-pointer px-4 py-2 hover:bg-blue-600 hover:text-white border-b border-gray-300 text-gray-700"
                                         >
-                                          {dept}
+                                          {dept.name}
                                         </DropdownMenuItem>
                                       ))}
                                     </DropdownMenuContent>
@@ -1393,6 +1377,7 @@ const Team = ({ teacherData }) => {
                             </FormItem>
                           )}
                         />
+
                         {/* Teacher/Professor or Academics Staff*/}
                         <FormField
                           control={additionalForm2.control}
@@ -1582,7 +1567,7 @@ const Team = ({ teacherData }) => {
 
           {/* Teacher Cards Grid */}
           {loading ? (
-            <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
+            <div className="h-screen flex items-center justify-center  text-white">
               <div className="relative flex justify-center items-center">
                 <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
                 <img
@@ -1593,14 +1578,20 @@ const Team = ({ teacherData }) => {
               </div>
             </div>
           ) : error ? (
-            <div>Error: {error}</div>
+            <div>Error: {error?.message ? (
+              <div className="text-red-700"> {error.message}</div>
+            ) : ""}</div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
               {paginatedTeachers?.map((teacher) => (
+
+
                 <Card
                   key={teacher.id}
                   className="w-full max-w-[350px] shadow-sm shadow-blue-500/50 rounded-xl p-6 relative mx-auto"
                 >
+
+
                   {/* Options Menu */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -1764,7 +1755,7 @@ const Team = ({ teacherData }) => {
                       className="sm:max-w-[425px] shadow-lg p-6 rounded-lg"
                     >
                       <DialogHeader>
-                        <DialogTitle>Edit Task</DialogTitle>
+                        <DialogTitle>Edit Employee</DialogTitle>
                       </DialogHeader>
                       <hr />
                       <Form {...basicForm}>
@@ -1774,26 +1765,22 @@ const Team = ({ teacherData }) => {
                           )}
                           className="space-y-6"
                         >
-                          {/* Name Field */}
+
+                          {/* First Name Field */}
                           <FormField
                             control={basicForm.control}
-                            name="name"
+                            name="first_name"
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>Name</FormLabel>
                                 <FormControl>
-                                  <Input
-                                    placeholder="Munaroh Steffani"
-                                    {...field}
-                                    className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                  />
+                                  <Input placeholder="Enter Name" {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
 
-                          {/* Email Field */}
                           <FormField
                             control={basicForm.control}
                             name="email"
@@ -1801,35 +1788,28 @@ const Team = ({ teacherData }) => {
                               <FormItem>
                                 <FormLabel>Email</FormLabel>
                                 <FormControl>
-                                  <Input
-                                    placeholder="teacher@example.com"
-                                    {...field}
-                                    className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                  />
+                                  <Input placeholder="Enter Email" {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
 
-                          {/* Department Field */}
                           <FormField
                             control={basicForm.control}
-                            name="department"
+                            name="contact_number"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Department</FormLabel>
+                                <FormLabel>Contact Number</FormLabel>
                                 <FormControl>
-                                  <Input
-                                    placeholder="Mathematics Department"
-                                    {...field}
-                                    className="w-full border border-blue-300 rounded-xl p-4 sm:p-5 pr-10 focus:ring-4 focus:ring-blue-500 shadow-lg"
-                                  />
+                                  <Input placeholder="Enter Contact Number" {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
+
+
 
                           <div className="flex justify-between">
                             <Button
@@ -1852,7 +1832,7 @@ const Team = ({ teacherData }) => {
                     <Avatar className="shadow-md w-24 h-24 rounded-full">
                       <AvatarImage
                         className="rounded-full border-4 border-blue-600"
-                        src={teacher.image || "https://github.com/shadcn.png"}
+                        src={teacher.image || "https://img.freepik.com/premium-vector/man-profile_1083548-15963.jpg"}
                         alt={teacher.first_name || "teacher"}
                       />
                     </Avatar>
@@ -1866,7 +1846,7 @@ const Team = ({ teacherData }) => {
 
                   <CardContent className="text-center">
                     <div className="flex flex-wrap justify-center gap-2">
-                      <span className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1">
+                      <span className="bg-blue-100 px-2 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1">
                         <Clock className="w-4 h-4" />
                         {new Date(teacher?.joining_date).toLocaleDateString(
                           "en-US",
@@ -1952,11 +1932,10 @@ const Team = ({ teacherData }) => {
                   <PaginationLink
                     href="#"
                     onClick={() => setCurrentPage(i + 1)}
-                    className={`px-4 py-2 rounded-md ${
-                      currentPage === i + 1
-                        ? "bg-blue-600 text-white"
-                        : "hover:bg-blue-500  hover:text-white"
-                    }`}
+                    className={`px-4 py-2 rounded-md ${currentPage === i + 1
+                      ? "bg-blue-600 text-white"
+                      : "hover:bg-blue-500  hover:text-white"
+                      }`}
                   >
                     {i + 1}
                   </PaginationLink>

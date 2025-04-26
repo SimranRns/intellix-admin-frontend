@@ -227,7 +227,7 @@ const ExEmployees = () => {
                   <Avatar className="shadow-md w-24 h-24 rounded-full">
                     <AvatarImage
                       className="rounded-full  border-4 border-blue-600"
-                      src={employee.image || "https://github.com/shadcn.png"}
+                      src={employee.image || "https://img.freepik.com/premium-vector/man-profile_1083548-15963.jpg"}
                       alt={employee.first_name || "teacher"}
                     />
                     <AvatarFallback>{employee.first_name.charAt(0)}</AvatarFallback>

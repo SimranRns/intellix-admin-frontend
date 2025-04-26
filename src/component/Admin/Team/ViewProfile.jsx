@@ -33,7 +33,7 @@ const ViewProfile = () => {
 
 
   const dispatch = useDispatch()
-  const profile = useSelector((state) => state.team.profile.getSingleEmployee);
+  const profile = useSelector((state) => state.team?.profile?.getSingleEmployee);
   console.log(profile,'p');
   
 

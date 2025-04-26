@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import {  GetTeam, Update_Employee, Update_Time, create_employee, update_Employee_Status } from '../Api/TeamApi';
+import { GetTeam, Update_Employee, Update_Time, create_employee, getoneemployee, update_Employee_Status } from '../Api/TeamApi';
 
 const initialState = {
   Teachers: [],
@@ -64,6 +64,19 @@ const teamSlice = createSlice({
       .addCase(update_Employee_Status.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || 'Something went wrong';
+      })
+      // see profile of employee by single emp id 
+
+      .addCase(getoneemployee.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(getoneemployee.fulfilled, (state, action) => {
+        state.loading = false,
+          state.profile = action.payload
+      })
+      .addCase(getoneemployee.rejected, (state, action) => {
+        state.loading = false,
+          state.error = action.payload
       })
 
       //Update_time

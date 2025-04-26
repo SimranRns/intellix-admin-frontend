@@ -31,7 +31,8 @@ export const get_Deparment = createAsyncThunk(
   'get_Deparment',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BASE_URL}/api/v1/departmentrouter/getDepartment`, {
+      const response = await fetch(`${BASE_URL}/api/v1/departmentrouter/getDepartment
+`, {
         method: 'GET',
       })
 
