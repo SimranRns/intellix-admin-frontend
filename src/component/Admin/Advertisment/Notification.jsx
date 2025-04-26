@@ -78,7 +78,7 @@ const Notification = () => {
     const payload = {
       head: data.head,
       description: data.description,
-      // date,
+      date: data.date,
       // time,
       // type: selected || "public",
     };
@@ -223,8 +223,8 @@ const Notification = () => {
           </Dialog>
         </div>
 
-      
-       
+
+
 
         {/* Notifications List */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

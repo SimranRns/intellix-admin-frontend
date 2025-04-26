@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import seession_year from "../../../Redux_store/Api/Header_session";
 import { logoutAdmin } from "../../../Redux_store/Api/Logout_admin";
 import { clearToken } from "../../../Redux_store/slices/Logout_Admin";
-
+import { Maximize, Minimize } from "lucide-react";
 const Header = () => {
 
     const [logout, setLogout] = useState(false);
@@ -68,7 +68,18 @@ const Header = () => {
 
     };
 
+    // for minimize screen 
+    const [isFullscreen, setIsFullscreen] = useState(false);
 
+    const toggleFullscreen = () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+            setIsFullscreen(true);
+        } else {
+            document.exitFullscreen();
+            setIsFullscreen(false);
+        }
+    };
 
     return (
         <>
@@ -119,6 +130,13 @@ const Header = () => {
                             </DropdownMenu>
                         </div>
 
+                        <Button
+                            variant="ghost"
+                            onClick={toggleFullscreen}
+                            className="p-2 pt-2 hover:bg-muted rounded-full"
+                        >
+                            {isFullscreen ? <Minimize size={48} /> : <Maximize size={48} />}
+                        </Button>
 
 
                         <div className="hidden lg:flex items-center space-x-4">

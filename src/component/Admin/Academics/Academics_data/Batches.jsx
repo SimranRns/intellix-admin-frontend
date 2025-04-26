@@ -52,7 +52,7 @@ const batchSchema = z.object({
 const Batches = () => {
     const [AddBatches, setAddBatches] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
-    
+
     const form = useForm({
         resolver: zodResolver(batchSchema),
         defaultValues: {
@@ -71,7 +71,7 @@ const Batches = () => {
         { batchname: "B.Com", course: "Commerce" },
         { batchname: "M.Com", course: "Accounting" },
     ])
-    
+
     const itemsPerPage = 8
     const totalPages = Math.ceil(card.length / itemsPerPage)
     const paginatedData = card.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
