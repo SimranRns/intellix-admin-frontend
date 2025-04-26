@@ -30,7 +30,7 @@ import {
 import { ScrollArea } from "../../src/components/ui/scroll-area";
 import { Trash2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import {get_course} from "../../../Redux_store/Api/Add_popular_course";
+import { get_course } from "../../../Redux_store/Api/Add_popular_course";
 
 const FormSchema = z.object({
   title: z.string().min(1, { message: "Title is required!" }),
@@ -224,14 +224,14 @@ const AddPopularCourse = () => {
             <CardFooter className="mt-5 flex justify-center">
               <Button
                 onClick={() => handleDeleteClick(index)}
-                className="mt-4 w-full bg-gradient-to-r from-red-500 to-pink-600 text-white py-2 rounded-xl hover:from-red-600 hover:to-pink-700 transition-all"
+                className="mt-4 w-full bg-red-500 text-white py-2 rounded-xl hover:bg-red-600 transition-all"
               >
                 <Trash2 size={20} className="mr-2" /> Delete
               </Button>
             </CardFooter>
           </Card>
         ))}
-        
+
       </div>
 
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

@@ -20,7 +20,6 @@ import EmployessSlicesReducer from './slices/Dashboard.Slices'
 import subject_sliceReducer from './slices/Subject_Slice'
 import adminSliceReducer from "./slices/Logout_Admin"
 
-
 const RootReducer = combineReducers({
     team: teamReducer,
     Department: DepartmentReducer,
@@ -42,7 +41,7 @@ const RootReducer = combineReducers({
     subj:subject_sliceReducer,
     Employesss:EmployessSlicesReducer,
     logout: adminSliceReducer,
-    Session:SessionSliceReducer
+    Session:SessionSliceReducer,
 })
 
 
