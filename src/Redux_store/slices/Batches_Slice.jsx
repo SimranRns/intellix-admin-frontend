@@ -31,7 +31,7 @@ const BatchesSlice = createSlice({
             })
             .addCase(Add_Batches.fulfilled, (state, action) => {
                 state.loading = false;
-                state.subjects.push(action.payload);
+                state.Batches.push(action.payload);
             })
             .addCase(Add_Batches.rejected, (state, action) => {
                 state.loading = false;
