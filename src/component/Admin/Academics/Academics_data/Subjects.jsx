@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import AppSidebar from "../../../src/components/ui/app-sidebar";
 import {
@@ -42,12 +42,20 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ThankYouCard from "../../Dashboard/ThankYouCard";
 
+import { Add_subject, get_subject, update_Subject } from "../../../../Redux_store/Api/Subject";
+import { useSelector, useDispatch } from "react-redux";
+
+
 const subjectSchema = z.object({
-  subjectName: z
+  subject_name: z
     .string()
     .min(1, "Subject name is required")
     .regex(/^[A-Za-z ]+$/, "Only letters are allowed"),
 });
+
+
+
+
 const Subjects = () => {
   const [AddSubjects, setAddSubjects] = useState(false);
   const [EditSubjects, setEditSubjects] = useState(false);
@@ -55,37 +63,54 @@ const Subjects = () => {
   const [subjectList, setSubjectList] = useState([{ id: 1, name: "English" }]);
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [AddConfrom, setAddConfrom] = useState(false);
+  const [sub, setsub] = useState({ subject_name: "" })
+
+
+
+
+  const dispatch = useDispatch();
+  const { subjects, loading } = useSelector((state) => state.subj);
+
+
+
 
   const form = useForm({
     resolver: zodResolver(subjectSchema),
-    defaultValues: { subjectName: "" },
+    defaultValues: { subject_name: "" },
   });
 
   const goBack = () => window.history.back();
 
   const SubjectsPerPage = 8;
-  const totalPages = Math.ceil(subjectList.length / SubjectsPerPage);
+  const totalPages = Math.ceil(subjects.length / SubjectsPerPage);
   const startIndex = (currentPage - 1) * SubjectsPerPage;
-  const selectedSubjects = subjectList.slice(
-    startIndex,
-    startIndex + SubjectsPerPage
-  );
+  const selectedSubjects = subjects.slice(startIndex, startIndex + SubjectsPerPage);
 
   const handleEditSubject = (subject) => {
     setSelectedSubject(subject);
-    form.reset({ subjectName: subject.name });
+    form.reset({ subject_name: subject.subject_name }); // Reset the form correctly
+
+
     setEditSubjects(true);
   };
 
-  const handleUpdateSubject = (data) => {
-    setSubjectList((prev) =>
-      prev.map((sub) =>
-        sub.id === selectedSubject.id ? { ...sub, name: data.subjectName } : sub
-      )
-    );
-    setEditSubjects(false);
-    setAddConfrom(true);
-  };
+  const handleUpdateSubject = async (data) => {
+    try {
+      const payload = {
+        id: selectedSubject.id,
+        subject_name: data.subject_name,
+      };
+  
+      await dispatch(update_Subject(payload)).unwrap();
+  
+      setEditSubjects(false);
+      setAddConfrom(true);
+      dispatch(get_subject()); // Refresh subject list
+    } catch (error) {
+      console.error("Failed to update subject:", error);
+    }
+  };  
+
 
   const handleConfirm = async () => {
     try {
@@ -98,6 +123,21 @@ const Subjects = () => {
       console.error("Submission failed:", error);
     }
   };
+  const handleAddSubject = async (data) => {
+    try {
+      // Dispatch Add_subject action to add a new subject
+      await dispatch(Add_subject(data)).unwrap();  // `unwrap` will give the result or throw error
+      setAddConfrom(true); // Show confirmation dialog if successful
+      setAddSubjects(false); // Close the add subject dialog
+      form.reset(); // Reset form after adding
+    } catch (error) {
+      console.error("Failed to add subject:", error);
+    }
+  };
+
+  useEffect(() => {
+    dispatch(get_subject());
+  }, []);
 
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
@@ -135,15 +175,17 @@ const Subjects = () => {
           </div>
 
           {/* Subjects List */}
+
           <div className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
-            {selectedSubjects.map((sub) => (
+            {subjects.map((sub) => (
               <Card
                 key={sub.id}
                 className="w-full max-w-xs sm:max-w-sm mx-auto shadow-md shadow-blue-300/20 rounded-xl"
               >
                 <CardHeader>
                   <CardTitle className="text-lg font-semibold text-center">
-                    Subject : {sub.name}
+                    Subject : {sub.subject_name}
+
                   </CardTitle>
                 </CardHeader>
                 <CardFooter className="flex flex-col items-center space-y-2">
@@ -157,6 +199,7 @@ const Subjects = () => {
               </Card>
             ))}
           </div>
+
         </main>
 
         {/* Edit Subject Dialog */}
@@ -178,7 +221,7 @@ const Subjects = () => {
               >
                 <FormField
                   control={form.control}
-                  name="subjectName"
+                  name="subject_name"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Enter new subject name</FormLabel>
@@ -209,20 +252,12 @@ const Subjects = () => {
             </DialogHeader>
             <Form {...form}>
               <form
-                onSubmit={form.handleSubmit((data) => {
-                  setSubjectList((prev) => [
-                    ...prev,
-                    { id: prev.length + 1, name: data.subjectName },
-                  ]);
-                  setAddSubjects(false);
-                  form.reset(); // Reset form after adding
-                  setAddConfrom(true);
-                })}
+                onSubmit={form.handleSubmit(handleAddSubject)}
                 className="space-y-10"
               >
                 <FormField
                   control={form.control}
-                  name="subjectName"
+                  name="subject_name"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Enter subject name</FormLabel>
@@ -233,6 +268,7 @@ const Subjects = () => {
                     </FormItem>
                   )}
                 />
+
                 <Button type="submit" className="w-full bg-blue-600 text-white">
                   Add Subject
                 </Button>
@@ -282,11 +318,10 @@ const Subjects = () => {
                 <PaginationLink
                   as="button"
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`px-4 py-2 rounded-md ${
-                    currentPage === i + 1
-                      ? "bg-blue-600 text-white"
-                      : "hover:bg-blue-500 hover:text-white"
-                  }`}
+                  className={`px-4 py-2 rounded-md ${currentPage === i + 1
+                    ? "bg-blue-600 text-white"
+                    : "hover:bg-blue-500 hover:text-white"
+                    }`}
                 >
                   {i + 1}
                 </PaginationLink>

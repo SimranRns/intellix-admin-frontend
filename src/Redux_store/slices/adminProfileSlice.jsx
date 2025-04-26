@@ -1,20 +1,24 @@
 // src/redux/slices/adminProfileSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-import { Update_Admin, view_admin_profile } from "../Api/adminProfile";
+import { view_admin_profile, change_admin_password } from "../Api/adminProfile";
+import { Update_Admin } from "../Api/adminProfile";
 
 const adminProfileSlice = createSlice({
-  name: "adminProfile",
+  name: "admin",
   initialState: {
-    profile: [],
+    profile: {},
     loading: false,
     error: null,
+    passwordChangeSuccess: null,
+    passwordChangeError: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      //Get_Admin
+      // View profile
       .addCase(view_admin_profile.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(view_admin_profile.fulfilled, (state, action) => {
         state.loading = false;
@@ -25,7 +29,21 @@ const adminProfileSlice = createSlice({
         state.error = action.payload;
       })
 
-      //Update_Admin
+      // Change password
+      .addCase(change_admin_password.pending, (state) => {
+        state.loading = true;
+        state.passwordChangeSuccess = null;
+        state.passwordChangeError = null;
+      })
+      .addCase(change_admin_password.fulfilled, (state, action) => {
+        state.loading = false;
+        state.passwordChangeSuccess =
+          action.payload.message || "Password changed successfully.";
+      })
+      .addCase(change_admin_password.rejected, (state, action) => {
+        state.loading = false;
+        state.passwordChangeError = action.payload || "Password change failed.";
+      })
       .addCase(Update_Admin.pending, (state) => {
         state.loading = true;
       })
@@ -37,9 +55,10 @@ const adminProfileSlice = createSlice({
       .addCase(Update_Admin.rejected, (state, action) => {
         state.loading = false;
         // Ensure the error message is available
-        state.error = action.payload?.message || "An error occurred while updating the admin";
+        state.error =
+          action.payload?.message ||
+          "An error occurred while updating the admin";
       });
-
   },
 });
 

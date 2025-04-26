@@ -19,12 +19,29 @@
 font-weight: 500;
 padding-left: 100px;
 }
-.profile_portfolio{
-    /* height: 45px; */
-    border-color: white;
-    overflow: hidden;
-    border: 1px solid rgb(167, 166, 166);
-    padding:  10px 70px;
-    text-align: center;
-    border-radius: 10px;
-}
+.profile_portfolio {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2a2a2a;
+    position: relative;
+    padding: 8px 20px;
+    text-transform: uppercase;
+    font-family: 'Georgia', serif;
+    letter-spacing: 1.2px;
+  }
+  
+  .profile_portfolio::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(to right, #6366f1, #3b82f6);
+    border-radius: 2px;
+  }
+  
+  
+
+
+  

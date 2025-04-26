@@ -22,6 +22,7 @@ export const view_admin_profile = createAsyncThunk(
       }
 
       const result = await response.json();
+
       return result;
     } catch (error) {
       return rejectWithValue(error.message || "Something went wrong");
@@ -29,6 +30,43 @@ export const view_admin_profile = createAsyncThunk(
   }
 );
 
+export const change_admin_password = createAsyncThunk(
+  "change_admin_password",
+  async (
+    { id, new_password, confirm_password, current_password },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await fetch(`${BASE_URL}/api/v1/admin/password/change`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          id,
+          data: {
+            new_password,
+            confirm_password,
+            current_password,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        return rejectWithValue(errorData);
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      return rejectWithValue(error.message || "Something went wrong");
+    }
+  }
+);
+
+export default { view_admin_profile, change_admin_password };
 
 //update_admin_profile
 export const Update_Admin = createAsyncThunk("Update_Admin", async (data, { rejectWithValue }) => {

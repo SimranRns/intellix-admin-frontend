@@ -47,7 +47,7 @@ import ExStudentsData from "./component/Admin/Student/Ex-Students/ExStudentsData
 import Stu_Attendance from "./component/Admin/Student/Action/Stu_Attendance";
 import Add_Payment from "./component/Admin/Student/Add_Payment";
 import ProtectedRoute from "./Protect_Rotues";
-import { Toaster } from "react-hot-toast";
+// import { Toaster } from "react-hot-toast";
 // import { Route } from "lucide-react";
 const App = () => {
   // const [loading, setLoading] = useState(true);
@@ -77,7 +77,7 @@ const App = () => {
   // );
   // }
   <>
-  <Toaster position="top-right" reverseOrder={false} />
+  {/* <Toaster position="top-right" reverseOrder={false} /> */}
   {/* ...rest of your app */}
 </>
   return (
