@@ -105,7 +105,7 @@ const Departments = () => {
   const [AddConfrom, setAddConfrom] = useState(false);
   const [departments, setDepartments] = useState({})
 
-  const [id,setid] = useState(null)
+  const [id, setid] = useState(null)
   const dispatch = useDispatch()
   const { Department, loading, error } = useSelector((state) => state.Department || {});
   const adddepartments = (e) => {
@@ -113,21 +113,6 @@ const Departments = () => {
   }
   const Onedepartment = Department?.data?.find((ele) => ele.id === id);
 
-
-  // const departmentsList = [
-  //   {
-  //     id: 1,
-  //     departmentName: "Teaching",
-  //     departmentUser: "10,000",
-  //     departmentemployee: "Employee",
-  //   },
-  //   {
-  //     id: 2,
-  //     departmentName: "Finance",
-  //     departmentUser: "20,000",
-  //     departmentemployee: "Employee",
-  //   },
-  // ];
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -149,13 +134,13 @@ const Departments = () => {
   };
   const handleAddDepartment = (data) => {
     console.log("Form Submitted:", data);
-    
+
     // Reset the form fields
     form.reset();
-    
+
     // Close the "Add Department" dialog
     setAddDepartment(false);
-    
+
     // Open the confirmation dialog
     setAddConfrom(true);
     //Api
@@ -318,8 +303,13 @@ const Departments = () => {
                     <div className="flex justify-center">
                       <Button
                         onClick={() => {
-                          setDeleteDepartments(false), setAddConfrom(true),dispatch(delete_department(department.id))
+                          setDeleteDepartments(false);
+                          setAddConfrom(true);
+                          dispatch(delete_department(department.id)).then(() => {
+                            dispatch(get_Deparment());
+                          });
                         }}
+
                         className="bg-red-600 text-white px-5 py-3 rounded-lg hover:bg-red-700"
                       >
                         Deactivate Department
@@ -335,9 +325,9 @@ const Departments = () => {
                       <span className="text-lg font-bold">
                         {department.name}
                       </span>
-                      <span className="text-sm text-gray-400">
+                      {/* <span className="text-sm text-gray-400">
                         {department.access_control}
-                      </span>
+                      </span> */}
                     </div>
                   </div>
                 </CardHeader>
@@ -374,11 +364,12 @@ const Departments = () => {
                 {/* Card Footer Buttons */}
                 <CardFooter className="flex justify-center gap-4 mt-1">
                   <Button
-                    onClick={() => {navigate("/View_User") , setid(department.id)}}
+                    onClick={() => navigate(`/View_User/${department.id}`)}
                     className="bg-blue-600 text-xs text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-blue-500 transition-all"
                   >
                     <User size={18} /> View User
                   </Button>
+
                   <Button
                     onClick={() => {
                       navigate("/Access");

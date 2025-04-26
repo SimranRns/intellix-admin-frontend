@@ -49,17 +49,48 @@ export const get_Deparment = createAsyncThunk(
 )
 
 ///Delete_department
-export const delete_department = createAsyncThunk('delete_department', async(id,{rejectWithValue})=>{
+export const delete_department = createAsyncThunk('delete_department', async (id, { rejectWithValue }) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/v1/departmentrouter/deleteDepartment${id}`,{
-      method:"DELETE",
-
-    })
+    const response = await fetch(`${BASE_URL}/api/v1/departmentrouter/deleteDepartment`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),   // id ko body me bhejna
+    });
     const result = await response.json();
-    return result
+    return result;
   } catch (error) {
-    return rejectWithValue(error)
+    return rejectWithValue(error);
   }
-})
+});
 
-export default {create_department:[Function],get_Deparment:[Function],delete_department:[Function]}
+export const view_department_users = createAsyncThunk(
+  "department/viewUsers",
+  async (body, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${BASE_URL}/api/v1/departmentrouter/filterdata`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: body.id }) // <-- yaha body se id nikalni hai
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || "Something went wrong");
+      }
+
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+
+
+
+export default { create_department: [Function], get_Deparment: [Function], delete_department: [Function], view_department_users: [Function] }

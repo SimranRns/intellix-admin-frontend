@@ -116,7 +116,8 @@ const App = () => {
             <Route path="/ExStudents" element={<ExStudentsData />} />
             <Route path="/student_attendance" element={<Stu_Attendance />} />
             <Route path="/View-Profile/:id" element={<ViewProfile />} />
-            <Route path="/View_User" element={<View_User />} />
+            <Route path="/View_User/:id" element={<View_User />} />
+
             <Route path="/Ex-Employee" element={<ExEmployees />} />
             <Route path="/manage_salary" element={<Manage_sallery />} />
             <Route path="/Leads" element={<Leads />} />

@@ -1,16 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
-import {get_Deparment, create_department, delete_department } from '../Api/Department';
+import { get_Deparment, create_department, delete_department, view_department_users } from '../Api/Department';
 
 
 
 const DepartmentSlice = createSlice({
   name: 'Department',
-  initialState : {
-    Department: [],  
+  initialState: {
+    Department: [],
     loading: false,
     error: null,
   },
-  
+
   extraReducers: (builder) => {
     builder
       //Create
@@ -43,19 +43,33 @@ const DepartmentSlice = createSlice({
 
 
       //Delete
-      .addCase(delete_department.pending,(state)=>{
+      .addCase(delete_department.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(delete_department.fulfilled,(state,action)=>{
+      .addCase(delete_department.fulfilled, (state, action) => {
         state.loading = false;
         const { id } = action.payload
-        console.log("delete_department", action.payload);
         if (id) {
           state.users = state.users.filter((ele) => ele.id !== id);
         }
       })
-      .addCase(delete_department.rejected,(state,action)=>{
+      .addCase(delete_department.rejected, (state, action) => {
+        state.loading = false;
+        state.error = null;
+      })
+      // view users in departement 
+      .addCase(view_department_users.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+    builder
+      .addCase(view_department_users.fulfilled, (state, action) => {
+        state.Department = action.payload.data.employesdata;
+        // employesdata me list hai employees ki
+      })
+
+      .addCase(view_department_users.rejected, (state, action) => {
         state.loading = false;
         state.error = null;
       })

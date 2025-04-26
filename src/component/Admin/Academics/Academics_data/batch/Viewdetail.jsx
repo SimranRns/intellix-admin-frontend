@@ -24,8 +24,9 @@ import {
     SelectValue,
 } from "../../../../src/components/ui/select"
 import { useNavigate } from 'react-router'
-// import { useNavigate } from 'react-router'
-
+import { useDispatch } from 'react-redux'
+import { update_Batches } from '../../../../../Redux_store/Api/Batches'
+// import { update_Batches } from 'yourReduxSlice' // Import your update function here
 
 const studentData = [
     { id: "12340559", name: "mohan" },
@@ -40,6 +41,7 @@ const Viewdetail = () => {
     const [openFirst, setOpenFirst] = useState(false)
     const [openSec, setOpenSec] = useState(false)
     const navigate = useNavigate();
+    const dispatch = useDispatch()
 
     const [batchDetails, setBatchDetails] = useState({
         name: "",
@@ -65,14 +67,31 @@ const Viewdetail = () => {
         setTimeout(() => setOpenSec(true), 50)
     }
 
-    const handleSave = () => {
-        console.log("Saved batch data:", batchDetails)
-        setOpenSec(false)
+    const handleSave = async () => {
+        // Only send updated fields
+        const payload = {
+            id: 2, // Example batch ID
+        }
+
+        if (batchDetails.name) payload.batchName = batchDetails.name;
+        if (batchDetails.fee) payload.batchFees = parseFloat(batchDetails.fee);
+        if (batchDetails.course) payload.course = batchDetails.course;
+        if (batchDetails.startDate) payload.startDate = batchDetails.startDate;
+        if (batchDetails.endDate) payload.endDate = batchDetails.endDate;
+
+        try {
+            // Dispatch the action to update the batch
+            await dispatch(update_Batches(payload)).unwrap();
+            console.log("Batch updated successfully!");
+            setOpenSec(false);  // Close the dialog
+        } catch (error) {
+            console.error("Failed to update batch:", error);
+        }
     }
 
     const handleAddPayment = () => {
-        // navigate(`/student-payment-history`);
-        // navigate(`/add-payment`);
+        // navigate(`/student-payment-history`); 
+        // navigate(`/add-payment`); 
     };
 
     return (
@@ -132,17 +151,15 @@ const Viewdetail = () => {
                                             <TableCell>{student.id}</TableCell>
                                             <TableCell>{student.name}</TableCell>
                                             <TableCell>
-                                                <button 
-                                                // onClick={()=>{handleAddPayment(student.id)}}
-                                                onClick={() => navigate("/add-payment")}
-                                                className="text-blue-600 hover:underline">
+                                                <button
+                                                    onClick={() => navigate("/add-payment")}
+                                                    className="text-blue-600 hover:underline">
                                                     Add Payment
                                                 </button>
                                             </TableCell>
                                             <TableCell>
                                                 <button
-                                                onClick={() => navigate("/student-payment-history")}
-                                                    // onClick={() => handleAddPayment(student.id)}
+                                                    onClick={() => navigate("/student-payment-history")}
                                                     className="text-blue-600 hover:underline"
                                                 >
                                                     Payment History
