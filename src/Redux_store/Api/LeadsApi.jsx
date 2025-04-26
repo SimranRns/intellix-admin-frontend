@@ -37,7 +37,7 @@ export const getallLeads = createAsyncThunk(
         {
           method: "GET",
         }
-      );
+      );  
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -45,7 +45,7 @@ export const getallLeads = createAsyncThunk(
       }
 
       const result = await response.json();
-      console.log("result : : ", result);
+      // console.log("result : : ", result);
 
       return result.data.updatedData;
     } catch (error) {
@@ -58,21 +58,19 @@ export const AddLeads = createAsyncThunk(
   "addLeads",
   async (getPayload, { rejectWithValue }) => {
     try {
-
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      console.log(getPayload,"*************************************** getPayLoad")
-      const raw = JSON.stringify(getPayload);
-      
+      console.log(getPayload); // Check payload before making API call
       const response = await fetch(
         `${BASE_URL}/api/v1/leadsrouter/addleadscontroller`,
         {
           method: "POST",
-          headers: myHeaders,
-          body: raw,
-          redirect: "follow"
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(getPayload),
         }
       );
+      console.log(response,"i am the response")
+      
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -80,8 +78,6 @@ export const AddLeads = createAsyncThunk(
       }
 
       const result = await response.json();
-      console.log("result : : ", result);
-
       return result.data.updatedData;
     } catch (error) {
       return rejectWithValue(error.message || "Something went wrong");

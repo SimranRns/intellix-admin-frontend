@@ -1,6 +1,10 @@
-
-import { createSlice } from '@reduxjs/toolkit';
-import { changestatusLeads, getallLeads, AddLeads, searchingleads } from '../Api/LeadsApi';
+import { createSlice } from "@reduxjs/toolkit";
+import {
+  changestatusLeads,
+  getallLeads,
+  AddLeads,
+  searchingleads,
+} from "../Api/LeadsApi";
 
 const LeadsSlice = createSlice({
   name: "LeadsSlice",
@@ -46,7 +50,7 @@ const LeadsSlice = createSlice({
       })
       .addCase(AddLeads.fulfilled, (state, action) => {
         state.loading = false;
-        state.leadData = action.payload;
+        state.leadData.push(action.payload);
       })
       .addCase(AddLeads.rejected, (state, action) => {
         state.loading = false;
@@ -66,7 +70,7 @@ const LeadsSlice = createSlice({
         state.loading = false;
         state.error = action.payload || "Failed to search leads";
       });
-  }
+  },
 });
 
 export const LeadsSliceReducer = LeadsSlice.reducer;
