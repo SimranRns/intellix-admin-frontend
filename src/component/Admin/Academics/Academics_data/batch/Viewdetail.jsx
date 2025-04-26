@@ -24,6 +24,8 @@ import {
     SelectValue,
 } from "../../../../src/components/ui/select"
 import { useNavigate } from 'react-router'
+// import { useNavigate } from 'react-router'
+
 
 const studentData = [
     { id: "12340559", name: "mohan" },
@@ -37,7 +39,7 @@ const studentData = [
 const Viewdetail = () => {
     const [openFirst, setOpenFirst] = useState(false)
     const [openSec, setOpenSec] = useState(false)
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const [batchDetails, setBatchDetails] = useState({
         name: "",
@@ -69,8 +71,8 @@ const Viewdetail = () => {
     }
 
     const handleAddPayment = () => {
-        navigate(`/student-payment-history`);
-        navigate(`/add-payment`);
+        // navigate(`/student-payment-history`);
+        // navigate(`/add-payment`);
     };
 
     return (
@@ -131,14 +133,16 @@ const Viewdetail = () => {
                                             <TableCell>{student.name}</TableCell>
                                             <TableCell>
                                                 <button 
-                                                onClick={()=>{handleAddPayment(student.id)}}
+                                                // onClick={()=>{handleAddPayment(student.id)}}
+                                                onClick={() => navigate("/add-payment")}
                                                 className="text-blue-600 hover:underline">
                                                     Add Payment
                                                 </button>
                                             </TableCell>
                                             <TableCell>
                                                 <button
-                                                    onClick={() => handleAddPayment(student.id)}
+                                                onClick={() => navigate("/student-payment-history")}
+                                                    // onClick={() => handleAddPayment(student.id)}
                                                     className="text-blue-600 hover:underline"
                                                 >
                                                     Payment History
