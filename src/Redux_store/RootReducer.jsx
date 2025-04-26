@@ -48,7 +48,8 @@ const RootReducer = combineReducers({
     Session: SessionSliceReducer,
     acad_courses: acad_course_sliceReducer,
     Session:SessionSliceReducer,
-    Batch:BatchesSliceReducer
+    Batch:BatchesSliceReducer,
+    Session:SessionSliceReducer,
 })
 
 
