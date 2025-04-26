@@ -27,7 +27,7 @@ export const changestatusLeads = createAsyncThunk(
   }
 );
 
-// ✅ export getallLeads if needed
+//  getallLeads 
 export const getallLeads = createAsyncThunk(
   "getLeads",
   async (_, { rejectWithValue }) => {
@@ -54,6 +54,8 @@ export const getallLeads = createAsyncThunk(
   }
 );
 
+
+// AddLeads
 export const AddLeads = createAsyncThunk(
   "addLeads",
   async (getPayload, { rejectWithValue }) => {
@@ -122,5 +124,25 @@ export const searchingleads = createAsyncThunk(
     }
   } 
 );
+
+export const getAllAssignto = createAsyncThunk(
+  "Leads/getAllAssignto",
+  async (_, { rejectWithValue }) => {
+    try {
+      const BASE_URL = import.meta.env.VITE_BASE_URL;
+      const response = await fetch(`${BASE_URL}/api/v1/employee/get`);
+      console.log(response, "✅ API Response***********************************************");
+
+      const data = await response.json();
+      console.log(data, "✅ API Response***********************************************");
+      return data.getResponse;
+    
+    } catch (error) {
+      console.error("API Error:", error);
+      return rejectWithValue(error.message || "Something went wrong");
+    }
+  }
+);
+
 
 

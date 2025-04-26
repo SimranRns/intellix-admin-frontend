@@ -53,8 +53,7 @@ export const getAllCategory = createAsyncThunk(
   
 
 
-  
-// export const  updatecategory = createAsyncThunk(
+ 
 //     "Category/updateCategory",
 //     async (updatedData, { rejectWithValue }) => {
 //       try {

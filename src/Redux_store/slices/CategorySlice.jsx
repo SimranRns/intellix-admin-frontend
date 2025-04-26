@@ -4,7 +4,7 @@ import { createCategory, getAllCategory,  } from "../Api/CategoryApi";
 const CategorySlice = createSlice({
   name: "CategorySlice",
   initialState: {
-    categories: {},
+    categories: [],
     loading: false,
     error: null,
     successMessage: null,
