@@ -30,7 +30,7 @@ import {
 import { ScrollArea } from "../../src/components/ui/scroll-area";
 import { Trash2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { get_course } from "../../../Redux_store/Api/Add_popular_course";
+import { add_course, get_course } from "../../../Redux_store/Api/Add_popular_course";
 
 const FormSchema = z.object({
   title: z.string().min(1, { message: "Title is required!" }),
@@ -46,12 +46,14 @@ const AddPopularCourse = () => {
   const [open, setOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [cardToDelete, setCardToDelete] = useState(null);
+  const [addCourse, setAddCourse] = useState({courseImage:"",courseName:"",courseDescription:""})
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(get_course())
   }, [])
 
   const { course, loading, error } = useSelector((state) => state.courses)
+  
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -60,14 +62,17 @@ const AddPopularCourse = () => {
       image: null,
     },
   });
+  console.log(addCourse)
 
   const fileInputRef = useRef(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    // console.log(file.name,"********************************")
     if (file) {
       setImagePreview(URL.createObjectURL(file));
       form.setValue("image", file);
+      setAddCourse({...addCourse,courseImage:file.name})
     }
   };
 
@@ -76,6 +81,7 @@ const AddPopularCourse = () => {
   };
 
   const onSubmit = (data) => {
+    console.log("onsubmit")
     setCards((prevCards) => [
       ...prevCards,
       {
@@ -135,7 +141,12 @@ const AddPopularCourse = () => {
                     <FormItem>
                       <FormLabel>Title</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter course title" {...field} />
+                        <Input placeholder="Enter course title" {...field} 
+                        onChange={(e) => {
+                          field.onChange(e); // To keep react-hook-form in sync
+                          setAddCourse({ ...addCourse, courseName: e.target.value }); // To update your custom state
+                        }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -152,6 +163,10 @@ const AddPopularCourse = () => {
                         <Input
                           placeholder="Enter course description"
                           {...field}
+                          onChange={(e) => {
+                            field.onChange(e); // To keep react-hook-form in sync
+                            setAddCourse({ ...addCourse, courseDescription: e.target.value }); // To update your custom state
+                          }}
                         />
                       </FormControl>
                       <FormMessage />
@@ -188,11 +203,23 @@ const AddPopularCourse = () => {
                 </FormItem>
 
                 <Button
-                  type="submit"
-                  className="w-full py-2 text-lg rounded-lg"
-                >
-                  Submit
-                </Button>
+  type="button" // <-- changed submit to button
+  className="w-full py-2 text-lg rounded-lg"
+  onClick={() => {
+    // onSubmit()
+    const formdata = new FormData();
+    formdata.append("courseName", addCourse.courseName); // key: title
+    formdata.append("courseDescription", addCourse.courseDescription); // key: description
+    formdata.append("courseImage", addCourse.courseImage); // key: image (File type)
+  
+    console.log([...formdata.entries()]); // Debugging: क्या जा रहा है server पे
+    
+    dispatch(add_course(formdata)); ; // Pass your form data
+  }}
+>
+  Submit
+</Button>
+
               </form>
             </Form>
           </DialogContent>

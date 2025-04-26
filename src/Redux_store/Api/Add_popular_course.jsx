@@ -19,7 +19,8 @@ export const get_course = createAsyncThunk('getcourse', async (_, { rejectWithVa
 })
 
 // add course 
-export const add_course = createAsyncThunk('form', async (_, { rejectWithValue }) => {
+export const add_course = createAsyncThunk('form', async (formdata, { rejectWithValue }) => {
+    console.log(formdata,"*****************************************")
     try {
         const responce = await fetch(`${BASE_URL}/api/v1/popularCourses/add-course`, {
             method: 'POST',
