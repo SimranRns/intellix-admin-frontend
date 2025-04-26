@@ -1,16 +1,15 @@
-// src/redux/commonApis/getTeam.js (or wherever you keep common API logic)
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export const addEmis = createAsyncThunk(
-  "addEmis",
+  "emi/addEmis",
   async (emiData, { rejectWithValue }) => {
     try {
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
 
-      const raw = JSON.stringify(emiData); // Use dynamic emiData
+      const raw = JSON.stringify(emiData);
 
       const requestOptions = {
         method: "POST",
@@ -29,7 +28,7 @@ export const addEmis = createAsyncThunk(
         throw new Error(result.message || "Failed to add EMI");
       }
 
-      return result; // Return the API response
+      return result;
     } catch (error) {
       return rejectWithValue(error.message || "Something went wrong");
     }
@@ -37,47 +36,74 @@ export const addEmis = createAsyncThunk(
 );
 
 export const getEmis = createAsyncThunk(
-  "getEmis",
+  'getEmis',
   async ({ filter, month, year }, { rejectWithValue }) => {
     try {
-      const url = `${BASE_URL}/api/v1/emi/getEmis?filter=${filter}&month=${month}&year=${year}`;
-      console.log("Fetching URL:", url);
-
       const requestOptions = {
-        method: "Post", // Changed to GET for query parameters
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        redirect: "follow",
+        redirect: 'follow',
       };
 
-      const response = await fetch(url, requestOptions);
-      console.log("Response:", response);
+      const response = await fetch(
+        `${BASE_URL}/api/v1/emi/getEmis?filter=${filter}&month=${month}&year=${year}`,
+        requestOptions
+      );
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to fetch EMIs");
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const result = await response.json();
-      console.log("API Result:", result);
-
-      return result; // Ensure result has { missed, upcoming, paid, summary }
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to fetch EMIs');
+      }
+      console.log(result, "result from getEmis");
+      
+      return result; 
     } catch (error) {
-      console.error("getEmis error:", error);
+      return rejectWithValue(error.message || 'Something went wrong');
+    }
+  }
+);
+
+export const getEmisTotalAmounts = createAsyncThunk(
+  "getEmisTotalAmounts",
+  async ({ month, year }, { rejectWithValue }) => {
+    try {
+      const requestOptions = {
+        method: "GET",
+        redirect: "follow",
+      };
+
+      const url = new URL(`${BASE_URL}/api/v1/emi/getEmisTotalAmounts`);
+      url.searchParams.append("month", month);
+      url.searchParams.append("year", year);
+
+      const response = await fetch(url, requestOptions);
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to fetch EMI total amounts");
+      }
+   console.log(result,"jfdsxcvbnm");
+
+      return result;
+    } catch (error) {
       return rejectWithValue(error.message || "Something went wrong");
     }
   }
 );
 
 export const addOneShotEmis = createAsyncThunk(
-  'addOneShotEmis',
+  "emi/addOneShotEmis",
   async (emiData, { rejectWithValue }) => {
     try {
       const myHeaders = new Headers();
-      myHeaders.append('Content-Type', 'application/json');
+      myHeaders.append("Content-Type", "application/json");
 
-      // Use dynamic emiData instead of hardcoded values
       const raw = JSON.stringify({
         student_id: emiData.student_id,
         amount: emiData.amount,
@@ -87,24 +113,25 @@ export const addOneShotEmis = createAsyncThunk(
       });
 
       const requestOptions = {
-        method: 'POST',
+        method: "POST",
         headers: myHeaders,
         body: raw,
-        redirect: 'follow',
+        redirect: "follow",
       };
 
-      const response = await fetch('http://localhost:4000/api/v1/emi/addOneShotEmi', requestOptions);
+      const response = await fetch(
+        `${BASE_URL}/api/v1/emi/addOneShotEmi`,
+        requestOptions
+      );
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || 'Failed to add one-shot EMI');
+        throw new Error(result.message || "Failed to add one-shot EMI");
       }
 
-      console.log('addOneShotEmis result:', result);
-      return result; // Return the API response (e.g., the added EMI object)
+      return result;
     } catch (error) {
-      console.error('addOneShotEmis error:', error);
-      return rejectWithValue(error.message || 'Something went wrong');
+      return rejectWithValue(error.message || "Something went wrong");
     }
   }
 );

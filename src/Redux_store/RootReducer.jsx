@@ -13,7 +13,7 @@ import loginSliceReducer from './slices/Login_Admin'
 import { StatusSliceReducer } from './slices/FitterStatusSlice';
 import head_yaer_sliceReducer from './slices/Header_session_slice'
 import EmiReducers from './slices/EmisSlice'
-import studentReducer from './slices/Student'
+import studentReducer from './slices/StudentSlice'
 import adminProfileSliceReducer from "./slices/adminProfileSlice";
 
 import EmployessSlicesReducer from './slices/Dashboard.Slices'
