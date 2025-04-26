@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../src/components/ui/card";
 import { Button } from "../../src/components/ui/button";
@@ -7,47 +7,59 @@ import { SidebarInset, SidebarProvider } from "../../src/components/ui/sidebar";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import Header from "../Dashboard/Header";
 import { Book, BookOpen, CalendarCheck, Users } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchSessionCount } from "../../../Redux_store/Api/SessionApi";
 
 const Academics = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { count, loading, error } = useSelector((state) => state.Session);
+    console.log(count);
+
+    useEffect(() => {
+        dispatch(fetchSessionCount());
+    }, [dispatch]);
+
+
 
     const cardData = [
-        { 
-          title: "Courses / Classes", 
-          value: 10, 
-          icon: <Book className="w-6 h-6 text-blue-600" />, 
-          link: "/Courses",
-          Total: "Total Courses Active" 
+        {
+            title: "Courses / Classes",
+            value: 10,
+            icon: <Book className="w-6 h-6 text-blue-600" />,
+            link: "/Courses",
+            Total: "Total Courses Active"
         },
-        { 
-          title: "Sessions", 
-          value: 42, 
-          icon: <CalendarCheck className="w-6 h-6 text-green-600" />, 
-          link: "/Sessions",
-          Total: "Total Sessions" 
+        {
+            title: "Sessions",
+            value: count,
+            icon: <CalendarCheck className="w-6 h-6 text-green-600" />,
+            link: "/Sessions",
+            Total: "Total Sessions"
         },
-        { 
-          title: "Subjects", 
-          value: 35, 
-          icon: <BookOpen className="w-6 h-6 text-yellow-600" />, 
-          link: "/Subjects",
-          Total: "Total Subjects Active" 
+        {
+            title: "Subjects",
+            value: 35,
+            icon: <BookOpen className="w-6 h-6 text-yellow-600" />,
+            link: "/Subjects",
+            Total: "Total Subjects Active"
         },
-        { 
-          title: "Batches / Section", 
-          value: 56, 
-          icon: <Users className="w-6 h-6 text-red-600" />, 
-          link: "/Batches",
-          Total: "Total Batches" 
+        {
+            title: "Batches / Section",
+            value: 56,
+            icon: <Users className="w-6 h-6 text-red-600" />,
+            link: "/Batches",
+            Total: "Total Batches"
         }
-      ];
-      
+    ];
+
 
     return (
         <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
             <AppSidebar />
             <SidebarInset>
                 <Header />
+
                 <main className="flex-1 overflow-auto">
                     <div className="flex flex-col items-center min-h-screen p-4 space-y-6">
                         {/* 3 Cards Below in a Row */}
@@ -61,7 +73,8 @@ const Academics = () => {
                                         </CardHeader>
                                         <CardContent className="flex items-center justify-center">
                                             <span className="text-3xl font-bold text-blue-600">
-                                                {card.value.toLocaleString()}
+                                                {typeof card.value === 'number' ? card.value.toLocaleString() : '0'}
+
                                             </span>
                                         </CardContent>
                                         <CardFooter className="flex flex-col items-center space-y-2">

@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { create_Session, fetchSessions } from "../Api/SessionApi";
+import { addSession, fetchSessionCount, fetchSessions, getSessions, setDefaultSession } from "../Api/SessionApi";
 
 const initialState = {
     Session: [],
     loading: false,
+    total: 0,
     error: null,
+    count: 0,
 };
 
 const SessionSlice = createSlice({
@@ -16,19 +18,19 @@ const SessionSlice = createSlice({
 
         //Create_Session
 
-            .addCase(create_Session.pending, (state) => {
+            .addCase(addSession.pending, (state) => {
                 state.loading = true;
             })
-            .addCase(create_Session.fulfilled, (state, action) => {
+            .addCase(addSession.fulfilled, (state, action) => {
                 state.loading = false;
                 state.Session.push(action.payload);
             })
-            .addCase(create_Session.rejected, (state, action) => {
+            .addCase(addSession.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload;
+                state.error = action.payload || action.error;
             })
 
-            //Get_Session
+            //fetch_Session
             .addCase(fetchSessions.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -38,6 +40,53 @@ const SessionSlice = createSlice({
                 state.Session = action.payload.sessions;
               })
               .addCase(fetchSessions.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+              })
+
+            //   get_session 
+            .addCase(getSessions.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+              })
+              .addCase(getSessions.fulfilled, (state, action) => {
+                state.loading = false;
+                state.Session = action.payload.sessions.data || [];
+                state.total = action.payload.sessions.totalCount || 0;
+              })
+              .addCase(getSessions.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload || 'Something went wrong';
+              })
+
+
+
+            //   default sesssion 
+            .addCase(setDefaultSession.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+              })
+              .addCase(setDefaultSession.fulfilled, (state, action) => {
+                state.loading = false;
+                state.error = null;
+              })
+              .addCase(setDefaultSession.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload || 'Failed to set default session';
+              })
+
+
+            //   count session 
+
+            .addCase(fetchSessionCount.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+              })
+              .addCase(fetchSessionCount.fulfilled, (state, action) => {
+                state.loading = false;
+                state.count = action.payload.count;
+              })
+              .addCase(fetchSessionCount.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
               })

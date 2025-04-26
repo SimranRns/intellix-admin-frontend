@@ -47,7 +47,7 @@ const Header = () => {
 
 
     const token = useSelector((state) => state.logout.token);
-    console.log(token);
+    
 
     const handleLogout = async () => {
         const response = await dispatch(logoutAdmin(token)).unwrap();
@@ -66,6 +66,7 @@ const Header = () => {
             const defaultSession = sessions.find(s => s.is_default === true);
             if (defaultSession && !selectedOption) {
                 setSelectedOption(defaultSession.session_year);
+                
             }
         }
     }, [sessions, selectedOption]);
