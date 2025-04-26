@@ -27,7 +27,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Printer, MoreVertical } from "lucide-react";
 import { SidebarInset, SidebarProvider } from "../../src/components/ui/sidebar";
 import AppSidebar from "../../src/components/ui/app-sidebar";
-import { Employesss, Department } from "../../../Redux_store/Api/Dashboard.Api";
+import { Employesss, Department, Emi } from "../../../Redux_store/Api/Dashboard.Api";
 import { Users, UserX, CalendarCheck, Timer, Book } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
@@ -39,12 +39,14 @@ const Dashboard = ({ children }) => {
   const dispaatch = useDispatch()
   const { employees, loading, error } = useSelector((state) => state.Employesss || {})
   const departments  = useSelector((state) => state.Employesss.departments || {});
-
-  console.log(departments);
+  const emi = useSelector((state)=>state.Employesss.emi || {})
+console.log("CCCCCCCCCCCCCCCC   :  ::",emi)
+  // console.log(departments);
 
   useEffect(() => {
     dispaatch(Employesss())
     dispaatch(Department())
+    dispaatch(Emi())
   }, [dispaatch])
   
   const influencers = [

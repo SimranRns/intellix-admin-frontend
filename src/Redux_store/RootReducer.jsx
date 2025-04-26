@@ -38,7 +38,7 @@ const RootReducer = combineReducers({
     emis: EmiReducers,
     students: studentReducer,
     adminProfile: adminProfileSliceReducer,
-    Employesss:EmployessSlicesReducer,
+    // Employesss:EmployessSlicesReducer,
     subj:subject_sliceReducer,
     Employesss:EmployessSlicesReducer,
     logout: adminSliceReducer,
