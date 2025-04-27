@@ -34,8 +34,8 @@ const ViewProfile = () => {
 
   const dispatch = useDispatch()
   const profile = useSelector((state) => state.team?.profile?.getSingleEmployee);
-  console.log(profile,'p');
-  
+  console.log(profile, 'p');
+
 
   useEffect(() => {
     if (id) {
@@ -70,14 +70,16 @@ const ViewProfile = () => {
                 <>
                   <div className="ml-32 mt-10">
                     <Avatar className="w-24 h-24 border-4 border-white shadow-lg absolute -bottom-12 left-6">
-                      <AvatarImage />
+                      <AvatarImage className="rounded-full border-4 border-blue-600"
+                        src={profile?.image || "https://img.freepik.com/premium-vector/man-profile_1083548-15963.jpg"}
+                        alt={profile?.first_name || "teacher"} />
                       <AvatarFallback>JD</AvatarFallback>
                     </Avatar>
                     <h2 className="text-2xl font-bold text-white">
                       {profile?.first_name}
                     </h2>
                     <p className="text-md text-white opacity-80">
-                      Teacher
+                      {profile?.department}
                     </p>
                   </div>
                 </>
@@ -88,27 +90,42 @@ const ViewProfile = () => {
               </div>
 
               <CardContent className="mt-16 px-4 sm:px-6 pb-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
+                <div className="flex flex-col sm:flex-row gap-6 mt-6">
                   {/* Profile Info Box */}
-                  <div className=" shadow-md rounded-2xl p-6 text-center">
-                    <h2 className="text-xl font-bold  mb-4 text-left">Employee Details</h2>
-                    <div className="space-y-3 text-left">
-                      <div>
-                        <p className="text-sm ">Joining Date</p>
-                        <p className="text-lg font-semibold ">{profile?.joining_date || "N/A"}</p>
+                  <div className="flex-1 shadow-md rounded-2xl p-3">
+                    <h2 className="text-2xl font-bold mb-6">Employee Details</h2>
+                    <div className="flex flex-col sm:flex-row flex-wrap gap-6">
+                      <div className="flex-1 min-w-[200px]">
+                        <p className="text-sm text-gray-500">Joining Date</p>
+                        <p className="text-lg font-semibold text-gray-500">{profile?.joining_date || "N/A"}</p>
                       </div>
-                      <div>
-                        <p className="text-sm ">Date of Birth</p>
-                        <p className="text-lg font-semibold ">{profile?.date_of_birth || "N/A"}</p>
+                      <div className="flex-1 min-w-[200px]">
+                        <p className="text-sm text-gray-500">Date of Birth</p>
+                        <p className="text-lg font-semibold text-gray-500">{profile?.date_of_birth || "N/A"}</p>
                       </div>
-                      <div>
-                        <p className="text-sm ">Contact Number</p>
-                        <p className="text-lg font-semibold ">{profile?.contact_number || "N/A"}</p>
+                      <div className="flex-1 min-w-[200px]">
+                        <p className="text-sm text-gray-500">Contact Number</p>
+                        <p className="text-lg font-semibold text-gray-500">{profile?.contact_number || "N/A"}</p>
                       </div>
-                      <div>
-                        <p className="text-sm ">Email</p>
-                        <p className="text-lg font-semibold ">{profile?.email || "N/A"}</p>
+                      <div className="flex-1 min-w-[200px]">
+                        <p className="text-sm text-gray-500">Email</p>
+                        <p className="text-lg font-semibold text-gray-500">{profile?.email || "N/A"}</p>
                       </div>
+                    </div>
+                  </div>
+                </div>
+
+
+
+                <Separator className="my-6" />
+
+                <h3 className="text-xl font-semibold mb-2">Education</h3>
+                <div className="p-6 border rounded-2xl mt-6">
+                  <h2 className="text-2xl font-bold mb-6 text-gray-500">Education Details</h2>
+                  <div className="flex flex-col sm:flex-row flex-wrap gap-6">
+                    <div className="flex-1 min-w-[200px]">
+                      <p className="text-sm text-gray-500">Highest Qualification</p>
+                      <p className="text-lg font-semibold text-gray-500">{profile?.highest_qualification || "N/A"}</p>
                     </div>
                   </div>
                 </div>
@@ -116,38 +133,57 @@ const ViewProfile = () => {
 
                 <Separator className="my-6" />
 
-                <h3 className="text-xl font-semibold mb-2">Education</h3>
-                <div className="space-y-2">
-
-                  <div className="border rounded-lg p-3 ">
-                    <p className="font-medium">{profile?.highest_qualification}</p>
-                    {/* <p className="text-gray-600">{edu.year}</p> */}
-                  </div>
-
-                </div>
-
-                <Separator className="my-6" />
-
                 <h3 className="text-xl font-semibold mb-2">Address</h3>
 
-                <div className="p-3 border rounded-lg ">
-                  <p className="font-medium">State: {profile?.permanent_state}</p>
-                  <p className="font-semibold">City: {profile?.permanent_district}</p>
-                  <p className="font-semibold">Zip Code: {profile?.permanent_pincode}</p>
-                  <p className="font-semibold">Address: {profile?.permanent_address}</p>
+                <div className="p-6 border rounded-2xl  mt-6">
+                  <h2 className="text-2xl font-bold mb-6 text-gray-500">Permanent Address</h2>
+                  <div className="flex flex-col sm:flex-row flex-wrap gap-6">
+                    <div className="flex-1 min-w-[200px]">
+                      <p className="text-sm text-gray-500">State</p>
+                      <p className="text-lg font-semibold text-gray-500">{profile?.permanent_state || "N/A"}</p>
+                    </div>
+                    <div className="flex-1 min-w-[200px]">
+                      <p className="text-sm text-gray-500">City</p>
+                      <p className="text-lg font-semibold text-gray-500">{profile?.permanent_district || "N/A"}</p>
+                    </div>
+                    <div className="flex-1 min-w-[200px]">
+                      <p className="text-sm text-gray-500">Zip Code</p>
+                      <p className="text-lg font-semibold text-gray-500">{profile?.permanent_pincode || "N/A"}</p>
+                    </div>
+                    <div className="flex-1 min-w-[200px]">
+                      <p className="text-sm text-gray-500">Address</p>
+                      <p className="text-lg font-semibold text-gray-500">{profile?.permanent_address || "N/A"}</p>
+                    </div>
+                  </div>
                 </div>
+
 
 
                 <Separator className="my-6" />
 
-                <h3 className="text-xl font-semibold mb-2">School</h3>
-
-                <div className="p-3 border rounded-lg ">
-                  <p className="font-medium">Account Number: {profile?.account_number}</p>
-                  <p className="font-semibold">IFSC_CODE: {profile?.ifsc_code}</p>
-                  <p className="font-semibold">account holder name: {profile?.account_holder_name}</p>
-                  <p className="font-semibold">Salary: {profile?.salary}</p>
+                <h3 className="text-xl font-semibold mb-2">Personal Details</h3>
+                <div className="p-6 border rounded-2xl  mt-6">
+                  <h2 className="text-2xl font-bold mb-6 text-gray-500">Bank Details</h2>
+                  <div className="flex flex-col sm:flex-row flex-wrap gap-6">
+                    <div className="flex-1 min-w-[200px]">
+                      <p className="text-sm text-gray-500">Account Number</p>
+                      <p className="text-lg font-semibold text-gray-500">{profile?.account_number || "N/A"}</p>
+                    </div>
+                    <div className="flex-1 min-w-[200px]">
+                      <p className="text-sm text-gray-500">IFSC Code</p>
+                      <p className="text-lg font-semibold text-gray-500">{profile?.ifsc_code || "N/A"}</p>
+                    </div>
+                    <div className="flex-1 min-w-[200px]">
+                      <p className="text-sm text-gray-500">Account Holder Name</p>
+                      <p className="text-lg font-semibold text-gray-500">{profile?.account_holder_name || "N/A"}</p>
+                    </div>
+                    <div className="flex-1 min-w-[200px]">
+                      <p className="text-sm text-gray-500">Salary</p>
+                      <p className="text-lg font-semibold text-gray-500">{profile?.salary || "N/A"}</p>
+                    </div>
+                  </div>
                 </div>
+
 
               </CardContent>
             </Card>

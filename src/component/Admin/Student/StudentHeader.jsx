@@ -55,7 +55,7 @@ const StudentHeader = () => {
 
   // Debug Redux state
   console.log('Redux students:idddddddddddddddddddddd', students.data);
-
+  
   // Calculate total pages
   const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
 

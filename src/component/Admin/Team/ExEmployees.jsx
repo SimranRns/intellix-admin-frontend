@@ -72,7 +72,7 @@ const ExEmployees = () => {
       if (selectedEmployeeId) {
         await dispatch(UpdateEmployee({ id: selectedEmployeeId }));
         console.log("Employee activated successfully:", selectedEmployeeId);
-  
+
         // Refresh employee list after activation
         // await dispatch(get_ExEmployee({ first_name }));
         window.location.reload();
@@ -87,7 +87,7 @@ const ExEmployees = () => {
       console.error("Activation failed:", error);
     }
   };
-  
+
 
   const employeesPerPage = 9;
   const EmployeeData = ExEmployees?.result?.employees || [];
@@ -112,7 +112,7 @@ const ExEmployees = () => {
   //     </div>
   //   );
   // }
-  
+
 
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
@@ -147,130 +147,133 @@ const ExEmployees = () => {
 
           {/* Cards Grid */}
           {loading ? (
-          <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
-                 <div className="relative flex justify-center items-center">
-                   <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
-                   <img
-                     src={logo}
-                     alt="Loading"
-                     className="rounded-full h-28 w-28"
-                   />
-                 </div>
-               </div>
+            <div className="h-screen flex items-center justify-center text-white">
+              <div className="relative flex justify-center items-center">
+                <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+                <img
+                  src={logo}
+                  alt="Loading"
+                  className="rounded-full h-28 w-28"
+                />
+              </div>
+            </div>
           ) : error ? (
-            <div>Error: {error}</div>
+            <div>Error: {error?.message ? (
+              <div className="text-red-700"> {error.message}</div>
+            ) : ""}</div>
           ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
-            {selectedEmployees?.map((employee) => (
-              <Card
-                key={employee.id}
-                className="w-full max-w-[350px] shadow-sm shadow-blue-500/50 rounded-xl p-6 relative mx-auto"
-              >
-                {/* Options Menu */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button className="absolute top-4 right-4 bg-blue-100 p-2 rounded-lg shadow-sm hover:bg-gray-200">
-                      <Ellipsis className="text-gray-500" size={24} />
-                    </button>
-                  </DropdownMenuTrigger>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
+              {selectedEmployees?.map((employee) => (
+                <Card
+                  key={employee.id}
+                  className="w-full max-w-[350px] shadow-sm shadow-blue-500/50 rounded-xl p-6 relative mx-auto"
+                >
+                  {/* Options Menu */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="absolute top-4 right-4 bg-blue-100 p-2 rounded-lg shadow-sm hover:bg-gray-200">
+                        <Ellipsis className="text-gray-500" size={24} />
+                      </button>
+                    </DropdownMenuTrigger>
 
-                  <DropdownMenuContent
-                    align="end"
-                    className="w-30 bg-gray-100 mt-1 shadow-md rounded-md"
-                  >
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setSelectedEmployeeId(employee.id); // store this ID
-                        setActive(true);
-                      }}
-                      className="cursor-pointer text-green-500 hover:bg-gray-200 px-4 py-2 text-md text-center"
+                    <DropdownMenuContent
+                      align="end"
+                      className="w-30 bg-gray-100 mt-1 shadow-md rounded-md"
                     >
-                      Activate Employee
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                {/* dialog box Delete */}
-                <Dialog open={ActiveEmployee} onOpenChange={setActive}>
-                  <DialogContent
-                    onPointerDownOutside={(e) => e.preventDefault()}
-                    onEscapeKeyDown={(e) => e.preventDefault()}
-                    className="sm:max-w-[425px] shadow-lg p-6 rounded-lg"
-                  >
-                    <DialogHeader>
-                      <DialogTitle className="text-center text-[29px]">
-                        Activate Employee
-                      </DialogTitle>
-                      <DialogDescription className="text-center text-md">
-                        Are you sure you want to activate this employee ?
-                      </DialogDescription>
-                    </DialogHeader>
-
-                    <hr className="mt-5"></hr>
-                    <div className="flex justify-center">
-                      <Button
-                        onClick={
-                          handleDelete
-                        }
-
-                        type="submit"
-                        className="bg-red-600 text-white px-5 py-5 rounded-lg hover:bg-red-700"
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setSelectedEmployeeId(employee.id); // store this ID
+                          setActive(true);
+                        }}
+                        className="cursor-pointer text-green-500 hover:bg-gray-200 px-4 py-2 text-md text-center"
                       >
                         Activate Employee
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
 
-                {/* Card Content */}
-                <CardHeader className="flex flex-col items-center text-center">
-                  <Avatar className="shadow-md w-24 h-24 rounded-full">
-                    <AvatarImage
-                      className="rounded-full  border-4 border-blue-600"
-                      src={employee.image || "https://img.freepik.com/premium-vector/man-profile_1083548-15963.jpg"}
-                      alt={employee.first_name || "teacher"}
-                    />
-                    <AvatarFallback>{employee.first_name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <CardTitle className="mt-4 text-xl font-bold Employee_name">
-                    {employee.first_name}
-                  </CardTitle>
-                  <CardDescription>{employee.department}</CardDescription>
-                </CardHeader>
-
-                <CardContent className="text-center">
-                  <div className="flex flex-wrap justify-center gap-2">
-                    <span
-                      className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1"
+                  {/* dialog box Delete */}
+                  <Dialog open={ActiveEmployee} onOpenChange={setActive}>
+                    <DialogContent
+                      onPointerDownOutside={(e) => e.preventDefault()}
+                      onEscapeKeyDown={(e) => e.preventDefault()}
+                      className="sm:max-w-[425px] shadow-lg p-6 rounded-lg"
                     >
-                      <Clock className="w-4 h-4" />
-                      {new Date(employee.joining_date).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric"
-                      })}
-                    </span>
+                      <DialogHeader>
+                        <DialogTitle className="text-center text-[29px]">
+                          Activate Employee
+                        </DialogTitle>
+                        <DialogDescription className="text-center text-md">
+                          Are you sure you want to activate this employee ?
+                        </DialogDescription>
+                      </DialogHeader>
 
-                  </div>
-                </CardContent>
+                      <hr className="mt-5"></hr>
+                      <div className="flex justify-center">
+                        <Button
+                          onClick={
+                            handleDelete
+                          }
 
-                <CardFooter className="flex justify-center gap-3 mt-5">
-                  <Button
-                    className="bg-indigo-600 text-xs text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-indigo-700 transition-all"
-                    onClick={() => navigate("/View-Profile")}
-                  >
-                    <User size={18} /> Profile
-                  </Button>
-                  <Button
-                    onClick={() => navigate("/manage_salary")}
-                    className="bg-orange-500 text-xs text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-orange-600 transition-all"
-                  >
-                    <HandCoins size={18} /> Manage Salary
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
+                          type="submit"
+                          className="bg-red-600 text-white px-5 py-5 rounded-lg hover:bg-red-700"
+                        >
+                          Activate Employee
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+
+                  {/* Card Content */}
+                  <CardHeader className="flex flex-col items-center text-center">
+                    <Avatar className="shadow-md w-24 h-24 rounded-full">
+                      <AvatarImage
+                        className="rounded-full  border-4 border-blue-600"
+                        src={employee.image || "https://img.freepik.com/premium-vector/man-profile_1083548-15963.jpg"}
+                        alt={employee.first_name || "teacher"}
+                      />
+                      <AvatarFallback>{employee.first_name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <CardTitle className="mt-4 text-xl font-bold Employee_name">
+                      {employee.first_name}
+                    </CardTitle>
+                    <CardDescription>{employee.department}</CardDescription>
+                  </CardHeader>
+
+                  <CardContent className="text-center">
+                    <div className="flex flex-wrap justify-center gap-2">
+                      <span
+                        className="bg-blue-100 px-3 p-1 rounded-lg text-sm text-blue-500 font-semibold flex items-center gap-1"
+                      >
+                        <Clock className="w-4 h-4" />
+                        {new Date(employee.joining_date).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric"
+                        })}
+                      </span>
+
+                    </div>
+                  </CardContent>
+
+                  <CardFooter className="flex justify-center gap-3 mt-5">
+                    <Button
+                      className="bg-indigo-600 text-xs text-white px-5 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-indigo-700 transition-all"
+                      onClick={() => navigate(`/View-Profile/${employee.id}`)}
+                    >
+                      <User size={18} /> Profile
+                    </Button>
+
+                    <Button
+                      onClick={() => navigate("/manage_salary")}
+                      className="bg-orange-500 text-xs text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2 hover:bg-orange-600 transition-all"
+                    >
+                      <HandCoins size={18} /> Manage Salary
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
           )}
           {/* Pagination */}
           <Pagination>
