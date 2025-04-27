@@ -9,7 +9,7 @@ import StudentHeader from "./component/Admin/Student/StudentHeader";
 import Advertisment from "./component/Admin/Advertisment/Advertisment";
 import Attendance from "./component/Admin/Attendance/Attendance";
 import Support from "./component/Admin/Support/Support";
-import AddStudentModal from "./component/Admin/Student/AddStudentModal";
+import AddStudentModal from "./component/Admin/Student/AddStudentForm";
 import Team from "./component/Admin/Team/Team";
 // import 'react-notifications/lib/notifications.css';
 import StudentSelectionPage from "./component/Admin/Student/StudentSelectionPage";
@@ -109,10 +109,10 @@ const App = () => {
             />
             <Route path="/ParentDetails" element={<ParentDetails />} />
             <Route path="/add" element={<SuccessMessage />} />
-            <Route path="/view/profile" element={<Profile />} />
-            <Route path="/student-payment-history" element={<Payment_History />} />
-            <Route path="/StudentUploadModal" element={<StudentUploadModal />} />
-            <Route path="/Marksheet" element={<MarksheetForm />} />
+            <Route path="/view/profile/:id" element={<Profile />} />
+            <Route path="/student-payment-history/:id" element={<Payment_History />} />
+            <Route path="/StudentUploadModal/:id" element={<StudentUploadModal />} />
+            <Route path="/Marksheet/:id" element={<MarksheetForm />} />
             <Route path="/ExStudents" element={<ExStudentsData />} />
             <Route path="/student_attendance" element={<Stu_Attendance />} />
             <Route path="/View-Profile/:id" element={<ViewProfile />} />

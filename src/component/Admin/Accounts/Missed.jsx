@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { debounce } from "lodash"; // Import lodash for debouncing
+import { debounce } from "lodash";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import { SidebarInset, SidebarProvider } from "../../src/components/ui/sidebar";
 import Header from "../Dashboard/Header";
@@ -17,85 +17,84 @@ import {
 import { getEmis } from "../../../Redux_store/Api/EmisApiStore";
 import { get_Batches } from "../../../Redux_store/Api/Batches";
 
-// const dummyData = [
-//   { id: 1, batch: "Batch A", students: 25, amount: 5000 },
-//   { id: 2, batch: "Batch B", students: 30, amount: 6000 },
-//   { id: 3, batch: "Batch C", students: 20, amount: 4500 },
-//   { id: 4, batch: "Batch D", students: 15, amount: 3000 },
-//   { id: 5, batch: "Batch E", students: 28, amount: 5500 },
-//   { id: 6, batch: "Batch F", students: 22, amount: 4800 },
-//   { id: 7, batch: "Batch G", students: 27, amount: 5200 },
-//   { id: 8, batch: "Batch H", students: 18, amount: 3500 },
-//   { id: 9, batch: "Batch I", students: 32, amount: 6500 },
-//   { id: 10, batch: "Batch J", students: 19, amount: 4000 },
-//   { id: 11, batch: "Batch K", students: 26, amount: 5100 },
-// ];
+// Constants
+const MONTHS = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
+const YEARS = ["2023", "2024", "2025"];
+const ROWS_PER_PAGE = 10;
 
-// Missed Component
 const Missed = () => {
   const dispatch = useDispatch();
-  const { data, loading, error } = useSelector((state) => state.emis || {}); // Fallback to empty object
+  const { data, loading, error } = useSelector((state) => state.emis || {});
+  const { Batches: batches = [], loading: batchesLoading, error: batchesError } = useSelector(
+    (state) => state.Batch || {}
+  );
   const date = new Date();
 
   // State for filters and pagination
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [month, setMonth] = useState(date.getMonth() + 1); // Dynamic month filter
-  const [year, setYear] = useState(date.getFullYear()); // Dynamic year filter
-  const {
-    Batches: batches = [], // Default to empty array
-    
-  } = useSelector((state) => state.Batch);
-  const rowsPerPage = 10;
+  const [month, setMonth] = useState(String(date.getMonth() + 1).padStart(2, "0"));
+  const [year, setYear] = useState(date.getFullYear().toString());
 
   // Calculate total pages
-  const totalPages = Math.ceil(
-    (Array.isArray(data) ? data.length : 0) / rowsPerPage
-  );
 
-  // Fetch data dynamically based on filters
+  // Fetch data
   useEffect(() => {
     dispatch(getEmis({ filter: "missed", month, year }));
-  }, [dispatch, month, year]);
-  const filter = "missed";
-  // Debounced search handler
-  const handleSearch = useCallback(
-    debounce((value) => {
-      setSearch(value);
-      setCurrentPage(1); // Reset to first page on search
-    }, 300),
-    []
-  );
+    if (!batches.length) dispatch(get_Batches());
+  }, [dispatch, month, year, batches.length]);
 
   // Go back to previous page
   const goBack = () => {
     window.history.back();
   };
 
-  // Filter data based on search
-  const filteredData = Array.isArray(data?.missed)
-    ? data.missed.filter((item) =>
-      item?.student_id
-        ?.toString()
-        .toLowerCase()
-        .includes(search.toLowerCase())
-    )
-    : dummyData.filter((item) =>
-      item?.batch?.toLowerCase().includes(comps.toLowerCase())
-    );
-  console.log(filteredData, "filteredData from missed");
-
-  // Paginate data
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const paginatedData = filteredData.slice(
-    startIndex,
-    startIndex + rowsPerPage
+  // Debounced search handler
+  const handleSearch = useCallback(
+    debounce((value) => {
+      setSearch(value);
+    }, 300),
+    []
   );
 
+  // Debounced page reset for filters
+  const handlePageReset = useCallback(
+    debounce(() => {
+      setCurrentPage(1);
+    }, 300),
+    []
+  );
 
-  useEffect(() => {
-    dispatch(get_Batches())
-  }, [dispatch])
+  // Create batch lookup map for performance
+  const batchMap = useMemo(() => {
+    return batches.reduce((map, batch) => {
+      map[batch.batch_id] = batch.batchesName;
+      return map;
+    }, {});
+  }, [batches]);
+
+  // Memoized filtered data
+  const filteredData = useMemo(() => {
+    if (!Array.isArray(data?.missed)) return [];
+    const searchLower = search.toLowerCase();
+    return data.missed
+      .map((item) => ({
+        ...item,
+        batchName: batchMap[item.batch_id] || "-",
+      }))
+      .filter(
+        (item) =>
+          item.student_id?.toString().toLowerCase().includes(searchLower) ||
+          item.batchName?.toLowerCase().includes(searchLower)
+      );
+  }, [data?.missed, batchMap, search]);
+
+
+  const totalPages = Math.ceil((filteredData.length || 0) / ROWS_PER_PAGE);
+
+  // Pagination
+  const startIndex = (currentPage - 1) * ROWS_PER_PAGE;
+  const paginatedData = filteredData.slice(startIndex, startIndex + ROWS_PER_PAGE);
 
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
@@ -107,13 +106,11 @@ const Missed = () => {
           <div className="w-full shadow-md shadow-blue-300/30 rounded-lg flex flex-wrap sm:flex-nowrap items-center justify-between px-4 sm:px-8 py-4 gap-3">
             <div className="flex items-center gap-3">
               <Button
-                className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm flex items-center gap-2"
+                className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm flex items-center gap-2"
                 onClick={goBack}
               >
                 <ArrowLeft size={18} />
-                <span className="hidden md:inline">
-                  Back to Student Account
-                </span>
+                <span className="hidden md:inline">Back to Student Account</span>
               </Button>
               <span className="font-bold px-4 py-2 rounded-md text-sm flex items-center gap-2">
                 Missed Batches
@@ -126,24 +123,12 @@ const Missed = () => {
                 value={month}
                 onChange={(e) => {
                   setMonth(e.target.value);
-                  setCurrentPage(1); // Reset pagination
+                  handlePageReset();
                 }}
                 className="border border-blue-300 rounded-lg px-3 py-2 text-sm"
+                aria-label="Select Month"
               >
-                {[ 
-                  "01",
-                  "02",
-                  "03",
-                  "04",
-                  "05",
-                  "06",
-                  "07",
-                  "08",
-                  "09",
-                  "10",
-                  "11",
-                  "12",
-                ].map((m) => (
+                {MONTHS.map((m) => (
                   <option key={m} value={m}>
                     {m}
                   </option>
@@ -153,11 +138,12 @@ const Missed = () => {
                 value={year}
                 onChange={(e) => {
                   setYear(e.target.value);
-                  setCurrentPage(1); // Reset pagination
+                  handlePageReset();
                 }}
                 className="border border-blue-300 rounded-lg px-3 py-2 text-sm"
+                aria-label="Select Year"
               >
-                {["2023", "2024", "2025"].map((y) => (
+                {YEARS.map((y) => (
                   <option key={y} value={y}>
                     {y}
                   </option>
@@ -171,32 +157,44 @@ const Missed = () => {
               <input
                 name="search"
                 type="text"
-                placeholder="By Batch Name..."
+                placeholder="By Batch Name or Student ID..."
                 onChange={(e) => handleSearch(e.target.value)}
                 className="ml-2 w-full outline-none bg-transparent text-sm"
+                aria-label="Search by Batch Name or Student ID"
               />
             </div>
           </div>
 
           {/* Table Container */}
           <div className="rounded-lg mt-6 p-5 bg-white shadow">
-            {loading ? (
+            {loading || batchesLoading ? (
               <div className="text-center p-4">Loading...</div>
-            ) : error ? (
-              <div className="text-center p-4 text-red-500">Error: {error}</div>
+            ) : error || batchesError ? (
+              <div className="text-center p-4 text-red-500">
+                Error: {error || batchesError || "An unexpected error occurred."}
+              </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full" aria-label="Missed Batches Table">
                   <thead className="bg-gray-200 dark:bg-gray-900">
                     <tr>
-                      <th className="p-3 border">ID</th>
-                      <th className="p-3 border">Batch Name</th>
-                      <th className="p-3 border">Students</th>
-                      <th className="p-3 border">Amount</th>
-                      <th className="p-3 border">Action</th>
+                      <th className="p-3 border" scope="col">
+                        ID
+                      </th>
+                      <th className="p-3 border" scope="col">
+                        Batch Name
+                      </th>
+                      <th className="p-3 border" scope="col">
+                        Students
+                      </th>
+                      <th className="p-3 border" scope="col">
+                        Amount
+                      </th>
+                      <th className="p-3 border" scope="col">
+                        Action
+                      </th>
                     </tr>
                   </thead>
-
                   <tbody>
                     {paginatedData.length > 0 ? (
                       paginatedData.map((row) => (
@@ -204,16 +202,15 @@ const Missed = () => {
                           key={row.id}
                           className="text-center hover:bg-gray-50 transition"
                         >
-                          <td className="p-3 border">{row.id}</td>
-                          <td className="p-3 border">{row.batch || "-"}</td>
+                          <td className="p-3 border">{row.id || "-"}</td>
+                          <td className="p-3 border">{row.batchName || "-"}</td>
+                          <td className="p-3 border">{row.student_id || "-"}</td>
+                          <td className="p-3 border font-semibold">{row.amount || "-"}</td>
                           <td className="p-3 border">
-                            {row.student_id || "-"}
-                          </td>
-                          <td className="p-3 border font-semibold">
-                            {row.amount}
-                          </td>
-                          <td className="p-3 border">
-                            <Button className="bg-blue-500 hover:bg-blue-600 px-4 py-1 rounded-md">
+                            <Button
+                              className="bg-blue-500 hover:bg-blue-600 px-4 py-1 rounded-md"
+                              aria-label={`View details for batch ${row.id}`}
+                            >
                               Details
                             </Button>
                           </td>
@@ -243,41 +240,35 @@ const Missed = () => {
                   <PaginationItem>
                     <PaginationPrevious
                       href="#"
-                      onClick={() =>
-                        setCurrentPage(Math.max(1, currentPage - 1))
-                      }
-                      className={
-                        currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-                      }
+                      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                      className={currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}
+                      aria-label="Previous Page"
                     />
                   </PaginationItem>
-
                   {Array.from({ length: totalPages }, (_, i) => (
                     <PaginationItem key={i}>
                       <PaginationLink
                         href="#"
                         onClick={() => setCurrentPage(i + 1)}
-                        className={`px-4 py-2 rounded-md ${currentPage === i + 1
-                          ? "bg-blue-600 text-white"
-                          : "hover:bg-blue-500 hover:text-white"
-                          }`}
+                        className={`px-4 py-2 rounded-md ${
+                          currentPage === i + 1
+                            ? "bg-blue-600 text-white"
+                            : "hover:bg-blue-600 hover:text-white"
+                        }`}
+                        aria-label={`Page ${i + 1}`}
                       >
                         {i + 1}
                       </PaginationLink>
                     </PaginationItem>
                   ))}
-
                   <PaginationItem>
                     <PaginationNext
                       href="#"
-                      onClick={() =>
-                        setCurrentPage(Math.min(totalPages, currentPage + 1))
-                      }
+                      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                       className={
-                        currentPage === totalPages
-                          ? "opacity-50 cursor-not-allowed"
-                          : ""
+                        currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
                       }
+                      aria-label="Next Page"
                     />
                   </PaginationItem>
                 </PaginationContent>

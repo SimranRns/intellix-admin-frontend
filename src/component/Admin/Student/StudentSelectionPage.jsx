@@ -1,12 +1,16 @@
-import { FaArrowLeftLong } from "react-icons/fa6";
+import { ArrowLeft, BookOpenCheck, Layers3 } from "lucide-react";
+import { Button } from "../../src/components/ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { ArrowLeft, BookOpenCheck, Layers3 } from "lucide-react";
-import { Button } from "../../src/components/ui/button";
+import { useDispatch, useSelector } from "react-redux";
+import { updateNewStudent } from "../../../Redux_store/slices/StudentSlice";
+import { get_course } from "../../../Redux_store/Api/Add_popular_course";
+import { get_Batches } from "../../../Redux_store/Api/Batches";
+import { useEffect } from "react";
 
-// ✅ Zod Validation Schema
+// Zod Validation Schema
 const validationSchema = z.object({
   selectedCourse: z.string().min(1, { message: "Course selection is required" }),
   selectedBatch: z.string().min(1, { message: "Batch selection is required" }),
@@ -14,6 +18,19 @@ const validationSchema = z.object({
 
 const StudentSelectionPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  // Redux state
+  const {
+    Batches: batches = [],
+    loading: batchesLoading,
+    error: batchesError,
+  } = useSelector((state) => state.Batch);
+  const {
+    course: courses = { data: [] },
+    loading: coursesLoading,
+    error: coursesError,
+  } = useSelector((state) => state.courses);
 
   const {
     register,
@@ -23,82 +40,138 @@ const StudentSelectionPage = () => {
     resolver: zodResolver(validationSchema),
   });
 
+  // Fetch data on mount
+  useEffect(() => {
+    dispatch(get_course());
+    dispatch(get_Batches());
+  }, [dispatch]);
+
+  // Debug logging (optional, remove in production)
+  useEffect(() => {
+    console.log("🔍 Courses:", courses);
+    console.log("🔍 Batches:", batches);
+    console.log("🔍 Courses Loading:", coursesLoading, "Error:", coursesError);
+    console.log("🔍 Batches Loading:", batchesLoading, "Error:", batchesError);
+  }, [courses, batches, coursesLoading, coursesError, batchesLoading, batchesError]);
+
+  // Handle form submission
   const onSubmit = (data) => {
-    console.log("Form Data:", data);
+    dispatch(
+      updateNewStudent({
+        course_id: data.selectedCourse,
+        batch_id: data.selectedBatch,
+      })
+    );
     navigate("/ParentDetails");
   };
-  const goback = () => {
-    window.history.back()
-  }
-  return (
 
-    <div>
-      <div className="flex items-center gap-4 p-4 ">
+  // Navigate back
+  const goBack = () => {
+    navigate(-1);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100">
+      <div className="flex items-center gap-4 p-4">
         <Button
           className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-full flex items-center gap-2 transition duration-300 shadow-md"
-          onClick={goback}
+          onClick={goBack}
+          aria-label="Go back"
         >
           <ArrowLeft size={18} />
-          <span className="hidden md:inline">Back</span>
+          <span className="md:inline">Back</span>
         </Button>
-
       </div>
-      {/* 📌 Form Container */}
-      <div className="relative min-h-screen flex items-center justify-center">
-        <div className=" rounded-2xl  z-10 w-[90%] md:w-[580px] h-auto min-h-[320px] max-w-4xl shadow-md shadow-blue-500/50 p-8 mt-5">
-          <form onSubmit={handleSubmit(onSubmit)}>
 
-            {/* 📌 Select Course */}
-            <div className="relative mb-4">
-              <label className=" font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
-                <BookOpenCheck size={18} /> Select Course <span className="text-red-500">*</span>
+      <div className="flex items-center justify-center p-4">
+        <div className="rounded-2xl w-full max-w-md p-8 bg-white shadow-md shadow-blue-500/50">
+          {(coursesLoading || batchesLoading) && (
+            <p className="text-center text-gray-600">Loading...</p>
+          )}
+          {(coursesError || batchesError) && (
+            <p className="text-center text-red-500">
+              Error: {coursesError || batchesError}
+            </p>
+          )}
+
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            {/* Select Course */}
+            <div className="mb-6">
+              <label
+                htmlFor="selectedCourse"
+                className="font-semibold text-lg flex items-center gap-2 mb-2"
+              >
+                <BookOpenCheck size={18} /> Select Course{" "}
+                <span className="text-red-500">*</span>
               </label>
               <select
-                className={`w-full bg-transparent border rounded-xl p-3  sm:p-4 shadow-lg pl-10 ${errors.selectedCourse ? 'border-red-500' : 'border-gray-300'}`}
+                id="selectedCourse"
+                className={`w-full border rounded-xl p-3 shadow-sm focus:ring-2 focus:ring-blue-500 ${
+                  errors.selectedCourse ? "border-red-500" : "border-gray-300"
+                }`}
                 {...register("selectedCourse")}
+                aria-invalid={errors.selectedCourse ? "true" : "false"}
               >
-                <option className="text-black" value="">--Select Course--</option>
-                <option className="text-black" value="RGB">RGB</option>
-                <option className="text-black" value="HSC">HSC</option>
+                <option value="">--Select Course--</option>
+                {courses?.data?.map((course) => (
+                  <option key={course.id} value={course.id}>
+                    {course.title || `Course ${course.id}`}
+                  </option>
+                ))}
               </select>
-
               {errors.selectedCourse && (
-                <p className="text-red-500 text-sm mt-1">{errors.selectedCourse.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.selectedCourse.message}
+                </p>
               )}
             </div>
 
-            {/* 📌 Select Batch */}
-            <div className="relative mb-4">
-              <label className=" font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
-                <Layers3 size={18} /> Select Batch <span className="text-red-500">*</span>
+            {/* Select Batch */}
+            <div className="mb-6">
+              <label
+                htmlFor="selectedBatch"
+                className="font-semibold text-lg flex items-center gap-2 mb-2"
+              >
+                <Layers3 size={18} /> Select Batch{" "}
+                <span className="text-red-500">*</span>
               </label>
               <select
-                className={`w-full bg-transparent border rounded-xl p-3 sm:p-4 shadow-lg pl-10 ${errors.selectedBatch ? 'border-red-500' : 'border-gray-300'}`}
+                id="selectedBatch"
+                className={`w-full border rounded-xl p-3 shadow-sm focus:ring-2 focus:ring-blue-500 ${
+                  errors.selectedBatch ? "border-red-500" : "border-gray-300"
+                }`}
                 {...register("selectedBatch")}
+                aria-invalid={errors.selectedBatch ? "true" : "false"}
               >
-                <option className="text-black" value="">--Select Batch--</option>
-                <option className="text-black" value="Batch A">Batch A</option>
-                <option className="text-black" value="Batch B">Batch B</option>
+                <option value="">--Select Batch--</option>
+                {batches.map((batch) => (
+                  <option key={batch.id} value={batch.id}>
+                    {batch.BatchesName || `Batch ${batch.id}`}
+                  </option>
+                ))}
               </select>
-            
               {errors.selectedBatch && (
-                <p className="text-red-500 text-sm mt-1">{errors.selectedBatch.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.selectedBatch.message}
+                </p>
               )}
             </div>
 
-            {/* 📌 Submit Button */}
+            {/* Submit Button */}
             <div className="flex justify-center">
-              <button
+              <Button
                 type="submit"
-                className="bg-blue-700 hover:bg-blue-600 text-white px-10 py-3 mt-5 rounded-lg min-w-[250px] w-full sm:w-[300px] h-[40px] text-lg"
+                className="bg-blue-700 hover:bg-blue-600 text-white px-10 py-3 rounded-lg w-full max-w-xs h-10 text-lg disabled:opacity-50"
+                disabled={coursesLoading || batchesLoading}
               >
                 Proceed
-              </button>
+              </Button>
             </div>
           </form>
         </div>
       </div>
-    </div>);
+    </div>
+  );
 };
 
 export default StudentSelectionPage;

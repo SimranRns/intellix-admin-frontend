@@ -18,6 +18,9 @@ const BatchesSlice = createSlice({
       .addCase(get_Batches.fulfilled, (state, action) => {
         state.loading = false;
         state.Batches = action.payload;
+        // console.log(" Batches data:", action.payload);
+        
+        
       })
       .addCase(get_Batches.rejected, (state) => {
         state.loading = false;
