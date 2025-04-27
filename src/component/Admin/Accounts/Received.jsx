@@ -16,21 +16,40 @@ import { getEmis } from "../../../Redux_store/Api/EmisApiStore";
 import { useDispatch, useSelector } from "react-redux";
 import { debounce } from "lodash";
 
+// Dummy data for when API data is unavailable
+const dummyData = [
+  { id: 1, batch: "Batch A", students: 25, amount: 5000 },
+  { id: 2, batch: "Batch B", students: 30, amount: 6000 },
+  { id: 3, batch: "Batch C", students: 20, amount: 4500 },
+  { id: 4, batch: "Batch D", students: 15, amount: 3000 },
+  { id: 5, batch: "Batch E", students: 28, amount: 5500 },
+  { id: 6, batch: "Batch F", students: 22, amount: 4800 },
+  { id: 7, batch: "Batch G", students: 27, amount: 5200 },
+  { id: 8, batch: "Batch H", students: 18, amount: 3500 },
+  { id: 9, batch: "Batch I", students: 32, amount: 6500 },
+  { id: 10, batch: "Batch J", students: 19, amount: 4000 },
+  { id: 11, batch: "Batch K", students: 26, amount: 5100 },
+];
+
 const Received = () => {
   const dispatch = useDispatch();
   const { data, loading, error } = useSelector((state) => state.emis || {});
   const date = new Date();
-  const [month, setMonth] = useState(String(date.getMonth() + 1).padStart(2, "0"));
+  const [month, setMonth] = useState(
+    String(date.getMonth() + 1).padStart(2, "0")
+  );
   const [year, setYear] = useState(String(date.getFullYear()));
   const [searchInput, setSearchInput] = useState(""); // For controlled input
- // For debounced search
+  const [comps, setComps] = useState(""); // For debounced search filtering
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
 
+  // Fetch data when month or year changes
   useEffect(() => {
     dispatch(getEmis({ filter: "paid", month, year }));
   }, [dispatch, month, year]);
 
+  // Debounced search handler
   const handleSearch = useCallback(
     debounce((value) => {
       setComps(value);
@@ -39,28 +58,33 @@ const Received = () => {
     []
   );
 
-  // Handle input change for controlled input
+  // Handle input change for search
   const onSearchChange = (e) => {
     const value = e.target.value;
     setSearchInput(value);
     handleSearch(value);
   };
 
-  // Filter data safely
-  const filteredData = Array.isArray(data?.paid)
+  // Filter data with fallback to dummyData
+  const filteredData = Array.isArray(data?.paid) && data.paid.length > 0
     ? data.paid.filter((item) =>
-        item?.student_id?.toString().toLowerCase().includes(comps.toLowerCase())
+        item?.batch?.toLowerCase().includes(comps.toLowerCase())
       )
-    : [];
-    console.log(filteredData, "filteredData from paid");
+    : dummyData.filter((item) =>
+        item?.batch?.toLowerCase().includes(comps.toLowerCase())
+      );
 
+  console.log(filteredData, "filteredData from paid");
 
   // Pagination
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
-  const paginatedData = filteredData.slice(startIndex, startIndex + rowsPerPage);
+  const paginatedData = filteredData.slice(
+    startIndex,
+    startIndex + rowsPerPage
+  );
 
-  // Generate dynamic years (e.g., last 5 years and next 2 years)
+  // Generate dynamic years (last 5 years and next 2 years)
   const years = Array.from({ length: 8 }, (_, i) => date.getFullYear() - 3 + i);
 
   return (
@@ -78,7 +102,9 @@ const Received = () => {
                 aria-label="Go back to student account"
               >
                 <ArrowLeft size={18} />
-                <span className="hidden md:inline">Back to Student Account</span>
+                <span className="hidden md:inline">
+                  Back to Student Account
+                </span>
               </Button>
               <span className="font-bold px-4 py-2 rounded-md text-sm flex items-center gap-2">
                 Received Batches
@@ -94,9 +120,13 @@ const Received = () => {
                 className="border border-blue-300 rounded-lg px-3 py-2 text-sm"
                 aria-label="Select month"
               >
-                {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map((m) => (
+                {Array.from({ length: 12 }, (_, i) =>
+                  String(i + 1).padStart(2, "0")
+                ).map((m) => (
                   <option key={m} value={m}>
-                    {m}
+                    {new Date(0, m - 1).toLocaleString("default", {
+                      month: "long",
+                    })}
                   </option>
                 ))}
               </select>
@@ -121,11 +151,11 @@ const Received = () => {
               <input
                 name="search"
                 type="text"
-                placeholder="By Employee Name..."
+                placeholder="Search by Batch Name..."
                 value={searchInput}
                 onChange={onSearchChange}
                 className="ml-2 w-full outline-none bg-transparent text-sm"
-                aria-label="Search by employee name"
+                aria-label="Search by batch name"
               />
             </div>
           </div>
@@ -133,7 +163,9 @@ const Received = () => {
           {/* Table Container */}
           <div className="rounded-lg mt-6 p-5">
             {loading ? (
-              <div className="text-center p-4 text-gray-500 font-semibold">Loading...</div>
+              <div className="text-center p-4 text-gray-500 font-semibold">
+                Loading...
+              </div>
             ) : error ? (
               <div className="text-center p-4 text-red-500 font-semibold">
                 Error: {error.message || "Failed to load data"}
@@ -163,15 +195,21 @@ const Received = () => {
                   <tbody>
                     {paginatedData.length > 0 ? (
                       paginatedData.map((row) => (
-                        <tr key={row.id} className="text-center hover:bg-gray-50">
+                        <tr
+                          key={row.id}
+                          className="text-center hover:bg-gray-50"
+                        >
                           <td className="p-3 border">{row.id}</td>
                           <td className="p-3 border">{row.batch}</td>
                           <td className="p-3 border">{row.students}</td>
-                          <td className="p-3 border font-semibold">{row.amount}</td>
+                          <td className="p-3 border font-semibold">
+                            ₹{row.amount.toLocaleString()}
+                          </td>
                           <td className="p-3 border">
                             <Button
                               className="bg-blue-500 hover:bg-blue-600 px-4 py-1 rounded-md"
-                              aria-label={`View details for batch ${row.id}`}
+                              onClick={() => alert(`View details for batch ${row.id}`)}
+                              aria-label={`View details for batch ${row.batch}`}
                             >
                               Details
                             </Button>
@@ -202,8 +240,12 @@ const Received = () => {
                   <PaginationItem>
                     <PaginationPrevious
                       href="#"
-                      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                      className={currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}
+                      onClick={() =>
+                        setCurrentPage(Math.max(1, currentPage - 1))
+                      }
+                      className={
+                        currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                      }
                       aria-disabled={currentPage === 1}
                     />
                   </PaginationItem>
@@ -217,7 +259,9 @@ const Received = () => {
                             ? "bg-blue-600 text-white"
                             : "hover:bg-blue-500 hover:text-white"
                         }`}
-                        aria-current={currentPage === i + 1 ? "page" : undefined}
+                        aria-current={
+                          currentPage === i + 1 ? "page" : undefined
+                        }
                       >
                         {i + 1}
                       </PaginationLink>
@@ -226,8 +270,14 @@ const Received = () => {
                   <PaginationItem>
                     <PaginationNext
                       href="#"
-                      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                      className={currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""}
+                      onClick={() =>
+                        setCurrentPage(Math.min(totalPages, currentPage + 1))
+                      }
+                      className={
+                        currentPage === totalPages
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                      }
                       aria-disabled={currentPage === totalPages}
                     />
                   </PaginationItem>

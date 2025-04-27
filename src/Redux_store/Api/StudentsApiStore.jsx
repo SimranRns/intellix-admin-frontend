@@ -1,94 +1,113 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export const getStudents = createAsyncThunk(
-    'getStudents',
-    async ({limits,page} = {}, { rejectWithValue }) => {
-      try {
-        // Construct query string from params dynamically
-     
-        const url = `${BASE_URL}/api/v1/student/allStudents?&limit=12&page=1`;
-  
-        const requestOptions = {
-          method: 'GET',
-          redirect: 'follow',
-        };
-  
-        const response = await fetch(url, requestOptions);
-  
-        // Check if response is OK (status 200-299)
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-        }
-  
-        // Parse response as JSON
-        const data = await response.json();
-        console.log(data);
-        
-        return data; // Return the parsed data
-      } catch (error) {
-        // Reject with error message
-        return rejectWithValue(error.message || 'Something went wrong');
+  "getStudents",
+  async ({ limits, page } = {}, { rejectWithValue }) => {
+    try {
+      // Construct query string from params dynamically
+
+      const url = `${BASE_URL}/api/v1/student/allStudents?&limit=12&page=1`;
+
+      const requestOptions = {
+        method: "GET",
+        redirect: "follow",
+      };
+
+      const response = await fetch(url, requestOptions);
+
+      // Check if response is OK (status 200-299)
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.message || `HTTP error! Status: ${response.status}`
+        );
       }
+
+      // Parse response as JSON
+      const data = await response.json();
+      console.log(data);
+
+      return data; // Return the parsed data
+    } catch (error) {
+      // Reject with error message
+      return rejectWithValue(error.message || "Something went wrong");
     }
-  )
+  }
+);
+
+export const getSingleStudent = createAsyncThunk(
+  "getSingleStudent",
+  async ({ id }, { rejectWithValue }) => {
+    // id ko dynamic bana diya
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/v1/student/singleStudent/${id}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch student data");
+      }
+
+      const result = await response.json(); // Assuming the response is JSON
+
+      return result; // Returning the fetched data
+    } catch (error) {
+      return rejectWithValue(error.message || "Something went wrong");
+    }
+  }
+);
+
 export const addStudentsExcel = createAsyncThunk(
   "students/addStudentsExcel",
   async ({ file, batch_id, course_id }, { rejectWithValue }) => {
     try {
-      const formData = new FormData()
-      formData.append("file", file)
-      formData.append("batch_id", batch_id)
-      formData.append("course_id", course_id)
-      
-      const response = await fetch(
-        `${BASE_URL}/api/v1/student/uploadexcel`,
-        {
-          method: "POST",
-          body: formData,
-          redirect: "follow"
-        }
-      )
-      
-      const data = await response.json()
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("batch_id", batch_id);
+      formData.append("course_id", course_id);
+
+      const response = await fetch(`${BASE_URL}/api/v1/student/uploadexcel`, {
+        method: "POST",
+        body: formData,
+        redirect: "follow",
+      });
+
+      const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to upload excel')
+        throw new Error(data.message || "Failed to upload excel");
       }
-      return data
+      return data;
     } catch (error) {
-      return rejectWithValue(error.message || 'Something went wrong')
+      return rejectWithValue(error.message || "Something went wrong");
     }
   }
-)
+);
 
 export const addStudent = createAsyncThunk(
   "students/addStudent",
   async (studentData, { rejectWithValue }) => {
     try {
-      const response = await fetch(
-        `${BASE_URL}/api/v1/student/add`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(studentData),
-          redirect: "follow"
-        }
-      )
-      
-      const data = await response.json()
+      const response = await fetch(`${BASE_URL}/api/v1/student/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(studentData),
+        redirect: "follow",
+      });
+
+      const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to add student')
+        throw new Error(data.message || "Failed to add student");
       }
-      return data
+      return data;
     } catch (error) {
-      return rejectWithValue(error.message || 'Something went wrong')
+      return rejectWithValue(error.message || "Something went wrong");
     }
   }
-)
+);
 
 export const updateStudentsRt = createAsyncThunk(
   "students/updateStudentsRt",
@@ -99,23 +118,23 @@ export const updateStudentsRt = createAsyncThunk(
         {
           method: "PUT",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(updateData),
-          redirect: "follow"
+          redirect: "follow",
         }
-      )
-      
-      const data = await response.json()
+      );
+
+      const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to update students')
+        throw new Error(data.message || "Failed to update students");
       }
-      return data
+      return data;
     } catch (error) {
-      return rejectWithValue(error.message || 'Something went wrong')
+      return rejectWithValue(error.message || "Something went wrong");
     }
   }
-)
+);
 
 export const updateStudentStatus = createAsyncThunk(
   "students/updateStudentStatus",
@@ -126,23 +145,23 @@ export const updateStudentStatus = createAsyncThunk(
         {
           method: "PUT",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ status }),
-          redirect: "follow"
+          redirect: "follow",
         }
-      )
-      
-      const data = await response.json()
+      );
+
+      const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to update student status')
+        throw new Error(data.message || "Failed to update student status");
       }
-      return data
+      return data;
     } catch (error) {
-      return rejectWithValue(error.message || 'Something went wrong')
+      return rejectWithValue(error.message || "Something went wrong");
     }
   }
-)
+);
 
 export const getStudentRecipients = createAsyncThunk(
   "students/getStudentRecipients",
@@ -152,17 +171,17 @@ export const getStudentRecipients = createAsyncThunk(
         `${BASE_URL}/api/v1/receipt/generate/${id}`,
         {
           method: "GET",
-          redirect: "follow"
+          redirect: "follow",
         }
-      )
-      
-      const data = await response.json()
+      );
+
+      const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to fetch recipients')
+        throw new Error(data.message || "Failed to fetch recipients");
       }
-      return data
+      return data;
     } catch (error) {
-      return rejectWithValue(error.message || 'Something went wrong')
+      return rejectWithValue(error.message || "Something went wrong");
     }
   }
-)
+);
