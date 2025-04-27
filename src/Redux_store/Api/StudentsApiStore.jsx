@@ -40,24 +40,28 @@ export const getStudents = createAsyncThunk(
 export const getSingleStudent = createAsyncThunk(
   "getSingleStudent",
   async ({ id }, { rejectWithValue }) => {
-    // id ko dynamic bana diya
     try {
-      const response = await fetch(
-        `${BASE_URL}/api/v1/student/singleStudent/${id}`
-      );
-
+      const requestOptions = {
+        method: "GET",
+        redirect: "follow"
+      };
+      
+      const response = await fetch(`${BASE_URL}/api/v1/student/singleStudent/${id}`, requestOptions);
+      
       if (!response.ok) {
-        throw new Error("Failed to fetch student data");
+        throw new Error('Network response was not ok');
       }
 
-      const result = await response.json(); // Assuming the response is JSON
-
-      return result; // Returning the fetched data
+      const result = await response.json();  // json() parse karo
+      console.log(result , "single student data"); // Debugging line to check the result
+      
+      return result; // Ab ye proper data return hoga
     } catch (error) {
       return rejectWithValue(error.message || "Something went wrong");
     }
   }
 );
+
 
 export const addStudentsExcel = createAsyncThunk(
   "students/addStudentsExcel",

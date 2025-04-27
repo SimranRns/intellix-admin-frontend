@@ -40,7 +40,7 @@ import {
 import Header from "../Dashboard/Header";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import Add_Payment from "./Add_Payment";
-import { getStudents } from "../../../Redux_store/Api/StudentsApiStore";
+import { getStudents, getSingleStudent } from "../../../Redux_store/Api/StudentsApiStore";
 
 const PAGE_SIZE = 5;
 
@@ -51,13 +51,12 @@ const StudentHeader = () => {
   const [addPayment, setAddPayment] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { students, loading, error, totalCount } = useSelector(
+  const { students, loading, error, totalCount, singleStudent, singleLoading, singleError } = useSelector(
     (state) => state.students
   );
   const studentsMap = students.data;
   console.log("studentsMap", studentsMap);
-  // Debug Redux state
-  console.log("Redux students:idddddddddddddddddddddd", students.data);
+  console.log("singleStudent", singleStudent); // Debug single student data
 
   // Calculate total pages
   const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
@@ -79,6 +78,19 @@ const StudentHeader = () => {
     setCurrentPage(1); // Reset to first page on search
   };
 
+  // Handle profile click to fetch single student
+  const handleViewProfile = (id) => {
+    console.log("View Profile ID:", id); // 👈 ye daal do dekhne ke liye
+    dispatch(getSingleStudent({ id }))
+      .unwrap()
+      .then(() => {
+        navigate(`/view/profile/${id}`);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch single student:", err);
+      });
+  };
+  
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       <AppSidebar />
@@ -137,6 +149,8 @@ const StudentHeader = () => {
             <div className="w-full overflow-x-auto">
               {loading ? (
                 <div>Loading...</div>
+              ) : error ? (
+                <div>Error: {error}</div>
               ) : (
                 <Table className="w-full border rounded-lg shadow-md mt-5">
                   <TableHeader>
@@ -194,11 +208,9 @@ const StudentHeader = () => {
                             <DropdownMenuContent className="w-56">
                               <DropdownMenuGroup>
                                 <DropdownMenuItem
-                                  onClick={() =>
-                                    navigate(`/view/profile/${student.id}`)
-                                  }
+                                  onClick={() => handleViewProfile(student.id)}
                                 >
-                                  Profile
+                                  {singleLoading ? "Loading..." : "Profile"}
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                   onClick={() =>

@@ -16,6 +16,7 @@ import { Button } from "@headlessui/react";
 import { ArrowLeft } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { getEmis } from "../../../../Redux_store/Api/EmisApiStore";
+import { getSingleStudent } from "../../../../Redux_store/Api/StudentsApiStore"; // Import the getSingleStudent thunk
 import {
   Select,
   SelectContent,
@@ -23,13 +24,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../src/components/ui/select";
+import { useParams } from "react-router-dom"; // To get studentId from URL
 
 const Payment_History = () => {
   const dispatch = useDispatch();
-  const { data, loading, error } = useSelector((state) => state.emis);
+  const { id: studentId } = useParams(); // Get studentId from URL params
+  const { data: emisData, loading: emisLoading, error: emisError } = useSelector((state) => state.emis);
+  const { data: studentData, loading: studentLoading, error: studentError } = useSelector((state) => state.student); // Assuming 'student' slice for getSingleStudent
   const [activeTab, setActiveTab] = useState("missed");
   const [month, setMonth] = useState(3); // April
   const [year, setYear] = useState(2025);
+
+  useEffect(() => {
+    if (studentId) {
+      console.log("Dispatching getSingleStudent for ID:", studentId);
+      dispatch(getSingleStudent({ id: studentId })); // Fetch single student data
+    }
+  }, [studentId, dispatch]);
 
   useEffect(() => {
     console.log("Dispatching getEmis:", { filter: activeTab, month, year });
@@ -37,16 +48,17 @@ const Payment_History = () => {
   }, [activeTab, month, year, dispatch]);
 
   // Log Redux state for debugging
-  console.log("Redux state:", { data, loading, error });
+  console.log("Redux state (EMIs):", { emisData, emisLoading, emisError });
+  console.log("Redux state (Student):", { studentData, studentLoading, studentError });
 
   const goback = () => {
     window.history.back();
   };
 
   const payments = {
-    missed: data?.missed || [],
-    upcoming: data?.upcoming || [],
-    paid: data?.paid || [],
+    missed: emisData?.missed || [],
+    upcoming: emisData?.upcoming || [],
+    paid: emisData?.paid || [],
   };
 
   const months = [
@@ -79,6 +91,22 @@ const Payment_History = () => {
         <SidebarInset>
           <Header />
           <div className="p-6">
+            {/* Display Student Information */}
+            {studentLoading && <div className="p-6 text-center">Loading student data...</div>}
+            {studentError && (
+              <div className="p-6 text-center text-red-500">Error: {studentError}</div>
+            )}
+            {studentData && (
+              <div className="mb-6 p-4 bg-gray-100 rounded-lg">
+                <h2 className="text-xl font-semibold">
+                  {studentData.name || "Student Name"}
+                </h2>
+                <p>Student ID: {studentData.id || "N/A"}</p>
+                <p>Email: {studentData.email || "N/A"}</p>
+                {/* Add more student details as needed */}
+              </div>
+            )}
+
             <div className="flex gap-4 mb-4">
               <Select
                 value={month.toString()}
@@ -144,14 +172,14 @@ const Payment_History = () => {
                 </TabsList>
               </div>
 
-              {loading && <div className="p-6 text-center">Loading...</div>}
-              {error && (
+              {emisLoading && <div className="p-6 text-center">Loading EMIs...</div>}
+              {emisError && (
                 <div className="p-6 text-center text-red-500">
-                  Error: {error}
+                  Error: {emisError}
                 </div>
               )}
 
-              {!loading && !error && (
+              {!emisLoading && !emisError && (
                 <TabsContent value={activeTab} className="p-6 mt-4 rounded-lg">
                   <table className="w-full border-collapse border border-gray-300">
                     <thead>
