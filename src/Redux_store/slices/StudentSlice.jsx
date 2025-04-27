@@ -1,5 +1,12 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { addStudent, addStudentsExcel, getStudentRecipients, getStudents, updateStudentsRt, updateStudentStatus } from '../Api/StudentsApiStore';
+import { createSlice } from "@reduxjs/toolkit";
+import {
+  addStudent,
+  addStudentsExcel,
+  getStudentRecipients,
+  getStudents,
+  updateStudentsRt,
+  updateStudentStatus,
+} from "../Api/StudentsApiStore";
 
 const initialState = {
   students: [], // List of students from getStudents
@@ -11,7 +18,7 @@ const initialState = {
 };
 
 const studentSlice = createSlice({
-  name: 'students',
+  name: "students",
   initialState,
   reducers: {
     resetError: (state) => {
@@ -28,14 +35,14 @@ const studentSlice = createSlice({
       .addCase(getStudents.fulfilled, (state, action) => {
         state.loading = false;
         state.students = action.payload.students || []; // Adjust based on API response structure
-        console.log(action.payload.students,"students");
-        
+        console.log(action.payload.students, "students");
+
         state.total = action.payload.total || 0; // Adjust based on API response structure
         state.currentPage = action.payload.currentPage || 1; // Adjust based on API response structure
       })
       .addCase(getStudents.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Failed to fetch students';
+        state.error = action.payload || "Failed to fetch students";
       });
 
     // Add Students (Single)
@@ -50,7 +57,7 @@ const studentSlice = createSlice({
       })
       .addCase(addStudent.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Failed to add student';
+        state.error = action.payload || "Failed to add student";
       });
 
     // Add Students via Excel
@@ -68,7 +75,7 @@ const studentSlice = createSlice({
       })
       .addCase(addStudentsExcel.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Failed to upload Excel file';
+        state.error = action.payload || "Failed to upload Excel file";
       });
 
     // Update Students
@@ -86,7 +93,7 @@ const studentSlice = createSlice({
       })
       .addCase(updateStudentsRt.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Failed to update student';
+        state.error = action.payload || "Failed to update student";
       });
 
     // Update Student Status
@@ -104,7 +111,7 @@ const studentSlice = createSlice({
       })
       .addCase(updateStudentStatus.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Failed to update student status';
+        state.error = action.payload || "Failed to update student status";
       });
 
     // Student Recipients
@@ -119,7 +126,21 @@ const studentSlice = createSlice({
       })
       .addCase(getStudentRecipients.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Failed to fetch student recipients';
+        state.error = action.payload || "Failed to fetch student recipients";
+      });
+
+    builder
+      .addCase(getSingleStudent.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getSingleStudent.fulfilled, (state, action) => {
+        state.loading = false;
+        state.singleStudent = action.payload.student || null; // Adjust based on API response structure
+      })
+      .addCase(getSingleStudent.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to fetch single student";
       });
   },
 });

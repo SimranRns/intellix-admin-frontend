@@ -16,12 +16,27 @@ import { getEmis } from "../../../Redux_store/Api/EmisApiStore";
 import { useDispatch, useSelector } from "react-redux";
 import { debounce } from "lodash";
 
+
+const dummyData = [
+  { id: 1, batch: "Batch A", students: 25, amount: 5000 },
+  { id: 2, batch: "Batch B", students: 30, amount: 6000 },
+  { id: 3, batch: "Batch C", students: 20, amount: 4500 },
+  { id: 4, batch: "Batch D", students: 15, amount: 3000 },
+  { id: 5, batch: "Batch E", students: 28, amount: 5500 },
+  { id: 6, batch: "Batch F", students: 22, amount: 4800 },
+  { id: 7, batch: "Batch G", students: 27, amount: 5200 },
+  { id: 8, batch: "Batch H", students: 18, amount: 3500 },
+  { id: 9, batch: "Batch I", students: 32, amount: 6500 },
+  { id: 10, batch: "Batch J", students: 19, amount: 4000 },
+  { id: 11, batch: "Batch K", students: 26, amount: 5100 },
+];
+
 const Upcoming = () => {
   const dispatch = useDispatch();
   const { data, loading, error } = useSelector((state) => state.emis || {});
   const date = new Date();
-  const [month, setMonth] = useState(String(date.getMonth() + 1).padStart(2, "0"));
-  const [year, setYear] = useState(String(date.getFullYear()));
+  const [month, setMonth] = useState(date.getMonth() + 1);
+  const [year, setYear] = useState(date.getFullYear());
   const [searchInput, setSearchInput] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
@@ -47,20 +62,28 @@ const Upcoming = () => {
   };
 
   // Filter data safely (assuming search is by batch name)
-  const filteredData = Array.isArray(data?.upcoming)
-    ? data.upcoming.filter((item) =>
-        item?.batch?.toLowerCase().includes(searchInput.toLowerCase())
-      )
-    : [];
+  // const filteredData =
+  //   data?.upcoming && searchInput
+  //     ? data?.upcoming.filter((item) =>
+  //         item?.batch?.toLowerCase().includes(searchInput.toLowerCase())
+  //       )
+  const filteredData = data?.upcoming
+    ? data?.upcoming
+    : dummyData.filter((item) =>
+        item?.batch?.toLowerCase().includes(comps.toLowerCase())
+      );
 
-    console.log(filteredData, "filteredData from upcoming");
-    
+  // console.log(data?.upcoming, "filteredData from upcoming");
 
   // Pagination
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
-  const paginatedData = filteredData.slice(startIndex, startIndex + rowsPerPage);
+  const paginatedData = filteredData.slice(
+    startIndex,
+    startIndex + rowsPerPage
+  );
 
+  console.log(paginatedData, "paginatedData from upcoming");
   // Go back to previous page
   const goBack = () => {
     window.history.back();
@@ -161,27 +184,41 @@ const Upcoming = () => {
           )}
 
           {/* Table Container */}
-          {!loading && !error && (
+          {!loading && (
             <div className="rounded-lg mt-6 p-5">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-gray-200 dark:bg-gray-900">
                     <tr>
-                      <th scope="col" className="p-3 border">ID</th>
-                      <th scope="col" className="p-3 border">Batch Name</th>
-                      <th scope="col" className="p-3 border">Students</th>
-                      <th scope="col" className="p-3 border">Amount</th>
-                      <th scope="col" className="p-3 border">Action</th>
+                      <th scope="col" className="p-3 border">
+                        ID
+                      </th>
+                      <th scope="col" className="p-3 border">
+                        Batch Name
+                      </th>
+                      <th scope="col" className="p-3 border">
+                        Students
+                      </th>
+                      <th scope="col" className="p-3 border">
+                        Amount
+                      </th>
+                      <th scope="col" className="p-3 border">
+                        Action
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {paginatedData.length > 0 ? (
                       paginatedData.map((row) => (
                         <tr key={row.id} className="text-center transition">
-                          <td className="p-3 border">{row.id}</td>
-                          <td className="p-3 border">{row.batch}</td>
-                          <td className="p-3 border">{row.students}</td>
-                          <td className="p-3 border font-semibold">{row.amount}</td>
+                          <td className="p-3 border">{row.id || "_"}</td>
+                          <td className="p-3 border">{row.batch || "_"}</td>
+                          <td className="p-3 border">
+                            {row.student_id || "_"}
+                          </td>
+                          <td className="p-3 border font-semibold">
+                            {row.amount || "_"}
+                          </td>
                           <td className="p-3 border">
                             <Button className="bg-blue-500 hover:bg-blue-600 px-4 py-1 rounded-md">
                               Details
@@ -213,8 +250,12 @@ const Upcoming = () => {
                   <PaginationItem>
                     <PaginationPrevious
                       href="#"
-                      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                      className={currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}
+                      onClick={() =>
+                        setCurrentPage(Math.max(1, currentPage - 1))
+                      }
+                      className={
+                        currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                      }
                     />
                   </PaginationItem>
                   {Array.from({ length: totalPages }, (_, i) => (
@@ -235,14 +276,30 @@ const Upcoming = () => {
                   <PaginationItem>
                     <PaginationNext
                       href="#"
-                      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                      className={currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""}
+                      onClick={() =>
+                        setCurrentPage(Math.min(totalPages, currentPage + 1))
+                      }
+                      className={
+                        currentPage === totalPages
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                      }
                     />
                   </PaginationItem>
                 </PaginationContent>
               </Pagination>
             </div>
           )}
+          {/* {paginatedData.map((r) => {
+            return (
+              <div
+                key={r.id}
+                className="text-center p-4 text-gray-500 font-semibold"
+              >
+                {r.batch}|| {r.student_id}|| {r.amount}
+              </div>
+            );
+          })} */}
         </main>
       </SidebarInset>
     </SidebarProvider>

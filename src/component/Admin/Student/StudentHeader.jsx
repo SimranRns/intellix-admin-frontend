@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   Search,
   ChevronDown,
@@ -8,7 +8,7 @@ import {
   ChevronRight,
   ChevronLeft,
   Delete,
-} from 'lucide-react';
+} from "lucide-react";
 import {
   Table,
   TableBody,
@@ -16,17 +16,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../../src/components/ui/table';
+} from "../../src/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../../src/components/ui/dropdown-menu';
-import { Button } from '../../src/components/ui/Button';
-import { SidebarInset, SidebarProvider } from '../../src/components/ui/sidebar';
-import { Checkbox } from '../../src/components/ui/checkbox';
+} from "../../src/components/ui/dropdown-menu";
+import { Button } from "../../src/components/ui/Button";
+import { SidebarInset, SidebarProvider } from "../../src/components/ui/sidebar";
+import { Checkbox } from "../../src/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -35,26 +35,29 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../../src/components/ui/dialog';
-import Header from '../Dashboard/Header';
-import AppSidebar from '../../src/components/ui/app-sidebar';
-import Add_Payment from './Add_Payment';
-import { getStudents } from '../../../Redux_store/Api/StudentsApiStore';
+} from "../../src/components/ui/dialog";
+
+import Header from "../Dashboard/Header";
+import AppSidebar from "../../src/components/ui/app-sidebar";
+import Add_Payment from "./Add_Payment";
+import { getStudents } from "../../../Redux_store/Api/StudentsApiStore";
 
 const PAGE_SIZE = 5;
 
 const StudentHeader = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [deletedialog, setDeletedialog] = useState(false);
-
+  const [addPayment, setAddPayment] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { students, loading, error, totalCount } = useSelector((state) => state.students);
-
-
+  const { students, loading, error, totalCount } = useSelector(
+    (state) => state.students
+  );
+  const studentsMap = students.data;
+  console.log("studentsMap", studentsMap);
   // Debug Redux state
-  console.log('Redux students:idddddddddddddddddddddd', students.data);
+  console.log("Redux students:idddddddddddddddddddddd", students.data);
 
   // Calculate total pages
   const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
@@ -70,8 +73,6 @@ const StudentHeader = () => {
     );
   }, [dispatch, currentPage, searchQuery]);
 
-   
-
   // Handle search input change
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -79,7 +80,7 @@ const StudentHeader = () => {
   };
 
   return (
-    <SidebarProvider style={{ '--sidebar-width': '15rem' }}>
+    <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       <AppSidebar />
       <SidebarInset>
         <Header />
@@ -90,7 +91,7 @@ const StudentHeader = () => {
                 <Search size={18} />
                 <input
                   type="text"
-                  style={{ backgroundColor: 'transparent' }}
+                  style={{ backgroundColor: "transparent" }}
                   placeholder="Search here..."
                   className="ml-2 w-full focus:outline-none focus:ring-0"
                   value={searchQuery}
@@ -100,25 +101,25 @@ const StudentHeader = () => {
 
               <div className="flex items-center space-x-1 sm:space-x-3 mt-3 md:mt-0">
                 <Button
-                  onClick={() => navigate('/ExStudents')}
+                  onClick={() => navigate("/ExStudents")}
                   className="bg-blue-500 text-white font-semibold px-1 sm:px-5 py-2 rounded-lg hover:bg-blue-700 hover:opacity-90"
                 >
                   Ex-Student
                 </Button>
                 <Button
-                  onClick={() => navigate('/Marksheet')}
+                  onClick={() => navigate("/Marksheet")}
                   className="bg-blue-500 text-white font-semibold px-1 sm:px-5 py-2 rounded-lg hover:bg-blue-700 hover:opacity-90"
                 >
                   Marksheet
                 </Button>
                 <Button
-                  onClick={() => navigate('/StudentUploadModal')}
+                  onClick={() => navigate("/StudentUploadModal")}
                   className="bg-blue-500 text-white font-semibold px-1 sm:px-5 py-2 rounded-lg hover:bg-blue-700 hover:opacity-90"
                 >
                   + Add Excel
                 </Button>
                 <Button
-                  onClick={() => navigate('/add_student_model')}
+                  onClick={() => navigate("/add_student_model")}
                   className="bg-blue-500 text-white font-semibold px-1 sm:px-5 py-2 rounded-lg hover:bg-blue-700 hover:opacity-90"
                 >
                   + Add Student
@@ -136,10 +137,6 @@ const StudentHeader = () => {
             <div className="w-full overflow-x-auto">
               {loading ? (
                 <div>Loading...</div>
-              ) : error ? (
-                <div>Error: {error}</div>
-              ) : !Array.isArray(students) || students.length === 0 ? (
-                <div>No students found.</div>
               ) : (
                 <Table className="w-full border rounded-lg shadow-md mt-5">
                   <TableHeader>
@@ -153,49 +150,93 @@ const StudentHeader = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {students?.data?.map((student) => (
-                      <TableRow key={student.id} className="hover:bg-transparent">
-                        <TableCell className="text-blue-600 font-medium">{student.id}</TableCell>
+                    {studentsMap?.map((student) => (
+                      <TableRow
+                        key={student.id}
+                        className="hover:bg-transparent"
+                      >
+                        <TableCell className="text-blue-600 font-medium">
+                          {student.id}
+                        </TableCell>
                         <TableCell>
                           <div className="flex flex-col md:flex-row md:items-center md:gap-3">
                             <span className="font-medium">{student.name}</span>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <span className="block md:inline">{student.father_name}</span>
+                          <span className="block md:inline">
+                            {student.father_name}
+                          </span>
                         </TableCell>
                         <TableCell>{student.batch_id}</TableCell>
                         <TableCell>
-                          <Add_Payment studentId={student.id} />
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button>_Add Payment</Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[825px] ">
+                              <DialogHeader>
+                                <DialogDescription>
+                                  <Add_Payment />
+                                </DialogDescription>
+                              </DialogHeader>
+                            </DialogContent>
+                          </Dialog>
                         </TableCell>
                         <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <MoreVertical className="cursor-pointer" size={20} />
+                              <MoreVertical
+                                className="cursor-pointer"
+                                size={20}
+                              />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-56">
                               <DropdownMenuGroup>
-                                <DropdownMenuItem onClick={() => navigate(`/view/profile/${student.id}`)}>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    navigate(`/view/profile/${student.id}`)
+                                  }
+                                >
                                   Profile
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
-                                  onClick={() => navigate(`/student-payment-history/${student.id}`)}
+                                  onClick={() =>
+                                    navigate(
+                                      `/student-payment-history/${student.id}`
+                                    )
+                                  }
                                 >
                                   Payment History
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
-                                  onClick={() => navigate(`/student_attendance/${student.id}`)}
+                                  onClick={() =>
+                                    navigate(
+                                      `/student_attendance/${student.id}`
+                                    )
+                                  }
                                 >
                                   Attendance
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>View Marksheet</DropdownMenuItem>
+                                <DropdownMenuItem>
+                                  View Marksheet
+                                </DropdownMenuItem>
                                 <DropdownMenuItem>Mark as RT</DropdownMenuItem>
-                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                  <Dialog open={deletedialog} onOpenChange={setDeletedialog}>
+                                <DropdownMenuItem
+                                  onSelect={(e) => e.preventDefault()}
+                                >
+                                  <Dialog
+                                    open={deletedialog}
+                                    onOpenChange={setDeletedialog}
+                                  >
                                     <DialogTrigger>Delete</DialogTrigger>
                                     <DialogContent
-                                      onPointerDownOutside={(e) => e.preventDefault()}
-                                      onEscapeKeyDown={(e) => e.preventDefault()}
+                                      onPointerDownOutside={(e) =>
+                                        e.preventDefault()
+                                      }
+                                      onEscapeKeyDown={(e) =>
+                                        e.preventDefault()
+                                      }
                                       className="sm:max-w-[425px]"
                                     >
                                       <DialogHeader>
@@ -203,7 +244,8 @@ const StudentHeader = () => {
                                           Delete Student
                                         </DialogTitle>
                                         <DialogDescription className="text-center">
-                                          Are you sure you want to delete student?
+                                          Are you sure you want to delete
+                                          student?
                                         </DialogDescription>
                                       </DialogHeader>
                                       <DialogFooter className="flex justify-between">
@@ -226,8 +268,6 @@ const StudentHeader = () => {
                         </TableCell>
                       </TableRow>
                     ))}
-                   
-                  
                   </TableBody>
                 </Table>
               )}
@@ -243,25 +283,29 @@ const StudentHeader = () => {
                 <ChevronLeft className="w-5 h-5" />
               </Button>
 
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <Button
-                  key={page}
-                  variant={currentPage === page ? 'default' : 'ghost'}
-                  onClick={() => setCurrentPage(page)}
-                  className={`px-4 py-2 ${
-                    currentPage === page
-                      ? 'bg-[#3d3690] text-white'
-                      : 'bg-gray-100 text-gray-700'
-                  } rounded-lg hover:bg-transparent hover:text-inherit`}
-                >
-                  {page}
-                </Button>
-              ))}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <Button
+                    key={page}
+                    variant={currentPage === page ? "default" : "ghost"}
+                    onClick={() => setCurrentPage(page)}
+                    className={`px-4 py-2 ${
+                      currentPage === page
+                        ? "bg-[#3d3690] text-white"
+                        : "bg-gray-100 text-gray-700"
+                    } rounded-lg hover:bg-transparent hover:text-inherit`}
+                  >
+                    {page}
+                  </Button>
+                )
+              )}
 
               <Button
                 variant="ghost"
                 disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
                 className="hover:bg-transparent hover:text-inherit"
               >
                 <ChevronRight className="w-5 h-5" />

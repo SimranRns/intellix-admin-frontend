@@ -64,7 +64,7 @@ const Add_Payment = () => {
       grandTotal: 0,
       discount: 0,
       paymentType: 'Pay in EMIs',
-      emiCount: 1,
+      emiCount: 0,
       startDate: '',
       endDate: '',
       dueDate: '',
@@ -108,7 +108,7 @@ const Add_Payment = () => {
       <div className='m-4'>
         <Button onClick={goback}> <ArrowLeft />Back </Button>
       </div>
-      <div className="max-w-3xl mx-auto p-8 bg-white shadow-xl rounded-2xl mt-10">
+      <div className="max-w-3xl mx-auto">
         <h2 className="text-4xl font-bold text-center text-blue-500 mb-8">
           Setup Payment
         </h2>
@@ -117,7 +117,7 @@ const Add_Payment = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* Grand Total */}
           <div>
-            <label className="block text-lg font-semibold mb-2 text-gray-800">
+            <label className="block text-lg font-semibold mb-2 text-gray-500">
               Grand Total <span className="text-red-500">*</span>
             </label>
             <Input
