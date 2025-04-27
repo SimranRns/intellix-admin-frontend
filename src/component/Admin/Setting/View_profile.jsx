@@ -39,14 +39,18 @@ const View_Profile = () => {
 
   return (
     <>
-      <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-6 pt-4 w-full px-4 md:px-8">
+      <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-6 w-full px-4 md:px-8">
         {/* Left Card - Profile */}
         <div>
           <Card className="w-full max-w-sm md:max-w-md lg:max-w-lg shadow-lg rounded-2xl p-5">
             <CardHeader className="flex flex-col items-center text-center">
               <div className="relative w-32 h-32">
-                <Avatar className="w-full h-full border-4 border-blue-700 shadow-md">
-                  <AvatarImage src={profileImg} alt="Profile Image" />
+                <Avatar className="w-full h-full shadow-md">
+                <AvatarImage
+                        className="rounded-full border-4 border-blue-600"
+                        src={admin.image || "https://img.freepik.com/premium-vector/man-profile_1083548-15963.jpg"}
+                        alt={admin.first_name || "Admin"}
+                      />
                   <AvatarFallback>AD</AvatarFallback>
                 </Avatar>
                 <input
@@ -63,7 +67,7 @@ const View_Profile = () => {
                   <Camera className="w-5 h-5 text-white" />
                 </button>
               </div>
-              <CardTitle className="mt-4 text-xl text-gray-600 font-semibold">
+              <CardTitle className="mt-4 text-xl text-gray-500 font-semibold">
                 {admin.full_name || "Admin"}
               </CardTitle>
               <CardDescription className="text-gray-500">
@@ -98,7 +102,7 @@ const View_Profile = () => {
         <div className="w-full max-w-sm md:max-w-md lg:max-w-lg">
           <Card className="w-full shadow-lg rounded-2xl p-6">
             <CardHeader>
-              <div className="text-md font-semibold text-gray-600">
+              <div className="text-md text-center font-semibold text-gray-500">
                 <h1>Admin Details</h1>
               </div>
               <hr className="mt-2" />
@@ -119,7 +123,7 @@ const View_Profile = () => {
                   },
                 ].map((item, index) => (
                   <React.Fragment key={index}>
-                    <li className="flex justify-between text-gray-600 font-medium">
+                    <li className="flex justify-between text-gray-500 font-medium pt-5">
                       <p>{item.label}</p>
                       <span className="font-bold">{item.value}</span>
                     </li>

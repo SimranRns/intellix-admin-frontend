@@ -9,7 +9,7 @@ import Header from "../Dashboard/Header";
 import { Book, BookOpen, CalendarCheck, Users } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchSessionCount } from "../../../Redux_store/Api/SessionApi";
-
+import logo from '../../../assets/Image/intellix.png'
 const Academics = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -63,6 +63,23 @@ const Academics = () => {
                 <main className="flex-1 overflow-auto">
                     <div className="flex flex-col items-center min-h-screen p-4 space-y-6">
                         {/* 3 Cards Below in a Row */}
+
+  {loading ? (
+            <div className="h-screen w-full flex items-center justify-center text-white">
+              <div className="relative flex justify-center items-center">
+                <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+                <img
+                  src={logo}
+                  alt="Loading"
+                  className="rounded-full h-28 w-28"
+                />
+              </div>
+            </div>
+          ) : error ? (
+            <div>Error: {error?.message ? (
+              <div className="text-red-700"> {error.message}</div>
+            ) : ""}</div>
+          ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-8xl">
                             {cardData.map((card, index) => (
                                 <div key={index} className="w-full">
@@ -90,6 +107,8 @@ const Academics = () => {
                                 </div>
                             ))}
                         </div>
+
+                        )}
                     </div>
                 </main>
 

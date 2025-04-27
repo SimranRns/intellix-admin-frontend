@@ -1364,7 +1364,7 @@ const Team = ({ teacherData }) => {
                                             setSelectedDepartment(dept);
                                           }}
 
-                                          className="cursor-pointer px-4 py-2 hover:bg-blue-600 hover:text-white border-b border-gray-300 text-gray-700"
+                                          className="cursor-pointer px-4 py-2 hover:bg-blue-600 hover:text-white border-b border-gray-300 text-gray-500 font-bold"
                                         >
                                           {dept.name}
                                         </DropdownMenuItem>
@@ -1890,25 +1890,22 @@ const Team = ({ teacherData }) => {
 
           {/* confirm dilog */}
           <Dialog open={AddConfrom} onOpenChange={setAddConfrom}>
-            <DialogContent
-              onPointerDownOutside={(e) => e.preventDefault()}
-              onEscapeKeyDown={(e) => e.preventDefault()}
-              className="w-full max-w-[90vw] sm:max-w-[400px] p-6 rounded-lg"
-            >
+            <DialogContent className="w-full max-w-[90vw] sm:max-w-[400px] p-6 rounded-lg">
               <ThankYouCard />
               {/* Dialog Footer */}
               <DialogFooter className="flex justify-end gap-3">
                 <Button
                   onClick={() => setAddConfrom(false)}
                   variant="outline"
-                  className="w-full sm:w-auto mt-4 bg-gray-100 hover:bg-gray-200 hover:text-black px-5 py-2 rounded-md text-black flex items-center transition-all"
+                  className="w-full sm:w-auto text-black mt-4 hover:text-black bg-gray-100 hover:bg-gray-200 px-5 py-2 rounded-md flex items-center transition-all"
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={async () => {
-                    setAddConfrom(false);
-                  }} // Handle form submission & dialog close
+                    await dispatch(GetTeam({ first_name: first_name })); // Fetch updated department list after confirmation
+                    setAddConfrom(false); // Close the dialog after confirmation
+                  }}
                   className="w-full sm:w-auto mt-4 bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md flex items-center shadow-md transition-all"
                 >
                   Confirm
@@ -1916,6 +1913,7 @@ const Team = ({ teacherData }) => {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+
 
           {/* Pagination */}
           <Pagination>

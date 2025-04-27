@@ -6,25 +6,31 @@ const BASE_URL = import.meta.env.VITE_BASE_URL
 ////Create Department
 export const create_department = createAsyncThunk(
   'create_department',
-  async (data, { rejectWithValue }) => {
+  async (payload, { rejectWithValue }) => {
     try {
       const response = await fetch(`${BASE_URL}/api/v1/departmentrouter/adddepartment`, {
-        method: "Post",
+        method: "POST",
         headers: {
-          "content-type": "Application/json"
+          "Content-Type": "application/json",
         },
-        body: jSON.stringify(data)
+        body: JSON.stringify(payload),
       });
-      const result = await response.json()
-      // console.log(result, "****************************************");
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        // Agar backend response me error hai to
+        return rejectWithValue(result || { message: "Something went wrong!" });
+      }
 
       return result;
-
+      
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: "Unknown error" })
+      return rejectWithValue(error?.message || "Unknown error");
     }
   }
-)
+);
+
 
 //////Get Teacher
 export const get_Deparment = createAsyncThunk(

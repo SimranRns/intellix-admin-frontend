@@ -15,20 +15,21 @@ import {
   PaginationPrevious,
 } from "../../src/components/ui/pagination";
 import { getEmis } from "../../../Redux_store/Api/EmisApiStore";
+import { get_Batches } from "../../../Redux_store/Api/Batches";
 
-const dummyData = [
-  { id: 1, batch: "Batch A", students: 25, amount: 5000 },
-  { id: 2, batch: "Batch B", students: 30, amount: 6000 },
-  { id: 3, batch: "Batch C", students: 20, amount: 4500 },
-  { id: 4, batch: "Batch D", students: 15, amount: 3000 },
-  { id: 5, batch: "Batch E", students: 28, amount: 5500 },
-  { id: 6, batch: "Batch F", students: 22, amount: 4800 },
-  { id: 7, batch: "Batch G", students: 27, amount: 5200 },
-  { id: 8, batch: "Batch H", students: 18, amount: 3500 },
-  { id: 9, batch: "Batch I", students: 32, amount: 6500 },
-  { id: 10, batch: "Batch J", students: 19, amount: 4000 },
-  { id: 11, batch: "Batch K", students: 26, amount: 5100 },
-];
+// const dummyData = [
+//   { id: 1, batch: "Batch A", students: 25, amount: 5000 },
+//   { id: 2, batch: "Batch B", students: 30, amount: 6000 },
+//   { id: 3, batch: "Batch C", students: 20, amount: 4500 },
+//   { id: 4, batch: "Batch D", students: 15, amount: 3000 },
+//   { id: 5, batch: "Batch E", students: 28, amount: 5500 },
+//   { id: 6, batch: "Batch F", students: 22, amount: 4800 },
+//   { id: 7, batch: "Batch G", students: 27, amount: 5200 },
+//   { id: 8, batch: "Batch H", students: 18, amount: 3500 },
+//   { id: 9, batch: "Batch I", students: 32, amount: 6500 },
+//   { id: 10, batch: "Batch J", students: 19, amount: 4000 },
+//   { id: 11, batch: "Batch K", students: 26, amount: 5100 },
+// ];
 
 // Missed Component
 const Missed = () => {
@@ -41,6 +42,10 @@ const Missed = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [month, setMonth] = useState(date.getMonth() + 1); // Dynamic month filter
   const [year, setYear] = useState(date.getFullYear()); // Dynamic year filter
+  const {
+    Batches: batches = [], // Default to empty array
+    
+  } = useSelector((state) => state.Batch);
   const rowsPerPage = 10;
 
   // Calculate total pages
@@ -70,14 +75,14 @@ const Missed = () => {
   // Filter data based on search
   const filteredData = Array.isArray(data?.missed)
     ? data.missed.filter((item) =>
-        item?.student_id
-          ?.toString()
-          .toLowerCase()
-          .includes(search.toLowerCase())
-      )
+      item?.student_id
+        ?.toString()
+        .toLowerCase()
+        .includes(search.toLowerCase())
+    )
     : dummyData.filter((item) =>
-        item?.batch?.toLowerCase().includes(comps.toLowerCase())
-      );
+      item?.batch?.toLowerCase().includes(comps.toLowerCase())
+    );
   console.log(filteredData, "filteredData from missed");
 
   // Paginate data
@@ -86,6 +91,11 @@ const Missed = () => {
     startIndex,
     startIndex + rowsPerPage
   );
+
+
+  useEffect(() => {
+    dispatch(get_Batches())
+  }, [dispatch])
 
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
@@ -120,7 +130,7 @@ const Missed = () => {
                 }}
                 className="border border-blue-300 rounded-lg px-3 py-2 text-sm"
               >
-                {[
+                {[ 
                   "01",
                   "02",
                   "03",
@@ -247,11 +257,10 @@ const Missed = () => {
                       <PaginationLink
                         href="#"
                         onClick={() => setCurrentPage(i + 1)}
-                        className={`px-4 py-2 rounded-md ${
-                          currentPage === i + 1
-                            ? "bg-blue-600 text-white"
-                            : "hover:bg-blue-500 hover:text-white"
-                        }`}
+                        className={`px-4 py-2 rounded-md ${currentPage === i + 1
+                          ? "bg-blue-600 text-white"
+                          : "hover:bg-blue-500 hover:text-white"
+                          }`}
                       >
                         {i + 1}
                       </PaginationLink>

@@ -19,9 +19,12 @@ const DepartmentSlice = createSlice({
         state.error = null;
       })
       .addCase(create_department.fulfilled, (state, action) => {
-        state.loading = false
-        state.Department = action.payload?.data || [];
+        state.loading = false;
+        if (action.payload?.data) {
+          state.Department.push(action.payload.data); // naya department add kar
+        }
       })
+
       .addCase(create_department.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || 'Failed to fetch data';

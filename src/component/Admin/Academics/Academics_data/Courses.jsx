@@ -49,18 +49,23 @@ const Courses = () => {
     const [showForm, setShowForm] = useState(false);
     const [editingCourseId, setEditingCourseId] = useState(null);
     const [editedCourseNames, setEditedCourseNames] = useState({});
-    const dispatch = useDispatch()
+    const [currentPage, setCurrentPage] = useState(1);
+    const dispatch = useDispatch();
     useEffect(() => {
         dispatch(get_course())
     }, [])
-    const { course, loading, error } = useSelector((s) => s.acad_courses)
+    const { course, loading, error } = useSelector((s) => s.acad_courses);
     // handle adding a new course
     const handleAddCourse = async (data) => {
         const newCourse = {
             course_name: data.course_name,
-            subject: data.course_type,
-            fees: data.course_price,
-            duration: data.course_duration,
+            course_type: data.course_type,
+            course_duration: data.course_duration,
+            banner: data.banner,
+            date: data.date,
+            course_price: data.course_price,
+            discount_price: data.discount_price,
+            status: data.status,
         };
         console.log(newCourse, 'n');
 
@@ -73,25 +78,41 @@ const Courses = () => {
         }
     };
 
+
     // validation schema
     const courseSchema = z.object({
-        Course: z.string().min(1, "Course name is required"),
-        subject: z.string().min(1, "Subject is required"),
-        Fees: z.coerce.number().min(0, "Fees must be a positive number"),
-        Time: z.string().min(1, "Duration is required"),
+        course_name: z.string().min(1, "Course name is required"),
+        course_type: z.string().min(1, "Course type is required"),
+        course_duration: z.coerce.number().min(1, "Duration is required"),
+        banner: z.string().url("Invalid URL for banner image"),
+        date: z.string().min(1, "Date is required"),
+        course_price: z.coerce.number().min(0, "Price must be a positive number"),
+        discount_price: z.coerce.number().min(0, "Discount price must be a positive number"),
+        status: z.string().min(1, "Status is required"),
     });
+
 
     const form = useForm({
         resolver: zodResolver(courseSchema),
         defaultValues: {
-            Course: "",
-            subject: "",
-            Fees: 0,
-            Time: "",
+            course_name: "",
+            course_type: "",
+            course_duration: 0,
+            banner: "",
+            date: "",
+            course_price: 0,
+            discount_price: 0,
+            status: "",
         },
     });
 
+
     const goBack = () => window.history.back();
+
+    const CoursePerPage = 12;
+    const totalPages = course?.data ? Math.ceil(course.data.length / CoursePerPage) : 1;
+    const startIndex = (currentPage - 1) * CoursePerPage;
+    const selectedCourse = course?.data?.slice(startIndex, startIndex + CoursePerPage);
 
     return (
         <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
@@ -110,12 +131,11 @@ const Courses = () => {
                                 <span>Add Course</span>
                             </Button>
                         </div>
-                        <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full sm:w-auto sm:max-w-md shadow-sm">
+                        <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full sm:max-w-md">
                             <Search size={18} className="text-gray-500" />
                             <input
-                                name="search"
                                 type="text"
-                                placeholder="Search Course..."
+                                placeholder="By Course Name..."
                                 className="ml-2 w-full outline-none bg-transparent text-sm"
                             />
                         </div>
@@ -190,14 +210,14 @@ const Courses = () => {
                         </DialogContent>
                     </Dialog>
 
-                    <div className="grid gap-6 mt-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                        {course?.data?.map((card) => (
+                    <div className="grid gap-6 mt-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-5">
+                        {selectedCourse?.map((card) => (
                             <Card key={card.id} className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden mt-8">
                                 <CardHeader>
                                     <CardTitle className="text-blue-700 text-xl text-center">{card.course_name}</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className=" text-sm text-center text-lg">Total Subjects: {card.course_type}</p>
+                                    <p className=" text-sm text-center">Total Subjects: {card.course_type}</p>
                                 </CardContent>
                                 <CardFooter>
                                     <Dialog>
@@ -347,32 +367,42 @@ const Courses = () => {
                         ))}
                     </div>
                     {/* pagination */}
-                    <div>
-                        <Pagination>
+                    {course?.data?.length > CoursePerPage && (
+                        <Pagination >
                             <PaginationContent>
                                 <PaginationItem>
-                                    <PaginationPrevious href="#" />
+                                    <PaginationPrevious
+                                        href="#"
+                                        onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                                    />
                                 </PaginationItem>
+
+                                {Array.from({ length: totalPages }, (_, i) => (
+                                    <PaginationItem key={i}>
+                                        <PaginationLink
+                                            href="#"
+                                            onClick={() => setCurrentPage(i + 1)}
+                                            className={`px-4 py-2 rounded-md ${currentPage === i + 1
+                                                ? "bg-blue-600 text-white"
+                                                : "hover:bg-blue-500  hover:text-white"
+                                                }`}
+                                        >
+                                            {i + 1}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                ))}
+
                                 <PaginationItem>
-                                    <PaginationLink href="#">1</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#" isActive>
-                                        2
-                                    </PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#">3</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationNext href="#" />
+                                    <PaginationNext
+                                        href="#"
+                                        onClick={() =>
+                                            setCurrentPage(Math.min(totalPages, currentPage + 1))
+                                        }
+                                    />
                                 </PaginationItem>
                             </PaginationContent>
                         </Pagination>
-                    </div>
+                    )}
                 </main>
             </SidebarInset>
         </SidebarProvider>

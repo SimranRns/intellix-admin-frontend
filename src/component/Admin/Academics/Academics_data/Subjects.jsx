@@ -81,7 +81,7 @@ const Subjects = () => {
 
   const goBack = () => window.history.back();
 
-  const SubjectsPerPage = 8;
+  const SubjectsPerPage = 12;
   const totalPages = Math.ceil(subjects.length / SubjectsPerPage);
   const startIndex = (currentPage - 1) * SubjectsPerPage;
   const selectedSubjects = subjects.slice(startIndex, startIndex + SubjectsPerPage);
@@ -114,26 +114,32 @@ const Subjects = () => {
 
   const handleConfirm = async () => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
+      await new Promise((resolve) => setTimeout(resolve, 500)); // (optional wait)
+  
       console.log("Data Submitted Successfully!");
-
-      setAddConfrom(false);
+  
+      setAddConfrom(false); // Dialog close
+      window.location.reload(); // ✅ Page reload
     } catch (error) {
       console.error("Submission failed:", error);
     }
   };
+  
   const handleAddSubject = async (data) => {
     try {
-      // Dispatch Add_subject action to add a new subject
-      await dispatch(Add_subject(data)).unwrap();  // `unwrap` will give the result or throw error
-      setAddConfrom(true); // Show confirmation dialog if successful
-      setAddSubjects(false); // Close the add subject dialog
-      form.reset(); // Reset form after adding
+      await dispatch(Add_subject(data)).unwrap();
+      setAddConfrom(true);
+      setAddSubjects(false);
+      form.reset();
+  
+      // ✅ Page reload (simple tarika)
+      // window.location.reload();
     } catch (error) {
       console.error("Failed to add subject:", error);
     }
   };
+  
+  
 
   useEffect(() => {
     dispatch(get_subject());
@@ -177,7 +183,7 @@ const Subjects = () => {
           {/* Subjects List */}
 
           <div className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
-            {subjects.map((sub) => (
+            {selectedSubjects.map((sub) => (
               <Card
                 key={sub.id}
                 className="w-full max-w-xs sm:max-w-sm mx-auto shadow-md shadow-blue-300/20 rounded-xl"
@@ -295,7 +301,7 @@ const Subjects = () => {
                 Cancel
               </Button>
               <Button
-                onClick={handleConfirm} // Handle form submission & dialog close
+                onClick={handleConfirm} 
                 className="w-full sm:w-auto mt-4 bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md flex items-center shadow-md transition-all"
               >
                 Confirm

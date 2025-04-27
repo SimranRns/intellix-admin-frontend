@@ -36,7 +36,8 @@ const Advertisment = () => {
     index: null,
   });
   const [errors, setErrors] = useState({});
-  const dispatch = useDispatch()
+  const [activeTab, setActiveTab] = useState("tab1"); // Default first tab
+  const dispatch = useDispatch();
   const { banners, loading, error } = useSelector((state) => state.banner || {})
 
   // Handle Image Upload (Temporary)
@@ -53,8 +54,7 @@ const Advertisment = () => {
     setErrors({});
   };
 
-  // Add Selected Images
-  // Add Selected Images (with API call)
+ 
   const handleSubmit = async () => {
     if (tempImages.length === 0) {
       setErrors({ images: "At least one image is required." });
@@ -67,34 +67,42 @@ const Advertisment = () => {
 
       if (add_banner.rejected.match(resultAction)) {
         console.error("Upload failed:", resultAction.payload);
-        // Optional: show an error toast or message here
+       
       }
     }
-
     setTempImages([]);
     setDialogOpen(false);
+    await dispatch(get_banner_api());
+  };
+
+
+
+  const handleDeleteConfirm = async (bannerId) => {
+    try {
+      
+      const resultAction = await dispatch(delete_banner(bannerId));
+
+      
+      if (delete_banner.fulfilled.match(resultAction)) {
+        await dispatch(get_banner_api()); 
+      } else {
+        console.error("Delete failed:", resultAction.payload);
+      }
+
+     
+      setDeleteDialog({ open: false, bannerId: null });
+
+    } catch (error) {
+      console.error("Something went wrong during deletion:", error);
+    }
   };
 
 
   // api 
-
   useEffect(() => {
-    dispatch(get_banner_api())
-  }, [                        ])
-  // if (loading) {
-  //   return (
-  //     <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
-  //       <div className="relative flex  justify-center items-center">
-  //         <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
-  //         <img
-  //           src={logo}
-  //           alt="Loading"
-  //           className="rounded-full h-28 w-28"
-  //         />
-  //       </div>
-  //     </div>
-  //   )
-  // }
+    dispatch(get_banner_api());
+  }, []);
+
   return (
     <div className="w-full min-h-screen flex flex-col">
       <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
@@ -102,18 +110,67 @@ const Advertisment = () => {
         <SidebarInset>
           <Header />
           <div className="w-full">
-            <Tabs className="m-5">
-              <div className="overflow-x-auto md:overflow-hidden shadow-sm shadow-blue-300/50">
-                <TabsList className="flex bg-white-500 md:grid md:grid-cols-4 gap-8">
-                  <TabsTrigger value="tab1">Add Banner</TabsTrigger>
-                  <TabsTrigger value="tab2">Add School Image</TabsTrigger>
-                  <TabsTrigger value="tab3">Add Popular Course</TabsTrigger>
-                  <TabsTrigger value="tab4">Add Notification</TabsTrigger>
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="m-5"
+            >
+              <div className="overflow-x-auto md:overflow-hidden shadow-md shadow-blue-300/30">
+                <TabsList className="flex md:grid md:grid-cols-4 gap-8  px-4  lg:px-8 mb-5 ">
+                  <TabsTrigger
+                    value="tab1"
+                    // className={ ? "bg-blue-500 text-white" : ""}
+                    className={`rounded-md px-3 py-2 text-[12px] font-medium ${activeTab === "tab1" ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-blue-500 hover:text-white '}`}
+                  >
+                    Add Banner
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="tab2"
+                    className={`rounded-md px-3 py-2 text-[12px] font-medium ${activeTab === "tab2" ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-blue-500 hover:text-white'}`}
+                  >
+                    Add School Image
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="tab3"
+                    className={`rounded-md px-3 py-2 text-[12px] font-medium ${activeTab === "tab3" ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-blue-500 hover:text-white'}`}
+                  >
+                    Add Popular Course
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="tab4"
+                    className={`rounded-md px-3 py-2 text-[12px] font-medium ${activeTab === "tab4" ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-blue-500 hover:text-white'}`}
+                  >
+                    Add Notification
+                  </TabsTrigger>
                 </TabsList>
               </div>
 
+              {/* {loading ? (
+                <div className="h-[400px] flex items-center justify-center text-white">
+                  <div className="relative flex justify-center items-center">
+                    <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+                    <img
+                      src={logo}
+                      alt="Loading"
+                      className="rounded-full h-28 w-28"
+                    />
+                  </div>
+                </div>
+              ) : 
+              
+              error ? (
+                <div className="h-[400px] flex justify-center items-center">
+                  <div className="text-red-700 text-lg">
+                    {error?.message ? error.message : "Something went wrong!"}
+                  </div>
+                </div>
+              ) : banners?.banners?.length > 0 ? (
+                <> */}
+
+
               {/* Tab for Adding Banner Images */}
-              <TabsContent value="tab1" className="p-4 text-left">
+              < TabsContent value="tab1" className="p-4 text-left">
+                {/* Tab content for "Add Banner" */}
                 <div className="flex justify-end">
                   <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                     <DialogTrigger asChild>
@@ -149,7 +206,7 @@ const Advertisment = () => {
                         </div>
                       )}
                       <div className="flex justify-end gap-3 mt-4">
-                        <Button onClick={() => { setDialogOpen(false); onsumbit() }}>
+                        <Button onClick={() => { setDialogOpen(false); handleSubmit() }}>
                           Cancel
                         </Button>
                         <Button onClick={handleSubmit}>
@@ -192,7 +249,6 @@ const Advertisment = () => {
                   </div>
                 )}
 
-
                 {/* Delete Confirmation Dialog */}
                 <Dialog
                   open={deleteDialog.open}
@@ -203,7 +259,7 @@ const Advertisment = () => {
                   <DialogContent onPointerDownOutside={(e) => e.preventDefault()}
                     onEscapeKeyDown={(e) => e.preventDefault()}>
                     <DialogHeader>
-                      <DialogTitle  >Confirm Deletion</DialogTitle>
+                      <DialogTitle>Confirm Deletion</DialogTitle>
                     </DialogHeader>
                     <div className="py-4">
                       <p>Are you sure you want to delete this course?</p>
@@ -222,13 +278,11 @@ const Advertisment = () => {
                       </Button>
                       <Button
                         className="bg-red-600 text-white hover:bg-red-700"
-                        onClick={() => {
-                          dispatch(delete_banner(deleteDialog.bannerId));
-                          setDeleteDialog({ open: false, bannerId: null });
-                        }}
+                        onClick={async () => { handleDeleteConfirm(deleteDialog.bannerId), await dispatch(get_banner_api()) }}
                       >
                         Confirm
                       </Button>
+
 
                     </DialogFooter>
                   </DialogContent>
@@ -245,11 +299,18 @@ const Advertisment = () => {
               <TabsContent value="tab4" className="p-4 text-left">
                 <Notification />
               </TabsContent>
+              {/* </>
+              ) : (
+                <div className="h-[400px] flex justify-center items-center">
+                  <div className="text-gray-400 text-lg">No banners found</div>
+                </div>
+              )} */}
             </Tabs>
+
           </div>
         </SidebarInset>
       </SidebarProvider>
-    </div>
+    </div >
   );
 };
 

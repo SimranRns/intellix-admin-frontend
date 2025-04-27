@@ -192,24 +192,18 @@ const Sessions = () => {
               </Dialog>
             </div>
 
-            <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full sm:max-w-md">
-              <Search size={18} className="text-gray-500" />
-              <input
-                name="search"
-                type="text"
-                placeholder="By Sessions Name..."
-                className="ml-2 w-full outline-none bg-transparent text-sm"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <Button
-                onClick={() => dispatch(getSessions({ page: 1, session_year: searchQuery, limit: 8 }))}
-                className="bg-blue-500 text-white px-3 py-1 rounded-md text-sm ml-2"
-              >
-                Search
-              </Button>
+              <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full sm:max-w-md">
+                <Search size={18} className="text-gray-500" />
+                <input
+                  type="text"
+                  placeholder="By Subjects Name..."
+                  className="ml-2 w-full outline-none bg-transparent text-sm"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
 
-            </div>
+           
           </div>
 
           {/* Session Cards */}

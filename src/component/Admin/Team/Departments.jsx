@@ -69,11 +69,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import ThankYouCard from "../Dashboard/ThankYouCard";
 import { get_Deparment, create_department, delete_department } from "../../../Redux_store/Api/Department";
 import logo from '../../../assets/Image/intellix.png'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../component/src/components/ui/select";
 const formSchema = z.object({
-  Department: z.string().min(2, {
-    message: "Department must be at least 2 characters.",
-  }),
+  Department: z.string().min(2, { message: "Department must be at least 2 characters." }),
+  access_control: z.number().array().nonempty({ message: "Please select at least one access control" }),
 });
+
+
 const Departments = () => {
   const navigate = useNavigate();
   const chartData = [
@@ -104,21 +106,20 @@ const Departments = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [AddConfrom, setAddConfrom] = useState(false);
   const [departments, setDepartments] = useState({})
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState(null);
 
   const [id, setid] = useState(null)
   const dispatch = useDispatch()
   const { Department, loading, error } = useSelector((state) => state.Department || {});
-  const adddepartments = (e) => {
-    setDepartments({ ...departments, [e.target.name]: e.target.value })
-  }
-  const Onedepartment = Department?.data?.find((ele) => ele.id === id);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       Department: "",
+      access_control: [],
     },
   });
+
   const { handleSubmit } = form;
 
   const handleConfirm = async () => {
@@ -132,20 +133,32 @@ const Departments = () => {
       console.error("Submission failed:", error);
     }
   };
-  const handleAddDepartment = (data) => {
-    console.log("Form Submitted:", data);
 
-    // Reset the form fields
-    form.reset();
 
-    // Close the "Add Department" dialog
-    setAddDepartment(false);
+  const handleAddDepartment = async (data) => {
+    try {
+      await dispatch(create_department({
+        name: data.Department,
+        access_control: data.access_control,
+      })).unwrap();
 
-    // Open the confirmation dialog
-    setAddConfrom(true);
-    //Api
-    dispatch(create_department(departments));
+      form.reset();
+      setAddDepartment(false);
+      setAddConfrom(true); // Show confirmation dialog
+    } catch (error) {
+      console.error("Error creating department:", error);
+    }
   };
+
+  const handleDeleteDepartment = async (id) => {
+    try {
+      await dispatch(delete_department(id)).unwrap(); // Delete without refreshing
+      setDeleteDepartments(false); // Close the delete dialog without reloading page
+    } catch (error) {
+      console.error("Error deleting department:", error);
+    }
+  };
+
 
   useEffect(() => {
     dispatch(get_Deparment());
@@ -153,13 +166,10 @@ const Departments = () => {
 
 
 
-  // const departmentsPerPage = 6;
-  // const totalPages = Math.ceil(departmentsList.length / departmentsPerPage);
-  // const startIndex = (currentPage - 1) * departmentsPerPage;
-  // const selectedDepartments = departmentsList.slice(
-  //   startIndex,
-  //   startIndex + departmentsPerPage
-  // );
+  const departmentsPerPage = 6;
+  const totalPages = Department?.data ? Math.ceil(Department.data.length / departmentsPerPage) : 1;
+  const startIndex = (currentPage - 1) * departmentsPerPage;
+  const selectedDepartments = Department?.data?.slice(startIndex, startIndex + departmentsPerPage);
 
 
   // if (loading) {
@@ -201,54 +211,68 @@ const Departments = () => {
                 onClick={() => setAddDepartment(true)}
                 className="bg-blue-600 text-white hover:bg-blue-500 px-4 py-2 rounded-md text-sm flex items-center gap-2"
               >
-                <span className="text-lg">+</span>
-                <span>Add Department</span>
+                + Add Department
               </Button>
+              {/* Add Department Dialog */}
               <Dialog open={addDepartment} onOpenChange={setAddDepartment}>
-                <DialogContent
-                  onPointerDownOutside={(e) => e.preventDefault()}
-                  onEscapeKeyDown={(e) => e.preventDefault()}
-                  className=" sm:max-w-[600px] shadow-lg p-6 rounded-lg"
-                >
+                <DialogContent>
                   <DialogHeader>
-                    <DialogTitle className="text-center">
-                      Add Department
-                    </DialogTitle>
+                    <DialogTitle>Add Department</DialogTitle>
                   </DialogHeader>
                   <Form {...form}>
-                    <form
-                      onSubmit={form.handleSubmit(handleAddDepartment)}
-                      className="space-y-8"
-                    >
+                    <form onSubmit={form.handleSubmit(handleAddDepartment)} className="space-y-4">
                       <FormField
                         control={form.control}
                         name="Department"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Enter name of department</FormLabel>
+                            <FormLabel>Department Name</FormLabel>
                             <FormControl>
-                              <Input
-                                onChange={adddepartments}
-                                placeholder="Department" {...field} />
+                              <Input placeholder="Enter Department Name" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                      <Button type="submit">Confirm</Button>
+                      <FormField
+                        control={form.control}
+                        name="access_control"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Access Control</FormLabel>
+                            <FormControl>
+                              <Select onValueChange={(value) => field.onChange([Number(value)])}>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select Role" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="1">Teacher</SelectItem>
+                                  <SelectItem value="2">Student</SelectItem>
+                                  <SelectItem value="3">Admin</SelectItem>
+                                  <SelectItem value="4">Staff</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                        Submit
+                      </Button>
                     </form>
                   </Form>
                 </DialogContent>
               </Dialog>
+
             </div>
 
             {/* Search Bar */}
             <div className="flex items-center border border-blue-300 rounded-lg px-3 py-2 w-full sm:max-w-md">
               <Search size={18} className="text-gray-500" />
               <input
-                name="search"
                 type="text"
-                placeholder="By Department Name..."
+                placeholder="Search Department..."
                 className="ml-2 w-full outline-none bg-transparent text-sm"
               />
             </div>
@@ -267,12 +291,10 @@ const Departments = () => {
               </div>
             </div>
           ) : error ? (
-            <div>Error: {error?.message ? (
-              <div className="text-red-700"> {error.message}</div>
-            ) : ""}</div>
+            <div className="text-red-600 text-center mt-10">{error.message}</div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 gap-6 p-6">
-              {Department?.data?.map((department) => (
+              {selectedDepartments?.map((department) => (
                 <Card
                   key={department.id}
                   className="w-full max-w-[320px]  shadow-md shadow-blue-500/50 rounded-xl p-6 relative mx-auto"
@@ -294,45 +316,36 @@ const Departments = () => {
                       className="w-40 mt-1 shadow-md rounded-md"
                     >
                       <DropdownMenuItem
-                        onClick={() => setDeleteDepartments(true)}
+                        onClick={() => {
+                          setSelectedDepartmentId(department.id);
+                          setDeleteDepartments(true);
+                        }}
                         className="cursor-pointer text-red-500 hover:bg-gray-100 px-4 py-2 text-md text-center "
                       >
                         Deactivate
                       </DropdownMenuItem>
+
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  {/* //deactivate dilog  */}
-                  <Dialog
-                    open={DeleteDepartments}
-                    onOpenChange={setDeleteDepartments}
-                  >
-                    <DialogContent className="sm:max-w-[425px] shadow-lg p-6 rounded-lg">
-                      <DialogHeader>
-                        <DialogTitle className="text-center text-[22px] font-bold">
-                          Deactivate Department
-                        </DialogTitle>
-                        <DialogDescription className="text-center text-md">
-                          Are you sure you want to deactivate this department?
-                        </DialogDescription>
-                      </DialogHeader>
-                      <hr className="mt-5" />
-                      <div className="flex justify-center">
-                        <Button
-                          onClick={() => {
-                            setDeleteDepartments(false);
-                            setAddConfrom(true);
-                            dispatch(delete_department(department.id)).then(() => {
-                              dispatch(get_Deparment());
-                            });
-                          }}
 
-                          className="bg-red-600 text-white px-5 py-3 rounded-lg hover:bg-red-700"
-                        >
-                          Deactivate Department
+                  {/* Delete Confirmation Dialog */}
+                  <Dialog open={DeleteDepartments} onOpenChange={setDeleteDepartments}>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Deactivate Department</DialogTitle>
+                        <DialogDescription>Are you sure you want to deactivate?</DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter className="flex justify-center mt-4">
+                        <Button onClick={() => {
+                          handleDeleteDepartment(selectedDepartmentId);
+                          setDeleteDepartments(false);
+                        }} className="bg-red-600 hover:bg-red-700 text-white">
+                          Deactivate
                         </Button>
-                      </div>
+                      </DialogFooter>
                     </DialogContent>
                   </Dialog>
+
 
                   <CardHeader className="flex flex-col items-center">
                     <div className="flex flex-col items-center gap-1">
@@ -403,23 +416,22 @@ const Departments = () => {
 
         {/* Confrom dilog */}
         <Dialog open={AddConfrom} onOpenChange={setAddConfrom}>
-          <DialogContent
-            onPointerDownOutside={(e) => e.preventDefault()}
-            onEscapeKeyDown={(e) => e.preventDefault()}
-            className="w-full max-w-[90vw] sm:max-w-[400px] p-6 rounded-lg"
-          >
+          <DialogContent className="w-full max-w-[90vw] sm:max-w-[400px] p-6 rounded-lg">
             <ThankYouCard />
             {/* Dialog Footer */}
             <DialogFooter className="flex justify-end gap-3">
               <Button
                 onClick={() => setAddConfrom(false)}
                 variant="outline"
-                className="w-full sm:w-auto text-black mt-4 hover:text-black bg-gray-100 hover:bg-gray-200 px-5 py-2 rounded-md flex items-center  transition-all"
+                className="w-full sm:w-auto text-black mt-4 hover:text-black bg-gray-100 hover:bg-gray-200 px-5 py-2 rounded-md flex items-center transition-all"
               >
                 Cancel
               </Button>
               <Button
-                onClick={handleConfirm} // Handle form submission & dialog close
+                onClick={async () => {
+                  await dispatch(get_Deparment()); // Fetch updated department list after confirmation
+                  setAddConfrom(false); // Close the dialog after confirmation
+                }}
                 className="w-full sm:w-auto mt-4 bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md flex items-center shadow-md transition-all"
               >
                 Confirm
@@ -428,40 +440,43 @@ const Departments = () => {
           </DialogContent>
         </Dialog>
 
-        {/* <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
-              />
-            </PaginationItem>
 
-            {Array.from({ length: totalPages }, (_, i) => (
-              <PaginationItem key={i}>
-                <PaginationLink
-                  as="button"
-                  onClick={() => setCurrentPage(i + 1)}
-                  className={`px-4 py-2 rounded-md ${currentPage === i + 1
-                    ? "bg-blue-600 text-white"
-                    : "hover:bg-blue-500  hover:text-white"
-                    }`}
-                >
-                  {i + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-
-            <PaginationItem>
-              <PaginationNext
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-                }
-                disabled={currentPage === totalPages}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination> */}
+        {Department?.data?.length > departmentsPerPage && (
+         <Pagination>
+                   <PaginationContent>
+                     <PaginationItem>
+                       <PaginationPrevious
+                         href="#"
+                         onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                       />
+                     </PaginationItem>
+       
+                     {Array.from({ length: totalPages }, (_, i) => (
+                       <PaginationItem key={i}>
+                         <PaginationLink
+                           href="#"
+                           onClick={() => setCurrentPage(i + 1)}
+                           className={`px-4 py-2 rounded-md ${currentPage === i + 1
+                             ? "bg-blue-600 text-white"
+                             : "hover:bg-blue-500  hover:text-white"
+                             }`}
+                         >
+                           {i + 1}
+                         </PaginationLink>
+                       </PaginationItem>
+                     ))}
+       
+                     <PaginationItem>
+                       <PaginationNext
+                         href="#"
+                         onClick={() =>
+                           setCurrentPage(Math.min(totalPages, currentPage + 1))
+                         }
+                       />
+                     </PaginationItem>
+                   </PaginationContent>
+                 </Pagination>
+        )}
       </SidebarInset>
     </SidebarProvider>
   );

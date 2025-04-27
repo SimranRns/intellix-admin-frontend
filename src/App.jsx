@@ -51,32 +51,32 @@ import Notification from "./component/Admin/Advertisment/Notification";
 // import { Toaster } from "react-hot-toast";
 // import { Route } from "lucide-react";
 const App = () => {
-  // const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   // Simulating site load time
-  //   const timer = setTimeout(() => {
-  //     setLoading(false);
-  //   }, 500);
+  useEffect(() => {
+    // Simulating site load time
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 500);
 
-  //   return () => clearTimeout(timer);
-  // }, []);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Show loader while loading
-  //   if (loading) {
-  //     return (
-        // <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
-        //   <div className="relative flex  justify-center items-center">
-        //     <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
-        //     <img
-        //       src={logo}
-        //       alt="Loading"
-        //       className="rounded-full h-28 w-28"
-        //     />
-        //   </div>
-        // </div>
-  // );
-  // }
+    if (loading) {
+      return (
+        <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
+          <div className="relative flex  justify-center items-center">
+            <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+            <img
+              src={logo}
+              alt="Loading"
+              className="rounded-full h-28 w-28"
+            />
+          </div>
+        </div>
+  );
+  }
   <>
     {/* <Toaster position="top-right" reverseOrder={false} /> */}
     {/* ...rest of your app */}
