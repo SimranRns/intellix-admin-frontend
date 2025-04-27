@@ -23,7 +23,7 @@ const Received = () => {
   const [month, setMonth] = useState(String(date.getMonth() + 1).padStart(2, "0"));
   const [year, setYear] = useState(String(date.getFullYear()));
   const [searchInput, setSearchInput] = useState(""); // For controlled input
- // For debounced search
+  // For debounced search
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
 
@@ -49,10 +49,10 @@ const Received = () => {
   // Filter data safely
   const filteredData = Array.isArray(data?.paid)
     ? data.paid.filter((item) =>
-        item?.student_id?.toString().toLowerCase().includes(comps.toLowerCase())
-      )
+      item?.student_id?.toString().toLowerCase().includes(comps.toLowerCase())
+    )
     : [];
-    console.log(filteredData, "filteredData from paid");
+  console.log(filteredData, "filteredData from paid");
 
 
   // Pagination
@@ -91,11 +91,12 @@ const Received = () => {
                   setMonth(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="border border-blue-300 rounded-lg px-3 py-2 text-sm"
+                className="border border-blue-300 bg-transparent rounded-lg px-3 py-2 text-sm"
                 aria-label="Select month"
               >
+
                 {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map((m) => (
-                  <option key={m} value={m}>
+                  <option className="text-black" key={m} value={m}>
                     {m}
                   </option>
                 ))}
@@ -106,11 +107,11 @@ const Received = () => {
                   setYear(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="border border-blue-300 rounded-lg px-3 py-2 text-sm"
+                className="border border-blue-300 bg-transparent rounded-lg px-3 py-2 text-sm"
                 aria-label="Select year"
               >
                 {years.map((y) => (
-                  <option key={y} value={y}>
+                  <option className="text-black" key={y} value={y}>
                     {y}
                   </option>
                 ))}
@@ -212,11 +213,10 @@ const Received = () => {
                       <PaginationLink
                         href="#"
                         onClick={() => setCurrentPage(i + 1)}
-                        className={`px-4 py-2 rounded-md ${
-                          currentPage === i + 1
-                            ? "bg-blue-600 text-white"
-                            : "hover:bg-blue-500 hover:text-white"
-                        }`}
+                        className={`px-4 py-2 rounded-md ${currentPage === i + 1
+                          ? "bg-blue-600 text-white"
+                          : "hover:bg-blue-500 hover:text-white"
+                          }`}
                         aria-current={currentPage === i + 1 ? "page" : undefined}
                       >
                         {i + 1}
