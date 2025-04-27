@@ -117,7 +117,7 @@ const Received = () => {
                   setMonth(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="border border-blue-300 rounded-lg px-3 py-2 text-sm"
+                className="border border-blue-300 bg-transparent rounded-lg px-3 py-2 text-sm"
                 aria-label="Select month"
               >
                 {Array.from({ length: 12 }, (_, i) =>
@@ -136,11 +136,11 @@ const Received = () => {
                   setYear(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="border border-blue-300 rounded-lg px-3 py-2 text-sm"
+                className="border border-blue-300 bg-transparent rounded-lg px-3 py-2 text-sm"
                 aria-label="Select year"
               >
                 {years.map((y) => (
-                  <option key={y} value={y}>
+                  <option className="text-black" key={y} value={y}>
                     {y}
                   </option>
                 ))}

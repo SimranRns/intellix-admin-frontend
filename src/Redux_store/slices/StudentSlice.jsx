@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   addStudent,
   addStudentsExcel,
+  getSingleStudent,
   getStudentRecipients,
   getStudents,
   updateStudentsRt,

@@ -502,7 +502,7 @@ const Batches = () => {
                 <CardContent className="grid gap-2 grid-cols-2 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
                   <Viewdetail />
                   <Update_time />
-                  <Migrate />
+                  {/* <Migrate /> */}
                 </CardContent>
               </Card>
             ))}

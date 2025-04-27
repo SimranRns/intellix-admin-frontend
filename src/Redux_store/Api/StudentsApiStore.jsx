@@ -43,7 +43,7 @@ export const getSingleStudent = createAsyncThunk(
     // id ko dynamic bana diya
     try {
       const response = await fetch(
-        `http://localhost:4000/api/v1/student/singleStudent/${id}`
+        `${BASE_URL}/api/v1/student/singleStudent/${id}`
       );
 
       if (!response.ok) {
