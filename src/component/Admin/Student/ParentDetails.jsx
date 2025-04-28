@@ -12,11 +12,10 @@ import { Label } from "../../src/components/ui/label";
 import { Card, CardContent } from "../../src/components/ui/card";
 import { ArrowLeft, Hash } from "lucide-react";
 
-// Zod Validation Schema for remaining fields
+// Zod Validation Schema for father and mother fields
 const zodSchema = z.object({
-  class: z.string().min(1, { message: "Class is required" }),
-  section: z.string().min(1, { message: "Section is required" }),
-  roll_no: z.string().min(1, { message: "Roll number is required" }),
+  father_name: z.string().min(1, "Father's name is required"),
+  mother_name: z.string().min(1, "Mother's name is required"),
 });
 
 const ParentDetails = () => {
@@ -31,9 +30,8 @@ const ParentDetails = () => {
   } = useForm({
     resolver: zodResolver(zodSchema),
     defaultValues: {
-      class: newStudent.class || "",
-      section: newStudent.section || "",
-      roll_no: newStudent.roll_no || "",
+      father_name: newStudent.father_name || "",
+      mother_name: newStudent.mother_name || "",
     },
   });
 
@@ -54,6 +52,7 @@ const ParentDetails = () => {
       // Reset newStudent state after successful submission
       dispatch(resetNewStudent());
       console.log("Dispatched newStudent data:", completeData);
+
       // Navigate to the next page
       navigate("/add");
     } catch (err) {
@@ -78,52 +77,41 @@ const ParentDetails = () => {
         <Card className="w-full max-w-4xl rounded-2xl shadow-md shadow-blue-500/50 p-8 mt-5">
           <CardContent>
             <h2 className="text-center text-2xl sm:text-3xl font-semibold mb-6">
-              Enter Student Details
+              Enter Parent Details
             </h2>
             <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6">
-              {/* Class */}
+              {/* Father's Name */}
               <div className="relative">
                 <Label className="font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
-                  <Hash size={20} /> Enter Class
+                  <Hash size={20} /> Father's Name
                 </Label>
                 <Input
-                  {...register("class")}
+                  {...register("father_name")}
                   className={`w-full pl-10 border ${
-                    errors.class ? "border-red-500" : "border-gray-300"
+                    errors.father_name ? "border-red-500" : "border-gray-300"
                   } rounded-xl p-3 sm:p-5`}
-                  placeholder="Enter Class (e.g., 10th)"
+                  placeholder="Enter Father's Name"
                 />
-                {errors.class && <p className="text-red-500">{errors.class.message}</p>}
+                {errors.father_name && (
+                  <p className="text-red-500">{errors.father_name.message}</p>
+                )}
               </div>
 
-              {/* Section */}
+              {/* Mother's Name */}
               <div className="relative">
                 <Label className="font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
-                  <Hash size={20} /> Enter Section
+                  <Hash size={20} /> Mother's Name
                 </Label>
                 <Input
-                  {...register("section")}
+                  {...register("mother_name")}
                   className={`w-full pl-10 border ${
-                    errors.section ? "border-red-500" : "border-gray-300"
+                    errors.mother_name ? "border-red-500" : "border-gray-300"
                   } rounded-xl p-3 sm:p-5`}
-                  placeholder="Enter Section (e.g., A)"
+                  placeholder="Enter Mother's Name"
                 />
-                {errors.section && <p className="text-red-500">{errors.section.message}</p>}
-              </div>
-
-              {/* Roll Number */}
-              <div className="relative">
-                <Label className="font-semibold text-lg sm:text-xl mb-4 flex items-center gap-2">
-                  <Hash size={20} /> Enter Roll Number
-                </Label>
-                <Input
-                  {...register("roll_no")}
-                  className={`w-full pl-10 border ${
-                    errors.roll_no ? "border-red-500" : "border-gray-300"
-                  } rounded-xl p-3 sm:p-5`}
-                  placeholder="Enter Roll Number"
-                />
-                {errors.roll_no && <p className="text-red-500">{errors.roll_no.message}</p>}
+                {errors.mother_name && (
+                  <p className="text-red-500">{errors.mother_name.message}</p>
+                )}
               </div>
 
               {/* Error Message from API */}
@@ -136,7 +124,8 @@ const ParentDetails = () => {
                   className="w-56 bg-blue-700 text-white text-lg py-2 rounded-lg hover:bg-blue-600"
                   disabled={loading}
                 >
-                  {loading ? "Submitting..." : "Add Student"}
+                  {/* {loading ? "Submitting..." : "Add Parent Details"} */}
+                  Add Parent Details
                 </Button>
               </div>
             </form>

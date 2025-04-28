@@ -4,11 +4,18 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export const getStudents = createAsyncThunk(
   "getStudents",
-  async ({ limits, page } = {}, { rejectWithValue }) => {
+  async ({ limit, page, name = "" } = {}, { rejectWithValue }) => {
     try {
-      // Construct query string from params dynamically
+      // Construct query string dynamically
+      const queryParams = new URLSearchParams({
+        limit: limit.toString(),
+        page: page.toString(),
+        ...(name && { name }), // Include search param only if provided
 
-      const url = `${BASE_URL}/api/v1/student/allStudents?&limit=12&page=1`;
+      }).toString();
+// console.log(queryParams);
+
+      const url = `${BASE_URL}/api/v1/student/allStudents?${queryParams}`;
 
       const requestOptions = {
         method: "GET",
@@ -28,7 +35,6 @@ export const getStudents = createAsyncThunk(
       // Parse response as JSON
       const data = await response.json();
       console.log(data);
-
       return data; // Return the parsed data
     } catch (error) {
       // Reject with error message

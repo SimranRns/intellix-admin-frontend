@@ -8,9 +8,9 @@ import { Label } from "../../src/components/ui/label";
 import { Input } from "../../src/components/ui/input";
 import { updateNewStudent } from "../../../Redux_store/slices/StudentSlice"; // Adjust path to your studentSlice
 
-// Zod schema for validation (only for aadhaarNumber and address)
+// Zod schema for validation (only for adhar_no and address)
 const schema = z.object({
-  aadhaarNumber: z
+  adhar_no: z
     .string()
     .length(12, "Aadhaar must be 12 digits")
     .regex(/\d+$/, "Only numbers allowed"),
@@ -22,9 +22,9 @@ const ProceedModal = () => {
   const dispatch = useDispatch();
   const newStudent = useSelector((state) => state.students.newStudent);
 
-  // Initialize formData with Redux newStudent state for aadhaarNumber and address
+  // Initialize formData with Redux newStudent state for adhar_no and address
   const [formData, setFormData] = useState({
-    aadhaarNumber: newStudent.adhar_no || "",
+    adhar_no: newStudent.adhar_no || "",
     address: newStudent.address || "",
   });
   const [errors, setErrors] = useState({});
@@ -43,7 +43,7 @@ const ProceedModal = () => {
     try {
       // Validate form data using Zod
       const validatedData = schema.parse({
-        aadhaarNumber: formData.aadhaarNumber,
+        adhar_no: formData.adhar_no,
         address: formData.address,
       });
 
@@ -119,8 +119,8 @@ const ProceedModal = () => {
             </Label>
             <Input
               type="text"
-              name="aadhaarNumber"
-              value={formData.aadhaarNumber}
+              name="adhar_no"
+              value={formData.adhar_no}
               onChange={handleChange}
               maxLength={12} // Restrict to 12 digits
               className={`w-full  h-12 border rounded-xl p-3 bg-transparent ${
@@ -128,9 +128,9 @@ const ProceedModal = () => {
               }`}
               placeholder="Aadhaar number (12 digits)"
             />
-            {errors.aadhaarNumber && (
+            {errors.adhar_no && (
               <p className="text-red-500 text-sm mt-1">
-                {errors.aadhaarNumber}
+                {errors.adhar_no}
               </p>
             )}
           </div>

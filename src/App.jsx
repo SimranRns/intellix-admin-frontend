@@ -111,8 +111,8 @@ const App = () => {
             <Route path="/add" element={<SuccessMessage />} />
             <Route path="/view/profile/:id" element={<Profile />} />
             <Route path="/student-payment-history/:id" element={<Payment_History />} />
-            <Route path="/StudentUploadModal/:id" element={<StudentUploadModal />} />
-            <Route path="/Marksheet/:id" element={<MarksheetForm />} />
+            <Route path="/StudentUploadModal" element={<StudentUploadModal />} />
+            <Route path="/Marksheet" element={<MarksheetForm />} />
             <Route path="/ExStudents" element={<ExStudentsData />} />
             <Route path="/student_attendance/:id" element={<Stu_Attendance />} />
             <Route path="/View-Profile/:id" element={<ViewProfile />} />
