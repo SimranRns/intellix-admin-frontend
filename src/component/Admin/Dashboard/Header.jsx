@@ -93,7 +93,7 @@ const Header = () => {
                     {/* Dynamic Page Title */}
                     <h1 className="text-2xl ps-9 font-semibold text-blue-700 dark:text-white">
                         {/* {activePage} */}
-                        Dashboard
+                        {/* Dashboard */}
                     </h1>
 
                     {/* Right Section: Icons & Profile */}

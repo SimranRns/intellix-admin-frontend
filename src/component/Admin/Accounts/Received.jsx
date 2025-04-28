@@ -123,7 +123,7 @@ const Received = () => {
                 {Array.from({ length: 12 }, (_, i) =>
                   String(i + 1).padStart(2, "0")
                 ).map((m) => (
-                  <option key={m} value={m}>
+                  <option className="text-black" key={m} value={m}>
                     {new Date(0, m - 1).toLocaleString("default", {
                       month: "long",
                     })}
@@ -173,7 +173,7 @@ const Received = () => {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse">
-                  <thead className="bg-gray-200 dark:bg-gray-900">
+                  <thead className="bg-gray-200 dark:bg-gray-900 ">
                     <tr>
                       <th scope="col" className="p-3 border text-left">
                         ID
@@ -197,7 +197,7 @@ const Received = () => {
                       paginatedData.map((row) => (
                         <tr
                           key={row.id}
-                          className="text-center hover:bg-gray-50"
+                          className="text-center "
                         >
                           <td className="p-3 border">{row.id}</td>
                           <td className="p-3 border">{row.batch}</td>

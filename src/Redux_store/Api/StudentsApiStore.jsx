@@ -46,14 +46,14 @@ export const getSingleStudent = createAsyncThunk(
         redirect: "follow"
       };
       
-      const response = await fetch(`${BASE_URL}/api/v1/student/singleStudent/${id}`, requestOptions);
+      const response = await fetch(`${BASE_URL}/api/v1/student/sigleStudent/${id}`, requestOptions);
       
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
 
       const result = await response.json();  // json() parse karo
-      console.log(result , "single student data"); // Debugging line to check the result
+      // console.log(result , "single student data"); // Debugging line to check the result
       
       return result; // Ab ye proper data return hoga
     } catch (error) {

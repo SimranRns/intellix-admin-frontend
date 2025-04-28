@@ -10,48 +10,61 @@ import { Book, BookOpen, CalendarCheck, Users } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchSessionCount } from "../../../Redux_store/Api/SessionApi";
 import logo from '../../../assets/Image/intellix.png'
+import { get_course } from "../../../Redux_store/Api/Academic_course";
+import { get_subject } from "../../../Redux_store/Api/Subject";
+import { get_Batches } from "../../../Redux_store/Api/Batches";
 const Academics = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { count, loading, error } = useSelector((state) => state.Session);
-    console.log(count);
-
+    const { course } = useSelector((s) => s.acad_courses);
+    const { subjects } = useSelector((state) => state.subj);
+    const { Batches } = useSelector((s) => s.Batch);
+  
     useEffect(() => {
         dispatch(fetchSessionCount());
     }, [dispatch]);
-
-
-
+    useEffect(() => {
+        dispatch(get_course())
+    }, [])
+  useEffect(() => {
+    dispatch(get_subject());
+  }, []);
+ 
+  useEffect(() => {
+    dispatch(get_Batches());
+  }, []);
     const cardData = [
         {
             title: "Courses / Classes",
-            value: 10,
+            value: course?.data?.length || 0,
             icon: <Book className="w-6 h-6 text-blue-600" />,
             link: "/Courses",
             Total: "Total Courses Active"
         },
         {
             title: "Sessions",
-            value: count,
+            value: count || 0,
             icon: <CalendarCheck className="w-6 h-6 text-green-600" />,
             link: "/Sessions",
             Total: "Total Sessions"
         },
         {
             title: "Subjects",
-            value: 35,
+            value: subjects?.length || 0,
             icon: <BookOpen className="w-6 h-6 text-yellow-600" />,
             link: "/Subjects",
             Total: "Total Subjects Active"
         },
         {
             title: "Batches / Section",
-            value: 56,
+            value: Batches?.length || 0,
             icon: <Users className="w-6 h-6 text-red-600" />,
             link: "/Batches",
             Total: "Total Batches"
         }
     ];
+
 
 
     return (
@@ -64,49 +77,49 @@ const Academics = () => {
                     <div className="flex flex-col items-center min-h-screen p-4 space-y-6">
                         {/* 3 Cards Below in a Row */}
 
-  {loading ? (
-            <div className="h-screen w-full flex items-center justify-center text-white">
-              <div className="relative flex justify-center items-center">
-                <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
-                <img
-                  src={logo}
-                  alt="Loading"
-                  className="rounded-full h-28 w-28"
-                />
-              </div>
-            </div>
-          ) : error ? (
-            <div>Error: {error?.message ? (
-              <div className="text-red-700"> {error.message}</div>
-            ) : ""}</div>
-          ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-8xl">
-                            {cardData.map((card, index) => (
-                                <div key={index} className="w-full">
-                                    <Card className="w-full p-4 shadow-lg rounded-2xl bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700">
-                                        <CardHeader className="flex items-center justify-between">
-                                            <CardTitle className="text-xl font-bold text-center">{card.title}</CardTitle>
-                                            {card.icon}
-                                        </CardHeader>
-                                        <CardContent className="flex items-center justify-center">
-                                            <span className="text-3xl font-bold text-blue-600">
-                                                {typeof card.value === 'number' ? card.value.toLocaleString() : '0'}
-
-                                            </span>
-                                        </CardContent>
-                                        <CardFooter className="flex flex-col items-center space-y-2">
-                                            <CardDescription className="text-gray-700 font-bold dark:text-gray-300">{card.Total}</CardDescription>
-                                            <Button
-                                                className="w-full  bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition"
-                                                onClick={() => navigate(card.link)} // Navigate to the respective page
-                                            >
-                                                More Details
-                                            </Button>
-                                        </CardFooter>
-                                    </Card>
+                        {loading ? (
+                            <div className="h-screen w-full flex items-center justify-center text-white">
+                                <div className="relative flex justify-center items-center">
+                                    <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+                                    <img
+                                        src={logo}
+                                        alt="Loading"
+                                        className="rounded-full h-28 w-28"
+                                    />
                                 </div>
-                            ))}
-                        </div>
+                            </div>
+                        ) : error ? (
+                            <div>Error: {error?.message ? (
+                                <div className="text-red-700"> {error.message}</div>
+                            ) : ""}</div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-8xl">
+                                {cardData.map((card, index) => (
+                                    <div key={index} className="w-full">
+                                        <Card className="w-full p-4 shadow-lg rounded-2xl bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700">
+                                            <CardHeader className="flex items-center justify-between">
+                                                <CardTitle className="text-xl font-bold text-center">{card.title}</CardTitle>
+                                                {card.icon}
+                                            </CardHeader>
+                                            <CardContent className="flex items-center justify-center">
+                                                <span className="text-3xl font-bold text-blue-600">
+                                                    {typeof card.value === 'number' ? card.value.toLocaleString() : '0'}
+
+                                                </span>
+                                            </CardContent>
+                                            <CardFooter className="flex flex-col items-center space-y-2">
+                                                <CardDescription className="text-gray-700 font-bold dark:text-gray-300">{card.Total}</CardDescription>
+                                                <Button
+                                                    className="w-full  bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition"
+                                                    onClick={() => navigate(card.link)} // Navigate to the respective page
+                                                >
+                                                    More Details
+                                                </Button>
+                                            </CardFooter>
+                                        </Card>
+                                    </div>
+                                ))}
+                            </div>
 
                         )}
                     </div>

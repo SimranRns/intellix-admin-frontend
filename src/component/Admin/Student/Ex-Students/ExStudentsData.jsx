@@ -58,9 +58,9 @@ import logo from '../../../../assets/Image/intellix.png'
 
 import Header from "../../Dashboard/Header";
 import AppSidebar from "../../../src/components/ui/app-sidebar";
-import GetExStudent from "../../../../Redux_store/Api/Student_ExStudent";
+import { GetExStudent } from "../../../../Redux_store/Api/Student_ExStudent";
 import Add_Payment from "../Add_Payment";
-
+import { getSingleStudent } from "../../../../Redux_store/Api/StudentsApiStore";
 
 const additionalDetailsSchema = z.object({
   Teachername: z.string().min(2, "Name must be at least 2 characters"),
@@ -106,10 +106,10 @@ const ExStudentsData = () => {
   };
 
 
-  const { get_Exstudent, loading, error } = useSelector((state) => state.Exstudent)
-  const displayedExStudents = get_Exstudent?.students || [];
+  const { get_Exstudent, loading, singleLoading, error } = useSelector((state) => state.Exstudent || {});
+  const dispatch = useDispatch()
+  const displayedExStudents = get_Exstudent?.students;
   const totalPages = Math.ceil((get_Exstudent?.totalRecords || 0) / PAGE_SIZE);
-
 
   const additionalForm = useForm({
     resolver: zodResolver(additionalDetailsSchema),
@@ -122,7 +122,7 @@ const ExStudentsData = () => {
       emergencyContact: "",
     },
   });
-  const dispatch = useDispatch()
+
 
 
 
@@ -141,25 +141,19 @@ const ExStudentsData = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [searchText, currentPage, dispatch]);
 
-
-  if (loading) {
-    return (
-      <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
-        <div className="relative flex  justify-center items-center">
-          <div className="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
-          <img
-            src={logo}
-            alt="Loading"
-            className="rounded-full h-28 w-28"
-          />
-        </div>
-      </div>
-    );
-  }
-
-
   const goback = () => {
     window.history.back();
+  };
+  const handleViewProfile = (id) => {
+    console.log("View Profile ID:", id); // 👈 ye daal do dekhne ke liye
+    dispatch(getSingleStudent({ id }))
+      .unwrap()
+      .then(() => {
+        navigate(`/view/profile/${id}`);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch single student:", err);
+      });
   };
   return (
     <div>
@@ -185,7 +179,7 @@ const ExStudentsData = () => {
                   <input
                     type="text"
                     style={{ backgroundColor: "transparent" }}
-                    placeholder="Search here..."
+                    placeholder="Search By EX-Students Name..."
                     className="ml-2 w-full focus:outline-none focus:ring-0"
                     ref={inputRef}
                     value={searchText}
@@ -194,7 +188,9 @@ const ExStudentsData = () => {
                 </div>
               </div>
 
+              {
 
+              }
               <div className="w-full overflow-x-auto">
                 <Table className="w-full border rounded-lg shadow-md mt-5">
                   <TableHeader>
@@ -208,136 +204,133 @@ const ExStudentsData = () => {
                     </TableRow>
                   </TableHeader>
 
-
-
-
                   <TableBody>
-
-                    {displayedExStudents?.map((student, index) => (
-                      <TableRow key={index} className="hover:bg-transparent">
-                        <TableCell className="text-blue-600 font-medium">
-                          {student.id}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-col md:flex-row md:items-center md:gap-3">
-
-                            <span className="font-medium">{student.name}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <span className="block md:inline">{student.father_name}</span>
-                        </TableCell>
-
-
-                        <TableCell>{student.Batch?.BatchesName}</TableCell>
-
-
-                        <TableCell>
-
-                          <Add_Payment />
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <MoreVertical className="cursor-pointer" size={20} />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56">
-                              <DropdownMenuGroup>
-                                <DropdownMenuItem onClick={() => navigate("/view/profile")}>
-                                  Profile
-                                </DropdownMenuItem>
-
-                                <DropdownMenuItem onClick={() => navigate("/student-payment-history")}>
-                                  Payment_History
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => navigate("/student_attendance")}>
-                                  Attendance
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  View_Marksheet
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  Mark as RT
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                  <Dialog open={deletedialog} onOpenChange={setdeletedialog}>
-                                    <DialogTrigger >
-                                      Delete
-                                    </DialogTrigger>
-                                    <DialogContent onPointerDownOutside={(e) => e.preventDefault()}
-                                      onEscapeKeyDown={(e) => e.preventDefault()} className="sm:max-w-[425px]">
-                                      <DialogHeader >
-                                        <DialogTitle className="text-center mb-3">Delete Sudent</DialogTitle>
-                                        <DialogDescription className="text-center">
-                                          Are you sure you want to delete student?
-                                        </DialogDescription>
-                                      </DialogHeader>
-
-                                      <DialogFooter className="flex justify-between">
-                                        <Button
-                                          onClick={() => { setdeletedialog(false) }}
-                                          variant="outline"
-                                        >
-                                          Cancel
-                                        </Button>
-                                        <Button className="bg-green-600 hover:bg-green-700 text-white">
-                                          Confirm
-                                        </Button>
-                                      </DialogFooter>
-                                    </DialogContent>
-                                  </Dialog>
-                                </DropdownMenuItem>
-
-
-                              </DropdownMenuGroup>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                    {loading ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center py-8">
+                          Loading...
                         </TableCell>
                       </TableRow>
-                    ))}
-
+                    ) : error ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center text-red-500 py-8">
+                          Error: {error}
+                        </TableCell>
+                      </TableRow>
+                    ) : displayedExStudents?.length > 0 ? (
+                      get_Exstudent?.students?.map((student) => (
+                        <TableRow key={student.id} className="hover:bg-transparent">
+                          <TableCell className="text-blue-600 font-medium">
+                            {student.id}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-col md:flex-row md:items-center md:gap-3">
+                              <span className="font-medium">{student.name || "No Name"}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <span>{student.father_name || "N/A"}</span>
+                          </TableCell>
+                          <TableCell>
+                            {student.Batch?.BatchesName || "No Batch"}
+                          </TableCell>
+                          <TableCell>
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button>_Add Payment</Button>
+                              </DialogTrigger>
+                              <DialogContent className="sm:max-w-[825px] ">
+                                <DialogHeader>
+                                  <DialogDescription>
+                                    <Add_Payment />
+                                  </DialogDescription>
+                                </DialogHeader>
+                              </DialogContent>
+                            </Dialog>
+                          </TableCell>
+                          <TableCell>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <MoreVertical className="cursor-pointer" size={20} />
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent className="w-56">
+                                <DropdownMenuGroup>
+                                  <DropdownMenuItem
+                                    onClick={() => handleViewProfile(student.id)}
+                                  >
+                                    {singleLoading ? "Loading..." : "Profile"}
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      navigate(
+                                        `/student-payment-history/${student.id}`
+                                      )
+                                    }
+                                  >
+                                    Payment History
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      navigate(
+                                        `/student_attendance/${student.id}`
+                                      )
+                                    }
+                                  >
+                                    Attendance
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem>
+                                    View Marksheet
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem>
+                                    Mark as RT
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                    <Dialog open={deletedialog} onOpenChange={setdeletedialog}>
+                                      <DialogTrigger>Delete</DialogTrigger>
+                                      <DialogContent
+                                        onPointerDownOutside={(e) => e.preventDefault()}
+                                        onEscapeKeyDown={(e) => e.preventDefault()}
+                                        className="sm:max-w-[425px]"
+                                      >
+                                        <DialogHeader>
+                                          <DialogTitle className="text-center mb-3">Delete Student</DialogTitle>
+                                          <DialogDescription className="text-center">
+                                            Are you sure you want to delete student?
+                                          </DialogDescription>
+                                        </DialogHeader>
+                                        <DialogFooter className="flex justify-between">
+                                          <Button
+                                            onClick={() => setdeletedialog(false)}
+                                            variant="outline"
+                                          >
+                                            Cancel
+                                          </Button>
+                                          <Button className="bg-green-600 hover:bg-green-700 text-white">
+                                            Confirm
+                                          </Button>
+                                        </DialogFooter>
+                                      </DialogContent>
+                                    </Dialog>
+                                  </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center py-8">
+                          No Students Found
+                        </TableCell>
+                      </TableRow>
+                    )}
                   </TableBody>
-
-
-
                 </Table>
               </div>
 
 
 
-              <div className="flex items-center justify-center md:justify-end space-x-3 mt-5 w-full pr-8">
-                <Button
-                  variant="ghost"
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                  className="hover:bg-transparent hover:text-inherit"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </Button>
-
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <Button
-                    key={page}
-                    variant={currentPage === page ? "default" : "ghost"}
-                    onClick={() => setCurrentPage(page)}
-                    className={`px-4 py-2 ${currentPage === page ? "bg-blue-500 text-white" : "hover:bg-gray-100"}`}
-                  >
-                    {page}
-                  </Button>
-                ))}
-
-                <Button
-                  variant="ghost"
-                  disabled={currentPage === totalPages}
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                  className="hover:bg-transparent hover:text-inherit"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </Button>
-
-              </div>
-
-        
 
             </div>
           </main>

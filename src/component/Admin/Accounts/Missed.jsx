@@ -125,11 +125,11 @@ const Missed = () => {
                   setMonth(e.target.value);
                   handlePageReset();
                 }}
-                className="border border-blue-300 rounded-lg px-3 py-2 text-sm"
+                className="border border-blue-300  bg-transparent rounded-lg px-3 py-2 text-sm"
                 aria-label="Select Month"
               >
                 {MONTHS.map((m) => (
-                  <option key={m} value={m}>
+                  <option className="text-black" key={m} value={m}>
                     {m}
                   </option>
                 ))}
@@ -140,11 +140,11 @@ const Missed = () => {
                   setYear(e.target.value);
                   handlePageReset();
                 }}
-                className="border border-blue-300 rounded-lg px-3 py-2 text-sm"
+                className="border border-blue-300 bg-transparent rounded-lg px-3 py-2 text-sm"
                 aria-label="Select Year"
               >
                 {YEARS.map((y) => (
-                  <option key={y} value={y}>
+                  <option className=" text-black" key={y} value={y}>
                     {y}
                   </option>
                 ))}
@@ -166,7 +166,7 @@ const Missed = () => {
           </div>
 
           {/* Table Container */}
-          <div className="rounded-lg mt-6 p-5 bg-white shadow">
+          <div className="rounded-lg mt-6 p-5  shadow">
             {loading || batchesLoading ? (
               <div className="text-center p-4">Loading...</div>
             ) : error || batchesError ? (

@@ -1,18 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
-import GetExStudent from "../Api/Student_ExStudent";
-// import GetExStudent from "../Api/Student_AddStudent";
-
+import GetExStudent from "../Api/Student_ExStudent"; // Import the action creator
 
 const initialState = {
   get_Exstudent: {
-    students: [],  
-    total: 0,
+    students: [],
+    totalRecords: 0, // Add totalRecords in your state to calculate pagination
   },
   loading: false,
   error: null,
 };
 
- const ExstudentSlice = createSlice({
+const ExstudentSlice = createSlice({
   name: 'Exstudent',
   initialState,
   reducers: {},
@@ -20,18 +18,14 @@ const initialState = {
     builder
       .addCase(GetExStudent.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
-
       .addCase(GetExStudent.fulfilled, (state, action) => {
-  state.loading = false;
-  state.get_Exstudent.students = action.payload.students;
-  state.get_Exstudent.total = action.payload.totalRecords;
-})
-
+        state.loading = false;
+        state.get_Exstudent = action.payload; // Save the API response
+      })
       .addCase(GetExStudent.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Failed to fetch students";
+        state.error = action.error.message;
       });
   },
 });

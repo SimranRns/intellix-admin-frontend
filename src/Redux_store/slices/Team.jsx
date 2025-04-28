@@ -28,13 +28,9 @@ const teamSlice = createSlice({
         state.Teachers.push(action.payload);
         console.log(action.payload, "*********************************************************************");
       })
-
-
       .addCase(create_employee.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-
-
       })
 
       //////Get
@@ -65,8 +61,9 @@ const teamSlice = createSlice({
         state.loading = false;
         state.error = action.payload || 'Something went wrong';
       })
-      // see profile of employee by single emp id 
 
+
+      // see profile of employee by single emp id 
       .addCase(getoneemployee.pending, (state) => {
         state.loading = true
       })

@@ -20,7 +20,7 @@ import EmployessSlicesReducer from './slices/Dashboard.Slices'
 import subject_sliceReducer from './slices/Subject_Slice'
 import adminSliceReducer from "./slices/Logout_Admin"
 import BatchesSliceReducer from  "./slices/Batches_Slice"
-
+import ExstudentReducer from "./slices/Student_ExStudent"
 import acad_course_sliceReducer from './slices/Academic_course'
 const RootReducer = combineReducers({
     team: teamReducer,
@@ -47,6 +47,7 @@ const RootReducer = combineReducers({
     acad_courses: acad_course_sliceReducer,
     Session:SessionSliceReducer,
     Batch:BatchesSliceReducer,
+    Exstudent: ExstudentReducer, 
     // Session:SessionSliceReducer,
 })
 

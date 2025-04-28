@@ -17,19 +17,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { debounce } from "lodash";
 
 
-const dummyData = [
-  { id: 1, batch: "Batch A", students: 25, amount: 5000 },
-  { id: 2, batch: "Batch B", students: 30, amount: 6000 },
-  { id: 3, batch: "Batch C", students: 20, amount: 4500 },
-  { id: 4, batch: "Batch D", students: 15, amount: 3000 },
-  { id: 5, batch: "Batch E", students: 28, amount: 5500 },
-  { id: 6, batch: "Batch F", students: 22, amount: 4800 },
-  { id: 7, batch: "Batch G", students: 27, amount: 5200 },
-  { id: 8, batch: "Batch H", students: 18, amount: 3500 },
-  { id: 9, batch: "Batch I", students: 32, amount: 6500 },
-  { id: 10, batch: "Batch J", students: 19, amount: 4000 },
-  { id: 11, batch: "Batch K", students: 26, amount: 5100 },
-];
+// const dummyData = [
+//   { id: 1, batch: "Batch A", students: 25, amount: 5000 },
+//   { id: 2, batch: "Batch B", students: 30, amount: 6000 },
+//   { id: 3, batch: "Batch C", students: 20, amount: 4500 },
+//   { id: 4, batch: "Batch D", students: 15, amount: 3000 },
+//   { id: 5, batch: "Batch E", students: 28, amount: 5500 },
+//   { id: 6, batch: "Batch F", students: 22, amount: 4800 },
+//   { id: 7, batch: "Batch G", students: 27, amount: 5200 },
+//   { id: 8, batch: "Batch H", students: 18, amount: 3500 },
+//   { id: 9, batch: "Batch I", students: 32, amount: 6500 },
+//   { id: 10, batch: "Batch J", students: 19, amount: 4000 },
+//   { id: 11, batch: "Batch K", students: 26, amount: 5100 },
+// ];
 
 const Upcoming = () => {
   const dispatch = useDispatch();
@@ -118,9 +118,9 @@ const Upcoming = () => {
                 value={month}
                 onChange={(e) => {
                   setMonth(e.target.value);
-                  setCurrentPage(1); // Reset pagination
+                  setCurrentPage(1); 
                 }}
-                className="border border-blue-300 rounded-lg px-4 pe-1 py-2 text-sm"
+                className="border border-blue-300 bg-transparent rounded-lg px-4 pe-1 py-2 text-sm"
               >
                 {[
                   "01",
@@ -136,7 +136,7 @@ const Upcoming = () => {
                   "11",
                   "12",
                 ].map((m) => (
-                  <option key={m} value={m}>
+                  <option className="text-black" key={m} value={m}>
                     {m}
                   </option>
                 ))}
@@ -147,10 +147,10 @@ const Upcoming = () => {
                   setYear(e.target.value);
                   setCurrentPage(1); // Reset pagination
                 }}
-                className="border border-blue-300 rounded-lg px-4 py-2 text-sm"
+                className="border border-blue-300 bg-transparent rounded-lg px-4 py-2 text-sm"
               >
                 {yearOptions.map((y) => (
-                  <option key={y} value={y}>
+                  <option className="text-black " key={y} value={y}>
                     {y}
                   </option>
                 ))}

@@ -12,7 +12,6 @@ import {
 const initialState = {
   students: [], // List of students from getStudents
   recipients: [], // Data from studentRecipients
-  singleStudent: null, // Single student data
   loading: false, // Loading state for API calls
   error: null, // Error message if an API call fails
   total: 0, // Total number of students (for pagination)
@@ -177,6 +176,7 @@ const studentSlice = createSlice({
       });
 
     // Get Single Student
+
     builder
       .addCase(getSingleStudent.pending, (state) => {
         state.loading = true;
@@ -184,12 +184,16 @@ const studentSlice = createSlice({
       })
       .addCase(getSingleStudent.fulfilled, (state, action) => {
         state.loading = false;
-        state.singleStudent = action.payload.student || null;
-      })
-      .addCase(getSingleStudent.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Failed to fetch single student";
-      });
+        state.Profile = action.payload;
+        console.log( state.Profile, "=== Single Student Payload ==="); // console payload karo
+    })
+
+    .addCase(getSingleStudent.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload || "Failed to fetch single student";
+    });
+ 
+
   },
 });
 
