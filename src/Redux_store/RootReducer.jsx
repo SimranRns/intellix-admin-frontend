@@ -40,14 +40,11 @@ const RootReducer = combineReducers({
     students: studentReducer,
     adminProfile: adminProfileSliceReducer, 
     subj:subject_sliceReducer, 
-    subj: subject_sliceReducer,
     Employesss: EmployessSlicesReducer,
     logout: adminSliceReducer,
     Session: SessionSliceReducer,
     acad_courses: acad_course_sliceReducer,
-    Session:SessionSliceReducer,
     Batch:BatchesSliceReducer,
-    // Session:SessionSliceReducer,
 })
 
 

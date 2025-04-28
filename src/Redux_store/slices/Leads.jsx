@@ -5,6 +5,7 @@ import {
   AddLeads,
   searchingleads,
   getAllAssignto,
+  searchLeads,
 } from "../Api/LeadsApi";
 
 const LeadsSlice = createSlice({
@@ -14,9 +15,11 @@ const LeadsSlice = createSlice({
     loading: false,
     error: null,
     searchedLeads: [],
-    leadData: [], // ← leadData ko array banaya, pehle null tha, push karte waqt error deta.
+    leadData: [],
     assignToList: [],
+    data: [],
   },
+
   extraReducers: (builder) => {
     builder
       // Change Status Leads
@@ -78,11 +81,25 @@ const LeadsSlice = createSlice({
         state.loading = true;
       })
       .addCase(getAllAssignto.fulfilled, (state, action) => {
-        console.log(action.payload,"************************************* action payload")
+        console.log(action.payload, "************************************* action payload");
         state.loading = false;
         state.assignToList = action.payload;
       })
       .addCase(getAllAssignto.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Search Leads (New API)
+      .addCase(searchLeads.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(searchLeads.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload; 
+      })
+      .addCase(searchLeads.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
