@@ -20,6 +20,7 @@ import { clearToken } from "../../../Redux_store/slices/Logout_Admin";
 import { fetchSessions } from "../../../Redux_store/Api/SessionApi";
 
 import { Maximize, Minimize } from "lucide-react";
+import { setSession } from "../../../Redux_store/slices/SessionSlice";
 const Header = () => {
 
     const [logout, setLogout] = useState(false);
@@ -47,7 +48,7 @@ const Header = () => {
 
 
     const token = useSelector((state) => state.logout.token);
-    
+
 
     const handleLogout = async () => {
         const response = await dispatch(logoutAdmin(token)).unwrap();
@@ -60,17 +61,25 @@ const Header = () => {
         }
 
     };
+    const handleSessionSelect = (sessionYear, id) => {
+        setSelectedOption(sessionYear);
+
+
+        dispatch(setSession(id));
+    };
 
     useEffect(() => {
         if (sessions && sessions.length > 0) {
             const defaultSession = sessions.find(s => s.is_default === true);
             if (defaultSession && !selectedOption) {
                 setSelectedOption(defaultSession.session_year);
-                
+
+
+                dispatch(setSession(defaultSession.id));
             }
         }
     }, [sessions, selectedOption]);
-    
+
     // for minimize screen 
     const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -124,7 +133,7 @@ const Header = () => {
                                     ) : (
                                         sessions?.map((year) => (
                                             <DropdownMenuItem key={year.session_year}
-                                                onClick={() => setSelectedOption(year.session_year)} className="cursor-pointer hover:bg-blue-600 hover:text-white px-4 py-2 text-center"
+                                                onClick={() => handleSessionSelect(year.session_year, year.id)} className="cursor-pointer hover:bg-blue-600 hover:text-white px-4 py-2 text-center"
                                             >
                                                 {year.session_year}
                                             </DropdownMenuItem>

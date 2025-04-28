@@ -29,6 +29,8 @@ import {
 import ThemeContext from "../../Dashboard/ThemeContext";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../../src/components/ui/card";
 import { Badge } from "../../../src/components/ui/badge";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchStudentAttendance } from "../../../../Redux_store/Api/Stu_atten";
 // import ThemeContext from "../Dashboard/ThemeContext";
 
 const initialSalaryData = [
@@ -74,7 +76,7 @@ const Stu_Attendance = () => {
     const [selectedTab, setSelectedTab] = useState("Present");
     const [fromDate, setFromDate] = useState("");
     const [toDate, setToDate] = useState("");
-    const [tab, setTab] = useState("tab2");
+    const [tab, setTab] = useState("tab1");
     const [open, setOpen] = useState(false);
     const [salaryData, setSalaryData] = useState([]);
     const [opensec, setopensec] = useState(false);
@@ -89,37 +91,9 @@ const Stu_Attendance = () => {
         window.history.back();
     };
 
+
     useEffect(() => {
-        setAttendanceData([
-            {
-                id: 1,
-                punchIn: "09:00 AM",
-                punchOut: "06:00 PM",
-                date: "2025-03-20",
-                status: "Present",
-            },
-            {
-                id: 2,
-                punchIn: "10:00 AM",
-                punchOut: "03:00 PM",
-                date: "2025-03-21",
-                status: "Half Day",
-            },
-            {
-                id: 3,
-                punchIn: "08:30 AM",
-                punchOut: "05:30 PM",
-                date: "2025-03-22",
-                status: "Present",
-            },
-            {
-                id: 4,
-                punchIn: "-",
-                punchOut: "-",
-                date: "2025-03-23",
-                status: "Absent",
-            },
-        ]);
+
         setSalaryhistory([
             {
                 id: 1,
@@ -147,17 +121,64 @@ const Stu_Attendance = () => {
     }, []);
 
 
-    const form = useForm({
-        resolver: zodResolver(formSchema),
-        defaultValues: { amount: "", present: "", absent: "", halfday: "" },
-    });
 
+    const dispatch = useDispatch();
+    const { studentAttendance, loading, error } = useSelector((state) => state.attendance_stu || {});
+    // console.log(studentAttendance?.data,"*********************************");
+    
+
+    const [month, setMonth] = useState('');
+    const [year, setYear] = useState('');
     const handleViewAttendance = () => {
-        const filteredData = attendanceData.filter(
-            (item) => item.date >= fromDate && item.date <= toDate
-        );
-        setAttendanceData(filteredData);
+        if (!month || !year) {
+            alert("Please enter Month and Year!");
+            return;
+        }
+        dispatch(fetchStudentAttendance({ month, year }));
     };
+
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+
+    useEffect(() => {
+        if (studentAttendance && studentAttendance.data) {
+            // API se milne wala data object hai, isliye usse array me convert karna
+            const attendanceArray = Array.isArray(studentAttendance.data)
+                ? studentAttendance.data
+                : [studentAttendance.data]; // Agar ek hi object hai, to use array me wrap karna
+
+            // Data ko transform karte hue
+            const transformedData = attendanceArray.map(item => {
+                // Agar item undefined hai to usse skip karen
+                if (!item) return null;
+
+                return {
+                    id: item.enrollment_id || 'N/A', // Default value agar enrollment_id nahi ho
+                    punchIn: item.in_time || '--:--',
+                    punchOut: item.out_time || '--:--',
+                    date: item.attendance_date || 'N/A',
+                    status: item.status === 'half day' ? 'Half Day' : capitalizeFirstLetter(item.status),
+                };
+            }).filter(item => item !== null); // null values ko filter karna
+
+            setAttendanceData(transformedData); // Attendance data ko update karen
+        } else {
+            console.log('API response me data missing hai:', studentAttendance);
+        }
+    }, [studentAttendance]);
+
+
+
+
+
+    useEffect(() => {
+        console.log(attendanceData  || {});  // Check what data is being set
+    }, [attendanceData]);
+
+
+
     const sechandleViewAttendance = () => {
         // Replace this with your API call or logic to fetch attendance based on date
         const data = {
@@ -194,7 +215,7 @@ const Stu_Attendance = () => {
 
 
 
-                <Button
+                {/* <Button
                     className={`w-full bg-blue-600 hover:bg-blue-700 text-white ${tab === "tab2" ? "font-bold" : ""
                         }`}
                     onClick={() => {
@@ -202,7 +223,7 @@ const Stu_Attendance = () => {
                     }}
                 >
                     Attendance
-                </Button>
+                </Button> */}
                 <Button
                     className={`w-full bg-blue-600 hover:bg-blue-700 text-white  mt-5 ${tab === "tab1" ? "font-bold" : ""
                         }`}
@@ -218,47 +239,60 @@ const Stu_Attendance = () => {
                         <>
                             <div className="w-full border-t p-6 border border-blue-200 shadow-md mt-8">
                                 <h3 className="text-lg font-semibold mb-4">Select Date Range</h3>
-                                <Label className="mb-2 block ">From</Label>
+                                <Label className="mb-2 block ">Date</Label>
                                 <Input
-                                    type="date"
+                                    type="month"
                                     className="w-full"
-                                    onChange={(e) => setFromDate(e.target.value)}
+                                    onChange={(e) => {
+                                        const [year, month] = e.target.value.split("-");
+                                        setMonth(month);
+                                        setYear(year);
+                                        setFromDate(`${year}-${month}-01`);
+                                        setToDate(`${year}-${month}-31`);
+                                    }}
                                 />
-                                <Label className="mt-4 mb-2 block ">To</Label>
+
+
+                                {/* <Label className="mt-4 mb-2 block ">Year</Label>
                                 <Input
-                                    type="date"
+                                    type="year"
                                     className="w-full"
-                                    onChange={(e) => setToDate(e.target.value)}
-                                />
+                                    // onChange={(e) => setToDate(e.target.value)}
+                                /> */}
                                 <Button
                                     className="w-full bg-blue-600 hover:bg-blue-700 text-white mt-4"
-                                    onClick={handleViewAttendance}
+                                    onClick={() => handleViewAttendance()
+
+
+                                    }
                                 >
                                     View Attendance
                                 </Button>
                             </div>
+                            {loading && <p>Loading...</p>}
+                            {error && <p className="text-red-500">{error}</p>}
                         </>
-                    ) : (
-                        <>
-                            <div className="w-full border-t p-6 border border-blue-200 shadow-md mt-8">
-                                <h3 className="text-lg font-semibold mb-4">Select Date</h3>
-                                <Input
-                                    type="date"
-                                    className="w-full"
-                                    value={secdate}
-                                    onChange={(e) => setsecdate(e.target.value)}
-                                />
-                                <Button
-                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white mt-4"
-                                    onClick={sechandleViewAttendance}
-                                >
-                                    View Attendance
-                                </Button>
-                            </div>
+                    ) : ""
+                        // <>
+                        //     <div className="w-full border-t p-6 border border-blue-200 shadow-md mt-8">
+                        //         <h3 className="text-lg font-semibold mb-4">Select Date</h3>
+                        //         <Input
+                        //             type="date"
+                        //             className="w-full"
+                        //             value={secdate}
+                        //             onChange={(e) => setsecdate(e.target.value)}
+                        //         />
+                        //         <Button
+                        //             className="w-full bg-blue-600 hover:bg-blue-700 text-white mt-4"
+                        //             onClick={sechandleViewAttendance}
+                        //         >
+                        //             View Attendance
+                        //         </Button>
+                        //     </div>
 
 
-                        </>
-                    )}
+                        // </>
+                    }
                 </div>
 
 
@@ -325,31 +359,33 @@ const Stu_Attendance = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {attendanceData
-                                    .filter((item) => item.status === selectedTab)
-                                    .map((item) => (
+                                {attendanceData.length > 0 ? (
+                                    attendanceData.map((item) => (
                                         <tr key={item.id} className="text-center border-b">
                                             <td className="p-3">{item.id}</td>
                                             <td className="p-3">{item.punchIn}</td>
                                             <td className="p-3">{item.punchOut}</td>
                                             <td className="p-3">{item.date}</td>
-                                            <td
-                                                className={`p-3 ${item.status === "Present"
-                                                    ? "text-green-600 font-semibold"
-                                                    : item.status === "Half Day"
-                                                        ? "text-orange-400 font-semibold"
-                                                        : "text-red-600 font-semibold"
-                                                    }`}
-                                            >
-                                                {item.status}
-                                            </td>
+                                            <td className="p-3">{item.status}</td>
                                         </tr>
-                                    ))}
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="5" className="text-center">No data available</td>
+                                    </tr>
+                                )}
                             </tbody>
+
+
                         </table>
+
+
+
                     </>
                 )}
-                {tab === "tab2" && secattendance && (
+
+
+                {/* {tab === "tab2" && secattendance && (
                     <>
                         <h2 className="text-2xl font-bold mb-4">Attendance</h2>
                         <div className="p-6 flex justify-center">
@@ -396,7 +432,7 @@ const Stu_Attendance = () => {
                             </Card>
                         </div>
                     </>
-                )}
+                )} */}
 
             </main>
         </div>
