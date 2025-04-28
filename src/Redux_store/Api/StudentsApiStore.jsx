@@ -34,7 +34,9 @@ export const getStudents = createAsyncThunk(
 
       // Parse response as JSON
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
+      // console.log(data);
+
       return data; // Return the parsed data
     } catch (error) {
       // Reject with error message
@@ -120,25 +122,29 @@ export const addStudent = createAsyncThunk(
 );
 
 export const updateStudentsRt = createAsyncThunk(
-  "students/updateStudentsRt",
-  async (updateData, { rejectWithValue }) => {
+  "students/updateStudentRtIsha",
+  async (id, { rejectWithValue }) => {
     try {
+      console.log("Call me for Isha RT");
+
       const response = await fetch(
-        `${BASE_URL}/api/v1/student/updateStudentrt`,
+        `${BASE_URL}/api/v1/student/updateStudentrt/${id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(updateData),
           redirect: "follow",
         }
       );
 
       const data = await response.json();
+      console.log(data, "********* updateStudentRtIsha data");
+
       if (!response.ok) {
-        throw new Error(data.message || "Failed to update students");
+        throw new Error(data.message || "Failed to update student RT for Isha");
       }
+
       return data;
     } catch (error) {
       return rejectWithValue(error.message || "Something went wrong");
@@ -148,8 +154,10 @@ export const updateStudentsRt = createAsyncThunk(
 
 export const updateStudentStatus = createAsyncThunk(
   "students/updateStudentStatus",
-  async ({ id, status }, { rejectWithValue }) => {
-    try {
+  async (id, { rejectWithValue }) => {
+      try {
+        console.log("CAll Me");
+      
       const response = await fetch(
         `${BASE_URL}/api/v1/student/updateStudentStatus/${id}`,
         {
@@ -157,12 +165,12 @@ export const updateStudentStatus = createAsyncThunk(
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ status }),
           redirect: "follow",
         }
       );
 
       const data = await response.json();
+      console.log(data,"***************** data");
       if (!response.ok) {
         throw new Error(data.message || "Failed to update student status");
       }
@@ -172,6 +180,7 @@ export const updateStudentStatus = createAsyncThunk(
     }
   }
 );
+
 
 export const getStudentRecipients = createAsyncThunk(
   "students/getStudentRecipients",

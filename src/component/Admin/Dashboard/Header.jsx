@@ -116,8 +116,6 @@ const Header = () => {
                                     > <span>
                                             {loading ? "Loading..." : error ? "Failed to load" : selectedOption || "Select Year"}
                                         </span>
-
-
                                         <ChevronDown size={18} />
                                     </Button>
                                 </DropdownMenuTrigger>
