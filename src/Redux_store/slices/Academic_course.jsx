@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { get_course, add_course, update_course } from "../Api/Academic_course"
+import { get_course, add_course, update_course, searchCoursesByName } from "../Api/Academic_course"
 
 
 const acad_course_slice = createSlice({
@@ -37,7 +37,7 @@ const acad_course_slice = createSlice({
                 state.loading = false,
                     state.error = action.payload
             })
-            
+
             // update
             .addCase(update_course.pending, (state) => {
                 state.loading = true
@@ -50,6 +50,20 @@ const acad_course_slice = createSlice({
                 state.loading = false,
                     state.error = action.payload
             })
+
+            // search
+            .addCase(searchCoursesByName.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(searchCoursesByName.fulfilled, (state, action) => {
+                state.loading = false;
+                state.course = action.payload; // Store the courses data in the state
+            })
+            .addCase(searchCoursesByName.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload; // Store the error message in the state
+            });
     }
 
 })

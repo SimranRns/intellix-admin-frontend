@@ -60,3 +60,9 @@ export const deletePopularCourse = createAsyncThunk(
     }
 );
 export default { get_course, add_course, deletePopularCourse }
+
+
+
+
+
+// export default { get_course, add_course  }

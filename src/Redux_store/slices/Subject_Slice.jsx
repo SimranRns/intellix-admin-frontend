@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Add_subject, get_subject, update_Subject } from "../Api/Subject";
+import { Add_subject, get_subject, search_Subject, update_Subject } from "../Api/Subject";
 
 const subject_slice = createSlice({
     name: 'subj',
@@ -55,6 +55,21 @@ const subject_slice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+
+            // search
+            .addCase(search_Subject.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+              })
+              .addCase(search_Subject.fulfilled, (state, action) => {
+                state.loading = false;
+                state.subjects = action.payload; 
+              })
+              .addCase(search_Subject.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+              })
+              
 
 
     }

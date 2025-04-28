@@ -102,7 +102,7 @@ const ProceedModal = () => {
               name="address"
               value={formData.address}
               onChange={handleChange}
-              className={`w-full border rounded-xl p-3 bg-transparent ${
+              className={`w-full h-12 border rounded-xl p-3 bg-transparent ${
                 errors.address ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="Enter your address"
@@ -123,7 +123,7 @@ const ProceedModal = () => {
               value={formData.aadhaarNumber}
               onChange={handleChange}
               maxLength={12} // Restrict to 12 digits
-              className={`w-full border rounded-xl p-3 bg-transparent ${
+              className={`w-full  h-12 border rounded-xl p-3 bg-transparent ${
                 errors.aadhaarNumber ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="Aadhaar number (12 digits)"
