@@ -12,9 +12,13 @@ import { Label } from "../../src/components/ui/label";
 import { useDispatch, useSelector } from "react-redux";
 import { get_school, updateSchoolInfo } from "../../../Redux_store/Api/School_image";
 import { Textarea } from "../../src/components/ui/textarea";
+const base_img_url = "https://adminv2-api-dev.intellix360.in/"
 
 const AddSchoolImg = () => {
   const [formData, setFormData] = useState([]);
+  const [tempImages, setTempImages] = useState([]);
+  console.log(tempImages)
+  // console.log(tempImages[0].url)
   const dispatch = useDispatch();
 
   // Fetch data from Redux store
@@ -47,13 +51,34 @@ const AddSchoolImg = () => {
 
   const handleImageChange = (index, event) => {
     const files = Array.from(event.target.files);
-    const imageUrls = files.map((file) => URL.createObjectURL(file));
+    const imageUrls = files.map((file) => ({
+      id: Math.random().toString(36).substr(2, 9), // Temporary ID
+      url: URL.createObjectURL(file),
+      file,
+    }));
 
     const updated = [...formData];
     updated[index].images = [...updated[index].images, ...imageUrls];
     updated[index].errors.images = ""; // Clear image error
     setFormData(updated);
   };
+
+  // const handleImageChange = (index,event) => {
+
+  //   const files = Array.from(event.target.files);
+  //   if (files.length === 0) return;
+
+  //   const newTempImages = files.map((file) => ({
+  //     id: Math.random().toString(36).substr(2, 9), // Temporary ID
+  //     url: URL.createObjectURL(file),
+  //     file,
+  //   }));
+  //   setTempImages(newTempImages);
+  //   setErrors({});
+  // };
+
+
+
 
   const validateForm = (index) => {
     const form = formData[index];
@@ -72,21 +97,40 @@ const AddSchoolImg = () => {
 
   const handleSubmit = async (index) => {
     if (!validateForm(index)) return;
-
+  
     const form = formData[index];
     const fileInput = document.getElementById(`upload-logo-${index}`);
-
+  
     const formPayload = new FormData();
     formPayload.append("id", form.id);
     formPayload.append("school_name", form.title);
     formPayload.append("school_description", form.description);
-
+  
     if (fileInput && fileInput.files.length > 0) {
       formPayload.append("image_path", fileInput.files[0]);
     }
-
-    dispatch(updateSchoolInfo(formPayload));
+  
+    // Dispatch the update API call
+    await dispatch(updateSchoolInfo(formPayload));
+  
+    // After successful update, update the formData with the new image
+    if (fileInput && fileInput.files.length > 0) {
+      const updatedFormData = [...formData];
+      updatedFormData[index].images = [
+        {
+          id: Math.random().toString(36).substr(2, 9),
+          url: URL.createObjectURL(fileInput.files[0]),  // Updated image URL
+          file: fileInput.files[0],
+        },
+      ];
+      setFormData(updatedFormData);
+    }
+  
+    // Optionally, you can fetch the updated school data (if backend stores it permanently)
+    dispatch(get_school());
   };
+  
+
 
 
   return (
@@ -128,12 +172,31 @@ const AddSchoolImg = () => {
                   {form.images.map((img, idx) => (
                     <div key={idx} className="relative w-20 h-20">
                       <img
-                        src={img}
+                        src={img.url} // ✅ yahan correct image url hona chahiye
                         alt={`Uploaded ${idx}`}
                         className="w-full h-full object-cover rounded-md border"
                       />
                     </div>
                   ))}
+                </div>
+
+
+                <div className="flex flex-wrap gap-4 mt-2">
+                  {tempImages.map((img, idx) => {
+                    console.log(img)
+                    return (
+                      <div key={idx} className="relative w-20 h-20">
+                        <img
+                          src={`${img.url}`}
+                          alt={`Uploaded ${idx}`}
+                          className="w-full h-full object-cover rounded-md border"
+                        />
+                      </div>
+                    )
+                  }
+                  )
+                  }
+
                 </div>
 
                 {form.errors.images && <p className="text-red-500 text-sm mt-1">{form.errors.images}</p>}

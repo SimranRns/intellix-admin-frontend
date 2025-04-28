@@ -26,7 +26,7 @@ import { Trash2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { get_banner_api, delete_banner, add_banner } from "../../../Redux_store/Api/Baner";
 import logo from "../../../assets/Image/intellix.png"
-
+const base_img_url = "https://adminv2-api-dev.intellix360.in/"
 const Advertisment = () => {
   const [images, setImages] = useState([]);
   const [tempImages, setTempImages] = useState([]);
@@ -54,48 +54,56 @@ const Advertisment = () => {
     setErrors({});
   };
 
- 
   const handleSubmit = async () => {
     if (tempImages.length === 0) {
       setErrors({ images: "At least one image is required." });
       return;
     }
 
-    setErrors({});
-    for (const image of tempImages) {
-      const resultAction = await dispatch(add_banner(image.file));
+    try {
+      setErrors({});
 
-      if (add_banner.rejected.match(resultAction)) {
-        console.error("Upload failed:", resultAction.payload);
-       
+      // Upload sab images parallel
+      const uploadPromises = tempImages.map((image) =>
+        dispatch(add_banner(image.file))
+      );
+
+      const results = await Promise.all(uploadPromises);
+
+      // Check karo koi upload fail hua ya nahi
+      const anyFailed = results.some((result) => add_banner.rejected.match(result));
+
+      if (anyFailed) {
+        console.error("One or more uploads failed");
+        setErrors({ images: "Upload failed. Please try again." });
+        return; // Agar fail hua to band mat karo, bas error dikhao
       }
+
+      // Agar sab upload success hain, to:
+      setDialogOpen(false); // 1. Modal band karo
+      setTempImages([]);    // 2. Temp images clear karo
+      await dispatch(get_banner_api()); // 3. Data reload karo
+
+    } catch (error) {
+      console.error("Something went wrong during uploading:", error);
+      setErrors({ images: "Unexpected error occurred. Try again!" });
     }
-    setTempImages([]);
-    setDialogOpen(false);
-    await dispatch(get_banner_api());
   };
+
 
 
 
   const handleDeleteConfirm = async (bannerId) => {
     try {
-      
       const resultAction = await dispatch(delete_banner(bannerId));
-
-      
-      if (delete_banner.fulfilled.match(resultAction)) {
-        await dispatch(get_banner_api()); 
-      } else {
+      if (delete_banner.rejected.match(resultAction)) {
         console.error("Delete failed:", resultAction.payload);
       }
-
-     
-      setDeleteDialog({ open: false, bannerId: null });
-
     } catch (error) {
       console.error("Something went wrong during deletion:", error);
     }
   };
+
 
 
   // api 
@@ -205,15 +213,16 @@ const Advertisment = () => {
                           ))}
                         </div>
                       )}
-                      <div className="flex justify-end gap-3 mt-4">
-                        <Button onClick={() => { setDialogOpen(false); handleSubmit() }}>
+                      <DialogFooter className="flex justify-end gap-3 mt-4">
+                        <Button variant="outline" onClick={() => setDialogOpen(false)}>
                           Cancel
                         </Button>
                         <Button onClick={handleSubmit}>
-                          confirm
+                          Confirm
                         </Button>
+                      </DialogFooter>
 
-                      </div>
+
                     </DialogContent>
                   </Dialog>
                 </div>
@@ -221,33 +230,31 @@ const Advertisment = () => {
                 {/* Display Uploaded Images */}
                 {banners?.banners?.length > 0 && (
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
-                    {banners.banners.map((img, index) => (
+                    {banners?.banners?.map((img, index) => (
                       <Card
                         key={img.id}
-                        className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden "
+                        className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden"
                       >
                         <CardHeader>
                           <img
-                            src={img.image_path}
+                            src={img.image_path ? `${base_img_url}${img.image_path}` : "https://via.placeholder.com/300x150?text=Banner+Image"}
+                            alt="Banner Image"
                             className="w-full h-40 object-cover rounded-lg"
                           />
                         </CardHeader>
                         <CardContent className="flex justify-end">
-                          {/* Button to Open Delete Dialog */}
                           <Button
                             className="mt-4 w-full bg-red-500 text-white py-2 rounded-xl hover:bg-red-600 transition-all"
                             onClick={() => setDeleteDialog({ open: true, bannerId: img.id })}
                           >
                             <Trash2 size={20} className="mr-2" /> Delete
                           </Button>
-
-
                         </CardContent>
                       </Card>
                     ))}
-
                   </div>
                 )}
+
 
                 {/* Delete Confirmation Dialog */}
                 <Dialog
@@ -278,10 +285,15 @@ const Advertisment = () => {
                       </Button>
                       <Button
                         className="bg-red-600 text-white hover:bg-red-700"
-                        onClick={async () => { handleDeleteConfirm(deleteDialog.bannerId), await dispatch(get_banner_api()) }}
+                        onClick={async () => {
+                          await handleDeleteConfirm(deleteDialog.bannerId); // wait deletion
+                          await dispatch(get_banner_api()); // then refresh
+                          setDeleteDialog({ open: false, index: null }); // close modal after success
+                        }}
                       >
                         Confirm
                       </Button>
+
 
 
                     </DialogFooter>

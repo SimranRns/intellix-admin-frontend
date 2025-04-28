@@ -230,7 +230,7 @@ const Notification = () => {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {notii?.data?.map((notif, index) => (
             <Card
-              key={index}
+              key={notif.batchId}
               className="shadow-md shadow-blue-500/50 rounded-2xl overflow-hidden "
             >
               <div className="p-4 sm:p-6">
@@ -238,14 +238,14 @@ const Notification = () => {
                   <h3 className="text-lg font-bold text-blue-500">
                     {notif.head}
                   </h3>
-                  <span
+                  {/* <span
                     className={`mt-2 sm:mt-0 px-2 py-1 rounded-full text-xs font-semibold uppercase ${notif.type === "urgent"
                       ? "bg-red-500/10 text-red-600 border border-red-500/20"
                       : "bg-blue-500/10 text-blue-600 border border-blue-500/20"
                       }`}
                   >
                     {notif.type ? '' : 'Public'}
-                  </span>
+                  </span> */}
                 </div>
                 <ScrollArea className="h-[150px] w-full rounded-lg border border-gray-200 p-4 shadow-sm">
                   <p className="text-sm sm:text-base leading-relaxed  p-4 rounded-xl ">

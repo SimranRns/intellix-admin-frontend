@@ -20,7 +20,7 @@ export const get_course = createAsyncThunk('getcourse', async (_, { rejectWithVa
 
 // add course 
 export const add_course = createAsyncThunk('form', async (formdata, { rejectWithValue }) => {
-    console.log(formdata,"*****************************************")
+    console.log(formdata, "*****************************************")
     try {
         const responce = await fetch(`${BASE_URL}/api/v1/popularCourses/add-course`, {
             method: 'POST',
@@ -36,4 +36,27 @@ export const add_course = createAsyncThunk('form', async (formdata, { rejectWith
         return rejectWithValue(error)
     }
 })
-export default { get_course, add_course }
+// DELETE Popular Course by ID
+export const deletePopularCourse = createAsyncThunk(
+    "popularCourses/deletePopularCourse",
+    async (id, { rejectWithValue }) => {
+        try {
+            const response = await fetch(
+                `https://adminv2-api-dev.intellix360.in/api/v1/popularCourses/remove-course/${id}`,
+                {
+                    method: "DELETE",
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to delete course");
+            }
+
+            const data = await response.json();
+            return data; // success response
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+export default { get_course, add_course, deletePopularCourse }

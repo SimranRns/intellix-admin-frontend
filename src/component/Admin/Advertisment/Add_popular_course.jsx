@@ -30,7 +30,8 @@ import {
 import { ScrollArea } from "../../src/components/ui/scroll-area";
 import { Trash2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { add_course, get_course } from "../../../Redux_store/Api/Add_popular_course";
+import { add_course, deletePopularCourse, get_course } from "../../../Redux_store/Api/Add_popular_course";
+const base_img_url = "https://adminv2-api-dev.intellix360.in/"
 
 const FormSchema = z.object({
   title: z.string().min(1, { message: "Title is required!" }),
@@ -46,14 +47,14 @@ const AddPopularCourse = () => {
   const [open, setOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [cardToDelete, setCardToDelete] = useState(null);
-  const [addCourse, setAddCourse] = useState({courseImage:"",courseName:"",courseDescription:""})
+  const [addCourse, setAddCourse] = useState({ courseImage: "", courseName: "", courseDescription: "" })
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(get_course())
   }, [])
 
   const { course, loading, error } = useSelector((state) => state.courses)
-  
+
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -72,7 +73,7 @@ const AddPopularCourse = () => {
     if (file) {
       setImagePreview(URL.createObjectURL(file));
       form.setValue("image", file);
-      setAddCourse({...addCourse,courseImage:file.name})
+      setAddCourse({ ...addCourse, courseImage: file.name })
     }
   };
 
@@ -96,18 +97,60 @@ const AddPopularCourse = () => {
     setOpen(false);
   };
 
-  const handleDeleteClick = (index) => {
-    setCardToDelete(index);
+  const handleDeleteClick = (id) => {
+    setCardToDelete(id);
     setDeleteDialogOpen(true);
   };
 
   const confirmDelete = () => {
     if (cardToDelete !== null) {
-      setCards((prevCards) => prevCards.filter((_, i) => i !== cardToDelete));
+      dispatch(deletePopularCourse(cardToDelete))
+        .then(() => {
+          dispatch(get_course()); // refresh course list
+        })
+        .catch((err) => {
+          console.error("Delete failed:", err);
+        });
       setDeleteDialogOpen(false);
       setCardToDelete(null);
     }
   };
+  const handleAddCourse = () => {
+    // Check if any required field is missing
+    if (!addCourse.courseImage || !addCourse.courseName || !addCourse.courseDescription) {
+      console.error("Missing course details");
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append("courseName", addCourse.courseName);
+    formData.append("courseDescription", addCourse.courseDescription);
+    formData.append("courseImage", addCourse.courseImage); // Assuming image file
+  
+    // Log form data for verification
+    console.log([...formData.entries()]);
+  
+    // Dispatch to add course and reload course list after success
+    dispatch(add_course(formData))
+      .unwrap()
+      .then(() => {
+        // Reload the course list after adding the course
+        dispatch(get_course());
+  
+        // Close the dialog, reset the form, and clear the state
+        setOpen(false); // Close the modal
+        form.reset(); // Reset the form
+        setImagePreview(null); // Clear image preview
+        setAddCourse({ courseImage: "", courseName: "", courseDescription: "" }); // Reset state
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+  
+
+
+  
 
   return (
     <div className="flex flex-col items-center space-y-6 p-4 sm:p-6 md:p-8">
@@ -141,11 +184,11 @@ const AddPopularCourse = () => {
                     <FormItem>
                       <FormLabel>Title</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter course title" {...field} 
-                        onChange={(e) => {
-                          field.onChange(e); // To keep react-hook-form in sync
-                          setAddCourse({ ...addCourse, courseName: e.target.value }); // To update your custom state
-                        }}
+                        <Input placeholder="Enter course title" {...field}
+                          onChange={(e) => {
+                            field.onChange(e); // To keep react-hook-form in sync
+                            setAddCourse({ ...addCourse, courseName: e.target.value }); // To update your custom state
+                          }}
                         />
                       </FormControl>
                       <FormMessage />
@@ -203,22 +246,12 @@ const AddPopularCourse = () => {
                 </FormItem>
 
                 <Button
-  type="button" // <-- changed submit to button
-  className="w-full py-2 text-lg rounded-lg"
-  onClick={() => {
-    // onSubmit()
-    const formdata = new FormData();
-    formdata.append("courseName", addCourse.courseName); // key: title
-    formdata.append("courseDescription", addCourse.courseDescription); // key: description
-    formdata.append("courseImage", addCourse.courseImage); // key: image (File type)
-  
-    console.log([...formdata.entries()]); // Debugging: क्या जा रहा है server पे
-    
-    dispatch(add_course(formdata)); ; // Pass your form data
-  }}
->
-  Submit
-</Button>
+                  type="button"
+                  className="w-full py-2 text-lg rounded-lg"
+                  onClick={handleAddCourse}
+                >
+                  Submit
+                </Button>
 
               </form>
             </Form>
@@ -235,14 +268,14 @@ const AddPopularCourse = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {course.image && (
-                <img
-                  src={card.image}
-                  alt="Course"
-                  className="w-full h-40 object-cover rounded-md"
-                />
-              )}
+              {/* Conditional image rendering */}
+              <img
+                src={card.image ? `${base_img_url}${card.image}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRk4HqcB0ZLneKgw-qDhi5xvo84dqRAmdVDGQ&s"}
+                alt="Course"
+                className="w-full h-40 object-cover rounded-md"
+              />
             </CardContent>
+
             <ScrollArea className="h-[150px] w-full rounded-lg   p-4 shadow-sm">
               <p className="text-sm sm:text-base leading-relaxed border p-4 rounded-xl">
                 {card.description}
@@ -250,11 +283,12 @@ const AddPopularCourse = () => {
             </ScrollArea>
             <CardFooter className="mt-5 flex justify-center">
               <Button
-                onClick={() => handleDeleteClick(index)}
+                onClick={() => handleDeleteClick(card.id)}
                 className="mt-4 w-full bg-red-500 text-white py-2 rounded-xl hover:bg-red-600 transition-all"
               >
                 <Trash2 size={20} className="mr-2" /> Delete
               </Button>
+
             </CardFooter>
           </Card>
         ))}
@@ -281,8 +315,8 @@ const AddPopularCourse = () => {
               Cancel
             </Button>
             <Button
-              // onClick={confirmDelete}
-              onClick={() => setDeleteDialogOpen(false)}
+              onClick={confirmDelete}
+              // onClick={() => setDeleteDialogOpen(false)}
               className="bg-red-500 hover:bg-red-600"
             >
               Delete
