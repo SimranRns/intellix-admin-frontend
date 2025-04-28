@@ -40,23 +40,28 @@ import {
 import Header from "../Dashboard/Header";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import Add_Payment from "./Add_Payment";
-import { getStudents, getSingleStudent } from "../../../Redux_store/Api/StudentsApiStore";
+import { getStudents, getSingleStudent, updateStudentStatus, updateStudentsRt } from "../../../Redux_store/Api/StudentsApiStore";
 
 const PAGE_SIZE = 5;
 
 const StudentHeader = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [deletedialog, setDeletedialog] = useState(false);
+  const [deletedialog, setDeletedialog] = useState();
   const [addPayment, setAddPayment] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { students, loading, error, totalCount, singleStudent, singleLoading, singleError } = useSelector(
     (state) => state.students
   );
+  const studentupdate = useSelector((state)=>state.students.updateStudentStatus)
+  const updateStudentsR = useSelector((state)=>state.students.updateStudentsRt)
+  console.log("Karan : :",updateStudentsR);
+  console.log("Karan deletedialog : :", deletedialog);
+
   const studentsMap = students.data;
-  console.log("studentsMap", studentsMap);
-  console.log("singleStudent", singleStudent); // Debug single student data
+  // console.log("studentsMap", studentsMap);
+  // console.log("singleStudent", singleStudent); // Debug single student data
 
   // Calculate total pages
   const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
@@ -71,6 +76,10 @@ const StudentHeader = () => {
       })
     );
   }, [dispatch, currentPage, searchQuery]);
+  // useEffect(()=>{
+  //   dispatch(updateStudentStatus())
+
+  // },[])
 
   // Handle search input change
   const handleSearchChange = (e) => {
@@ -90,7 +99,7 @@ const StudentHeader = () => {
         console.error("Failed to fetch single student:", err);
       });
   };
-  
+
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       <AppSidebar />
@@ -233,15 +242,25 @@ const StudentHeader = () => {
                                 <DropdownMenuItem>
                                   View Marksheet
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>Mark as RT</DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={()=> {  dispatch(updateStudentsRt(student.id))
+                                    dispatch(getStudents())
+                                  }}
+                                >Mark as RT</DropdownMenuItem>
                                 <DropdownMenuItem
                                   onSelect={(e) => e.preventDefault()}
                                 >
                                   <Dialog
-                                    open={deletedialog}
-                                    onOpenChange={setDeletedialog}
                                   >
-                                    <DialogTrigger>Delete</DialogTrigger>
+                                    <DialogTrigger
+  open={deletedialog}
+  onOpenChange={setDeletedialog}
+  onClick={() => setDeletedialog(student.id)}
+>
+  Delete
+</DialogTrigger>
+
+
                                     <DialogContent
                                       onPointerDownOutside={(e) =>
                                         e.preventDefault()
@@ -252,7 +271,7 @@ const StudentHeader = () => {
                                       className="sm:max-w-[425px]"
                                     >
                                       <DialogHeader>
-                                        <DialogTitle className="text-center mb-3">
+                                        <DialogTitle className="text-center mb-3"  >
                                           Delete Student
                                         </DialogTitle>
                                         <DialogDescription className="text-center">
@@ -267,7 +286,9 @@ const StudentHeader = () => {
                                         >
                                           Cancel
                                         </Button>
-                                        <Button className="bg-green-600 hover:bg-green-700 text-white">
+                                        <Button className="bg-green-600 hover:bg-green-700 text-white"
+                                        onClick={()=>{dispatch(updateStudentStatus(student.id))}}
+                                        >
                                           Confirm
                                         </Button>
                                       </DialogFooter>
@@ -301,11 +322,10 @@ const StudentHeader = () => {
                     key={page}
                     variant={currentPage === page ? "default" : "ghost"}
                     onClick={() => setCurrentPage(page)}
-                    className={`px-4 py-2 ${
-                      currentPage === page
+                    className={`px-4 py-2 ${currentPage === page
                         ? "bg-[#3d3690] text-white"
                         : "bg-gray-100 text-gray-700"
-                    } rounded-lg hover:bg-transparent hover:text-inherit`}
+                      } rounded-lg hover:bg-transparent hover:text-inherit`}
                   >
                     {page}
                   </Button>

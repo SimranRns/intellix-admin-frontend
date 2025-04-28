@@ -417,8 +417,7 @@ const Dashboard = ({ children }) => {
                       onClick={() => navigate("/support")}
                     />
                   </Card>
-                  <div className="space-y-3 pt-4  ">
-                    {/* Total Debit Amount */}
+                  {/* <div className="space-y-3 pt-4  "> 
                     <Card className="flex items-center justify-between border p-4 mt-4">
                       <p className="text-sm text-gray-500">
                         Total Debit Amount
@@ -426,9 +425,7 @@ const Dashboard = ({ children }) => {
                       <p className="text-lg font-semibold text-emerald-500">
                         ₹ 303498
                       </p>
-                    </Card>
-
-                    {/* Total Credit Amount */}
+                    </Card> 
                     <Card className="flex items-center justify-between border p-4 ">
                       <p className="text-sm text-gray-500">
                         Total Credit Amount
@@ -437,7 +434,7 @@ const Dashboard = ({ children }) => {
                         ₹ 0
                       </p>
                     </Card>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

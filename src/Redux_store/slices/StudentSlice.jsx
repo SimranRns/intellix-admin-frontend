@@ -10,7 +10,8 @@ import {
 } from "../Api/StudentsApiStore";
 
 const initialState = {
-  students: [], // List of students from getStudents
+  students: [],
+  updateStudentStatus:{}, // List of students from getStudents
   recipients: [], // Data from studentRecipients
   singleStudent: null, // Single student data
   loading: false, // Loading state for API calls
