@@ -30,24 +30,29 @@ export const changestatusLeads = createAsyncThunk(
 //  getallLeads 
 export const getallLeads = createAsyncThunk(
   "getLeads",
-  async (_, { rejectWithValue }) => {
+  async (payload, { rejectWithValue }) => {
+    console.log(payload,"*********************** payload")
     try {
       const response = await fetch(
-        `${BASE_URL}/api/v1/leadsrouter/getallLeadscontroller`,
+        `${BASE_URL}/api/v1/leadsrouter/searchingleadsController`,
         {
-          method: "GET",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
         }
-      );  
+      );
+      // console.log(response, "*********************************** response");
 
       if (!response.ok) {
         const errorData = await response.json();
-        return rejectWithValue(errorData);
+        return rejectWithValue(errorData.message || "Search Failed");
       }
 
       const result = await response.json();
-      // console.log("result : : ", result);
-
-      return result.data.updatedData;
+      console.log(result, "*********************************** result");  
+      return result.data.data; 
     } catch (error) {
       return rejectWithValue(error.message || "Something went wrong");
     }
@@ -131,14 +136,47 @@ export const getAllAssignto = createAsyncThunk(
     try {
       const BASE_URL = import.meta.env.VITE_BASE_URL;
       const response = await fetch(`${BASE_URL}/api/v1/employee/get`);
-      console.log(response, "✅ API Response***********************************************");
 
       const data = await response.json();
-      console.log(data, "✅ API Response***********************************************");
       return data.getResponse;
     
     } catch (error) {
       console.error("API Error:", error);
+      return rejectWithValue(error.message || "Something went wrong");
+    }
+  }
+);
+
+
+// src/Api/searchLeadsApi.js
+
+export const searchLeads = createAsyncThunk(
+  "leads/searchLeads",
+  async (payload, { rejectWithValue }) => {
+    console.log(payload,"*********************** payload")
+    try {
+      const response = await fetch(
+        `${BASE_URL}/api/v1/leadsrouter/searchingleadsController`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            "name": payload
+        }),
+        }
+      );
+      console.log(response, "*******************************************");
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        return rejectWithValue(errorData.message || "Search Failed");
+      }
+
+      const result = await response.json();
+      return result.data.updatedData; 
+    } catch (error) {
       return rejectWithValue(error.message || "Something went wrong");
     }
   }

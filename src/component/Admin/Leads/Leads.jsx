@@ -56,6 +56,7 @@ import {
   getAllAssignto,
   getallLeads,
   searchingleads,
+  searchLeads,
 } from "../../../Redux_store/Api/LeadsApi";
 
 import MyLeads from "./MyLeads/MyLeads";
@@ -74,12 +75,8 @@ import {
   FormLabel,
   FormMessage,
 } from "../../src/components/ui/form";
+import name from "function.prototype.name/implementation";
 const Leads = () => {
-  const rowsPerPage = 5;
-  const Navigate = useNavigate();
-  const [date, setDate] = useState(null);
-  const [category, setCategory] = useState("All Categories");
-  const [status, setStatus] = useState("All Status");
   const data = [
     { name: "JavaScript", value: 30, color: "#E91E63" }, // Pink
     { name: "HTML/CSS", value: 20, color: "#FF9800" }, // Orange
@@ -119,141 +116,6 @@ const Leads = () => {
       time: "24-02-2024",
     },
   ];
-  const [department, setDepartment] = useState("Please Select");
-  const [Employee, setEmployee] = useState("Please Select");
-  const [AddConfrom, setAddConfrom] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [leadModalStatus, setLeadModalStatus] = useState(false);
-  const [categoryModalStatus, setCategoryModalStatus] = useState(false);
-  const totalPages = Math.ceil(data1.length / rowsPerPage);
-  const currentData = data1.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
-  const categoryOnlySchema = z.object({
-    name: z.string().min(4, "Category name is required"),
-  });
-  const form = useForm({
-    defaultValues: {},
-    resolver: zodResolver(categoryOnlySchema),
-  });
-  const categorySchema = z.object({
-    name: z.string().min(1, "Name is required"),
-    email: z.string().min(1, "Email is required"),
-    address: z.string().min(1, "Address is required"),
-    contact: z.string().min(1, "Contact is required"),
-    category_id: z.coerce.number({ message: "Category ID must be a number" }),
-    assign_to: z.coerce.number({ message: "Assign To must be a number" }),
-    time: z.string().min(1, "Time is required"),
-    status: z.string().min(1, "Status is required"),
-  });
-  const {
-    register: categoryRegister,
-    handleSubmit: handleCategorySubmit,
-    reset: categoryReset,
-    formState: { errors: categoryErrors },
-  } = useForm({
-    resolver: zodResolver(categorySchema),
-  });
-  const [MYaddLeads, setaddLeads] = useState({
-    name: "",
-    address: "",
-    email: "",
-    phone_number: "",
-    category_id: "",
-    assign_to: "",
-    time: "",
-    status: "",
-  });
-  useEffect(() => {
-    console.log(MYaddLeads, "how are you");
-  }, [MYaddLeads]);
-
-  useEffect(() => {});
-  const onValidCategorySubmit = async (data) => {
-    const payload = {
-      ...data,
-      phone_number: data.contact, // map contact => phone_number
-    };
-    delete payload.contact; // remove 'contact' field if unnecessary
-
-    try {
-      const response = await dispatch(AddLeads(payload));
-
-      if (response.meta.requestStatus === "fulfilled") {
-        console.log("Lead added successfully!");
-        setLeadModalStatus(false);
-      } else {
-        console.error("Failed to add lead:", response.error);
-      }
-    } catch (err) {
-      console.error("Error adding lead:", err);
-    }
-  };
-  const dispatch = useDispatch();
-  const handlecategory = (data) => {
-    console.log("Category Data:", data);
-    setCategoryModalStatus(false);
-    setAddConfrom(true);
-    categoryReset();
-    dispatch(createCategory(data));
-  };
-  const onInvalidCategorySubmit = (errors) => {
-    console.log("Validation Errors:", errors);
-  };
-  const handleConfirm = async () => {
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      console.log("Data Submitted Successfully!");
-
-      setAddConfrom(false);
-    } catch (error) {
-      console.error("Submission failed:", error);
-    }
-  };
-  const {
-    leads = [],
-    loading,
-    error,
-  } = useSelector((state) => state.Leads || {});
-
-  useEffect(() => {
-    dispatch(changestatusLeads());
-    dispatch(getallLeads());
-    dispatch(AddLeads());
-    dispatch(createCategory());
-    dispatch(getAllCategory());
-  }, [dispatch]);
-
-  const [searchInput, setSearchInput] = useState("");
-
-  const handleSearch = () => {
-    const payload = {
-      name: searchInput,
-      email: "",
-      phone_number: "",
-      assign_to: " ",
-    };
-
-    dispatch(changestatusLeads(payload));
-  };
-  
-  const assignToList = useSelector((state) => state.Leads.assignToList);
-  console.log(assignToList,"**********************************************88",assignToList);
-
-
-  const { categories } = useSelector((state) => state.Category);
-
-  const newArray = categories.map((value)=>{
-    // console.log(value,"********************************")
-    return { label: `${value.name}`, value: `${value.id}` }
-  })
-  const newArray2 = assignToList.map((value)=>{
-    // console.log(value,"********************************")
-    return { label: `${value.first_name}`, value: `${value.id}` }
-  })
-
   const handleSubmit = () => {
     const payload = {
       name: name,
@@ -269,17 +131,195 @@ const Leads = () => {
     dispatch(changestatusLeads(payload));
   };
 
-  const onSubmit = () => {
-    console.log(onSubmit);
+  //   const onSubmit = () => {
+  //     console.log(onSubmit);
+  //   };
+
+  // useEffect(() => {
+  //   dispatch(getAllAssignto());
+  //   console.log(getAllAssignto,"***************************************788");
+
+  // }, [dispatch]);
+
+  const dispatch = useDispatch();
+  const Navigate = useNavigate();
+
+  const rowsPerPage = 5;
+
+  const [date, setDate] = useState(null);
+  const [category, setCategory] = useState();
+  console.log(category);
+  const [status, setStatus] = useState("All Status");
+  const [department, setDepartment] = useState("Please Select");
+  const [Employee, setEmployee] = useState("Please Select");
+  const [AddConfrom, setAddConfrom] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [leadModalStatus, setLeadModalStatus] = useState(false);
+  const [categoryModalStatus, setCategoryModalStatus] = useState(false);
+  // const [name, setSearchInput] = useState({name,email,phone_number,assign_to,category_id,status });
+  // const [searchInput, setSearchInput] = useState({
+  //   name: "",
+  //   email: "",
+  //   phone_number: "",
+  //   assign_to: "",
+  //   category_id: "",
+  //   status: "",
+  // });
+
+  const [searchQuery, setSearchQuery] = useState({
+    name: "",
+    email: "",
+    phone_number: "",
+    assign_to: "",
+    category_id: "",
+    status: "",
+  });
+  console.log(searchQuery, "**************************** searchQuery");
+
+  const [MYaddLeads, setaddLeads] = useState({
+    name: "",
+    address: "",
+    email: "",
+    phone_number: "",
+    category_id: "",
+    assign_to: "",
+    time: "",
+    status: "",
+  });
+
+  const {
+    leads = [],
+    loading,
+    error,
+    assignToList,
+  } = useSelector((state) => state.Leads || {});
+  const { categories } = useSelector((state) => state.Category || {});
+
+  const totalPages = Math.ceil(leads.length / rowsPerPage);
+  const currentData = data1.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+
+  const data3 = [
+    { name: "Name", value: 30 },
+    { name: "Email", value: 20 },
+    { name: "Phone Number", value: 25 },
+    { name: "Assign To", value: 25 },
+  ];
+  const categoryOnlySchema = z.object({
+    name: z.string().min(4, "Category name is required"),
+  });
+
+  const form = useForm({
+    defaultValues: {},
+    resolver: zodResolver(categoryOnlySchema),
+  });
+
+  const categorySchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    email: z.string().min(1, "Email is required"),
+    address: z.string().min(1, "Address is required"),
+    contact: z.string().min(1, "Contact is required"),
+    category_id: z.coerce.number({ message: "Category ID must be a number" }),
+    assign_to: z.coerce.number({ message: "Assign To must be a number" }),
+    time: z.string().min(1, "Time is required"),
+    status: z.string().min(1, "Status is required"),
+  });
+
+  const {
+    register: categoryRegister,
+    handleSubmit: handleCategorySubmit,
+    reset: categoryReset,
+    formState: { errors: categoryErrors },
+  } = useForm({
+    resolver: zodResolver(categorySchema),
+  });
+
+  const handleConfirm = async () => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      console.log("Data Submitted Successfully!");
+      setAddConfrom(false);
+    } catch (error) {
+      console.error("Submission failed:", error);
+    }
   };
 
-  
+  const onValidCategorySubmit = async (data) => {
+    const payload = {
+      ...data,
+      phone_number: data.contact,
+    };
+    delete payload.contact;
 
-useEffect(() => {
-  dispatch(getAllAssignto());
-  console.log(getAllAssignto,"***************************************788");
-  
-}, [dispatch]);
+    try {
+      const response = await dispatch(AddLeads(payload));
+      if (response.meta.requestStatus === "fulfilled") {
+        console.log("Lead added successfully!");
+        setLeadModalStatus(false);
+      } else {
+        console.error("Failed to add lead:", response.error);
+      }
+    } catch (err) {
+      console.error("Error adding lead:", err);
+    }
+  };
+
+  const handlecategory = (data) => {
+    console.log("Category Data:", data);
+    setCategoryModalStatus(false);
+    setAddConfrom(true);
+    categoryReset();
+    dispatch(createCategory(data));
+  };
+
+  const onInvalidCategorySubmit = (errors) => {
+    console.log("Validation Errors:", errors);
+  };
+
+  const handleSubmitLead = () => {
+    dispatch(changestatusLeads(MYaddLeads));
+  };
+
+  const newArray = categories.map((value) => ({
+    label: value.name,
+    value: value.id,
+  }));
+
+  const newArray2 = assignToList.map((value) => ({
+    label: value.first_name,
+    value: value.id,
+  }));
+
+  const handleSearch = () => {
+    const payload = {
+      name: searchQuery,
+      email: searchQuery,
+      phone_number: searchQuery,
+      assign_to: searchQuery,
+      category_id: searchQuery,
+      status: searchQuery,
+    };
+    dispatch(searchLeads(payload));
+  };
+
+  useEffect(() => {
+    dispatch(changestatusLeads());
+    // dispatch(getallLeads());
+    dispatch(getAllCategory());
+    dispatch(getAllAssignto());
+  }, [dispatch]);
+
+  useEffect(() => {
+    // console.log(MYaddLeads, "MYaddLeads Updated");
+  }, [MYaddLeads]);
+
+  useEffect(() => {
+    dispatch(getallLeads(searchQuery));
+    // dispatch(searchLeads(searchQuery));
+  }, [searchQuery]);
   return (
     <>
       <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
@@ -296,10 +336,12 @@ useEffect(() => {
                   </CardTitle>
                   <CardHeader>
                     <CardTitle className="text-center text-lg font-semibold">
-                      Total Leads: 10
+                      Total Leads:{" "}
+                      {data3.reduce((acc, curr) => acc + curr.value, 0)}
                     </CardTitle>
                   </CardHeader>
                 </div>
+
                 <div className="h-20 w-40 flex justify-center items-center">
                   <PieChart width={120} height={120}>
                     <Pie
@@ -311,10 +353,12 @@ useEffect(() => {
                       dataKey="value"
                       label={false}
                     >
-                      {Array.isArray(leads) &&
-                        leads.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
+                      {data.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
                     </Pie>
                     <Tooltip />
                   </PieChart>
@@ -360,29 +404,37 @@ useEffect(() => {
 
           <div className="p-6 rounded-lg shadow-md max-w-8xl mx-auto w-full ">
             <div className="flex flex-wrap justify-between gap-2 mb-4 w-full">
-              <Input
-                placeholder="Search Leads..."
-                className="w-1/4"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
+              <input
+                type="text"
+                name="search"
+                placeholder="Search Name "
+                value={searchQuery.name}
+                onChange={(e) =>
+                  setSearchQuery({ ...searchQuery, name: e.target.value })
+                }
+                className="p-2 border rounded-md 
+             bg-white text-black placeholder-gray-500 
+             dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 
+             border-gray-300 dark:border-gray-600 
+             focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              {/* <Button onClick={handleSearch} className="bg-blue-600 text-white">
-                Search
-              </Button> */}
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline">{category}</Button>
+                  <Button variant="outline">{category}All category</Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem >
-                    All Categories
-                  </DropdownMenuItem>
+                  <DropdownMenuItem>All Categoriesygy</DropdownMenuItem>
                   {Array.isArray(categories) &&
                     categories.map((item) => (
                       <DropdownMenuItem
                         key={item.id}
-                        onClick={() => setCategory(item.name)}
+                        onClick={(e) =>
+                          setSearchQuery({
+                            ...searchQuery,
+                            category_id: parseInt(item.id),
+                          })
+                        }
                       >
                         {item.name}
                       </DropdownMenuItem>
@@ -392,34 +444,64 @@ useEffect(() => {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline">{status}</Button>
+                  <Button variant="outline">
+                    {searchQuery.status || "Select Status"}
+                  </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem >
+                  <DropdownMenuItem
+                    onClick={() =>
+                      setSearchQuery((prev) => ({
+                        ...prev,
+                        status: "All Status",
+                      }))
+                    }
+                  >
                     All Status
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setStatus("Hot")}>
-                  Hot
+
+                  <DropdownMenuItem
+                    onClick={() =>
+                      setSearchQuery((prev) => ({ ...prev, status: "Hot" }))
+                    }
+                  >
+                    Hot
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setStatus("Inconservation")}>
-                  Inconservation
+
+                  <DropdownMenuItem
+                    onClick={() =>
+                      setSearchQuery((prev) => ({
+                        ...prev,
+                        status: "Inconservation",
+                      }))
+                    }
+                  >
+                    Inconservation
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setStatus("Converted")}>
-                  Converted
+
+                  <DropdownMenuItem
+                    onClick={() =>
+                      setSearchQuery((prev) => ({
+                        ...prev,
+                        status: "Converted",
+                      }))
+                    }
+                  >
+                    Converted
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setStatus("Droped")}>
-                  Droped
+
+                  <DropdownMenuItem
+                    onClick={() =>
+                      setSearchQuery((prev) => ({ ...prev, status: "Droped" }))
+                    }
+                  >
+                    Droped
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* <Button variant="outline">
-                <DownloadIcon className="h-4 w-4 mr-2" /> Export to Excel
-              </Button> */}
-              {/* <Input type="date" className="w-60 md:col-span-2 lg:col-span-2" /> */}
-
               {/* add Leads */}
-                <Dialog open={leadModalStatus} onOpenChange={setLeadModalStatus}>
+              <Dialog open={leadModalStatus} onOpenChange={setLeadModalStatus}>
                 <DialogTrigger asChild>
                   <Button className="bg-blue-600 text-white">
                     <PlusIcon className="mr-1" /> Add Leads
@@ -477,7 +559,7 @@ useEffect(() => {
                           name: "assign_to",
                           label: "Assign To",
                           type: "select",
-                          options: newArray2
+                          options: newArray2,
                         },
                         {
                           name: "time",
@@ -490,10 +572,13 @@ useEffect(() => {
                           label: "Status",
                           type: "select",
                           options: [
-                            { label: "Select Status", value: "" },
-                            { label: "New", value: "New" },
-                            { label: "In Progress", value: "In Progress" },
-                            { label: "Completed", value: "Completed" },
+                            { label: "Hot", value: "Hot" },
+                            { label: "Droped", value: "Droped" },
+                            {
+                              label: "Inconservation",
+                              value: "Inconservation",
+                            },
+                            { label: "Converted", value: "Converted" },
                           ],
                         },
                       ].map(({ name, label, placeholder, type, options }) => (
@@ -626,9 +711,9 @@ useEffect(() => {
                         <TableCell>{item.address}</TableCell>
                         <TableCell>{item.email}</TableCell>
                         <TableCell>{item.phone_number}</TableCell>
-                        <TableCell>{item.categoryname}</TableCell>
+                        <TableCell>{item.category.name}</TableCell>
                         <TableCell>{item.status}</TableCell>
-                        <TableCell>{item.EmployesName}</TableCell>
+                        <TableCell>{item.Employee.first_name}</TableCell>
                         <TableCell>{item.time}</TableCell>
                         <TableCell>
                           <DropdownMenu>
@@ -644,20 +729,18 @@ useEffect(() => {
                               <DropdownMenuItem asChild>
                                 <Dialog>
                                   <DialogTrigger asChild>
-                                    <Button
-                                      onClick={handleSubmit}
-                                      variant="outline"
-                                    >
-                                      {" "}
+                                    <Button variant="outline">
                                       Change Status
                                     </Button>
                                   </DialogTrigger>
+
                                   <DialogContent className="sm:max-w-[725px]">
                                     <DialogHeader>
                                       <DialogTitle>
                                         Change Status of dvsn
                                       </DialogTitle>
                                     </DialogHeader>
+
                                     <select
                                       className="border rounded p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
                                       value={department}
@@ -666,7 +749,6 @@ useEffect(() => {
                                       }
                                     >
                                       <option value="Converted">
-                                        {" "}
                                         Converted
                                       </option>
                                       <option value="Sales">Hot</option>
@@ -675,6 +757,13 @@ useEffect(() => {
                                       </option>
                                       <option value="Support">Dropped</option>
                                     </select>
+
+                                    <Button
+                                      className="mt-4"
+                                      onClick={handleSubmit}
+                                    >
+                                      Submit
+                                    </Button>
                                   </DialogContent>
                                 </Dialog>
                               </DropdownMenuItem>
@@ -747,24 +836,25 @@ useEffect(() => {
                     ))}
                 </TableBody>
               </Table>
-              <div className="flex justify-center items-center gap-2 mt-4">
+              <div className="flex justify-center items-center gap-4 mt-6">
                 <button
-                  className="px-3 py-1 rounded-md"
+                  className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-white rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition"
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage(currentPage - 1)}
                 >
-                  -
+                  Previous
                 </button>
-                <span className="text-sm font-semibold">
+
+                <span className="text-base font-semibold text-gray-800 dark:text-white">
                   Page {currentPage} of {totalPages}
                 </span>
+
                 <button
-                  className="px-3 py-1 rounded-md"
+                  className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-white rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition"
                   disabled={currentPage === totalPages}
                   onClick={() => setCurrentPage(currentPage + 1)}
                 >
-                  {" "}
-                  +{" "}
+                  Next
                 </button>
               </div>
             </div>
