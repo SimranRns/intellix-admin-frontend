@@ -114,7 +114,7 @@ const App = () => {
             <Route path="/StudentUploadModal/:id" element={<StudentUploadModal />} />
             <Route path="/Marksheet/:id" element={<MarksheetForm />} />
             <Route path="/ExStudents" element={<ExStudentsData />} />
-            <Route path="/student_attendance" element={<Stu_Attendance />} />
+            <Route path="/student_attendance/:id" element={<Stu_Attendance />} />
             <Route path="/View-Profile/:id" element={<ViewProfile />} />
             <Route path="/View_User/:id" element={<View_User />} />
 
@@ -123,7 +123,7 @@ const App = () => {
             <Route path="/Leads" element={<Leads />} />
             <Route path="/MyLeads" element={<MyLeads />} />
             <Route path="/Received" element={<Received />} />
-            <Route path="/Upcoming" element={<Upcoming />} />1
+            <Route path="/Upcoming" element={<Upcoming />} />
             <Route path="/Missed" element={<Missed />} />
             <Route path="/Department_list_Employee" element={<Department_list_Employee />} />
             <Route path="/Batches" element={<Batches />} />

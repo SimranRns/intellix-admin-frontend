@@ -12,7 +12,7 @@ const initialState = {
       batch: '',
       enrollment_id: ''
     },
-    sessionId: 1,
+    sessionID: 19,
     loading: false,
     error: null,
   };
@@ -22,8 +22,9 @@ const attendanceSlice = createSlice({
     initialState,
     reducers: {
       setSearchFilters(state, action) {
-        state.search = action.payload;
+        state.search = { ...action.payload };  // Spread karke naya object banana jaruri hai
       },
+      
       setPage(state, action) {
         state.page = action.payload;
       },
@@ -39,9 +40,12 @@ const attendanceSlice = createSlice({
         })
         .addCase(fetchAttendance.fulfilled, (state, action) => {
           state.loading = false;
-          state.data = action.payload.data;
-          state.total = action.payload.total;
-        })
+          state.data = action.payload.data || [];  // ✅ सही data
+          state.total = action.payload.total;  // ✅ सही total
+          state.page = action.payload.page;   // ✅ current page update
+          state.limit = action.payload.limit; // ✅ limit भी आ रही
+      })
+      
         .addCase(fetchAttendance.rejected, (state, action) => {
           state.loading = false;
           state.error = action.payload || 'Failed to fetch attendance';

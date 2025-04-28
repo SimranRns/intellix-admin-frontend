@@ -108,7 +108,8 @@ const Attendance = () => {
 
 
 
-  const { data, total, page, limit, search, sessionId, loading, error } = useSelector(state => state.attendance);
+  const { data, total, page, limit, search, loading, error } = useSelector(state => state.attendance);
+  const sessionID = useSelector((state) => state.Session.selectedSession);
   useEffect(() => {
     if (data && Array.isArray(data)) {
       setAttendanceData(data);
@@ -120,12 +121,15 @@ const Attendance = () => {
   }, [data]);
 
   useEffect(() => {
-    dispatch(fetchAttendance({ sessionId, ...search, page, limit }));
-  }, [dispatch, sessionId, search, page, limit]);
+    dispatch(fetchAttendance({ sessionID, ...search, page, limit }));
+
+  }, [dispatch, sessionID, search, page, limit]);
 
   useEffect(() => {
     setCurrentPage(page);
   }, [page]);
+
+
   const handleSearch = (e) => {
     e.preventDefault();
     dispatch(setSearchFilters({
@@ -133,13 +137,15 @@ const Attendance = () => {
       batch: searchBatchName,
       enrollment_id: searchEnrollmentId
     }));
-    dispatch(setPage(1));
+    dispatch(setPage(1)); // Reset to page 1 on new search
+    // dispatch(fetchAttendance({ sessionID, ...search, page: 1, limit })); 
   };
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
     dispatch(setPage(newPage));
   };
+
   const totalPages = Math.ceil(total / limit);
 
 
@@ -196,17 +202,19 @@ const Attendance = () => {
   const {
     register,
     handleSubmit,
+    getValues,  // <-- add this!
     setValue,
     watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(exportSchema),
     defaultValues: {
-      fromDate: new Date(),
-      toDate: new Date(),
+      startDate: new Date().toISOString().split("T")[0],
+      endDate: new Date().toISOString().split("T")[0],
       course: "",
       batch: "",
-    },
+    }
+
   });
 
   const onSubmit = (data) => {
@@ -400,7 +408,7 @@ const Attendance = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {data.map((student) => (
+                    {selectedAttendance.map((student) => (
                       <tr key={student.id}>
                         <td className="border text-md px-4 py-2">{student.enrollment_id}</td>
                         <td className="border text-md px-4 py-2">{student.Student.name}</td>

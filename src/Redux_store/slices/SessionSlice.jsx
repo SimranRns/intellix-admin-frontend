@@ -12,7 +12,14 @@ const initialState = {
 const SessionSlice = createSlice({
     name: 'Session',
     initialState,
-    reducers: {},
+    reducers: {
+      setSession: (state, action) => {
+        state.selectedSession = action.payload;
+      },
+      clearSession: (state) => {
+        state.selectedSession = null;
+      },
+    },
     extraReducers: (builder) => {
         builder
 
@@ -94,4 +101,5 @@ const SessionSlice = createSlice({
     },
 });
 
+export const { setSession, clearSession } = SessionSlice.actions;
 export default SessionSlice.reducer;
