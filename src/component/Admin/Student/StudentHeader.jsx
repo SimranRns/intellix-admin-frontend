@@ -36,61 +36,64 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../src/components/ui/dialog";
-
 import Header from "../Dashboard/Header";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import Add_Payment from "./Add_Payment";
-import { getStudents, getSingleStudent } from "../../../Redux_store/Api/StudentsApiStore";
+import { getStudents } from "../../../Redux_store/Api/StudentsApiStore";
+import { get_Batches } from "../../../Redux_store/Api/Batches";
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
 
 const StudentHeader = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [deletedialog, setDeletedialog] = useState(false);
-  const [addPayment, setAddPayment] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { students, loading, error, totalCount, singleStudent, singleLoading, singleError } = useSelector(
+  const { students, loading, error, total } = useSelector(
     (state) => state.students
   );
-  const studentsMap = students.data;
-  console.log("studentsMap", studentsMap);
-  console.log("singleStudent", singleStudent); // Debug single student data
+  const {
+    Batches: batches = [],
+    loading: batchesLoading,
+    error: batchesError,
+  } = useSelector((state) => state.Batch);
 
-  // Calculate total pages
-  const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
-
-  // Fetch students when page or search changes
+  // Fetch students and batches
   useEffect(() => {
     dispatch(
       getStudents({
         page: currentPage,
         limit: PAGE_SIZE,
-        search: searchQuery,
+        name: searchQuery,
       })
     );
+    dispatch(get_Batches());
   }, [dispatch, currentPage, searchQuery]);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(total / PAGE_SIZE) || 3;
 
   // Handle search input change
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
+
     setCurrentPage(1); // Reset to first page on search
   };
 
-  // Handle profile click to fetch single student
+  // Handle profile click to navigate to profile page
   const handleViewProfile = (id) => {
-    console.log("View Profile ID:", id); // 👈 ye daal do dekhne ke liye
-    dispatch(getSingleStudent({ id }))
-      .unwrap()
-      .then(() => {
-        navigate(`/view/profile/${id}`);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch single student:", err);
-      });
+    navigate(`/view/profile/${id}`);
   };
-  
+
+  // Function to get batch name from batch ID
+  const getBatchName = (batchId) => {
+    // Assuming batches is an array of objects with id and BatchesName
+    const batch = batches.find((b) => b.id === batchId);
+    // console.log(batchId);
+    return batch ? batch.BatchesName : "Unknown Batch";
+  };
+
   return (
     <SidebarProvider style={{ "--sidebar-width": "15rem" }}>
       <AppSidebar />
@@ -151,6 +154,8 @@ const StudentHeader = () => {
                 <div>Loading...</div>
               ) : error ? (
                 <div>Error: {error}</div>
+              ) : students?.length === 0 ? (
+                <div className="text-center mt-5">No students found</div>
               ) : (
                 <Table className="w-full border rounded-lg shadow-md mt-5">
                   <TableHeader>
@@ -164,122 +169,133 @@ const StudentHeader = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {studentsMap?.map((student) => (
-                      <TableRow
-                        key={student.id}
-                        className="hover:bg-transparent"
-                      >
-                        <TableCell className="text-blue-600 font-medium">
-                          {student.id}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-col md:flex-row md:items-center md:gap-3">
-                            <span className="font-medium">{student.name}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <span className="block md:inline">
-                            {student.father_name}
-                          </span>
-                        </TableCell>
-                        <TableCell>{student.batch_id}</TableCell>
-                        <TableCell>
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button>_Add Payment</Button>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-[825px] ">
-                              <DialogHeader>
-                                <DialogDescription>
-                                  <Add_Payment />
-                                </DialogDescription>
-                              </DialogHeader>
-                            </DialogContent>
-                          </Dialog>
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <MoreVertical
-                                className="cursor-pointer"
-                                size={20}
-                              />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56">
-                              <DropdownMenuGroup>
-                                <DropdownMenuItem
-                                  onClick={() => handleViewProfile(student.id)}
-                                >
-                                  {singleLoading ? "Loading..." : "Profile"}
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    navigate(
-                                      `/student-payment-history/${student.id}`
-                                    )
-                                  }
-                                >
-                                  Payment History
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    navigate(
-                                      `/student_attendance/${student.id}`
-                                    )
-                                  }
-                                >
-                                  Attendance
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  View Marksheet
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>Mark as RT</DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onSelect={(e) => e.preventDefault()}
-                                >
-                                  <Dialog
-                                    open={deletedialog}
-                                    onOpenChange={setDeletedialog}
+                    {students?.data?.map((student) => {
+                      const batchName = student.Batch.BatchesName; // Use batchId or the correct field from student
+                      return (
+                        <TableRow
+                          key={student.id}
+                          className="hover:bg-transparent"
+                        >
+                          <TableCell className="text-blue-600 font-medium">
+                            {student.id}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-col md:flex-row md:items-center md:gap-3">
+                              <span className="font-medium">
+                                {student.name}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <span className="block md:inline">
+                              {student.father_name}
+                            </span>
+                          </TableCell>
+                          <TableCell>{batchName}</TableCell>
+                          <TableCell>
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button>Add Payment</Button>
+                              </DialogTrigger>
+                              <DialogContent className="sm:max-w-[825px]">
+                                <DialogHeader>
+                                  <DialogDescription>
+                                    <Add_Payment />
+                                  </DialogDescription>
+                                </DialogHeader>
+                              </DialogContent>
+                            </Dialog>
+                          </TableCell>
+                          <TableCell>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <MoreVertical
+                                  className="cursor-pointer"
+                                  size={20}
+                                />
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent className="w-56">
+                                <DropdownMenuGroup>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      handleViewProfile(student.id)
+                                    }
                                   >
-                                    <DialogTrigger>Delete</DialogTrigger>
-                                    <DialogContent
-                                      onPointerDownOutside={(e) =>
-                                        e.preventDefault()
-                                      }
-                                      onEscapeKeyDown={(e) =>
-                                        e.preventDefault()
-                                      }
-                                      className="sm:max-w-[425px]"
+                                    Profile
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      navigate(
+                                        `/student-payment-history/${student.id}`
+                                      )
+                                    }
+                                  >
+                                    Payment History
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      navigate(
+                                        `/student_attendance/${student.id}`
+                                      )
+                                    }
+                                  >
+                                    Attendance
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem>
+                                    View Marksheet
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem>
+                                    Mark as RT
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onSelect={(e) => e.preventDefault()}
+                                  >
+                                    <Dialog
+                                      open={deletedialog}
+                                      onOpenChange={setDeletedialog}
                                     >
-                                      <DialogHeader>
-                                        <DialogTitle className="text-center mb-3">
-                                          Delete Student
-                                        </DialogTitle>
-                                        <DialogDescription className="text-center">
-                                          Are you sure you want to delete
-                                          student?
-                                        </DialogDescription>
-                                      </DialogHeader>
-                                      <DialogFooter className="flex justify-between">
-                                        <Button
-                                          onClick={() => setDeletedialog(false)}
-                                          variant="outline"
-                                        >
-                                          Cancel
-                                        </Button>
-                                        <Button className="bg-green-600 hover:bg-green-700 text-white">
-                                          Confirm
-                                        </Button>
-                                      </DialogFooter>
-                                    </DialogContent>
-                                  </Dialog>
-                                </DropdownMenuItem>
-                              </DropdownMenuGroup>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                                      <DialogTrigger>Delete</DialogTrigger>
+                                      <DialogContent
+                                        onPointerDownOutside={(e) =>
+                                          e.preventDefault()
+                                        }
+                                        onEscapeKeyDown={(e) =>
+                                          e.preventDefault()
+                                        }
+                                        className="sm:max-w-[425px]"
+                                      >
+                                        <DialogHeader>
+                                          <DialogTitle className="text-center mb-3">
+                                            Delete Student
+                                          </DialogTitle>
+                                          <DialogDescription className="text-center">
+                                            Are you sure you want to delete
+                                            student?
+                                          </DialogDescription>
+                                        </DialogHeader>
+                                        <DialogFooter className="flex justify-between">
+                                          <Button
+                                            onClick={() =>
+                                              setDeletedialog(false)
+                                            }
+                                            variant="outline"
+                                          >
+                                            Cancel
+                                          </Button>
+                                          <Button className="bg-green-600 hover:bg-green-700 text-white">
+                                            Confirm
+                                          </Button>
+                                        </DialogFooter>
+                                      </DialogContent>
+                                    </Dialog>
+                                  </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               )}
