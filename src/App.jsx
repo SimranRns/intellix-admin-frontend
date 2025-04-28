@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AdminLogin from "./component/Login/AdminLogin";
 import Settings from "./component/Admin/Setting/Change_pass";
 import Dashboard from "./component/Admin/Dashboard/Dashboard";
+
 import StudentHeader from "./component/Admin/Student/StudentHeader";
 import Advertisment from "./component/Admin/Advertisment/Advertisment";
 import Attendance from "./component/Admin/Attendance/Attendance";
@@ -51,13 +52,13 @@ import Notification from "./component/Admin/Advertisment/Notification";
 // import { Toaster } from "react-hot-toast";
 // import { Route } from "lucide-react";
 const App = () => {
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(false);
 
   // useEffect(() => {
   //   // Simulating site load time
   //   const timer = setTimeout(() => {
   //     setLoading(false);
-  //   }, 500);
+  //   }, 100);
 
   //   return () => clearTimeout(timer);
   // }, []);
@@ -98,7 +99,7 @@ const App = () => {
             <Route path="/attendance" element={<Attendance />} />
             <Route path="/Advertisement" element={<Advertisment />} />
             <Route path="/team" element={<Team />} />
-            {/* <Route path="/support" element={<div>Support </div>} /> */}
+            <Route path="/support" element={<div>Support </div>} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/support" element={<Support />} />
             <Route path="/add_student_model" element={<AddStudentModal />} />

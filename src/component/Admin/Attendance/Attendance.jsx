@@ -79,9 +79,9 @@ const Attendance = () => {
   const [date, setDate] = React.useState();
   // Top counters
   const [totalStudents, setTotalStudents] = useState(0);
-  const [outsideCampus, setOutsideCampus] = useState(0);
-  const [insideCampus, setInsideCampus] = useState(0);
-  const [onLeave, setOnLeave] = useState(0);
+  const [outsideCampus, setOutsideCampus] = useState("20");
+  const [insideCampus, setInsideCampus] = useState("30");
+  const [onLeave, setOnLeave] = useState("50");
 
   // Tab selection: All, In, Out, Absent
   const [selectedTab, setSelectedTab] = useState("All");
@@ -114,8 +114,8 @@ const Attendance = () => {
     if (data && Array.isArray(data)) {
       setAttendanceData(data);
       setTotalStudents(data.length);
-      setOutsideCampus(data.filter((d) => d.status === "Out").length);
-      setInsideCampus(data.filter((d) => d.status === "In").length);
+      // setOutsideCampus(data.filter((d) => d.status === "Out").length);
+      // setInsideCampus(data.filter((d) => d.status === "In").length);
       setOnLeave(data.filter((d) => d.status === "On Leave").length);
     }
   }, [data]);
@@ -244,8 +244,8 @@ const Attendance = () => {
             {/* Top counters */}
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 m-5">
               <div className="text-center border p-3 rounded-lg shadow-md shadow-blue-500/50">
-                <p className="text-2xl font-bold">{totalStudents}</p>
-                <p>Total Students</p>
+                <p className="text-2xl font-bold">{totalStudents || "10"}</p>
+                <p>Total Students</p> 
               </div>
               <div className="text-center border p-3 rounded-lg shadow-md shadow-blue-500/50">
                 <p className="text-2xl font-bold">{outsideCampus}</p>
@@ -266,7 +266,7 @@ const Attendance = () => {
             <div className="flex flex-wrap gap-4 mb-6 m-2 items-center">
               {/* Tabs */}
               <div className="flex gap-4">
-                {["All", "In", "Out", "Absent"].map((tab) => (
+                {["All",  "Absent"].map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setSelectedTab(tab)}
