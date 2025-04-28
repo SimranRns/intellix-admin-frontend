@@ -30,7 +30,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux'
 
 import { ScrollArea } from '../../../src/components/ui/scroll-area'
-import { get_course, add_course, update_course } from '../../../../Redux_store/Api/Academic_course'
+import { get_course, add_course, update_course, searchCoursesByName } from '../../../../Redux_store/Api/Academic_course'
 
 import {
     Pagination,
@@ -50,6 +50,7 @@ const Courses = () => {
     const [editingCourseId, setEditingCourseId] = useState(null);
     const [editedCourseNames, setEditedCourseNames] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
+    const [courseName, setCourseName] = useState('');
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(get_course())
@@ -77,7 +78,16 @@ const Courses = () => {
             console.error("Error adding course:", error);
         }
     };
+    const handleChange = (e) => {
+        setCourseName(e.target.value);
+    };
 
+    // Dispatch action when course name is entered
+    const handleSearch = () => {
+        if (courseName.trim()) {
+            dispatch(searchCoursesByName(courseName));
+        }
+    };
 
     // validation schema
     const courseSchema = z.object({
@@ -136,6 +146,9 @@ const Courses = () => {
                             <input
                                 type="text"
                                 placeholder="By Course Name..."
+                                value={courseName}
+                                onChange={handleChange}
+                                onKeyPress={(e) => e.key === 'Enter' && handleSearch()} // Trigger search on Enter key
                                 className="ml-2 w-full outline-none bg-transparent text-sm"
                             />
                         </div>

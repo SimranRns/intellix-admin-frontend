@@ -57,4 +57,32 @@ export const update_course = createAsyncThunk('data', async (_, { rejectWithValu
     }
 
 })
-export default { get_course, add_course, update_course }
+
+
+// search 
+export const searchCoursesByName = createAsyncThunk(
+    'courses/searchByName',
+    async (courseName, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${BASE_URL}/api/v1/coursesrouter/Searchbycoursesnamecontroller`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ course_name: courseName }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to fetch courses');
+            }
+
+            return data.data; // Return the courses data
+        } catch (error) {
+            return rejectWithValue(error.message); // In case of an error, return the error message
+        }
+    }
+);
+
+export default { get_course, add_course, update_course, searchCoursesByName }

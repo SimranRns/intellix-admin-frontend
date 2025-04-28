@@ -19,7 +19,8 @@ import SessionSliceReducer from './slices/SessionSlice'
 import EmployessSlicesReducer from './slices/Dashboard.Slices'
 import subject_sliceReducer from './slices/Subject_Slice'
 import adminSliceReducer from "./slices/Logout_Admin"
-import BatchesSliceReducer from  "./slices/Batches_Slice"
+import BatchesSliceReducer from "./slices/Batches_Slice"
+import ExstudentSlice from './slices/Student_ExStudent'
 
 import acad_course_sliceReducer from './slices/Academic_course'
 const RootReducer = combineReducers({
@@ -38,16 +39,17 @@ const RootReducer = combineReducers({
     year: head_yaer_sliceReducer,
     emis: EmiReducers,
     students: studentReducer,
-    adminProfile: adminProfileSliceReducer, 
-    subj:subject_sliceReducer, 
+    adminProfile: adminProfileSliceReducer,
+    subj: subject_sliceReducer,
     subj: subject_sliceReducer,
     Employesss: EmployessSlicesReducer,
     logout: adminSliceReducer,
     Session: SessionSliceReducer,
     acad_courses: acad_course_sliceReducer,
-    Session:SessionSliceReducer,
-    Batch:BatchesSliceReducer,
+    Session: SessionSliceReducer,
+    Batch: BatchesSliceReducer,
     // Session:SessionSliceReducer,
+    Exstudent: ExstudentSlice
 })
 
 

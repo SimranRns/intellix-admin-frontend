@@ -36,4 +36,9 @@ export const add_course = createAsyncThunk('form', async (formdata, { rejectWith
         return rejectWithValue(error)
     }
 })
-export default { get_course, add_course }
+
+
+
+
+
+export default { get_course, add_course  }

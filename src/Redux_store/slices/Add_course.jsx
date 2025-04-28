@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import {get_course,add_course } from "../Api/Add_popular_course"
+import { get_course, add_course } from "../Api/Add_popular_course"
 
 const course_slice = createSlice({
     name: 'courses',
@@ -36,6 +36,7 @@ const course_slice = createSlice({
                 state.loading = false,
                     state.error = action.payload
             })
+
     }
 })
 export default course_slice.reducer

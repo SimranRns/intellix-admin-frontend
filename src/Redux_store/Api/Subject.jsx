@@ -3,6 +3,10 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 const BASE_URL = import.meta.env.VITE_BASE_URL
 
 
+
+
+
+
 // Add subject
 export const Add_subject = createAsyncThunk(
     "Add_subject",
@@ -89,4 +93,41 @@ export const update_Subject = createAsyncThunk(
 
 
 
-export default { Add_subject, get_subject, update_Subject };
+
+
+
+// search 
+export const search_Subject = createAsyncThunk(
+    'subjects/search',
+    async (formData, { rejectWithValue }) => {
+      try {
+        const response = await fetch(
+          `${BASE_URL}/api/v1/subjectrouter/searchbysubjectnamecontroller`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData), // Correct way
+          }
+        );
+  
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Failed to search subject');
+        }
+  
+        const data = await response.json();
+        return data.data; // only returning data array
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+  );
+  
+
+
+
+
+
+export default { Add_subject, get_subject, update_Subject, search_Subject };

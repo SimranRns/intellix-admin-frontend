@@ -42,7 +42,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ThankYouCard from "../../Dashboard/ThankYouCard";
 
-import { Add_subject, get_subject, update_Subject } from "../../../../Redux_store/Api/Subject";
+import { Add_subject, get_subject, search_Subject, update_Subject } from "../../../../Redux_store/Api/Subject";
 import { useSelector, useDispatch } from "react-redux";
 
 
@@ -64,6 +64,7 @@ const Subjects = () => {
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [AddConfrom, setAddConfrom] = useState(false);
   const [sub, setsub] = useState({ subject_name: "" })
+  const [searchTerm, setSearchTerm] = useState('');
 
 
 
@@ -100,46 +101,53 @@ const Subjects = () => {
         id: selectedSubject.id,
         subject_name: data.subject_name,
       };
-  
+
       await dispatch(update_Subject(payload)).unwrap();
-  
+
       setEditSubjects(false);
       setAddConfrom(true);
       dispatch(get_subject()); // Refresh subject list
     } catch (error) {
       console.error("Failed to update subject:", error);
     }
-  };  
+  };
 
 
   const handleConfirm = async () => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500)); // (optional wait)
-  
+
       console.log("Data Submitted Successfully!");
-  
+
       setAddConfrom(false); // Dialog close
       window.location.reload(); // ✅ Page reload
     } catch (error) {
       console.error("Submission failed:", error);
     }
   };
-  
+
   const handleAddSubject = async (data) => {
     try {
       await dispatch(Add_subject(data)).unwrap();
       setAddConfrom(true);
       setAddSubjects(false);
       form.reset();
-  
+
       // ✅ Page reload (simple tarika)
       // window.location.reload();
     } catch (error) {
       console.error("Failed to add subject:", error);
     }
   };
-  
-  
+
+
+  const handleSearch = () => {
+    if (searchTerm.trim() !== "") {
+      dispatch(search_Subject({ subject_name: searchTerm }));
+    } else {
+      dispatch(get_subject()); // Empty search pe pura list reload
+    }
+  };
 
   useEffect(() => {
     dispatch(get_subject());
@@ -176,35 +184,49 @@ const Subjects = () => {
                 type="text"
                 placeholder="By Subjects Name..."
                 className="ml-2 w-full outline-none bg-transparent text-sm"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
+              <Button
+                onClick={handleSearch}
+                className="ml-2 bg-blue-600 text-white hover:bg-blue-500 px-3 py-2 rounded-md text-sm"
+              >
+                Search
+              </Button>
             </div>
+
           </div>
 
           {/* Subjects List */}
 
-          <div className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
-            {selectedSubjects.map((sub) => (
-              <Card
-                key={sub.id}
-                className="w-full max-w-xs sm:max-w-sm mx-auto shadow-md shadow-blue-300/20 rounded-xl"
-              >
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold text-center">
-                    Subject : {sub.subject_name}
+          <div className="w-full p-6">
+  {selectedSubjects.length === 0 ? (
+    <div className="text-center text-gray-500 text-lg font-semibold mt-10">
+      No subjects found.
+    </div>
+  ) : (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {selectedSubjects.map((sub) => (
+        <Card key={sub.id} className="w-full max-w-xs sm:max-w-sm mx-auto shadow-md shadow-blue-300/20 rounded-xl">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-center">
+              Subject : {sub.subject_name}
+            </CardTitle>
+          </CardHeader>
+          <CardFooter className="flex flex-col items-center space-y-2">
+            <Button
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition"
+              onClick={() => handleEditSubject(sub)}
+            >
+              Edit Subject
+            </Button>
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
+  )}
+</div>
 
-                  </CardTitle>
-                </CardHeader>
-                <CardFooter className="flex flex-col items-center space-y-2">
-                  <Button
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition"
-                    onClick={() => handleEditSubject(sub)}
-                  >
-                    Edit Subject
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
 
         </main>
 
@@ -301,7 +323,7 @@ const Subjects = () => {
                 Cancel
               </Button>
               <Button
-                onClick={handleConfirm} 
+                onClick={handleConfirm}
                 className="w-full sm:w-auto mt-4 bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md flex items-center shadow-md transition-all"
               >
                 Confirm
