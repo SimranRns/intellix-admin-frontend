@@ -39,7 +39,7 @@ import {
 import Header from "../Dashboard/Header";
 import AppSidebar from "../../src/components/ui/app-sidebar";
 import Add_Payment from "./Add_Payment";
-import { getStudents } from "../../../Redux_store/Api/StudentsApiStore";
+import { getStudents, updateStudentsRt, updateStudentStatus } from "../../../Redux_store/Api/StudentsApiStore";
 import { get_Batches } from "../../../Redux_store/Api/Batches";
 
 const PAGE_SIZE = 10;
@@ -47,7 +47,7 @@ const PAGE_SIZE = 10;
 const StudentHeader = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [deletedialog, setDeletedialog] = useState(false);
+  const [deletedialog, setDeletedialog] = useState();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { students, loading, error, total } = useSelector(
@@ -244,9 +244,12 @@ const StudentHeader = () => {
                                   <DropdownMenuItem>
                                     View Marksheet
                                   </DropdownMenuItem>
-                                  <DropdownMenuItem>
-                                    Mark as RT
-                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => {
+                                      dispatch(updateStudentsRt(student.id))
+                                      dispatch(getStudents())
+                                    }}
+                                  >Mark as RT</DropdownMenuItem>
                                   <DropdownMenuItem
                                     onSelect={(e) => e.preventDefault()}
                                   >
@@ -254,7 +257,13 @@ const StudentHeader = () => {
                                       open={deletedialog}
                                       onOpenChange={setDeletedialog}
                                     >
-                                      <DialogTrigger>Delete</DialogTrigger>
+                                      <DialogTrigger
+                                        open={deletedialog}
+                                        onOpenChange={setDeletedialog}
+                                        onClick={() => setDeletedialog(student.id)}
+                                      >
+                                        Delete
+                                      </DialogTrigger>
                                       <DialogContent
                                         onPointerDownOutside={(e) =>
                                           e.preventDefault()
@@ -282,7 +291,11 @@ const StudentHeader = () => {
                                           >
                                             Cancel
                                           </Button>
-                                          <Button className="bg-green-600 hover:bg-green-700 text-white">
+                                          <Button className="bg-green-600 hover:bg-green-700 text-white"
+                                            onClick={() => { dispatch(updateStudentStatus(student.id)) }
+
+                                            }
+                                          >
                                             Confirm
                                           </Button>
                                         </DialogFooter>
@@ -317,11 +330,10 @@ const StudentHeader = () => {
                     key={page}
                     variant={currentPage === page ? "default" : "ghost"}
                     onClick={() => setCurrentPage(page)}
-                    className={`px-4 py-2 ${
-                      currentPage === page
-                        ? "bg-[#3d3690] text-white"
-                        : "bg-gray-100 text-gray-700"
-                    } rounded-lg hover:bg-transparent hover:text-inherit`}
+                    className={`px-4 py-2 ${currentPage === page
+                      ? "bg-[#3d3690] text-white"
+                      : "bg-gray-100 text-gray-700"
+                      } rounded-lg hover:bg-transparent hover:text-inherit`}
                   >
                     {page}
                   </Button>
