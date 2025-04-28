@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import {get_course,add_course } from "../Api/Add_popular_course"
+import { get_course, add_course, deletePopularCourse } from "../Api/Add_popular_course"
 
 const course_slice = createSlice({
     name: 'courses',
@@ -36,6 +36,19 @@ const course_slice = createSlice({
                 state.loading = false,
                     state.error = action.payload
             })
+            // delete course
+            .addCase(deletePopularCourse.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(deletePopularCourse.fulfilled, (state, action) => {
+                state.loading = false;
+                state.course = action.payload.message || "Course deleted successfully";
+            })
+            .addCase(deletePopularCourse.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload || "Something went wrong";
+            });
     }
 })
 export default course_slice.reducer

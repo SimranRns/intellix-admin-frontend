@@ -28,30 +28,38 @@ const banner_Slice = createSlice({
 
             // Delete banner
             .addCase(delete_banner.pending, (state) => {
-                state.loading = true
-            })
-            .addCase(delete_banner.fulfilled, (state, action) => {
+                state.loading = true;
+              })
+              .addCase(delete_banner.fulfilled, (state, action) => {
                 state.loading = false;
-                state.banners = state.banners.filter((b) => b.id !== action.payload);
-
-            })
-
-            .addCase(delete_banner.rejected, (state, action) => {
-                state.loading = false
-                state.error = action.payload
-            })
+                if (Array.isArray(state.banners)) {
+                  state.banners = state.banners.filter((b) => b.id !== action.payload);
+                } else {
+                  state.banners = []; // fallback: if banners somehow became invalid
+                }
+              })
+              .addCase(delete_banner.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+              })
+              
             // add banner 
             .addCase(add_banner.pending, (state) => {
-                state.loading = true
-            })
-            .addCase(add_banner.fulfilled, (state, action) => {
+                state.loading = true;
+              })
+              .addCase(add_banner.fulfilled, (state, action) => {
                 state.loading = false;
-                state.banners.push(action.payload)
-            })
-            .addCase(add_banner.rejected, (state, action) => {
+                if (Array.isArray(state.banners)) {
+                  state.banners = [...state.banners, action.payload];
+                } else {
+                  state.banners = [action.payload];
+                }
+              })
+              .addCase(add_banner.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload
-            })
+                state.error = action.payload;
+              })
+              
     },
 })
 
